@@ -53,6 +53,14 @@
       "branch": "main",
       "path": "studios/cineflow",
       "version": "0.2.0"
+    },
+    {
+      "id": "live",
+      "name": "直播工作室",
+      "repository": "https://github.com/1997liuyh-boop/dsh-studio-live",
+      "branch": "main",
+      "path": "studios/live",
+      "version": "0.1.1"
     }
   ]
 }

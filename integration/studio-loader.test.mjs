@@ -14,6 +14,7 @@ const media = await import(new URL('../../dsh-studio-media/studios/media/lib/ind
 const fitness = await import(new URL('../../dsh-studio-fitness/studios/fitness/lib/index.js', import.meta.url))
 const film = await import(new URL('../../dsh-studio-film/studios/film/lib/index.js', import.meta.url))
 const cineflow = await import(new URL('../../dsh-studio-cineflow/studios/cineflow/lib/index.js', import.meta.url))
+const live = await import(new URL('../../dsh-studio-live/studios/live/lib/index.js', import.meta.url))
 
 test('真实 Loader 加载、禁用和重载后清理工作室路由', async () => {
   const routes = new Map()
@@ -61,20 +62,21 @@ test('真实 Loader 加载、禁用和重载后清理工作室路由', async () 
 })
 
 
-test('六个工作室插件独立注册并在禁用后释放授权', async () => {
+test('七个工作室插件独立注册并在禁用后释放授权', async () => {
   const privateRoot=await mkdtemp(join(tmpdir(),'studio-loader-atlas-'))
   const previousRoot=process.env.STARMAP_PRIVATE_ROOT
   process.env.STARMAP_PRIVATE_ROOT=privateRoot
   const ctx = new Context()
   const active = new Set()
   const fibers = []
+  ctx.provide('tools', {})
   ctx.provide('studioProjects', { register({id}) {
     assert.equal(active.has(id), false)
     active.add(id)
     return () => active.delete(id)
   } })
   try {
-    for (const [id, plugin] of [['travel', travel], ['knowledge', knowledge], ['media', media], ['fitness', fitness], ['film', film], ['cineflow',cineflow]]) {
+    for (const [id, plugin] of [['travel', travel], ['knowledge', knowledge], ['media', media], ['fitness', fitness], ['film', film], ['cineflow',cineflow], ['live', live]]) {
       const fiber = ctx.plugin(plugin)
       fibers.push(fiber)
       await fiber.await()
