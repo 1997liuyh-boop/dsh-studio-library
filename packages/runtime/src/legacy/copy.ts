@@ -1,0 +1,17 @@
+export const copy = {
+  studio: '工作室', local: '本地保存', privacy: '数据保存在当前设备的浏览器中。可导出 JSON 备份，再导入到其他设备。',
+  add: '新增记录', edit: '编辑', remove: '删除', cancel: '取消', save: '保存记录', export: '导出数据', import: '导入数据', search: '搜索记录', searchPlaceholder: '搜索标题、内容…',
+  empty: '从第一条记录开始', emptyDescription: '添加后自动保存在本机，下次打开继续使用。', noResults: '没有匹配的记录',
+  saved: '记录已保存', deleted: '记录已删除', imported: '数据已导入', exported: '备份已导出',
+  deleteTitle: '删除这条记录？', deleteDescription: '此操作会永久删除记录及相关知识连线。', confirmDelete: '确认删除',
+  importTitle: '替换当前项目数据？', importDescription: '导入将替换当前项目的所有记录。建议先导出备份。', confirmImport: '替换并导入',
+  importTooLarge: '文件超过 10 MB，请选择更小的 JSON 文件。', importError: '无法导入文件：', storageError: '本地保存失败，请检查浏览器存储空间后重试。', loadError: '本地数据读取失败。原数据仍保留，请先导出原始数据备份，再导入有效备份恢复。', rawExport: '导出原始数据',
+  title: '标题', notes: '备注', notesPlaceholder: '补充细节、计划或学习笔记…', destination: '目的地', startDate: '开始日期', endDate: '结束日期', budget: '预算（元）', status: '状态',
+  category: '分类', links: '关联知识节点', noNodes: '添加更多知识节点后，可在这里建立关联。', platform: '发布平台', publishDate: '计划发布日期', date: '训练日期', sets: '组数', reps: '每组次数', weight: '重量（kg）', minutes: '训练时长（分钟）',
+  tripTitle: '行程名称', knowledgeTitle: '知识节点名称', mediaTitle: '选题名称', fitnessTitle: '训练动作',
+  planned: '计划中', visited: '已去过', idea: '待创作', writing: '创作中', ready: '待发布', published: '已发布', uncategorized: '未分类',
+  allTrips: '全部行程', totalBudget: '计划预算', visitedCount: '已去目的地', nodes: '知识节点', connections: '知识关联', categories: '分类数量', graph: '知识关系图', graphHint: '点击节点查看和编辑；关联关系在编辑时设置。', graphEmpty: '添加知识节点，构建自己的知识地图。',
+  mediaCount: '全部选题', mediaActive: '正在创作', mediaPublished: '已发布', workoutCount: '训练记录', workoutMinutes: '累计分钟', workoutVolume: '累计容量（kg）',
+  undated: '日期待定', currency: '元', unitMinutes: '分钟', unitSets: '组', unitReps: '次', unitKg: 'kg',
+  invalidDates: '结束日期不能早于开始日期。', invalidNumber: '请输入有效的非负数，组数和次数必须为正整数。',
+} as const

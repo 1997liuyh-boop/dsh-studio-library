@@ -1,0 +1,4 @@
+@layer theme, utilities;
+@import "tailwindcss/theme.css" layer(theme) prefix(studio);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(studio) source(none);
+@source "./src/client";

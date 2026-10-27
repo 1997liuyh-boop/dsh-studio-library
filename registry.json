@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "shared": {
+    "repository": "https://github.com/1997liuyh-boop/dsh-studio-library",
+    "worktable": "0.6.0",
+    "runtime": "0.5.0"
+  },
+  "studios": [
+    {
+      "id": "travel",
+      "name": "旅行工作室",
+      "repository": "https://github.com/1997liuyh-boop/dsh-studio-travel",
+      "branch": "main",
+      "path": "studios/travel",
+      "version": "0.2.0"
+    },
+    {
+      "id": "knowledge",
+      "name": "AI 学习路线",
+      "repository": "https://github.com/1997liuyh-boop/dsh-studio-knowledge",
+      "branch": "main",
+      "path": "studios/knowledge",
+      "version": "0.2.0"
+    },
+    {
+      "id": "media",
+      "name": "AI 短剧工作台",
+      "repository": "https://github.com/1997liuyh-boop/dsh-studio-media",
+      "branch": "main",
+      "path": "studios/media",
+      "version": "0.2.0"
+    },
+    {
+      "id": "fitness",
+      "name": "健身记录",
+      "repository": "https://github.com/1997liuyh-boop/dsh-studio-fitness",
+      "branch": "main",
+      "path": "studios/fitness",
+      "version": "0.2.0"
+    },
+    {
+      "id": "film",
+      "name": "AI 剧工作台",
+      "repository": "https://github.com/1997liuyh-boop/dsh-studio-film",
+      "branch": "main",
+      "path": "studios/film",
+      "version": "0.2.0"
+    },
+    {
+      "id": "cineflow",
+      "name": "影音工作室",
+      "repository": "https://github.com/1997liuyh-boop/dsh-studio-cineflow",
+      "branch": "main",
+      "path": "studios/cineflow",
+      "version": "0.2.0"
+    }
+  ]
+}

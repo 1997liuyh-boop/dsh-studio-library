@@ -1,0 +1,27 @@
+{
+  "repository": "https://github.com/1997liuyh-boop/dsh-studio-library",
+  "version": "0.1.0",
+  "source": "packages/sdk",
+  "files": [
+    {
+      "path": "packages/sdk/CONTROL.md",
+      "sha256": "8413167278ef4bb57aec5292b3afc26da83deeea836e9b44219b1e2965c4bccd"
+    },
+    {
+      "path": "packages/sdk/card.css",
+      "sha256": "f21ddd009f5d77d122cbaa9e8eda8eef8655cc2edb4191118627e38a5a9d2e38"
+    },
+    {
+      "path": "packages/sdk/client.tsx",
+      "sha256": "281c3fc0148086be240d238f0c98b91d8c03a15b7545bdfc5656b8f444051445"
+    },
+    {
+      "path": "packages/sdk/controlBridge.ts",
+      "sha256": "af82a03a386be0d885fdfebbd690ac1d80523a5ec44cd880485514d4d24c9ca8"
+    },
+    {
+      "path": "packages/sdk/entry.ts",
+      "sha256": "1f4156a92dfa12618556724f746d3d6a705ba295e1570493b423a876feb84b56"
+    }
+  ]
+}

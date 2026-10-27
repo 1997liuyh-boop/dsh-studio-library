@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dsh GitHub 工作库索引",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "name",
+    "version",
+    "packages"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "packages": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "path"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^(packages|studios)/[a-z][a-z0-9-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "kind": {
+      "enum": [
+        "shared",
+        "studio"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

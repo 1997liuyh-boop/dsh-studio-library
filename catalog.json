@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "name": "dsh-studio-library",
+  "version": "0.1.0",
+  "kind": "shared",
+  "packages": [
+    {
+      "id": "worktable",
+      "path": "packages/worktable"
+    },
+    {
+      "id": "runtime",
+      "path": "packages/runtime"
+    }
+  ]
+}

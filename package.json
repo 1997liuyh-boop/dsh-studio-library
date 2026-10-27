@@ -1,0 +1,33 @@
+{
+  "name": "dsh-studio-library-source",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "工作室共享基础库独立源码与构建入口",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1997liuyh-boop/dsh-studio-library.git"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "pack": "node scripts/pack.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:worktable": "node --test \"packages/worktable/tests/host-input.test.mjs\" \"packages/worktable/tests/host-transport.test.mjs\" \"packages/worktable/tests/session-compat.test.mjs\" \"packages/worktable/tests/session-details.test.mjs\" \"packages/worktable/tests/studio-mentions.test.mjs\" \"packages/worktable/tests/studio-shell.test.mjs\" \"packages/worktable/tests/widget-mount.test.mjs\"",
+    "test:integration": "node --test integration/*.test.mjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
+    "esbuild": "^0.28.2",
+    "postcss": "8.5.15",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "tailwindcss": "4.3.0",
+    "typescript": "6.0.3",
+    "jsdom": "^26.1.0"
+  }
+}

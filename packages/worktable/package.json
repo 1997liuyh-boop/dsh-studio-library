@@ -1,0 +1,97 @@
+{
+  "name": "dsh-worktable",
+  "description": "工作室：可折叠的项目抽屉、分屏工作区与会话控制台",
+  "version": "0.6.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1997liuyh-boop/dsh-studio-library.git",
+    "directory": "packages/worktable"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "dsh.plugin.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-ui-primitives",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-layout"
+      ]
+    },
+    "compatibility": {
+      "dsh": "0.2.1-rc.2",
+      "dshReleases": {
+        "0.2.1-rc.2": "experimental"
+      }
+    }
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node --check lib/index.js && node --check lib/client.js",
+    "pack": "node release-prep.mjs",
+    "test:gate": "node client-factory-gate.test.mjs",
+    "test:input": "node tests/host-input.test.mjs",
+    "test:session": "node tests/session-compat.test.mjs",
+    "test:details": "node tests/session-details.test.mjs",
+    "test:transport": "node tests/host-transport.test.mjs",
+    "test:widget": "node tests/widget-mount.test.mjs",
+    "verify:remote": "node verify-remote.mjs",
+    "test:studio": "node tests/studio-shell.test.mjs",
+    "test:loader": "node tests/studio-loader.test.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*",
+    "@deepseek-ai/dsh-client-locale": "*",
+    "@deepseek-ai/dsh-host-webserver": "*"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-host-webserver": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-locale": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
+    "esbuild": "^0.25.0",
+    "highlight.js": "^11.12.0",
+    "markdown-it": "^15.0.0",
+    "postcss": "^8.5.0",
+    "tailwindcss": "^4.1.0",
+    "xterm": "^5.3.0"
+  },
+  "dependencies": {
+    "node-pty": "1.2.0-beta.15",
+    "ws": "8.21.3"
+  },
+  "homepage": "https://github.com/1997liuyh-boop/dsh-studio-library#readme",
+  "bugs": {
+    "url": "https://github.com/1997liuyh-boop/dsh-studio-library/issues"
+  }
+}
