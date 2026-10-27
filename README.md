@@ -14,7 +14,7 @@
 | 健身记录 | [dsh-studio-fitness](https://github.com/1997liuyh-boop/dsh-studio-fitness) | 原创实现 |
 | AI 剧工作台 | [dsh-studio-film](https://github.com/1997liuyh-boop/dsh-studio-film) | 独立服务与补丁适配 |
 | 影音工作室 | [dsh-studio-cineflow](https://github.com/1997liuyh-boop/dsh-studio-cineflow) | 源码改编 |
-| 直播工作室 | [dsh-studio-live](https://github.com/1997liuyh-boop/dsh-studio-live) | 原创实现，OBS 与星露谷接口适配 |
+| 直播工作室 | [dsh-studio-live](https://github.com/1997liuyh-boop/dsh-studio-live) | B站弹幕、VRM、云端语音、OBS、星露谷与 Minecraft 本机测试服接口 |
 
 ## 来源与感谢
 
