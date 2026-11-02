@@ -2,7 +2,7 @@
 
 本项目配合 [1997liuyh-boop/deepseek-harness](https://github.com/1997liuyh-boop/deepseek-harness) 使用；该宿主 **fork 自 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)**。感谢 DeepSeek 团队及上游贡献者。当前已验证的适配目标为 **dsh 0.2.1-rc.2（实验性）**，Windows 桌面端优先。
 
-本仓库只维护工作室容器、共享运行时、SDK 和仓库索引。**一个工作室一个仓库**，七个业务工作室各自开发、构建和发布。
+本仓库只维护工作室容器、共享运行时、SDK 和仓库索引。**一个工作室一个仓库**，八个业务工作室各自开发、构建和发布。
 
 ## 工作室仓库
 
@@ -15,6 +15,7 @@
 | AI 剧工作台 | [dsh-studio-film](https://github.com/1997liuyh-boop/dsh-studio-film) | 独立服务与补丁适配 |
 | 影音工作室 | [dsh-studio-cineflow](https://github.com/1997liuyh-boop/dsh-studio-cineflow) | 源码改编 |
 | 直播工作室 | [dsh-studio-live](https://github.com/1997liuyh-boop/dsh-studio-live) | B站弹幕、VRM、云端语音、OBS、星露谷与 Minecraft 本机测试服接口 |
+| 设计工作室 | [dsh-studio-design](https://github.com/1997liuyh-boop/dsh-studio-design) | MasterGo Vibe MCP、Reborn UI 与项目配置协作 |
 
 ## 来源与感谢
 
@@ -42,7 +43,7 @@ GitHub Actions 的构建产物包含完整 tgz 和摘要清单，可在 Actions 
 
 ## 多仓库联调与升级
 
-按 registry.json 将各工作室克隆为本仓库的同级目录，分别构建。设置 DSH_HARNESS_ROOT 指向已构建的宿主后，运行 npm run test:integration，验证真实 Loader 中七个独立插件的注册与清理。独立仓库日常构建不要求其他工作室存在。
+按 registry.json 将各工作室克隆为本仓库的同级目录，分别构建。设置 DSH_HARNESS_ROOT 指向已构建的宿主后，运行 npm run test:integration，验证原有工作室在真实 Loader 中的注册与清理；设计工作室在其独立仓库运行 npm run test:host，验证正式包解析、路由与内置 MCP。独立仓库日常构建不要求其他工作室存在。
 
 共享 SDK 的源码快照和版本在各库 SDK-SNAPSHOT.json 记录；协议更新先修改本仓库，再同步受影响工作室。各插件保留独立版本，dsh 升级后先验证兼容范围。新增工作室按 [开发规范](CONTRIBUTING.md) 建立新仓库，再登记 registry.json。
 
