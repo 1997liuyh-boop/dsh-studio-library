@@ -2093,7 +2093,7 @@ function ConsolePane() {
             </div>
             {c.status === 'busy' && <span className="dsh-wt_consoleSweep" aria-hidden />}
             <div className={'dsh-wt_consolePreview' + (c.preview ? '' : ' dsh-wt_consolePreviewNone')} title={c.preview}>
-              {c.preview || (c.bound ? T('console.noPreview') : T('console.unboundShort'))}
+              {c.preview || T('console.noPreview')}
             </div>
           </div>
         ))}

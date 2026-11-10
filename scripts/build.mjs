@@ -23,7 +23,7 @@ for (const item of catalog.packages.filter(item=>!selected || item.id===selected
   if (item.id==='runtime') {
     await build({entryPoints:[join(root,'packages/sdk/controlBridge.ts')],outfile:join(dir,'static/controlBridge.js'),bundle:true,platform:'browser',format:'iife',target:'es2022'})
     await build({entryPoints:[join(dir,'src/server.ts')],outfile:join(dir,'lib/index.js'),bundle:true,platform:'node',format:'esm',target:'node22',external:['@deepseek-ai/*']})
-    const manifest=JSON.parse(await readFile(join(dir,'dsh.plugin.json'),'utf8'));manifest.version='0.5.0'
+    const manifest=JSON.parse(await readFile(join(dir,'dsh.plugin.json'),'utf8'));manifest.version=JSON.parse(await readFile(join(dir,'package.json'),'utf8')).version
     await writeFile(join(dir,'dsh.plugin.json'),JSON.stringify(manifest,null,2)+'\n')
     await mkdir(join(dir,'static/legacy'),{recursive:true})
     await build({entryPoints:[join(dir,'src/legacy/main.tsx')],outfile:join(dir,'static/legacy/app.js'),bundle:true,platform:'browser',format:'esm',jsx:'automatic',minify:true,define:{'process.env.NODE_ENV':'"production"'}})

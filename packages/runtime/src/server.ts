@@ -1,25 +1,41 @@
 import type { Context } from '@deepseek-ai/cordis'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { StudioProjects } from './registry'
+import { StudioUpdates, resolveUpdates } from './studioUpdates'
+import { updateRoutes } from './updateRoutes'
+import { getDshRuntimeVersion } from '@deepseek-ai/dsh-app-boot'
+import type {} from '@deepseek-ai/dsh-plugin-manager'
 import { createIntegrations, type IntegrationConfig } from './integrations'
 import { createToonflowSessions } from './toonflowSessions'
 import { readFile } from 'node:fs/promises'
 import { installStudioControl } from './studioControl'
+import { resolveServiceStartup, startStudioServices } from './serviceStartup'
 
 interface HostContext {
   provide(name: string, value: StudioProjects): void
-  effect(callback: () => () => void, label: string): void
+  effect(callback: () => () => void | Promise<void>, label: string): void
   connection: { admit(req: IncomingMessage): { rejection: number } | { peer: { principal: { kind: string } } } }
   webServer: { register(route: { kind: 'prefix'; path: string; handler(req: IncomingMessage, res: ServerResponse): Promise<void> }): () => void }
 }
 export const name = 'dsh-studio-projects'
-export const inject = ['webServer', 'connection', 'tools', 'agents', 'systemPrompt', 'workspaceRegistry']
+export const inject = ['webServer', 'connection', 'tools', 'agents', 'systemPrompt', 'workspaceRegistry', 'pluginManager']
 
 /** 共享认证与会话服务；页面通过独立工作室插件注册。 */
 export async function apply(ctx: HostContext & Context, config: IntegrationConfig = {}): Promise<void> {
   const registry = new StudioProjects()
   ctx.provide('studioProjects', registry)
+  const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates))
+  await updates.initialize()
+  const handleUpdates = updateRoutes(updates)
+  ctx.effect(() => () => updates.dispose(), '工作室：版本检查与更新记录')
   const statuses = createIntegrations(config)
+  const startupConfig = resolveServiceStartup(config.autoStartServices)
+  const startupAbort = new AbortController()
+  let startup = Promise.resolve<Awaited<ReturnType<typeof startStudioServices>>>([])
+  ctx.effect(() => {
+    if (process.env.DSH_STUDIO_SKIP_APPS !== '1') startup = startStudioServices(startupConfig, startupAbort.signal)
+    return async () => { startupAbort.abort(); await startup }
+  }, '工作室：本机服务自动启动')
   const toonflow = await createToonflowSessions(ctx, config)
   const control = installStudioControl(ctx, registry)
   ctx.effect(() => ctx.webServer.register({kind:'prefix',path:'/studio-projects',async handler(req,res) {
@@ -33,6 +49,7 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
       if (req.method === 'GET' && url.pathname === '/studio-projects/control/bridge.js') {
         res.writeHead(200, { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' }); res.end(await readFile(new URL('../static/controlBridge.js', import.meta.url))); return
       }
+      if (await handleUpdates(req, res, url.pathname)) return
       if (await control.handle(req, res, url.pathname)) return
       const legacyId=url.pathname.split('/')[2] ?? ''
       const legacyPage=url.searchParams.has('legacy') && ['travel','knowledge','media','fitness'].includes(legacyId) && registry.has(legacyId)
@@ -45,7 +62,10 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
         res.end(req.method === 'HEAD' ? undefined : body);return
       }
       if (url.pathname === '/studio-projects/integrations' && req.method === 'GET') {
-        res.writeHead(200,{'content-type':'application/json','cache-control':'no-store'}); res.end(JSON.stringify(await statuses())); return
+        const failures = await startup
+        const report = (await statuses()).map(status => ({ ...status,
+          startupError: status.ready ? undefined : failures.find(failure => failure.studioIds.includes(status.id))?.message }))
+        res.writeHead(200,{'content-type':'application/json','cache-control':'no-store'}); res.end(JSON.stringify(report)); return
       }
       if (url.pathname === '/studio-projects/toonflow/session') {
         if (!registry.has('media')) {res.writeHead(404);res.end();return}

@@ -1,7 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
-export interface IntegrationConfig { toonflowUrl?: string; printfilmUrl?: string; toonflowDataDirectory?: string; cineflowDataDirectory?: string }
+import type { ServiceStartupConfig } from './serviceStartup'
+import type { UpdateConfig } from './studioUpdates'
+export interface IntegrationConfig { updates?: UpdateConfig; toonflowUrl?: string; printfilmUrl?: string; toonflowDataDirectory?: string; cineflowDataDirectory?: string; autoStartServices?: ServiceStartupConfig[] }
 interface Integration { id: 'media' | 'film'; title: string; url: string; source: string; marker: RegExp }
 
 /** 应用地址由宿主配置或环境变量指定，不接受浏览器传入任意代理地址。 */

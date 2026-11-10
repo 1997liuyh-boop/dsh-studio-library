@@ -24,6 +24,9 @@ export class StudioProjects {
     return () => { this.pages.delete(page.id) }
   }
 
+  /** 供共享宿主服务读取已登记插件，路径不会发送给客户端。 */
+  entries(): readonly StudioPage[] { return [...this.pages.values()] }
+
   has(id: string): boolean { return this.pages.has(id) }
 
   list() { return [...this.pages.values()].map(({ id, name, icon, description }) => ({ id, name: name ?? id, icon: icon ?? '◫', description: description ?? '' })) }

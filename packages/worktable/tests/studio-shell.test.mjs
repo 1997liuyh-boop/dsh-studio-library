@@ -31,6 +31,12 @@ test('工作室默认折叠、点击展开、窄栏点击展开侧栏、重新�
   let expandedSidebar = 0
   let mounted = 0
   let released = 0
+  let toolbarMounted = 0
+  let toolbarReleased = 0
+  function Toolbar() {
+    React.useEffect(() => { toolbarMounted++; return () => { toolbarReleased++ } }, [])
+    return React.createElement('button', { 'aria-label': '添加' }, '+')
+  }
   function Content() {
     React.useEffect(() => { mounted++; return () => { released++ } }, [])
     return React.createElement('div', null, '项目列表')
@@ -38,7 +44,7 @@ test('工作室默认折叠、点击展开、窄栏点击展开侧栏、重新�
   const container = document.getElementById('root')
   let root = createRoot(container)
   const render = wide => act(() => root.render(React.createElement(StudioSection, {
-    wide, title: '工作室', expandSidebar: () => { expandedSidebar++ },
+    wide, title: '工作室', expandSidebar: () => { expandedSidebar++ }, toolbar: React.createElement(Toolbar),
   }, React.createElement(Content))))
   const click = () => act(() => container.querySelector('button').dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true })))
   try {
@@ -59,6 +65,9 @@ test('工作室默认折叠、点击展开、窄栏点击展开侧栏、重新�
     assert.equal(content.parentElement.parentElement.getAttribute('aria-hidden'), 'true')
     assert.equal(content.tabIndex, -1)
     render(false)
+    assert.equal(container.querySelector('[data-studio-toolbar]').hidden, true)
+    assert.equal(toolbarMounted, 1)
+    assert.equal(toolbarReleased, 0)
     click()
     assert.equal(expandedSidebar, 1)
     render(true)
@@ -67,6 +76,7 @@ test('工作室默认折叠、点击展开、窄栏点击展开侧栏、重新�
     assert.equal(mounted, 1)
     act(() => root.unmount())
     assert.equal(released, 1)
+    assert.equal(toolbarReleased, 1)
     root = createRoot(container)
     render(true)
     assert.equal(container.querySelector('[data-studio-content]'), null)

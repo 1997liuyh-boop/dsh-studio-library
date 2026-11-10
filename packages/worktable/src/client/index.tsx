@@ -1,4 +1,5 @@
 import { StudioSection, type StudioSectionProps } from './StudioSection'
+import { StudioUpdates } from './StudioUpdates'
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { css } from './styles'
 import studioCss from './studio.generated.css'
@@ -56,6 +57,7 @@ const ICON_SPARK = (
     <path d="M12.6 11.2l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z" fill="currentColor" />
   </svg>
 )
+const PROJECT_FOLDER_BUTTON_CLASS = 'dsh-wt_folderBtn studio:absolute studio:right-[26px] studio:top-1/2 studio:-translate-y-1/2 studio:flex studio:size-[22px] studio:items-center studio:justify-center studio:rounded-(--dsw-radius-sm) studio:text-xs studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500'
 type UpdateInfo = { latest: string; notes: string; url: string }
 function cmpVer(a: string, b: string): number {
   const pa = a.split('.').map(Number)
@@ -706,30 +708,6 @@ async function fetchSessionGroups(): Promise<{ groups: { title: string; sessions
   } catch { return { groups: [], current: '' } }
 }
 
-/** hover 气泡：挂在 document.body 的独立元素（不受侧栏堆叠上下文限制，可向右伸出显示） */
-let bindTipEl: HTMLDivElement | null = null
-function showBindTip(btn: HTMLElement) {
-  const tip = btn.getAttribute('data-tip')
-  if (!tip) return
-  if (!bindTipEl) {
-    bindTipEl = document.createElement('div')
-    bindTipEl.className = 'dsh-wt_bindTip'
-    document.body.appendChild(bindTipEl)
-  }
-  bindTipEl.textContent = tip
-  const r = btn.getBoundingClientRect()
-  bindTipEl.style.left = (r.right + 8) + 'px'
-  bindTipEl.style.top = (r.top + r.height / 2) + 'px'
-  bindTipEl.style.display = 'block'
-  // 右侧放不下时翻到左侧（一般不会：侧栏 ~288px + 气泡 ~200px 远小于视口宽）
-  const tw = bindTipEl.offsetWidth
-  const x = r.right + 8 + tw > window.innerWidth - 8 ? Math.max(8, r.left - 8 - tw) : r.right + 8
-  bindTipEl.style.left = x + 'px'
-}
-function hideBindTip() {
-  if (bindTipEl) bindTipEl.style.display = 'none'
-}
-
 /** 把文本送入指定会话：宿主同款寻址（binding(id).session.prompt / sendSession(会话面)），
  *  插件是根级上下文，无作用域的 conversation.send 会报 requires a session scope，不可用。 */
 async function promptIntoSession(sessionId: string, text: string): Promise<void> {
@@ -1146,11 +1124,8 @@ function WorktableSection(props: any) {
   useEffect(() => () => { mountedRef.current = false }, [])
   /** 图标选择器：kind + 目标 id + 弹窗锚点坐标（fixed 定位） */
   const [iconPick, setIconPick] = useState<{ kind: 'layout' | 'shortcut' | 'project'; id: string; x: number; y: number } | null>(null)
-  /** 对话绑定弹窗：项目 id + 锚点坐标；bindGroups = 打开时抓取的会话分组；
-   *  bindListOpen = 右侧对话列表弹层（点「绑定对话」行弹出） */
-  const [bindPick, setBindPick] = useState<{ id: string; x: number; y: number } | null>(null)
-  const [bindGroups, setBindGroups] = useState<{ title: string; sessions: { id: string; title: string; isCurrent: boolean }[] }[]>([])
-  const [bindListOpen, setBindListOpen] = useState(false)
+  /** 项目文件夹设置弹窗：项目 id 与触发位置。 */
+  const [folderPick, setFolderPick] = useState<{ id: string; x: number; y: number } | null>(null)
   /** 控制室强制绑定弹窗：未绑定点开「工作台」时弹出（左加入现有对话 / 右新建对话） */
   const [consoleBind, setConsoleBind] = useState<{ x: number; y: number } | null>(null)
   const [consoleGroups, setConsoleGroups] = useState<{ title: string; sessions: { id: string; title: string; isCurrent: boolean }[] }[]>([])
@@ -1655,25 +1630,6 @@ function WorktableSection(props: any) {
     }
   }, [])
 
-/** 绑定会话显示名（同步读会话快照；找不到回退 id）——供按钮 hover 气泡使用 */
-function boundSessionTitle(sid: string): string {
-  try {
-    const snap = sessionBridge?.list?.getSnapshot?.()
-    const e = snap?.byId?.[sid]
-    if (e) return e.displayTitle ?? e.title ?? sid
-  } catch {}
-  return sid
-}
-
-/** 绑定会话信息：文件夹（工作区）+ 会话标题（供绑定弹窗状态行展示） */
-function bindInfoOf(groups: { title: string; sessions: { id: string; title: string; isCurrent: boolean }[] }[], sid: string): { folder: string; title: string } {
-  for (const g of groups) {
-    const s = g.sessions.find((x) => x.id === sid)
-    if (s) return { folder: g.title || '未分组', title: s.title }
-  }
-  return { folder: '', title: sid }
-}
-
 /** 自定义布局提示词模板（复制到剪贴板，可发给任意 dsh 会话让 agent 实现）。
  *  零泄漏硬约束：禁止写入用户的个人工作区分组名/项目名/私人路径——本提示词会被发给别人的 DSH。 */
 function buildCustomLayoutPrompt(req: string): string {
@@ -1809,16 +1765,11 @@ function buildCustomLayoutPrompt(req: string): string {
 
   actionsRef.current = { openSplit, openConsole }
 
-  /** 打开对话绑定弹窗：抓取会话分组 + 锚点定位 */
-  const openBindPick = useCallback((id: string, anchor: HTMLElement) => {
-    invalidatePickState() // 切换目标：失效在途选择请求、清空旧错误与手工输入
-    const r = anchor.getBoundingClientRect()
-    const x = clamp(Math.round(r.right + 8), 8, window.innerWidth - 300)
-    const y = clamp(Math.round(r.top), 8, window.innerHeight - 420)
-    setBindPick({ id, x, y })
-    setBindListOpen(false)
-    setBindGroups([])
-    fetchSessionGroups().then((res) => setBindGroups(res.groups)).catch(() => setBindGroups([]))
+  /** 打开项目文件夹设置，不读取或选择要跟随的对话。 */
+  const openFolderPick = useCallback((id: string, anchor: HTMLElement) => {
+    invalidatePickState()
+    const rect = anchor.getBoundingClientRect()
+    setFolderPick({ id, x: clamp(Math.round(rect.right + 8), 8, window.innerWidth - 300), y: clamp(Math.round(rect.top), 8, window.innerHeight - 240) })
   }, [])
 
   /** 弹出系统文件夹选择窗（宿主 pickDirectory）；选中后回调。
@@ -1905,35 +1856,24 @@ function buildCustomLayoutPrompt(req: string): string {
     pickBusyRef.current = false
     setPickBusy(false)
     if (target === 'add') { setWsFolderParent(p); setWsFolderError(false) }
-    else if (bindPick) {
-      if (projectsRef.current.projects.folders[bindPick.id] !== p) invalidateWidgetProject(bindPick.id)
-      persistProjects((prev) => ({ ...prev, folders: { ...prev.folders, [bindPick.id]: p } }))
+    else if (folderPick) {
+      if (projectsRef.current.projects.folders[folderPick.id] !== p) invalidateWidgetProject(folderPick.id)
+      persistProjects((prev) => ({ ...prev, folders: { ...prev.folders, [folderPick.id]: p } }))
     }
     setManualPathFor(null)
     setManualPathText('')
     setPickErr((prev) => ({ ...prev, [target]: '' }))
   }
 
-  /** 绑定弹窗「更改」：弹窗选择文件夹，直接作为项目文件夹 */
-  const changeBindFolder = () => {
-    if (!bindPick || pickBusyRef.current) return
+  /** 项目目录设置：选择文件夹后更新项目工作目录 */
+  const changeProjectFolder = () => {
+    if (!folderPick || pickBusyRef.current) return
     pickFolder('bind', (p) => {
-      if (projectsRef.current.projects.folders[bindPick.id] !== p) invalidateWidgetProject(bindPick.id)
-      persistProjects((prev) => ({ ...prev, folders: { ...prev.folders, [bindPick.id]: p } }))
+      if (projectsRef.current.projects.folders[folderPick.id] !== p) invalidateWidgetProject(folderPick.id)
+      persistProjects((prev) => ({ ...prev, folders: { ...prev.folders, [folderPick.id]: p } }))
     })
   }
 
-  /** 绑定 / 解绑会话（弹窗保持打开，绑定结果即时显示在「绑定对话」框里） */
-  const setProjectBinding = (id: string, sessionId: string | null) => {
-    if ((projectsRef.current.projects.bindings[id] ?? null) !== sessionId) invalidateWidgetProject(id)
-    persistProjects((prev) => {
-      const next = { ...prev.bindings }
-      if (sessionId) next[id] = sessionId
-      else delete next[id]
-      return { ...prev, bindings: next }
-    })
-    setBindListOpen(false)
-  }
 
   /** 复制自定义布局提示词到剪贴板（失败则全选输入框手动复制） */
   const copyCustomLayout = async () => {
@@ -2055,30 +1995,7 @@ function buildCustomLayoutPrompt(req: string): string {
     return childSessionIdsOf(sessionsSnapshotStore.snapshot, sid)
   }, [])
 
-  /** 项目 → 提醒态：绑定会话（含其子代理）待决(黄) > 完成(绿) > 工作中(蓝)；
-   *  状态转移自动清除旧 ack——原生 UI 每个新问题都会重新亮黄，镜像不得被旧确认压住 */
-  const bindNotifyMap: Record<string, 'done' | 'need' | 'busy'> = useMemo(() => {
-    const map: Record<string, 'done' | 'need' | 'busy'> = {}
-    const byId = sessionsSnapshotStore.snapshot?.byId ?? {}
-    const ack = loadNotifyAck()
-    const seen = notifyStateSeenRef.current
-    for (const [pid, sid] of Object.entries(projects.bindings)) {
-      const e = byId[sid]
-      if (!e) continue
-      const pendingAck = pendingAckForSession(sid)
-      // 状态转移 → 清除旧 ack（新一轮待决重新点亮）
-      if (pendingAck !== seen[sid]) {
-        if (seen[sid] !== undefined) { clearNotifyAck(sid); delete ack[sid] }
-        seen[sid] = pendingAck
-      }
-      if (pendingAck != null) { if (ack[sid] !== pendingAck) map[pid] = 'need'; continue }
-      if (sessionNotifyState(e) === 'done' && ack[sid] !== 'done') { map[pid] = 'done'; continue }
-      if (e.running === true) map[pid] = 'busy'
-    }
-    return map
-  }, [projects.bindings, notifyTick, collectKids])
-
-  /** 点开项目 = 确认提醒：ack 当前会话（含子代理）的待决/完成状态，圆点恢复常态实心 */
+  /** 点开项目时确认既有会话及子代理的待决与完成状态 */
   const ackProjectNotify = (projectId: string) => {
     const sid = projectsRef.current.projects.bindings[projectId]
     if (!sid) return
@@ -2389,32 +2306,26 @@ function buildCustomLayoutPrompt(req: string): string {
         const id = aliveRegisteredIds[i]
         if (id) {
           el.setAttribute('data-wt-id', id)
-          // 对话绑定按钮：追加为最后一个子元素（不破坏 children[0] 图标约定），中间偏右
-          let bindBtn = el.querySelector<HTMLElement>('.dsh-wt_bindBtn')
-          if (!bindBtn) {
-            bindBtn = document.createElement('span')
-            bindBtn.className = 'dsh-wt_bindBtn'
-            bindBtn.setAttribute('role', 'button')
-            const circles = document.createElement('span')
-            circles.className = 'dsh-wt_bindCircles'
-            circles.setAttribute('aria-hidden', 'true')
-            bindBtn.appendChild(circles)
-            el.appendChild(bindBtn)
-            const cs = getComputedStyle(el)
-            if (cs.position === 'static') el.style.position = 'relative'
+          // 项目目录入口保留在卡片尾部。
+          let folderButton = el.querySelector<HTMLElement>('.dsh-wt_folderBtn')
+          if (!folderButton) {
+            folderButton = document.createElement('span')
+            folderButton.className = PROJECT_FOLDER_BUTTON_CLASS
+            folderButton.setAttribute('role', 'button')
+            folderButton.tabIndex = 0
+            const icon = document.createElement('span')
+            icon.setAttribute('aria-hidden', 'true')
+            icon.textContent = '📂'
+            folderButton.appendChild(icon)
+            el.appendChild(folderButton)
+            if (getComputedStyle(el).position === 'static') el.style.position = 'relative'
           }
-          bindBtn.setAttribute('data-wt-bind', id)
-          const bound = projects.bindings[id]
-          bindBtn.setAttribute('data-bound', bindNotifyMap[id] ?? (bound ? 'true' : 'false'))
+          folderButton.title = t('bind.folder')
+          folderButton.setAttribute('aria-label', t('bind.folder'))
           // 入驻卡自带箭头（文本 ›）：加统一对齐类，视觉居中（字面框偏下补偿 1px）
           const kids = Array.from(el.children)
           const arrow = kids.find((k: any) => k.tagName === 'SPAN' && String((k as HTMLElement).textContent ?? '').trim() === '›')
           if (arrow) (arrow as HTMLElement).classList.add('dsh-wt_resArrow')
-          const tip = bound
-            ? t('bind.tipBound', { name: boundSessionTitle(bound) }) + (bindNotifyMap[id] === 'busy' ? t('bind.tipBusy') : bindNotifyMap[id] === 'done' ? t('bind.tipDone') : bindNotifyMap[id] === 'need' ? t('bind.tipNeed') : '')
-            : t('bind.tipUnbound')
-          bindBtn.setAttribute('data-tip', tip)
-          bindBtn.setAttribute('aria-label', tip)
           const icon = el.children[0] as HTMLElement | null
           if (icon) {
             const ovr = projects.iconOverrides[id]
@@ -2441,7 +2352,7 @@ function buildCustomLayoutPrompt(req: string): string {
     const mo = new MutationObserver(sync)
     mo.observe(document.body, { childList: true, subtree: true })
     return () => mo.disconnect()
-  }, [aliveRegisteredIds, projects.iconOverrides, projects.views, activeSplitId, projects.bindings, bindNotifyMap])
+  }, [aliveRegisteredIds, projects.iconOverrides, projects.views, activeSplitId])
 
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
@@ -2452,12 +2363,12 @@ function buildCustomLayoutPrompt(req: string): string {
       if (!card) return
       const pid = card.getAttribute('data-wt-id')
       if (!pid) return
-      // 绑定按钮点击 → 打开对话绑定弹窗（阻止卡片自身打开项目）
-      const bindBtn = (target && target.closest ? target.closest('.dsh-wt_bindBtn') : null) as HTMLElement | null
-      if (bindBtn) {
+      // 文件夹入口只打开目录设置。
+      const folderButton = target?.closest<HTMLElement>('.dsh-wt_folderBtn')
+      if (folderButton) {
         e.stopPropagation()
         e.preventDefault()
-        openBindPick(pid, bindBtn)
+        openFolderPick(pid, folderButton)
         return
       }
       // 图标点击（卡片第一个子元素内） → 打开图标选择器（阻止卡片自身打开项目）
@@ -2482,9 +2393,22 @@ function buildCustomLayoutPrompt(req: string): string {
       if (bound) { try { openHostSession(clientCtx, sessionBridge?.sessions, bound) } catch {} }
       ackProjectNotify(pid)
     }
+    const onFolderKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return
+      const target = event.target instanceof HTMLElement ? event.target.closest<HTMLElement>('.dsh-wt_folderBtn') : null
+      const id = target?.closest('[data-wt-id]')?.getAttribute('data-wt-id')
+      if (!target || !id) return
+      event.preventDefault()
+      event.stopPropagation()
+      openFolderPick(id, target)
+    }
     document.addEventListener('click', onDocClick, true)
-    return () => document.removeEventListener('click', onDocClick, true)
-  }, [projects.views, openSplit, reportUsed, openBindPick])
+    document.addEventListener('keydown', onFolderKeyDown, true)
+    return () => {
+      document.removeEventListener('click', onDocClick, true)
+      document.removeEventListener('keydown', onFolderKeyDown, true)
+    }
+  }, [projects.views, openSplit, reportUsed, openFolderPick])
 
   const query = view.query.trim()
   const queryLower = query.toLowerCase()
@@ -2952,22 +2876,22 @@ function buildCustomLayoutPrompt(req: string): string {
         </div>
       )}
 
-      {bindPick && <div className="dsh-wt_popBackdrop" style={{ zIndex: 83 }} onClick={() => { invalidatePickState(); setBindPick(null); setBindListOpen(false) }} />}
-      {bindPick && (
-        <div className="dsh-wt_menu dsh-wt_pop dsh-wt_bindPop" style={{ position: 'fixed', left: bindPick.x, top: bindPick.y, width: 280, zIndex: 84 }}>
+      {folderPick && <div className="dsh-wt_popBackdrop" style={{ zIndex: 83 }} onClick={() => { invalidatePickState(); setFolderPick(null) }} />}
+      {folderPick && (
+        <div className="dsh-wt_menu dsh-wt_pop dsh-wt_bindPop" style={{ position: 'fixed', left: folderPick.x, top: folderPick.y, width: 280, zIndex: 84 }}>
           {/* 项目文件夹框（格式基准）：第一行 emoji+标题，第二行路径；可随时更改 */}
           <div className="dsh-wt_bindFolderBox">
             <div className="dsh-wt_bindFolderRow">
               <span className="dsh-wt_bindFolderLabel">📁 {t('bind.folder')}</span>
-              <button type="button" className="dsh-wt_bindFolderChange" disabled={pickBusy} onClick={changeBindFolder}>
+              <button type="button" className="dsh-wt_bindFolderChange" disabled={pickBusy} onClick={changeProjectFolder}>
                 {pickBusy ? t('add.folderPicking') : t('bind.folderChange') + ' ↻'}
               </button>
               <button type="button" className="dsh-wt_bindFolderChange" title={t('add.folderManual')}
                 onClick={() => { setManualPathFor(manualPathFor === 'bind' ? null : 'bind'); setPickErr((prev) => ({ ...prev, bind: '' })) }}>{t('add.folderManual')}</button>
             </div>
             {pickBusy && <p className="dsh-wt_folderPickHint">{t('add.folderPickerHint')}</p>}
-            <div className={'dsh-wt_bindFolderPath' + (projects.folders[bindPick.id] ? '' : ' dsh-wt_bindFolderPathNone')} title={projects.folders[bindPick.id] ?? ''}>
-              {projects.folders[bindPick.id] ?? t('bind.folderNone')}
+            <div className={'dsh-wt_bindFolderPath' + (projects.folders[folderPick.id] ? '' : ' dsh-wt_bindFolderPathNone')} title={projects.folders[folderPick.id] ?? ''}>
+              {projects.folders[folderPick.id] ?? t('bind.folderNone')}
             </div>
             {manualPathFor === 'bind' && (
               <div className="dsh-wt_addFolderRow">
@@ -2979,70 +2903,8 @@ function buildCustomLayoutPrompt(req: string): string {
             )}
             {pickErr.bind && <p className="dsh-wt_addError">{pickErr.bind}</p>}
           </div>
-          {/* 绑定对话框（与项目文件夹同格式）：第一行 💬+标题（最右解绑）；第二行 分组 | 对话名（点击右侧弹列表，再点反选收起）；框内下方：说明 */}
-          <div className="dsh-wt_bindFolderBox">
-            <div className="dsh-wt_bindFolderRow">
-              <span className="dsh-wt_bindFolderLabel">💬 {t('bind.title')}</span>
-              {projects.bindings[bindPick.id] && (
-                <button type="button" className="dsh-wt_bindUnbind" onClick={() => setProjectBinding(bindPick.id, null)}>{t('bind.unbind')} ✕</button>
-              )}
-            </div>
-            {(() => {
-              const sid = projects.bindings[bindPick.id]
-              if (!sid) {
-                return (
-                  <button type="button" className="dsh-wt_bindConvRow dsh-wt_bindConvRowNone" title={t('bind.tipUnbound')} onClick={() => setBindListOpen((v) => !v)}>
-                    <span className="dsh-wt_bindNoneText">{t('bind.unbound')} · {t('bind.clickPick')}</span>
-                  </button>
-                )
-              }
-              const info = bindInfoOf(bindGroups, sid)
-              return (
-                <button type="button" className="dsh-wt_bindConvRow" title={t('bind.tipBound', { name: info.title })} onClick={() => setBindListOpen((v) => !v)}>
-                  <span className="dsh-wt_bindFolder" title={info.folder}>📂 {info.folder}</span>
-                  <span className="dsh-wt_bindSep" aria-hidden>|</span>
-                  <span className="dsh-wt_bindConvName" title={info.title}>{info.title}</span>
-                  <span className="dsh-wt_bindConvChevron" aria-hidden>▾</span>
-                </button>
-              )
-            })()}
-            <p className="dsh-wt_bindHint">{t('bind.hint')}</p>
-          </div>
         </div>
       )}
-      {/* 对话列表弹层：点「绑定对话」行弹出（优先右侧，放不下翻到左侧）；选中即绑定并收起 */}
-      {bindPick && bindListOpen && (() => {
-        // 主弹窗实际渲染宽 = 280 + 菜单内边距/边框（约 292），右侧列表按 300 偏移避免重叠
-        const rightFits = bindPick.x + 300 + 260 <= window.innerWidth - 8
-        const listLeft = rightFits ? bindPick.x + 300 : Math.max(8, bindPick.x - 268)
-        return (
-        <div className="dsh-wt_menu dsh-wt_pop dsh-wt_bindListPop" style={{ position: 'fixed', left: listLeft, top: clamp(bindPick.y, 8, window.innerHeight - 348), width: 260, zIndex: 86 }}>
-          <div className="dsh-wt_selectList dsh-wt_bindList">
-            {bindGroups.map((g, gi) => (
-              <Fragment key={g.title || 'g' + gi}>
-                {g.title && (
-                  <>
-                    <div className="dsh-wt_selectDivider" />
-                    <div className="dsh-wt_selectGroup">📁 {g.title}</div>
-                  </>
-                )}
-                {g.sessions.map((s) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    className={'dsh-wt_selectItem' + (projects.bindings[bindPick.id] === s.id ? ' dsh-wt_selectItemOn' : '')}
-                    onClick={() => { setProjectBinding(bindPick.id, s.id); setBindListOpen(false) }}
-                  >
-                    <span className="dsh-wt_selectItemTitle">{s.title}</span>
-                    {s.isCurrent && <span className="dsh-wt_selectCurrent">{t('custom.sessionCurrent')}</span>}
-                  </button>
-                ))}
-              </Fragment>
-            ))}
-          </div>
-        </div>
-        )
-      })()}
 
       {/* 控制室强制绑定弹窗：左「加入现有对话」+ 右「新建对话」，选定/建成后自动打开控制室 */}
       {consoleBind && <div className="dsh-wt_popBackdrop" style={{ zIndex: 85 }} onClick={() => setConsoleBind(null)} />}
@@ -3158,19 +3020,9 @@ function buildCustomLayoutPrompt(req: string): string {
           <span className="dsh-wt_layoutText">
             <span className="dsh-wt_layoutName">{t('console.name')}</span>
           </span>
-          <span
-            className={'dsh-wt_bindBtn'}
-            role="button"
-            tabIndex={0}
-            data-bound={bindNotifyMap[CONSOLE_ID] ?? (projects.bindings[CONSOLE_ID] ? 'true' : 'false')}
-            data-tip={projects.bindings[CONSOLE_ID]
-              ? t('bind.tipBound', { name: boundSessionTitle(projects.bindings[CONSOLE_ID]) })
-              : t('bind.tipUnbound')}
-            aria-label={projects.bindings[CONSOLE_ID]
-              ? t('bind.tipBound', { name: boundSessionTitle(projects.bindings[CONSOLE_ID]) })
-              : t('bind.tipUnbound')}
-            onClick={(e) => { e.stopPropagation(); openBindPick(CONSOLE_ID, e.currentTarget as HTMLElement) }}
-          ><span className="dsh-wt_bindCircles" aria-hidden /></span>
+          <span className={PROJECT_FOLDER_BUTTON_CLASS} role="button" tabIndex={0} title={t('bind.folder')} aria-label={t('bind.folder')}
+            onClick={(event) => { event.stopPropagation(); openFolderPick(CONSOLE_ID, event.currentTarget) }}
+            onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); openFolderPick(CONSOLE_ID, event.currentTarget) } }}><span aria-hidden>📂</span></span>
           <span className="dsh-wt_layoutArrow" aria-hidden>›</span>
         </button>
         {renderProjectSlot
@@ -3195,17 +3047,9 @@ function buildCustomLayoutPrompt(req: string): string {
             <span className="dsh-wt_layoutText">
               <span className="dsh-wt_layoutName">{projects.nameOverrides[l.id] ?? l.title}</span>
             </span>
-            <span
-              className={'dsh-wt_bindBtn'}
-              role="button"
-              tabIndex={0}
-              data-bound={bindNotifyMap[l.id] ?? (projects.bindings[l.id] ? 'true' : 'false')}
-              data-tip={projects.bindings[l.id]
-                ? t('bind.tipBound', { name: boundSessionTitle(projects.bindings[l.id]) }) + (bindNotifyMap[l.id] === 'busy' ? t('bind.tipBusy') : bindNotifyMap[l.id] === 'done' ? t('bind.tipDone') : bindNotifyMap[l.id] === 'need' ? t('bind.tipNeed') : '')
-                : t('bind.tipUnbound')}
-              aria-label={projects.bindings[l.id] ? t('bind.tipBound', { name: boundSessionTitle(projects.bindings[l.id]) }) : t('bind.tipUnbound')}
-              onClick={(e) => { e.stopPropagation(); openBindPick(l.id, e.currentTarget as HTMLElement) }}
-            ><span className="dsh-wt_bindCircles" aria-hidden /></span>
+            <span className={PROJECT_FOLDER_BUTTON_CLASS} role="button" tabIndex={0} title={t('bind.folder')} aria-label={t('bind.folder')}
+              onClick={(event) => { event.stopPropagation(); openFolderPick(l.id, event.currentTarget) }}
+              onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); openFolderPick(l.id, event.currentTarget) } }}><span aria-hidden>📂</span></span>
             <span className="dsh-wt_layoutArrow" aria-hidden>›</span>
           </button>
         ))}
@@ -3246,7 +3090,7 @@ interface StudioFooterProps extends Omit<StudioSectionProps, 'title' | 'children
 }
 
 function StudioFooter(props: StudioFooterProps) {
-  return <StudioSection wide={props.wide} title={props.t?.('title') ?? zh.title} expandSidebar={props.expandSidebar}>
+  return <StudioSection wide={props.wide} title={props.t?.('title') ?? zh.title} expandSidebar={props.expandSidebar} toolbar={<StudioUpdates t={props.t ?? ((key) => zh[key])} icon={ICON_SYNC} />}>
     <WorktableSection {...props} />
   </StudioSection>
 }
@@ -3283,31 +3127,6 @@ export function apply(ctx: any) {
     document.head.appendChild(style)
     return () => { style.remove() }
   }, 'dsh-worktable: styles')
-
-  // 绑定按钮 hover 气泡：事件委托 + body 级气泡（跨层显示，不遮挡右侧对话也不盖项目名）
-  ctx.effect(() => {
-    const over = (e: MouseEvent) => {
-      const t = e.target as HTMLElement | null
-      const btn = t && t.closest ? (t.closest('.dsh-wt_bindBtn') as HTMLElement | null) : null
-      if (btn) showBindTip(btn)
-    }
-    const out = (e: MouseEvent) => {
-      const t = e.target as HTMLElement | null
-      if (t && t.closest && t.closest('.dsh-wt_bindBtn')) hideBindTip()
-    }
-    const hide = () => hideBindTip()
-    document.addEventListener('mouseover', over, true)
-    document.addEventListener('mouseout', out, true)
-    document.addEventListener('scroll', hide, true)
-    document.addEventListener('click', hide, true)
-    return () => {
-      document.removeEventListener('mouseover', over, true)
-      document.removeEventListener('mouseout', out, true)
-      document.removeEventListener('scroll', hide, true)
-      document.removeEventListener('click', hide, true)
-      if (bindTipEl) { bindTipEl.remove(); bindTipEl = null }
-    }
-  }, 'dsh-worktable: bind tip')
 
   // locale 词典（宿主 locale 服务缺席时由 t 的回退分支兜底）
   ctx.effect(() => {

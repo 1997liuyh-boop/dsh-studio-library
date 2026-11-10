@@ -1,14 +1,15 @@
 {
   "name": "dsh-worktable",
   "description": "工作室：可折叠的项目抽屉、分屏工作区与会话控制台",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/1997liuyh-boop/dsh-studio-library.git",
     "directory": "packages/worktable"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22",
+    "dsh": "0.2.1-rc.2 || >=0.2.2-rc.1 <0.2.2"
   },
   "license": "MIT",
   "type": "module",
@@ -40,26 +41,16 @@
       ]
     },
     "compatibility": {
-      "dsh": "0.2.1-rc.2",
+      "dsh": "0.2.2-rc.1",
       "dshReleases": {
-        "0.2.1-rc.2": "experimental"
+        "0.2.1-rc.2": "experimental",
+        "0.2.2-rc.1": "experimental"
       }
     }
   },
   "scripts": {
     "build": "node build.mjs",
-    "check": "node --check lib/index.js && node --check lib/client.js",
-    "pack": "node release-prep.mjs",
-    "test:gate": "node client-factory-gate.test.mjs",
-    "test:input": "node tests/host-input.test.mjs",
-    "test:session": "node tests/session-compat.test.mjs",
-    "test:details": "node tests/session-details.test.mjs",
-    "test:transport": "node tests/host-transport.test.mjs",
-    "test:widget": "node tests/widget-mount.test.mjs",
-    "verify:remote": "node verify-remote.mjs",
-    "test:studio": "node tests/studio-shell.test.mjs",
-    "test:loader": "node tests/studio-loader.test.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "check": "node --check lib/index.js && node --check lib/client.js"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "*",
@@ -93,5 +84,10 @@
   "homepage": "https://github.com/1997liuyh-boop/dsh-studio-library#readme",
   "bugs": {
     "url": "https://github.com/1997liuyh-boop/dsh-studio-library/issues"
-  }
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "studio"
+  ]
 }

@@ -1,11 +1,12 @@
 {
   "name": "dsh-studio-projects",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "工作室共享运行时：页面资源、本机应用连接与共享会话",
   "type": "module",
   "license": "MIT",
   "engines": {
-    "node": ">=22"
+    "node": ">=22",
+    "dsh": "0.2.1-rc.2 || >=0.2.2-rc.1 <0.2.2"
   },
   "main": "lib/index.js",
   "exports": {
@@ -28,9 +29,10 @@
       "patch": "./cordis.patch.yml"
     },
     "compatibility": {
-      "dsh": "0.2.1-rc.2",
+      "dsh": "0.2.2-rc.1",
       "dshReleases": {
-        "0.2.1-rc.2": "experimental"
+        "0.2.1-rc.2": "experimental",
+        "0.2.2-rc.1": "experimental"
       }
     }
   },
@@ -38,7 +40,9 @@
     "@deepseek-ai/cordis": "*",
     "@deepseek-ai/dsh-mcp-client": "*",
     "@deepseek-ai/dsh-scope": "*",
-    "@deepseek-ai/dsh-tools": "*"
+    "@deepseek-ai/dsh-tools": "*",
+    "@deepseek-ai/dsh-plugin-manager": "*",
+    "@deepseek-ai/dsh-app-boot": "*"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/cordis": {
@@ -52,6 +56,12 @@
     },
     "@deepseek-ai/dsh-tools": {
       "optional": true
+    },
+    "@deepseek-ai/dsh-plugin-manager": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-app-boot": {
+      "optional": true
     }
   },
   "repository": {
@@ -62,5 +72,14 @@
   "homepage": "https://github.com/1997liuyh-boop/dsh-studio-library#readme",
   "bugs": {
     "url": "https://github.com/1997liuyh-boop/dsh-studio-library/issues"
-  }
+  },
+  "dependencies": {
+    "semver": "^7.7.3",
+    "tar": "^7.4.3"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "studio"
+  ]
 }

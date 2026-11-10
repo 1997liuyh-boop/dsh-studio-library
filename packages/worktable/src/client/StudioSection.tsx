@@ -5,10 +5,11 @@ export interface StudioSectionProps {
   title: string
   expandSidebar: () => void
   children: ReactNode
+  toolbar?: ReactNode
 }
 
 /** “更多”上方的工作室抽屉，首次展开后保留控制器，收起时仅隐藏列表。 */
-export function StudioSection({ wide, title, expandSidebar, children }: StudioSectionProps) {
+export function StudioSection({ wide, title, expandSidebar, children, toolbar }: StudioSectionProps) {
   const [expanded, setExpanded] = useState(false)
   const [hasOpened, setHasOpened] = useState(false)
   const contentId = useId()
@@ -25,9 +26,10 @@ export function StudioSection({ wide, title, expandSidebar, children }: StudioSe
 
   return (
     <section data-studio-shell className="studio:shrink-0 studio:w-full studio:min-w-0 studio:text-inherit">
+      <div className="studio:flex studio:items-center studio:gap-1">
       <button type="button" onClick={toggle} aria-expanded={wide && expanded}
         aria-controls={contentId} aria-label={title} title={!wide ? title : undefined}
-        className="studio:group studio:flex studio:h-[34px] studio:w-full studio:items-center studio:gap-1.5 studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-transparent studio:px-2 studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500">
+        className="studio:group studio:flex studio:h-[34px] studio:min-w-0 studio:flex-1 studio:items-center studio:gap-1.5 studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-transparent studio:px-2 studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500">
         <svg width="16" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true" data-studio-icon className="studio:shrink-0 studio:text-(--dsw-alias-label-tertiary) studio:group-hover:hidden studio:group-focus-visible:hidden">
           <rect x="3" y="4" width="18" height="16" rx="3" /><path d="M3 10h18M10 10v10" />
         </svg>
@@ -36,6 +38,8 @@ export function StudioSection({ wide, title, expandSidebar, children }: StudioSe
         </span>
         {wide && <span className="studio:min-w-0 studio:flex-1 studio:truncate studio:text-left studio:text-sm studio:leading-5">{title}</span>}
       </button>
+      {hasOpened && <div data-studio-toolbar hidden={!open} className="studio:flex studio:shrink-0 studio:items-center studio:gap-1 studio:[&[hidden]]:hidden">{toolbar}</div>}
+      </div>
       {hasOpened && <div ref={node => { if (node) node.inert = !open }} aria-hidden={!open} className={'studio:grid studio:transition-[grid-template-rows] studio:duration-200 studio:ease-out studio:motion-reduce:transition-none ' + (open ? 'studio:grid-rows-[1fr]' : 'studio:grid-rows-[0fr]')}>
         <div className="studio:min-h-0 studio:overflow-hidden">
         <div id={contentId} data-studio-content tabIndex={open ? 0 : -1} role="region" aria-label={title}
