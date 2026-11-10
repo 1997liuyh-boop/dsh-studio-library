@@ -1,7 +1,7 @@
 {
   "name": "dsh-worktable",
   "description": "工作室：可折叠的项目抽屉、分屏工作区与会话控制台",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/1997liuyh-boop/dsh-studio-library.git",

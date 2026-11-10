@@ -1,6 +1,6 @@
 "use strict";
 (() => {
-  // packages/sdk/controlBridge.ts
+  // output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/sdk/controlBridge.ts
   (() => {
     if (window.parent === window || window.__dshStudioControl) return;
     window.__dshStudioControl = true;

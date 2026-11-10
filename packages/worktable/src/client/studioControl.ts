@@ -1,4 +1,5 @@
 import { splitStore } from './split'
+import { openStudioSplit } from './splitNavigation'
 
 /** 仅主窗口领取操作，保留发起命令的当前会话和聊天区域。 */
 export function installStudioControl(): () => void {
@@ -54,7 +55,7 @@ export function installStudioControl(): () => void {
     if (!project) throw new Error('工作室已停用')
     const id = 'studio-' + project.id
     if (!splitStore.active || splitStore.spec?.id !== id) {
-      if (!splitStore.open({ id, title: project.name, icon: project.icon, top: null, main: [{ id: id + '-main', title: project.name, min: 300, content: { kind: 'iframe', url: '/studio-projects/' + project.id, title: project.name } }], chatWidth: { default: 340, min: 260, max: 640 } })) throw new Error('当前页面无法打开工作室，请先进入主窗口会话')
+      if (!await openStudioSplit({ id, title: project.name, icon: project.icon, top: null, main: [{ id: id + '-main', title: project.name, min: 300, content: { kind: 'iframe', url: '/studio-projects/' + project.id, title: project.name } }], chatWidth: { default: 340, min: 260, max: 640 } })) throw new Error('当前页面无法打开工作室，请先进入主窗口会话')
     }
     splitStore.setChatVisible(true)
     const path = '/studio-projects/' + project.id

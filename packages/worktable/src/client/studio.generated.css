@@ -373,15 +373,6 @@
       transition-property: none;
     }
   }
-  .studio\:\[\&_\.dsh-wt_divider\]\:hidden .dsh-wt divider {
-    display: none;
-  }
-  .studio\:\[\&_\.dsh-wt_handle\]\:hidden .dsh-wt handle {
-    display: none;
-  }
-  .studio\:\[\&_\.dsh-wt_title\]\:hidden .dsh-wt title {
-    display: none;
-  }
   .studio\:\[\&_svg\]\:size-4 svg {
     width: calc(var(--studio-spacing) * 4);
     height: calc(var(--studio-spacing) * 4);

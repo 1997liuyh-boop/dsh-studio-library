@@ -238,18 +238,24 @@ test('real project opening retains failed pending reads and retries on the next 
     await f.apply(b, resultOf(b))
     f.splitStore.open = spec => { f.splitStore.active = true; f.splitStore.spec = spec }
     if (failure === 'read') f.files.set(widgetManifestPath(b), async () => { throw new Error('read failed') })
+    // 使用实际导航帮助器；当前夹具的聊天页面已挂载。
+    const navigationSource = readFileSync(new URL('../src/client/splitNavigation.ts', import.meta.url), 'utf8').replace("import { splitStore } from './split'", '')
+    const { openStudioSplit } = evaluate(navigationSource, {
+      splitStore: f.splitStore, document: { querySelectorAll: () => [{ dataset: { phase: 'active' }, children: [{}] }] },
+      setTimeout, clearTimeout,
+    })
     const open = evaluate(section(indexSource, '  const openSplit = useCallback(', '\n  /** 打开「工作台」控制室') + '\nexport { openSplit }', {
-      useCallback: fn => fn, engineIdsRef: { current: new Set() }, projects: { views: {} }, splitStore: f.splitStore,
+      useCallback: fn => fn, engineIdsRef: { current: new Set() }, projects: { views: {} }, splitStore: f.splitStore, openStudioSplit,
       currentSessionOf: () => null, sessionBridge: null, projectAttachRef: {}, projectsRef: { current: { projects: { bindings: {} } } },
       ackProjectNotify() {}, pendingMountRef: f.pendingMountRef, applyWidgetManifest: f.apply, persistPendingWidgets() {},
     }).openSplit
-    open(f.specs.A)
+    await open(f.specs.A)
     await new Promise(resolve => setImmediate(resolve))
     assert.equal(f.calls.length, 0, failure)
     assert.ok(f.pendingMountRef.current[b.bindingId], failure + ' keeps retry record')
     f.splitStore.active = false
     f.files.set(widgetManifestPath(b), resultOf(b))
-    open(f.specs.A)
+    await open(f.specs.A)
     await new Promise(resolve => setImmediate(resolve))
     assert.equal(f.calls.length, 1, failure)
     assert.equal(f.pendingMountRef.current[b.bindingId], undefined, failure + ' clears only on success')

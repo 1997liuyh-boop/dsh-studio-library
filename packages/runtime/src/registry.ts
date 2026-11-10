@@ -2,15 +2,38 @@ import { readFile } from 'node:fs/promises'
 import { extname, resolve, sep } from 'node:path'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 
+/** 工作室声明的快捷任务：输入框 @ 候选选中后直接带上 text，用户不必再手写需求。 */
+export interface StudioTask {
+  id: string
+  label: string
+  description?: string
+  text: string
+}
+
 export interface StudioPage {
   id: string
   name?: string
   icon?: string
   description?: string
+  /** 可选的快捷任务，随目录透出给输入框 @ 候选。 */
+  tasks?: readonly StudioTask[]
   root: string
   handle?(req: IncomingMessage, res: ServerResponse, path: string): Promise<boolean>
 }
 const types: Record<string, string> = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.gif':'image/gif', '.webp':'image/webp', '.wasm':'application/wasm', '.xml':'application/xml', '.woff':'font/woff', '.woff2':'font/woff2' }
+const idPattern = /^[a-z][a-z0-9-]{0,63}$/
+
+/** 快捷任务的标识、标题与文本必须是非空字符串，标识在同一工作室内唯一。 */
+function validateTasks(studio: string, tasks: readonly StudioTask[] | undefined): void {
+  if (tasks === undefined) return
+  const ids = new Set<string>()
+  const valid = Array.isArray(tasks) && tasks.every(task => {
+    if (!task || typeof task !== 'object' || !idPattern.test(task.id) || ids.has(task.id)) return false
+    ids.add(task.id)
+    return typeof task.label === 'string' && task.label.trim() !== '' && typeof task.text === 'string' && task.text.trim() !== '' && (task.description === undefined || typeof task.description === 'string')
+  })
+  if (!valid) throw new Error('工作室快捷任务无效：' + studio)
+}
 
 /** 插件拥有页面与资源；宿主统一执行所有者认证。 */
 export class StudioProjects {
@@ -18,8 +41,9 @@ export class StudioProjects {
 
   /** 登记页面，撤销后不再接收新请求；用户数据由插件独立保存。 */
   register(page: StudioPage): () => void {
-    if (!/^[a-z][a-z0-9-]{0,63}$/.test(page.id)) throw new Error('工作室标识无效')
+    if (!idPattern.test(page.id)) throw new Error('工作室标识无效')
     if (this.pages.has(page.id)) throw new Error('工作室已注册：' + page.id)
+    validateTasks(page.id, page.tasks)
     this.pages.set(page.id, page)
     return () => { this.pages.delete(page.id) }
   }
@@ -29,7 +53,8 @@ export class StudioProjects {
 
   has(id: string): boolean { return this.pages.has(id) }
 
-  list() { return [...this.pages.values()].map(({ id, name, icon, description }) => ({ id, name: name ?? id, icon: icon ?? '◫', description: description ?? '' })) }
+  /** 目录项供输入框候选与控制桥读取；快捷任务只保留声明字段，text 原样透出。 */
+  list() { return [...this.pages.values()].map(({ id, name, icon, description, tasks }) => ({ id, name: name ?? id, icon: icon ?? '◫', description: description ?? '', tasks: (tasks ?? []).map(task => ({ id: task.id, label: task.label, description: task.description ?? '', text: task.text })) })) }
 
   /** 仅从已登记目录读取资源，拒绝编码后的路径越界。 */
   async handle(req: IncomingMessage, res: ServerResponse, pathname: string): Promise<void> {

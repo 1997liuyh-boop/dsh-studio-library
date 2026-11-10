@@ -1,12 +1,13 @@
 {
-  "name": "dsh-studio-library-source",
-  "version": "0.1.0",
+  "name": "dsh-studio-library",
+  "version": "0.1.2",
   "private": true,
   "type": "module",
   "license": "MIT",
-  "description": "工作室共享基础库独立源码与构建入口",
+  "description": "工作室控制台与共享运行时组合安装包，业务工作室按需安装",
   "engines": {
-    "node": ">=22"
+    "node": ">=22",
+    "dsh": "0.2.1-rc.2 || >=0.2.2-rc.1 <0.2.2"
   },
   "repository": {
     "type": "git",
@@ -14,7 +15,11 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node scripts/check-install.mjs"
+    "check": "node scripts/check-install.mjs",
+    "prepare": "node scripts/prepare.mjs",
+    "postinstall": "node scripts/install.mjs",
+    "pack": "node scripts/pack.mjs",
+    "test": "node --test tests/*.test.mjs"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.0",
@@ -35,5 +40,51 @@
   "workspaces": [
     "packages/worktable",
     "packages/runtime"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.2.2-rc.1": "experimental",
+        "0.2.1-rc.2": "experimental"
+      },
+      "dsh": "0.2.2-rc.1"
+    }
+  },
+  "bundleDependencies": [
+    "dsh-worktable",
+    "dsh-studio-projects"
+  ],
+  "dependencies": {
+    "dsh-worktable": "file:packages/worktable",
+    "node-pty": "1.2.0-beta.15",
+    "semver": "^7.7.3",
+    "dsh-studio-projects": "file:packages/runtime",
+    "ws": "8.21.3",
+    "tar": "^7.4.3"
+  },
+  "files": [
+    "artifacts/*.tgz",
+    "artifacts/manifest.json",
+    "scripts/install.mjs",
+    "catalog.json",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "packages/worktable/package.json",
+    "packages/worktable/lib",
+    "packages/worktable/cordis.patch.yml",
+    "packages/worktable/dsh.plugin.json",
+    "packages/worktable/README.md",
+    "packages/worktable/LICENSE",
+    "packages/runtime/package.json",
+    "packages/runtime/lib",
+    "packages/runtime/static",
+    "packages/runtime/cordis.patch.yml",
+    "packages/runtime/dsh.plugin.json",
+    "packages/runtime/README.md",
+    "packages/runtime/LICENSE"
   ]
 }

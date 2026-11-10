@@ -1,3 +1,4 @@
+import { installSplitNavigation, openStudioSplit } from './splitNavigation'
 import { StudioSection, type StudioSectionProps } from './StudioSection'
 import { StudioUpdates } from './StudioUpdates'
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
@@ -5,7 +6,7 @@ import { css } from './styles'
 import studioCss from './studio.generated.css'
 import { NS, zh, en, type WorktableKey } from './locales'
 import { isAbs, joinPath, parentPathOf, basenameOf } from './pathutil'
-import { installSplitClaims, splitStore, SplitWorkspace, setSplitT, setSplitEnv, type LayoutSpec, type SplitPane, type ConsoleCardData } from './split'
+import { installSplitClaims, splitStore, SplitWorkspace, setSplitT, setSplitEnv, type LayoutSpec, type SplitPane, type ConsoleCardData, type ConsoleStatusSnapshot } from './split'
 import { appendHostInput } from './hostInput'
 import { installStudioDiscussion } from './studioDiscussion'
 import { installStudioSession } from './studioSession'
@@ -584,7 +585,7 @@ const consoleListeners = new Set<() => void>()
 const notifyConsole = () => consoleListeners.forEach((l) => { try { l() } catch {} })
 
 /** 宿主工作区列表（分组选择数据源；读 ctx.workspaces 快照） */
-function listWorkspaces(): { id: string; title: string; path: string }[] {
+function listWorkspaces(): { id: string; title: string; path: string; sessionIds: string[] }[] {
   try {
     const snap = sessionBridge?.workspaces?.list?.getSnapshot?.()
     const items = snap?.items ?? []
@@ -592,8 +593,24 @@ function listWorkspaces(): { id: string; title: string; path: string }[] {
       id: w.workspaceId ?? w.id,
       title: w.title ?? '',
       path: w.path ?? '',
+      sessionIds: Array.isArray(w.sessionIds) ? w.sessionIds : [],
     }))
   } catch { return [] }
+}
+
+/** 读取控制室需要的工作室状态，并标出当前会话的实际工作目录。 */
+async function getStudioStatus(): Promise<ConsoleStatusSnapshot> {
+  const response = await fetch('/studio-projects/control/status', { cache: 'no-store' })
+  if (!response.ok) throw new Error('HTTP ' + response.status)
+  const report = await response.json() as ConsoleStatusSnapshot
+  const current = currentSessionOf(sessionBridge?.list?.getSnapshot?.())
+  const workspace = listWorkspaces().find((item) => item.id === current || item.sessionIds.includes(current))
+  return {
+    studios: Array.isArray(report.studios) ? report.studios : [],
+    integrations: Array.isArray(report.integrations) ? report.integrations : [],
+    serviceFailures: Array.isArray(report.serviceFailures) ? report.serviceFailures : [],
+    workspace: workspace ? { title: workspace.title, path: workspace.path } : { title: '当前会话', path: sessionScopeStore.snapshot?.cwd ?? '' },
+  }
 }
 
 /** 冷会话最近消息缓存与预热：0.2 临时持有会话、读 eventSource 后释放；旧版保留 history 通道。
@@ -1361,6 +1378,7 @@ function WorktableSection(props: any) {
           sweepPreviews()
         },
         onAdd: () => openAddPanel(),
+        getStudioStatus,
         onOpen: (id) => {
           if (id === CONSOLE_ID) return
           const pr = projectsRef.current.projects
@@ -1661,9 +1679,9 @@ function buildCustomLayoutPrompt(req: string): string {
   /** 分栏工作区入口（M1 引擎）：项目卡片调用 openSplit(spec) 打开声明式布局；
    * 若该 id 存在视图覆盖（用户在设置里变更过视图），用覆盖布局替换打开。
    * 若项目绑定了会话，打开后右侧对话窗自动切换过去。 */
-  const openSplit = useCallback((spec: LayoutSpec) => {
+  const openSplit = useCallback(async (spec: LayoutSpec) => {
     engineIdsRef.current.add(spec.id)
-    splitStore.open(projects.views[spec.id] ?? spec)
+    await openStudioSplit(projects.views[spec.id] ?? spec)
     if (splitStore.active && splitStore.spec?.id === spec.id) {
       // 记录打开前会话（关项目时回切）与该项目「归属会话」（切到别的会话 = 自动关项目）
       let prev: string | null = null
@@ -1682,14 +1700,14 @@ function buildCustomLayoutPrompt(req: string): string {
   }, [projects.views])
 
   /** 打开「工作台」控制室：已绑定 → 打开并切换绑定对话；explicitBound 供强制绑定流程传入刚绑定的会话 */
-  const openConsole = useCallback((explicitBound?: string | null) => {
+  const openConsole = useCallback(async (explicitBound?: string | null) => {
     const saved = projects.views[CONSOLE_ID]
     // 自愈：坏存档（旧版关掉控制室标签导致窗格退化成选择器）→ 重建默认面板并写回
     const broken = !specHasConsoleTab(saved)
     const spec = broken ? buildConsoleSpec((k) => t(k as WorktableKey)) : (saved as LayoutSpec)
     if (broken) persistProjects((prev) => ({ ...prev, views: { ...prev.views, [CONSOLE_ID]: spec } }))
     engineIdsRef.current.add(CONSOLE_ID)
-    splitStore.open(spec)
+    await openStudioSplit(spec)
     if (splitStore.active && splitStore.spec?.id === CONSOLE_ID) {
       let prev: string | null = null
       try { prev = currentSessionOf(sessionBridge?.list?.getSnapshot?.()) || null } catch {}
@@ -1709,8 +1727,9 @@ function buildCustomLayoutPrompt(req: string): string {
     if (projectsRef.current.projects.bindings[CONSOLE_ID]) { openConsole(); return }
     const r = anchor.getBoundingClientRect()
     setConsoleBind({
-      x: clamp(Math.round(r.right + 8), 8, window.innerWidth - 640),
-      y: clamp(Math.round(r.top), 8, window.innerHeight - 460),
+      // 弹窗以设置面板同样的视口坐标定位，底部空间不足时向上钳制。
+      x: clamp(Math.round(r.right + 8), 16, Math.max(16, window.innerWidth - 576)),
+      y: clamp(Math.round(r.top), 16, Math.max(16, window.innerHeight - 560)),
     })
     setConsoleGroups([])
     fetchSessionGroups().then((res) => setConsoleGroups(res.groups)).catch(() => setConsoleGroups([]))
@@ -2520,7 +2539,7 @@ function buildCustomLayoutPrompt(req: string): string {
     }
   }
 
-  if (!wide) {
+  if (!wide && !props.studioShell) {
     // 收起态 = 等行高的正方形圆角按钮，中间只留 emoji；点击 = 进入对应项目
     const railItems: { icon: string; name: string; onClick: (e: any) => void }[] = [
       { icon: CONSOLE_ICON, name: t('console.name'), onClick: (e) => clickConsoleCard(e.currentTarget as HTMLElement) },
@@ -2560,31 +2579,8 @@ function buildCustomLayoutPrompt(req: string): string {
     )
   }
 
-  return (
-    <div ref={rootRef} className={'dsh-wt_section' + (isFloat ? ' dsh-wt_float' : '')} style={{ marginBottom: 0 }}>
-      <div className="dsh-wt_divider" />
-      <div className="dsh-wt_header">
-        <button
-          type="button"
-          className="dsh-wt_handle"
-          data-float={isFloat ? 'true' : 'false'}
-          title={t('handle.title')}
-          aria-label={t('handle.aria')}
-          onPointerDown={onHandlePointerDown}
-          onPointerMove={onHandlePointerMove}
-          onPointerUp={onHandlePointerUp}
-          onPointerCancel={onHandlePointerUp}
-          onDoubleClick={resetDock}
-        >≡</button>
-        <span
-          className="dsh-wt_title"
-          title={t('handle.title')}
-          onPointerDown={onHandlePointerDown}
-          onPointerMove={onHandlePointerMove}
-          onPointerUp={onHandlePointerUp}
-          onPointerCancel={onHandlePointerUp}
-          onDoubleClick={resetDock}
-        >{t('title')}</span>
+  const toolbar = <>
+        <StudioUpdates t={t} icon={ICON_SYNC} />
         {updateInfo && (
           <button
             type="button"
@@ -2625,8 +2621,10 @@ function buildCustomLayoutPrompt(req: string): string {
             }}
           >{ICON_ADD}</button>
         </div>
-      </div>
-
+  </>
+  return (
+    <StudioSection wide={wide} title={t('title')} expandSidebar={props.expandSidebar} toolbar={toolbar}>
+    <div ref={rootRef} className={'dsh-wt_section' + (isFloat ? ' dsh-wt_float' : '')} style={{ marginBottom: 0 }}>
       {view.searchOpen && (
         <div className="dsh-wt_search">
           <input
@@ -2665,6 +2663,8 @@ function buildCustomLayoutPrompt(req: string): string {
             </button>
           </div>
           <div className="dsh-wt_addForm">
+            <button type="button" className="dsh-wt_addBtn" onClick={() => { appendHostInput(sessionBridge, '请新增一个工作室。先询问我保存到本地还是 GitHub；来源确定后，再询问我是否立刻导入并启用。'); setAddOpen(false) }}>{t('add.studio')}</button>
+            <p className="dsh-wt_folderPickHint">{t('add.studioHint')}</p>
             <input type="text" placeholder={t('add.layoutNamePh')} value={wsName}
               onChange={(e) => { setWsName(e.target.value); setWsError(false) }} />
             <div className="dsh-wt_addFolderRow">
@@ -2909,7 +2909,7 @@ function buildCustomLayoutPrompt(req: string): string {
       {/* 控制室强制绑定弹窗：左「加入现有对话」+ 右「新建对话」，选定/建成后自动打开控制室 */}
       {consoleBind && <div className="dsh-wt_popBackdrop" style={{ zIndex: 85 }} onClick={() => setConsoleBind(null)} />}
       {consoleBind && (
-        <div className="dsh-wt_menu dsh-wt_pop dsh-wt_consoleBindPop" style={{ position: 'fixed', left: consoleBind.x, top: consoleBind.y, width: 560, zIndex: 86 }}>
+        <div className="dsh-wt_menu dsh-wt_pop dsh-wt_consoleBindPop" style={{ position: 'fixed', left: consoleBind.x, top: consoleBind.y, width: 560, maxHeight: 'calc(100vh - 32px)', zIndex: 86 }}>
           <div className="dsh-wt_consoleBindCols">
             <div className="dsh-wt_consoleBindCol">
               <span className="dsh-wt_consoleBindLabel">➕ {t('console.joinExisting')}</span>
@@ -3080,6 +3080,7 @@ function buildCustomLayoutPrompt(req: string): string {
         </div>
       )}
     </div>
+    </StudioSection>
   )
 }
 
@@ -3090,14 +3091,13 @@ interface StudioFooterProps extends Omit<StudioSectionProps, 'title' | 'children
 }
 
 function StudioFooter(props: StudioFooterProps) {
-  return <StudioSection wide={props.wide} title={props.t?.('title') ?? zh.title} expandSidebar={props.expandSidebar} toolbar={<StudioUpdates t={props.t ?? ((key) => zh[key])} icon={ICON_SYNC} />}>
-    <WorktableSection {...props} />
-  </StudioSection>
+  return <WorktableSection {...props} studioShell />
 }
 
 export const inject = ['slots', 'locale', 'sessions', 'conversation', 'workspaces', 'layout', 'remote', 'remote.session']
 
 export function apply(ctx: any) {
+  ctx.effect(() => installSplitNavigation(() => ctx.layout.selectPanel(null)), '工作室：主页面导航')
   installStudioMentions(ctx, key => ctx.locale.bind(NS)(key))
   ctx.effect(() => installStudioControl(), '工作室：新会话页面控制')
   ctx.effect(() => installSplitClaims(), '工作室：分屏互斥监听')

@@ -7,7 +7,11 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  try {
+    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  } catch (e) {
+    throw mod = 0, e;
+  }
 };
 var __export = (target, all) => {
   for (var name in all)
@@ -31,9 +35,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// ../../../../../../studio-library/packages/worktable/node_modules/xterm/lib/xterm.js
+// ../../../../../../../studio-library/node_modules/xterm/lib/xterm.js
 var require_xterm = __commonJS({
-  "../../../../../../studio-library/packages/worktable/node_modules/xterm/lib/xterm.js"(exports, module2) {
+  "../../../../../../../studio-library/node_modules/xterm/lib/xterm.js"(exports, module2) {
     !(function(e, t) {
       if ("object" == typeof exports && "object" == typeof module2) module2.exports = t();
       else if ("function" == typeof define && define.amd) define([], t);
@@ -5979,9 +5983,9 @@ WARNING: This link could potentially be dangerous`)) {
   }
 });
 
-// ../../../../../../studio-library/packages/worktable/node_modules/highlight.js/lib/core.js
+// ../../../../../../../studio-library/node_modules/highlight.js/lib/core.js
 var require_core = __commonJS({
-  "../../../../../../studio-library/packages/worktable/node_modules/highlight.js/lib/core.js"(exports, module2) {
+  "../../../../../../../studio-library/node_modules/highlight.js/lib/core.js"(exports, module2) {
     function deepFreeze(obj) {
       if (obj instanceof Map) {
         obj.clear = obj.delete = obj.set = function() {
@@ -6890,7 +6894,7 @@ var require_core = __commonJS({
     };
     var escape2 = escapeHTML;
     var inherit = inherit$1;
-    var NO_MATCH = Symbol("nomatch");
+    var NO_MATCH = /* @__PURE__ */ Symbol("nomatch");
     var MAX_KEYWORD_HITS = 7;
     var HLJS = function(hljs) {
       const languages = /* @__PURE__ */ Object.create(null);
@@ -7544,1581 +7548,8 @@ __export(index_exports, {
 });
 module.exports = __toCommonJS(index_exports);
 
-// src/client/StudioSection.tsx
+// src/client/split.tsx
 var import_react = require("react");
-var import_jsx_runtime = require("react/jsx-runtime");
-function StudioSection({ wide, title, expandSidebar, children, toolbar }) {
-  const [expanded, setExpanded] = (0, import_react.useState)(false);
-  const [hasOpened, setHasOpened] = (0, import_react.useState)(false);
-  const contentId = (0, import_react.useId)();
-  const open = wide && expanded;
-  const toggle = () => {
-    setHasOpened(true);
-    if (!wide) {
-      expandSidebar();
-      setExpanded(true);
-      return;
-    }
-    setExpanded((value) => !value);
-  };
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { "data-studio-shell": true, className: "studio:shrink-0 studio:w-full studio:min-w-0 studio:text-inherit", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "studio:flex studio:items-center studio:gap-1", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
-        "button",
-        {
-          type: "button",
-          onClick: toggle,
-          "aria-expanded": wide && expanded,
-          "aria-controls": contentId,
-          "aria-label": title,
-          title: !wide ? title : void 0,
-          className: "studio:group studio:flex studio:h-[34px] studio:min-w-0 studio:flex-1 studio:items-center studio:gap-1.5 studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-transparent studio:px-2 studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500",
-          children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: "16", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.6", "aria-hidden": "true", "data-studio-icon": true, className: "studio:shrink-0 studio:text-(--dsw-alias-label-tertiary) studio:group-hover:hidden studio:group-focus-visible:hidden", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "3", y: "4", width: "18", height: "16", rx: "3" }),
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M3 10h18M10 10v10" })
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": "true", "data-studio-chevron": true, className: "studio:hidden studio:h-5 studio:w-4 studio:shrink-0 studio:items-center studio:justify-center studio:text-(--dsw-alias-label-tertiary) studio:group-hover:inline-flex studio:group-focus-visible:inline-flex", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "currentColor", className: "studio:transition-transform studio:duration-150 studio:ease-(--ds-ease-in-out) studio:motion-reduce:transition-none " + (open ? "studio:rotate-90" : ""), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M6 4.5a.5.5 0 0 1 .8-.4l4 3.5a.5.5 0 0 1 0 .8l-4 3.5a.5.5 0 0 1-.8-.4z" }) }) }),
-            wide && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "studio:min-w-0 studio:flex-1 studio:truncate studio:text-left studio:text-sm studio:leading-5", children: title })
-          ]
-        }
-      ),
-      hasOpened && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { "data-studio-toolbar": true, hidden: !open, className: "studio:flex studio:shrink-0 studio:items-center studio:gap-1 studio:[&[hidden]]:hidden", children: toolbar })
-    ] }),
-    hasOpened && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { ref: (node) => {
-      if (node) node.inert = !open;
-    }, "aria-hidden": !open, className: "studio:grid studio:transition-[grid-template-rows] studio:duration-200 studio:ease-out studio:motion-reduce:transition-none " + (open ? "studio:grid-rows-[1fr]" : "studio:grid-rows-[0fr]"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "studio:min-h-0 studio:overflow-hidden", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-      "div",
-      {
-        id: contentId,
-        "data-studio-content": true,
-        tabIndex: open ? 0 : -1,
-        role: "region",
-        "aria-label": title,
-        className: "studio:h-60 studio:max-h-[40vh] studio:overflow-y-auto studio:overflow-x-hidden studio:overscroll-contain studio:px-1 studio:[scrollbar-width:none] studio:[&::-webkit-scrollbar]:hidden studio:[&_.dsh-wt_handle]:hidden studio:[&_.dsh-wt_title]:hidden studio:[&_.dsh-wt_divider]:hidden",
-        children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "studio:transition-opacity studio:duration-100 studio:ease-out studio:motion-reduce:transition-none " + (open ? "studio:opacity-100" : "studio:opacity-0"), children })
-      }
-    ) }) })
-  ] });
-}
-
-// src/client/StudioUpdates.tsx
-var import_react2 = require("react");
-var import_react_dom = require("react-dom");
-var import_jsx_runtime2 = require("react/jsx-runtime");
-var button = "studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-transparent studio:px-3 studio:py-1.5 studio:text-inherit studio:text-sm studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:disabled:cursor-default studio:disabled:opacity-50 studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500";
-function StudioUpdates({ t, icon }) {
-  const dialog = (0, import_react2.useRef)(null);
-  const titleId = (0, import_react2.useId)();
-  const [open, setOpen] = (0, import_react2.useState)(false);
-  const [data, setData] = (0, import_react2.useState)(null);
-  const [action, setAction] = (0, import_react2.useState)("");
-  const [error2, setError] = (0, import_react2.useState)("");
-  const lifetime = (0, import_react2.useRef)(null);
-  const sequence = (0, import_react2.useRef)(0);
-  (0, import_react2.useEffect)(() => {
-    const controller = new AbortController();
-    lifetime.current = controller;
-    return () => {
-      controller.abort();
-      lifetime.current = null;
-    };
-  }, []);
-  const request = async (path = "", body) => {
-    const response = await fetch("/studio-projects/updates" + path, { ...body ? { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) } : {}, cache: "no-store", signal: lifetime.current?.signal });
-    if (!response.ok) throw new Error(response.status === 409 ? "recheck" : "connection");
-    const report = await response.json();
-    if (!Array.isArray(report.studios) || typeof report.busy !== "boolean") throw new Error("connection");
-    return report;
-  };
-  const refresh = async () => {
-    const revision = ++sequence.current;
-    try {
-      const report = await request();
-      if (lifetime.current && revision === sequence.current) {
-        setData(report);
-        setError("");
-      }
-    } catch (reason) {
-      if (lifetime.current && revision === sequence.current) setError(reason instanceof Error ? reason.message : "connection");
-    }
-  };
-  (0, import_react2.useEffect)(() => {
-    if (!open) return;
-    void refresh();
-    if (!data?.busy && !action.startsWith("install:")) return;
-    const timer = setInterval(() => {
-      void refresh();
-    }, 1e3);
-    return () => clearInterval(timer);
-  }, [open, data?.busy, action.startsWith("install:")]);
-  const run = async (kind, rows) => {
-    if (action || data?.busy) return;
-    setError("");
-    try {
-      for (const row of rows) {
-        setAction(kind + ":" + row.id);
-        const report = await request("/" + kind, { id: row.id, ...kind === "install" ? { version: row.latest } : {} });
-        sequence.current++;
-        if (!lifetime.current) return;
-        setData(report);
-      }
-    } catch (reason) {
-      if (lifetime.current) setError(reason instanceof Error ? reason.message : "connection");
-    } finally {
-      if (lifetime.current) {
-        setAction("");
-        void refresh();
-      }
-    }
-  };
-  const show = () => {
-    dialog.current?.showModal();
-    setOpen(true);
-  };
-  const close = () => {
-    dialog.current?.close();
-    setOpen(false);
-  };
-  return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-      "button",
-      {
-        type: "button",
-        "aria-label": t("studiosUpdates.title"),
-        title: t("studiosUpdates.title"),
-        onClick: show,
-        className: "studio:flex studio:h-7 studio:w-7 studio:items-center studio:justify-center studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-transparent studio:text-(--dsw-alias-label-secondary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:[&_svg]:size-4",
-        children: icon
-      }
-    ),
-    (0, import_react_dom.createPortal)(/* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
-      "dialog",
-      {
-        ref: dialog,
-        "data-studio-updates": true,
-        "aria-labelledby": titleId,
-        onClose: () => setOpen(false),
-        onClick: (event) => {
-          if (event.target === event.currentTarget) {
-            const rect = event.currentTarget.getBoundingClientRect();
-            if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) close();
-          }
-        },
-        className: "studio:box-border studio:m-auto studio:max-h-[calc(100dvh-2rem)] studio:w-[min(48rem,calc(100vw-2rem))] studio:max-w-none studio:overflow-y-auto studio:overscroll-contain studio:rounded-(--dsw-radius-lg) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-(--dsw-alias-bg-base) studio:p-5 studio:text-(--dsw-alias-label-primary) studio:shadow-xl studio:backdrop:bg-black/30",
-        children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "studio:flex studio:flex-wrap studio:items-center studio:justify-between studio:gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h2", { id: titleId, className: "studio:m-0 studio:text-base studio:font-medium", children: t("studiosUpdates.title") }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("button", { type: "button", autoFocus: true, className: button, onClick: close, children: t("studiosUpdates.close") })
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "studio:mb-4 studio:mt-2 studio:text-sm studio:leading-6 studio:text-(--dsw-alias-label-secondary)", children: t("studiosUpdates.description") }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "studio:mb-4 studio:flex studio:flex-wrap studio:items-center studio:justify-between studio:gap-3", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "studio:text-sm studio:text-(--dsw-alias-label-secondary)", children: data ? "dsh " + data.hostVersion : t("studiosUpdates.loading") }),
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("button", { type: "button", className: button, disabled: !data || !!action || data.busy, onClick: () => {
-              if (data) void run("check", data.studios);
-            }, children: action.startsWith("check:") ? t("studiosUpdates.checking") : t("studiosUpdates.checkAll") })
-          ] }),
-          error2 && /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("p", { role: "alert", className: "studio:mb-4 studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:p-3 studio:text-sm studio:leading-6", children: [
-            t(error2 === "recheck" ? "studiosUpdates.recheck" : "studiosUpdates.connection"),
-            " ",
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("button", { type: "button", className: button, onClick: () => {
-              void refresh();
-            }, children: t("studiosUpdates.retry") })
-          ] }),
-          data?.issue && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { role: "alert", className: "studio:mb-4 studio:text-sm studio:leading-6", children: t("studiosUpdates.record") }),
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "studio:flex studio:flex-col studio:gap-3", "aria-live": "polite", "aria-busy": !!action || data?.busy, children: [
-            data?.studios.map((row) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("article", { "data-studio-update": row.id, className: "studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:p-3", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "studio:flex studio:flex-wrap studio:items-start studio:justify-between studio:gap-3", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "studio:min-w-0 studio:flex-1", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("h3", { className: "studio:m-0 studio:break-words studio:text-sm studio:font-medium", children: row.name }),
-                /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("p", { className: "studio:mb-0 studio:mt-1 studio:break-all studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-secondary)", children: [
-                  t("studiosUpdates.current", { version: row.version }),
-                  row.upstreamVersion ? " \xB7 " + t("studiosUpdates.upstream", { version: row.upstreamVersion }) : ""
-                ] }),
-                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "studio:mb-0 studio:mt-1 studio:text-sm studio:leading-6", children: action === "check:" + row.id ? t("studiosUpdates.checking") : t(`studiosUpdates.state.${row.state}`, { version: row.latest ?? "" }) }),
-                row.operation && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { role: ["failed", "unknown"].includes(row.operation.phase) ? "alert" : "status", className: "studio:mb-0 studio:mt-1 studio:break-words studio:text-sm studio:leading-6", children: t(`studiosUpdates.phase.${row.operation.phase}`, { version: row.operation.to }) }),
-                row.repository && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "https://github.com/" + row.repository + "/releases", target: "_blank", rel: "noreferrer noopener", className: "studio:mt-1 studio:inline-block studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-secondary) studio:underline", children: t("studiosUpdates.releases") })
-              ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "studio:flex studio:shrink-0 studio:flex-wrap studio:gap-2", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("button", { type: "button", className: button, disabled: !!action || data.busy || row.state === "unconfigured", onClick: () => {
-                  void run("check", [row]);
-                }, children: t("studiosUpdates.check") }),
-                row.state === "available" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("button", { type: "button", className: button, disabled: !!action || data.busy || !!data.issue || row.operation?.phase === "restart-required" || row.operation?.phase === "unknown", onClick: () => {
-                  void run("install", [row]);
-                }, children: t("studiosUpdates.install", { version: row.latest ?? "" }) })
-              ] })
-            ] }) }, row.id)),
-            data && !data.studios.length && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "studio:text-sm", children: t("studiosUpdates.empty") })
-          ] })
-        ]
-      }
-    ), document.body)
-  ] });
-}
-
-// src/client/index.tsx
-var import_react4 = require("react");
-
-// ../../../../../../studio-library/packages/worktable/node_modules/xterm/css/xterm.css
-var xterm_default = `/**
- * Copyright (c) 2014 The xterm.js authors. All rights reserved.
- * Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
- * https://github.com/chjj/term.js
- * @license MIT
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * Originally forked from (with the author's permission):
- *   Fabrice Bellard's javascript vt100 for jslinux:
- *   http://bellard.org/jslinux/
- *   Copyright (c) 2011 Fabrice Bellard
- *   The original design remains. The terminal itself
- *   has been extended to include xterm CSI codes, among
- *   other features.
- */
-
-/**
- *  Default styles for xterm.js
- */
-
-.xterm {
-    cursor: text;
-    position: relative;
-    user-select: none;
-    -ms-user-select: none;
-    -webkit-user-select: none;
-}
-
-.xterm.focus,
-.xterm:focus {
-    outline: none;
-}
-
-.xterm .xterm-helpers {
-    position: absolute;
-    top: 0;
-    /**
-     * The z-index of the helpers must be higher than the canvases in order for
-     * IMEs to appear on top.
-     */
-    z-index: 5;
-}
-
-.xterm .xterm-helper-textarea {
-    padding: 0;
-    border: 0;
-    margin: 0;
-    /* Move textarea out of the screen to the far left, so that the cursor is not visible */
-    position: absolute;
-    opacity: 0;
-    left: -9999em;
-    top: 0;
-    width: 0;
-    height: 0;
-    z-index: -5;
-    /** Prevent wrapping so the IME appears against the textarea at the correct position */
-    white-space: nowrap;
-    overflow: hidden;
-    resize: none;
-}
-
-.xterm .composition-view {
-    /* TODO: Composition position got messed up somewhere */
-    background: #000;
-    color: #FFF;
-    display: none;
-    position: absolute;
-    white-space: nowrap;
-    z-index: 1;
-}
-
-.xterm .composition-view.active {
-    display: block;
-}
-
-.xterm .xterm-viewport {
-    /* On OS X this is required in order for the scroll bar to appear fully opaque */
-    background-color: #000;
-    overflow-y: scroll;
-    cursor: default;
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: 0;
-    bottom: 0;
-}
-
-.xterm .xterm-screen {
-    position: relative;
-}
-
-.xterm .xterm-screen canvas {
-    position: absolute;
-    left: 0;
-    top: 0;
-}
-
-.xterm .xterm-scroll-area {
-    visibility: hidden;
-}
-
-.xterm-char-measure-element {
-    display: inline-block;
-    visibility: hidden;
-    position: absolute;
-    top: 0;
-    left: -9999em;
-    line-height: normal;
-}
-
-.xterm.enable-mouse-events {
-    /* When mouse events are enabled (eg. tmux), revert to the standard pointer cursor */
-    cursor: default;
-}
-
-.xterm.xterm-cursor-pointer,
-.xterm .xterm-cursor-pointer {
-    cursor: pointer;
-}
-
-.xterm.column-select.focus {
-    /* Column selection mode */
-    cursor: crosshair;
-}
-
-.xterm .xterm-accessibility,
-.xterm .xterm-message {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 10;
-    color: transparent;
-    pointer-events: none;
-}
-
-.xterm .live-region {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-}
-
-.xterm-dim {
-    /* Dim should not apply to background, so the opacity of the foreground color is applied
-     * explicitly in the generated class and reset to 1 here */
-    opacity: 1 !important;
-}
-
-.xterm-underline-1 { text-decoration: underline; }
-.xterm-underline-2 { text-decoration: double underline; }
-.xterm-underline-3 { text-decoration: wavy underline; }
-.xterm-underline-4 { text-decoration: dotted underline; }
-.xterm-underline-5 { text-decoration: dashed underline; }
-
-.xterm-overline {
-    text-decoration: overline;
-}
-
-.xterm-overline.xterm-underline-1 { text-decoration: overline underline; }
-.xterm-overline.xterm-underline-2 { text-decoration: overline double underline; }
-.xterm-overline.xterm-underline-3 { text-decoration: overline wavy underline; }
-.xterm-overline.xterm-underline-4 { text-decoration: overline dotted underline; }
-.xterm-overline.xterm-underline-5 { text-decoration: overline dashed underline; }
-
-.xterm-strikethrough {
-    text-decoration: line-through;
-}
-
-.xterm-screen .xterm-decoration-container .xterm-decoration {
-	z-index: 6;
-	position: absolute;
-}
-
-.xterm-screen .xterm-decoration-container .xterm-decoration.xterm-decoration-top-layer {
-	z-index: 7;
-}
-
-.xterm-decoration-overview-ruler {
-    z-index: 8;
-    position: absolute;
-    top: 0;
-    right: 0;
-    pointer-events: none;
-}
-
-.xterm-decoration-top {
-    z-index: 2;
-    position: relative;
-}
-`;
-
-// src/client/styles.ts
-var css = xterm_default + "\n" + [
-  // 区块整体
-  ".dsh-wt_section{box-sizing:border-box;display:flex;flex-direction:column;gap:6px;width:100%;padding:0}",
-  ".dsh-wt_float{min-width:176px;max-width:264px;background:var(--dsw-alias-bg-base,#0b0e14);border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:10px;padding:8px;box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
-  ".dsh-wt_rail{pointer-events:none}",
-  ".dsh-wt_railBox{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;padding:5px 3px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:8px;background:var(--dsw-alias-bg-base,#0b0e14)}",
-  ".dsh-wt_railBtn{flex:none;width:22px;height:22px;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:7px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:13px;line-height:1;cursor:pointer;pointer-events:auto}",
-  ".dsh-wt_railBtn:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.08));border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);color:var(--dsw-alias-label-primary,#e6e8eb)}",
-  ".dsh-wt_railIcon{font-size:17px;line-height:22px}",
-  // 分隔线
-  ".dsh-wt_divider{flex:none;height:1px;background:var(--dsw-alias-border-l1,#262b36);margin:2px 0}",
-  // 头部
-  ".dsh-wt_header{display:flex;align-items:center;gap:6px;padding:0 2px}",
-  ".dsh-wt_handle{display:flex;align-items:center;justify-content:center;width:25px;height:25px;padding:0;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:15px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}",
-  ".dsh-wt_handle:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_handle:active{cursor:grabbing}",
-  ".dsh-wt_handle[data-float=true]{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_title{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--dsw-alias-label-secondary,#9aa4b2);cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}",
-  ".dsh-wt_actions{margin-left:auto;display:flex;align-items:center;gap:7px}",
-  ".dsh-wt_iconBtn{display:flex;align-items:center;justify-content:center;width:24px;height:22px;padding:0;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:12px;line-height:1;cursor:pointer}",
-  ".dsh-wt_iconBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  // 搜索行
-  ".dsh-wt_search{display:flex;align-items:center;gap:6px;padding:3px 6px 3px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03))}",
-  ".dsh-wt_search input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px}",
-  ".dsh-wt_search input::placeholder{color:var(--dsw-alias-label-tertiary,#6e7683)}",
-  ".dsh-wt_searchClear{display:flex;align-items:center;justify-content:center;width:18px;height:18px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:11px;cursor:pointer}",
-  ".dsh-wt_searchClear:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
-  // 菜单与提示
-  ".dsh-wt_menu{position:relative;z-index:12;display:flex;flex-direction:column;gap:1px;padding:5px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:8px;background:var(--dsw-alias-bg-base,#0b0e14);box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
-  ".dsh-wt_menuLabel{font-size:10px;letter-spacing:.05em;color:var(--dsw-alias-label-tertiary,#6e7683);padding:3px 7px 1px}",
-  ".dsh-wt_menuItem{display:flex;align-items:center;padding:5px 8px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:16px;cursor:pointer;text-align:left}",
-  ".dsh-wt_menuItem:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_menuItem[data-on=true]{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  // 菜单分隔线
-  ".dsh-wt_menuSep{height:1px;background:var(--dsw-alias-border-l1,#262b36);margin:4px 2px}",
-  // 添加面板
-  ".dsh-wt_add{max-height:500px;overflow:auto}",
-  ".dsh-wt_addText{font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary,#9aa4b2);padding:2px 8px 4px;margin:0}",
-  ".dsh-wt_addLink{color:var(--dsw-alias-state-accent-primary,#4f8ef7);text-decoration:none}",
-  ".dsh-wt_addForm{display:flex;flex-direction:column;gap:5px;padding:4px 8px 8px}",
-  ".dsh-wt_addForm input{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;padding:5px 8px;outline:none}",
-  ".dsh-wt_addForm input:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_addForm .dsh-wt_addIcon{width:64px}",
-  ".dsh-wt_addBtn{display:flex;align-items:center;justify-content:center;padding:5px 8px;border:none;border-radius:6px;background:var(--dsw-alias-state-accent-primary,#4f8ef7);color:#fff;font:inherit;font-size:12px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_addBtn:hover{filter:brightness(1.08)}",
-  ".dsh-wt_addError{font-size:11px;color:var(--dsw-alias-state-danger,#e5484d);padding:0 8px 8px;margin:0}",
-  // 管理项目（编辑模式）
-  ".dsh-wt_manage{position:relative;z-index:12;display:flex;flex-direction:column;gap:4px;padding:6px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:8px;background:var(--dsw-alias-bg-base,#0b0e14)}",
-  ".dsh-wt_manageHead{display:flex;align-items:center;justify-content:space-between;padding:1px 2px 4px}",
-  ".dsh-wt_manageTitle{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--dsw-alias-label-primary,#e6e8eb)}",
-  ".dsh-wt_settingsClose{position:absolute;top:6px;right:6px;width:20px;height:20px;padding:0;display:flex;align-items:center;justify-content:center;border:none;border-radius:6px;background:transparent;color:var(--dsw-alias-label-tertiary,#7d8aa5);font-size:13px;line-height:1;cursor:pointer}",
-  ".dsh-wt_settingsClose:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06));color:var(--dsw-alias-label-primary,#dbe4f3)}",
-  ".dsh-wt_manageDone{display:flex;align-items:center;padding:2px 8px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-state-accent-primary,#4f8ef7);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_manageDone:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  // 排序方式：一左一右两个选择按钮（手动 / 最近）
-  ".dsh-wt_sortRow{display:flex;gap:6px;padding:0 8px 2px}",
-  ".dsh-wt_sortBtn{flex:1;display:flex;align-items:center;justify-content:center;padding:4px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_sortBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);border-color:var(--dsw-alias-border-l2,#3a4150)}",
-  ".dsh-wt_sortBtn[data-on=true]{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_manageRow{display:flex;align-items:center;gap:6px;padding:4px 6px;border:1px solid transparent;border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03))}",
-  ".dsh-wt_manageRow:hover{border-color:var(--dsw-alias-border-l2,#3a4150)}",
-  ".dsh-wt_manageRowOff{opacity:.45}",
-  ".dsh-wt_manageGrip{flex:none;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:12px;cursor:grab;user-select:none;-webkit-user-select:none}",
-  ".dsh-wt_manageIcon{flex:none;width:20px;font-size:15px;text-align:center}",
-  ".dsh-wt_manageInput{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;padding:2px 0}",
-  ".dsh-wt_manageBtn{flex:none;display:flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:11px;line-height:1;cursor:pointer}",
-  ".dsh-wt_manageBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
-  ".dsh-wt_manageScName{flex:1;min-width:0;font-size:12px;color:var(--dsw-alias-label-secondary,#9aa4b2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
-  ".dsh-wt_manageReset{align-self:flex-start;margin-top:2px;padding:3px 8px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_manageReset:hover{color:var(--dsw-alias-state-danger,#e5484d);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  // 快捷方式
-  ".dsh-wt_shortcuts{display:flex;flex-direction:column;gap:4px}",
-  ".dsh-wt_shortcut{display:flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-primary,#e6e8eb);text-decoration:none;font-size:12px;line-height:18px}",
-  ".dsh-wt_shortcut:hover{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_shortcutIcon{flex:none;font-size:15px}",
-  ".dsh-wt_shortcutName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_shortcutBadge{flex:none;font-size:9px;line-height:14px;padding:0 5px;border-radius:8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06));color:var(--dsw-alias-label-tertiary,#6e7683)}",
-  // 项目区
-  ".dsh-wt_projects{display:flex;flex-direction:column;gap:4px}",
-  ".dsh-wt_projects[data-managing=true]{opacity:.55;pointer-events:none}",
-  ".dsh-wt_empty{padding:8px 10px;border:1px dashed var(--dsw-alias-border-l1,#262b36);border-radius:8px;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:11px;text-align:center}",
-  // 分栏工作区（M1 通用引擎）
-  ".dsh-wt_splitBar{display:flex;align-items:center;gap:10px;height:26px;padding:0 10px;box-sizing:border-box;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-bg-base,#0b0e14)}",
-  ".dsh-wt_splitTitle{flex:1;min-width:0;font-size:12px;font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_splitClose{flex:none;display:flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:12px;cursor:pointer}",
-  ".dsh-wt_splitClose:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
-  // 窗格容器：无圆角、无描边，直角贴齐分隔细线；底色保持不透明（标题栏/标签栏是 2% 浅色底，
-  // 窗格若透明会露出宿主垫在下面的文字）
-  ".dsh-wt_pane{display:flex;flex-direction:column;box-sizing:border-box;border:none;background:var(--dsw-alias-bg-base,#0b0e14);overflow:hidden;transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease}",
-  // 文件预览：文本/MD 滚动容器 + MD 排版 + 图片居中
-  ".dsh-wt_fileView{flex:1;min-height:0;overflow:auto;padding:12px 14px;background:var(--dsw-alias-bg-base,#0b0e14);color:var(--dsw-alias-label-primary,#e6e8eb);font-size:12.5px;line-height:1.7}",
-  ".dsh-wt_txt{margin:0;font-family:var(--dsw-font-mono,Consolas,Menlo,monospace);font-size:12px;line-height:1.65;white-space:pre-wrap;word-break:break-word}",
-  // MD 编辑/预览切换工具栏
-  ".dsh-wt_mdBar{flex:none;display:flex;align-items:center;gap:6px;padding:4px 8px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02))}",
-  ".dsh-wt_mdBtn{flex:none;padding:3px 10px;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_mdBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
-  ".dsh-wt_mdBtnOn{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_mdSave{margin-left:auto;padding:3px 12px;border:none;border-radius:5px;background:var(--dsw-alias-state-accent-primary,#4f8ef7);color:#fff;font:inherit;font-size:11px;cursor:pointer}",
-  ".dsh-wt_mdSave:disabled{opacity:.6;cursor:default}",
-  ".dsh-wt_mdMsg{font-size:11px;color:var(--dsw-alias-state-danger,#e5484d)}",
-  ".dsh-wt_mdEdit{flex:1;min-height:0;width:100%;box-sizing:border-box;padding:12px 14px;background:var(--dsw-alias-bg-base,#0b0e14);color:var(--dsw-alias-label-primary,#e6e8eb);border:none;outline:none;resize:none;font-family:var(--dsw-font-mono,Consolas,Menlo,monospace);font-size:12px;line-height:1.7}",
-  // 代码语法着色（GitHub Dark 风格 token 配色）
-  ".dsh-wt_code{margin:0;font-family:var(--dsw-font-mono,Consolas,Menlo,monospace);font-size:12px;line-height:1.65;white-space:pre;word-break:normal}",
-  ".dsh-wt_code .hljs-keyword,.dsh-wt_code .hljs-selector-tag,.dsh-wt_code .hljs-literal,.dsh-wt_code .hljs-doctag{color:#ff7b72}",
-  ".dsh-wt_code .hljs-string,.dsh-wt_code .hljs-attr,.dsh-wt_code .hljs-regexp{color:#a5d6ff}",
-  ".dsh-wt_code .hljs-comment,.dsh-wt_code .hljs-quote{color:#8b949e;font-style:italic}",
-  ".dsh-wt_code .hljs-number,.dsh-wt_code .hljs-symbol,.dsh-wt_code .hljs-bullet{color:#79c0ff}",
-  ".dsh-wt_code .hljs-title,.dsh-wt_code .hljs-function .hljs-title,.dsh-wt_code .hljs-section{color:#d2a8ff}",
-  ".dsh-wt_code .hljs-built_in,.dsh-wt_code .hljs-type,.dsh-wt_code .hljs-class .hljs-title{color:#ffa657}",
-  ".dsh-wt_code .hljs-variable,.dsh-wt_code .hljs-params,.dsh-wt_code .hljs-meta{color:#e6edf3}",
-  ".dsh-wt_code .hljs-property,.dsh-wt_code .hljs-attribute{color:#79c0ff}",
-  ".dsh-wt_code .hljs-tag,.dsh-wt_code .hljs-name{color:#7ee787}",
-  ".dsh-wt_code .hljs-selector-class,.dsh-wt_code .hljs-selector-id{color:#d2a8ff}",
-  ".dsh-wt_code .hljs-addition{color:#7ee787}",
-  ".dsh-wt_code .hljs-deletion{color:#ff7b72}",
-  ".dsh-wt_md h1,.dsh-wt_md h2,.dsh-wt_md h3,.dsh-wt_md h4{margin:14px 0 8px;line-height:1.3;font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb)}",
-  ".dsh-wt_md h1{font-size:20px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);padding-bottom:6px}",
-  ".dsh-wt_md h2{font-size:16.5px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);padding-bottom:5px}",
-  ".dsh-wt_md h3{font-size:14.5px}",
-  ".dsh-wt_md h4{font-size:13px}",
-  ".dsh-wt_md p{margin:6px 0}",
-  ".dsh-wt_md a{color:var(--dsw-alias-state-accent-primary,#4f8ef7);text-decoration:none}",
-  ".dsh-wt_md a:hover{text-decoration:underline}",
-  ".dsh-wt_md code{font-family:var(--dsw-font-mono,Consolas,Menlo,monospace);font-size:11.5px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06));padding:1px 5px;border-radius:4px}",
-  ".dsh-wt_md pre{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.04));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;padding:10px 12px;overflow:auto;margin:8px 0}",
-  ".dsh-wt_md pre code{background:transparent;padding:0;font-size:12px}",
-  ".dsh-wt_md blockquote{margin:8px 0;padding:2px 12px;border-left:3px solid var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));color:var(--dsw-alias-label-secondary,#9aa4b2)}",
-  ".dsh-wt_md ul,.dsh-wt_md ol{margin:6px 0;padding-left:22px}",
-  ".dsh-wt_md li{margin:2px 0}",
-  ".dsh-wt_md table{border-collapse:collapse;margin:8px 0;font-size:12px}",
-  ".dsh-wt_md th,.dsh-wt_md td{border:1px solid var(--dsw-alias-border-l1,#262b36);padding:4px 10px;text-align:left}",
-  ".dsh-wt_md th{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_md hr{border:none;border-top:1px solid var(--dsw-alias-border-l1,#262b36);margin:12px 0}",
-  ".dsh-wt_md img{max-width:100%}",
-  ".dsh-wt_imgView{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto;padding:10px;background:var(--dsw-alias-bg-base,#0b0e14)}",
-  ".dsh-wt_imgView img{max-width:100%;max-height:100%;object-fit:contain}",
-  ".dsh-wt_pane[data-drop-hover=true]{box-shadow:0 0 0 2px rgba(79,142,247,.4),var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4));transform:scale(1.012)}",
-  ".dsh-wt_paneBar{flex:none;display:flex;align-items:center;height:22px;padding:0 8px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02))}",
-  ".dsh-wt_paneBar{padding-right:26px}",
-  ".dsh-wt_paneTitle{flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--dsw-alias-label-secondary,#9aa4b2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  // 窗格折叠按钮：常态只是一个折角小标签（无底色无描边），hover 才显示按钮范围（底+描边）
-  ".dsh-wt_collapseBtn{position:absolute;top:2px;right:14px;z-index:2;width:18px;height:18px;margin:0;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);cursor:pointer}",
-  ".dsh-wt_collapseBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l2,rgba(255,255,255,.09));border-color:var(--dsw-alias-border-l1,#262b36)}",
-  ".dsh-wt_collapseBtn svg{width:12px;height:12px;display:block}",
-  ".dsh-wt_annotBtn{position:absolute;top:2px;right:36px;z-index:2;width:18px;height:18px;margin:0;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);cursor:pointer}",
-  ".dsh-wt_annotBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l2,rgba(255,255,255,.09));border-color:var(--dsw-alias-border-l1,#262b36)}",
-  ".dsh-wt_annotBtn svg{width:12px;height:12px;display:block}",
-  ".dsh-wt-annotating,.dsh-wt-annotating *{cursor:none!important}",
-  ".dsh-wt-annotating iframe{pointer-events:none!important}",
-  ".dsh-wt_annotBubble{position:fixed;z-index:5000;left:0;top:0;transform:translate(-50%,-100%) translateY(-4px);pointer-events:none;width:30px;height:22px;border-radius:9px;background:#4f8ef7;box-shadow:0 2px 10px rgba(79,142,247,.5);display:flex;align-items:center;justify-content:center}",
-  '.dsh-wt_annotBubble::after{content:"";position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);border:6px solid #4f8ef7;border-top-width:5px;border-bottom-width:0;border-left-color:transparent;border-right-color:transparent}',
-  ".dsh-wt_annotSel{position:fixed;z-index:4999;border:1.5px solid #4f8ef7;background:rgba(79,142,247,.16);box-shadow:0 0 0 1px rgba(79,142,247,.25);pointer-events:none}",
-  ".dsh-wt_annotHint{position:fixed;right:18px;bottom:56px;z-index:5002;max-width:320px;padding:9px 12px;border-radius:10px;background:rgba(16,20,28,.96);border:1px solid rgba(122,92,255,.45);box-shadow:0 8px 24px rgba(0,0,0,.5);color:#e6e8eb;font-size:12px;line-height:18px;pointer-events:none;animation:annotHintIn .25s ease-out}",
-  "@keyframes annotHintIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}",
-  ".dsh-wt_annotEditor{position:fixed;z-index:5001;width:280px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:10px;background:rgba(16,20,28,.96);border:1px solid rgba(255,255,255,.2);box-shadow:0 10px 30px rgba(0,0,0,.5)}",
-  ".dsh-wt_annotInput{width:100%;box-sizing:border-box;height:56px;padding:6px 8px;border:1px solid rgba(255,255,255,.18);border-radius:7px;background:rgba(255,255,255,.05);color:#e6e8eb;font:inherit;font-size:12px;line-height:17px;resize:none;outline:none;cursor:text}",
-  ".dsh-wt_annotInput:focus{border-color:#4f8ef7}",
-  ".dsh-wt_annotBtns{display:flex;justify-content:flex-end;gap:6px}",
-  ".dsh-wt_annotOk,.dsh-wt_annotNo{flex:none;width:26px;height:22px;padding:0;border:none;border-radius:6px;background:rgba(255,255,255,.08);color:var(--dsw-alias-label-primary,#e6e8eb);font-size:12px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}",
-  ".dsh-wt_annotOk:hover{background:#1d9a55;color:#fff}",
-  ".dsh-wt_annotNo:hover{background:#c0392b;color:#fff}",
-  ".dsh-wt_collapseBtnCollapsed{color:var(--dsw-alias-label-secondary,#9aa4b2)}",
-  ".dsh-wt_paneFrame{flex:1;width:100%;border:0;background:#010409;min-height:0}",
-  // iframe 内容标签：容器 + 右上角常驻刷新按钮
-  ".dsh-wt_tabRefresh{flex:none;width:14px;height:14px;padding:0;border:none;border-radius:3px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:10px;line-height:1;cursor:pointer}",
-  ".dsh-wt_tabRefresh:hover{color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.08))}",
-  // 分隔条：热区保持 4px 宽（好拖），视觉上只在中间画 1px 细实线；hover 时细线变主题蓝高亮 + 微光
-  ".dsh-wt_splitDivider{background:linear-gradient(to right,transparent 2px,var(--dsw-alias-border-l2,#3a4150) 2px,var(--dsw-alias-border-l2,#3a4150) 3px,transparent 3px);cursor:col-resize;touch-action:none;box-sizing:border-box}",
-  ".dsh-wt_splitDividerH{cursor:row-resize;background:linear-gradient(to bottom,transparent 2px,var(--dsw-alias-border-l2,#3a4150) 2px,var(--dsw-alias-border-l2,#3a4150) 3px,transparent 3px)}",
-  ".dsh-wt_splitDivider:hover{background:linear-gradient(to right,transparent 2px,var(--dsw-alias-state-accent-primary,#4f8ef7) 2px,var(--dsw-alias-state-accent-primary,#4f8ef7) 3px,transparent 3px);box-shadow:0 0 6px rgba(79,142,247,.55)}",
-  ".dsh-wt_splitDividerH:hover{background:linear-gradient(to bottom,transparent 2px,var(--dsw-alias-state-accent-primary,#4f8ef7) 2px,var(--dsw-alias-state-accent-primary,#4f8ef7) 3px,transparent 3px);box-shadow:0 0 6px rgba(79,142,247,.55)}",
-  // 新建工作区（拓扑预设）
-  ".dsh-wt_presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:2px 8px 6px}",
-  ".dsh-wt_preset{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:10px;line-height:13px;cursor:pointer}",
-  ".dsh-wt_preset:hover{border-color:var(--dsw-alias-border-l2,#3a4150)}",
-  ".dsh-wt_preset[data-on=true]{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_thumb{display:flex;flex-direction:column;width:54px;height:36px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:3px;overflow:hidden;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03))}",
-  ".dsh-wt_thumbRow{flex:1;display:flex;min-height:0}",
-  ".dsh-wt_thumbCols{flex-direction:row}",
-  ".dsh-wt_thumbCol{flex:1;min-width:0;display:flex;flex-direction:column}",
-  ".dsh-wt_thumbRow:last-child .dsh-wt_thumbCell{border-bottom:none}",
-  ".dsh-wt_thumbCell{flex:1;min-width:0;border-right:1px solid var(--dsw-alias-border-l1,#262b36);border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);display:flex;align-items:center;justify-content:center;font-size:8px;line-height:1}",
-  ".dsh-wt_thumbRow .dsh-wt_thumbCell:last-child{border-right:none}",
-  ".dsh-wt_thumbChat{background:var(--dsw-alias-state-accent-primary,#4f8ef7);color:#fff}",
-  // 预设网格末尾的 ＋ 自定义磁贴
-  ".dsh-wt_presetAdd{border-style:dashed;color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_presetAddIcon{font-size:18px;line-height:20px}",
-  ".dsh-wt_presetAddText{font-size:10px;line-height:13px}",
-  // 项目卡片上的对话绑定按钮（○○ 空心 = 未绑定 / ●● 实心 = 已绑定；CSS 双圆绘制，黑白单色克制：
-  // 未绑定次级灰空心、已绑定主色实心，不用强调色；hover 区域 = 22×22 圆角矩形按钮底，
-  // 气泡为 body 级元素向右伸出（跨层显示），垂直居中于按钮）
-  // 任务完成提醒镜像：绿色发光 / 待决提醒：黄色发光（点击项目即 ack 恢复常态实心）；
-  // 工作中：蓝色发光 + 两圆交替亮灭（对应 DSH 对话的转圈标记，无需 ack，running 变 false 自动停）
-  "@keyframes dsh-wt-busyA{0%,44%{opacity:1}50%,94%{opacity:.12}100%{opacity:1}}",
-  "@keyframes dsh-wt-busyB{0%,44%{opacity:.12}50%,94%{opacity:1}100%{opacity:.12}}",
-  // 气泡为 body 级独立元素（.dsh-wt_bindTip），此处只保留按钮本体样式
-  ".dsh-wt_bindTip{position:fixed;transform:translateY(-50%);padding:5px 9px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:6px;background:var(--dsw-alias-fill-l2,#171b22);color:var(--dsw-alias-label-primary,#e6e8eb);font-size:11px;line-height:15px;white-space:nowrap;pointer-events:none;z-index:1200;box-shadow:0 4px 12px rgba(0,0,0,.35);display:none}",
-  // 布局条目卡片
-  ".dsh-wt_layout{display:flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;cursor:pointer;text-align:left}",
-  ".dsh-wt_layout:hover{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_layout[data-on=true]{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_layout[data-on=true] .dsh-wt_layoutName{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_layoutIcon{flex:none;font-size:15px}",
-  ".dsh-wt_layoutText{flex:1;min-width:0;display:flex;flex-direction:column;gap:0}",
-  ".dsh-wt_layoutName{font-size:12px;font-weight:400;line-height:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  // 箭头与项目名同一行高 + 字面中心对齐；› 墨迹在字面框内偏下，整体上移 1px 使视觉居中
-  ".dsh-wt_layoutArrow{flex:none;display:inline-flex;align-items:center;height:18px;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:14px;line-height:18px;transform:translateY(-1.5px)}",
-  // 入驻项目卡自带箭头（桥注入 .dsh-wt_resArrow）：与布局卡同款视觉居中
-  "button[data-wt-id] > .dsh-wt_resArrow{display:inline-flex;align-items:center;height:18px;line-height:18px;transform:translateY(-1.5px)}",
-  // 项目卡片统一：所有入驻项目卡片（data-wt-id 通用标记）与布局卡片同款常显框
-  ".dsh-wt_projects [data-wt-id]{border-color:var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02))}",
-  ".dsh-wt_projects [data-wt-id]:hover{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_projects [data-wt-id][data-on=true]{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  // 标签精简：项目卡片只留名称一行，小字描述行去掉
-  ".dsh-wt_projects [data-wt-id] > :nth-child(2) > :nth-child(2){display:none}",
-  // 图标选择弹窗（固定定位，点击项目/布局/快捷方式的图标唤出）
-  ".dsh-wt_iconPop{position:fixed;z-index:81;width:256px;padding:8px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:10px;background:var(--dsw-alias-bg-base,#0b0e14);box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
-  ".dsh-wt_iconPopTitle{font-size:10px;letter-spacing:.05em;color:var(--dsw-alias-label-tertiary,#6e7683);padding:1px 4px 6px}",
-  ".dsh-wt_iconGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}",
-  ".dsh-wt_iconCell{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border:1px solid transparent;border-radius:6px;background:transparent;font-size:17px;line-height:1;cursor:pointer;padding:0}",
-  ".dsh-wt_iconCell:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05));border-color:var(--dsw-alias-border-l2,#3a4150)}",
-  ".dsh-wt_iconCell[data-on=true]{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.08));border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  // 可点图标（布局卡 / 管理行 / 快捷方式上的图标，点击换 emoji）
-  ".dsh-wt_iconPick{flex:none;display:inline-flex;align-items:center;justify-content:center;padding:1px;border:none;background:transparent;cursor:pointer;border-radius:4px}",
-  ".dsh-wt_iconPick:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.08))}",
-  // 四类项目卡片统一竖向高度（常驻×2 / 布局 / 快捷方式；新建条目自动继承）
-  ".dsh-wt_projects [data-wt-id],.dsh-wt_layout,.dsh-wt_shortcut{height:34px;box-sizing:border-box}",
-  // 入驻项目卡片图标覆盖：data-wt-icon 存在时用 attr() 替换显示（原字符字号压到 0）
-  ".dsh-wt_projects [data-wt-id] > :first-child[data-wt-icon]{font-size:0;line-height:20px}",
-  ".dsh-wt_projects [data-wt-id] > :first-child[data-wt-icon]::before{content:attr(data-wt-icon);font-size:15px;line-height:20px}",
-  // 常驻项目卡片与新建项目统一：emoji 字号 15px、名称不加粗
-  ".dsh-wt_projects [data-wt-id] > :first-child{font-size:15px;line-height:20px}",
-  ".dsh-wt_projects [data-wt-id] > :nth-child(2) > :first-child{font-weight:400}",
-  // 头部按钮内的官方 SVG 图标
-  ".dsh-wt_iconBtn svg{display:block}",
-  // 窗内容：选择器 / 自定义 / 浏览器 / 占位
-  ".dsh-wt_panePicker{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;overflow:auto}",
-  ".dsh-wt_panePicker-row{flex-direction:row;flex-wrap:wrap}",
-  ".dsh-wt_panePicker-grid{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;gap:10px;place-content:center}",
-  ".dsh-wt_panePicker-col{flex-direction:column}",
-  // 自定义窗口对话框（居中卡片）
-  ".dsh-wt_customBox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}",
-  ".dsh-wt_customCard{display:flex;flex-direction:column;gap:10px;width:100%;max-width:360px;padding:14px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:10px;background:var(--dsw-alias-bg-base,#0b0e14);box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
-  ".dsh-wt_customTitle{font-size:13px;font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb)}",
-  ".dsh-wt_customHint{font-size:11.5px;line-height:17px;color:var(--dsw-alias-label-secondary,#9aa4b2);margin:0}",
-  // 自定义对话框：模式切换（新建对话 / 发送到会话）
-  ".dsh-wt_customModes{display:flex;gap:6px}",
-  ".dsh-wt_customModeBtn{flex:1;display:flex;align-items:center;justify-content:center;padding:4px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_customModeBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);border-color:var(--dsw-alias-border-l2,#3a4150)}",
-  ".dsh-wt_customModeBtnOn{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_customInput{width:100%;box-sizing:border-box;min-height:96px;padding:8px 10px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;outline:none;resize:vertical}",
-  ".dsh-wt_customInput:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  // 新建分组：父目录 / 名称单行输入
-  ".dsh-wt_customPathInput{flex:1;min-width:0;box-sizing:border-box;padding:5px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;outline:none}",
-  ".dsh-wt_customPathInput:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  // 新建项目强制文件夹：两行（父目录/名称）
-  ".dsh-wt_addFolderRow{display:flex;align-items:center;gap:8px;margin-top:6px;padding:0 2px}",
-  ".dsh-wt_addFolderPath{flex:1;min-width:0;padding:4px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));font-size:11.5px;line-height:17px;color:var(--dsw-alias-label-primary,#e6e8eb);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_addFolderPathNone{color:var(--dsw-alias-label-tertiary,#6b7280);border-style:dashed}",
-  ".dsh-wt_addFolderRow .dsh-wt_customLabel{flex:none;width:auto;text-align:left}",
-  ".dsh-wt_manualPathInput{flex:1;min-width:0;padding:4px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));font-size:11.5px;line-height:17px;color:var(--dsw-alias-label-primary,#e6e8eb)}",
-  ".dsh-wt_addFolderRow .dsh-wt_bindFolderChange:disabled{opacity:.5;cursor:default}",
-  ".dsh-wt_folderPickHint{margin-top:6px;margin-bottom:0;font-size:11.5px;line-height:17px;color:var(--dsw-alias-state-warning,#e0a33c)}",
-  ".dsh-wt_bindFolderBox .dsh-wt_addError{margin-top:6px;margin-bottom:0}",
-  // 绑定弹窗内的项目文件夹区
-  ".dsh-wt_bindFolderBox{margin-top:8px;padding:6px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px}",
-  ".dsh-wt_bindFolderRow{display:flex;align-items:center;gap:6px}",
-  ".dsh-wt_bindFolderLabel{font-size:12px;line-height:18px;color:var(--dsw-alias-label-primary,#e6e8eb);margin-right:auto}",
-  ".dsh-wt_bindFolderChange{flex:none;padding:2px 10px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_bindFolderChange:hover{color:var(--dsw-alias-label-primary,#e6e8eb);border-color:var(--dsw-alias-border-l2,#3a4150)}",
-  ".dsh-wt_bindFolderPath{margin-top:4px;font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary,#9aa4b2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_bindFolderPathNone{color:var(--dsw-alias-label-tertiary,#6b7280)}",
-  ".dsh-wt_bindFolderForm{display:flex;flex-direction:column;gap:6px;margin-top:6px}",
-  // 自定义布局弹窗（＋磁贴）：描述输入 + 复制提示词 + Toast
-  ".dsh-wt_customLayoutInput{width:100%;box-sizing:border-box;min-height:110px;margin-top:8px;padding:8px 10px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;outline:none;resize:vertical}",
-  ".dsh-wt_customLayoutInput:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_customLayoutBtn{width:100%;margin-top:8px;padding:7px 10px;border:1px solid var(--dsw-alias-state-accent-primary,#4f8ef7);border-radius:8px;background:transparent;color:var(--dsw-alias-state-accent-primary,#4f8ef7);font:inherit;font-size:12px;line-height:18px;cursor:pointer}",
-  ".dsh-wt_customLayoutBtn:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_customLayoutToast{margin:8px 0 0;font-size:11.5px;line-height:17px;color:var(--dsw-alias-state-success,#3fb950)}",
-  ".dsh-wt_customLayoutToastFail{color:var(--dsw-alias-state-danger,#f85149)}",
-  // 对话绑定弹窗：绑定对话框内的对话行（点击右侧弹列表）
-  ".dsh-wt_bindNoneText{font-size:12px;line-height:18px}",
-  ".dsh-wt_bindFolder{flex:none;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary,#9aa4b2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:40%}",
-  ".dsh-wt_bindSep{flex:none;color:var(--dsw-alias-border-l2,#3a4150);font-size:11px}",
-  ".dsh-wt_bindConvRow{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;margin-top:4px;padding:3px 4px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;cursor:pointer;text-align:left}",
-  ".dsh-wt_bindConvRow:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05));border-color:var(--dsw-alias-border-l2,#3a4150)}",
-  ".dsh-wt_bindConvRowNone{color:var(--dsw-alias-label-secondary,#9aa4b2)}",
-  ".dsh-wt_bindConvName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_bindConvChevron{flex:none;color:var(--dsw-alias-label-tertiary,#6b7280);font-size:9px;line-height:1}",
-  ".dsh-wt_bindHint{margin:6px 0 2px;font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary,#9aa4b2)}",
-  // 自定义窗完成页：自动绑定提示
-  ".dsh-wt_customDoneBind{margin:6px 0 0;font-size:11px;line-height:16px;color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_bindUnbind{flex:none;display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_bindUnbind:hover{color:var(--dsw-alias-state-danger,#f85149);border-color:var(--dsw-alias-state-danger,#f85149)}",
-  ".dsh-wt_bindList{max-height:280px;overflow:auto;position:static}",
-  ".dsh-wt_bindListPop{display:flex;flex-direction:column;padding:6px}",
-  ".dsh-wt_bindListPop .dsh-wt_bindList{max-height:320px}",
-  ".dsh-wt_customRow{display:flex;align-items:center;gap:8px}",
-  ".dsh-wt_customLabel{flex:none;font-size:11.5px;color:var(--dsw-alias-label-secondary,#9aa4b2)}",
-  ".dsh-wt_customSelect{flex:1;min-width:0;padding:5px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;outline:none}",
-  ".dsh-wt_customSelect option{background-color:var(--dsw-alias-bg-base,#0b0e14);color:var(--dsw-alias-label-primary,#e6e8eb)}",
-  // 自制下拉（文件夹分组 + 细分隔线）
-  ".dsh-wt_select{position:relative;flex:1;min-width:0}",
-  ".dsh-wt_selectBtn{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;padding:5px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;cursor:pointer}",
-  ".dsh-wt_selectBtn:hover{border-color:var(--dsw-alias-border-l2,#3a4150)}",
-  ".dsh-wt_selectVal{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_selectPh{color:var(--dsw-alias-label-tertiary,#6e7683)}",
-  ".dsh-wt_selectCaret{flex:none;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:10px;line-height:1}",
-  ".dsh-wt_selectList{margin-top:4px;max-height:180px;overflow:auto;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:8px;background:var(--dsw-alias-bg-base,#0b0e14);padding:4px;box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
-  ".dsh-wt_selectItem{display:flex;align-items:center;gap:6px;width:100%;padding:6px 8px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:17px;cursor:pointer;text-align:left}",
-  ".dsh-wt_selectItem:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_selectItemOn{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06));color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_selectItemTitle{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_selectCurrent{flex:none;font-size:10px;color:var(--dsw-alias-label-tertiary,#6e7683)}",
-  ".dsh-wt_selectDivider{height:1px;background:var(--dsw-alias-border-l1,#262b36);margin:6px 2px}",
-  // 文件夹分组标题：与选项同字号、加粗、左侧蓝色竖条 + 微底色，明显区别于下方对话
-  ".dsh-wt_selectGroup{display:flex;align-items:center;gap:6px;margin:2px 0 2px;padding:6px 8px;border-left:2px solid var(--dsw-alias-state-accent-primary,#4f8ef7);border-radius:4px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.04));font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--dsw-alias-label-secondary,#9aa4b2);user-select:none}",
-  ".dsh-wt_customSend{align-self:flex-end;padding:6px 14px;border:none;border-radius:6px;background:var(--dsw-alias-state-accent-primary,#4f8ef7);color:#fff;font:inherit;font-size:12px;cursor:pointer}",
-  ".dsh-wt_customSend:disabled{opacity:.55;cursor:default}",
-  ".dsh-wt_customFail{font-size:11px;color:var(--dsw-alias-state-danger,#e5484d);margin:0}",
-  ".dsh-wt_customDone{font-size:26px;line-height:32px}",
-  ".dsh-wt_customDoneText{font-size:13px;font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb);margin:4px 0 0}",
-  ".dsh-wt_customDoneHint{font-size:11.5px;color:var(--dsw-alias-label-secondary,#9aa4b2);margin:0}",
-  ".dsh-wt_customDone{display:block}",
-  ".dsh-wt_customBox:has(.dsh-wt_customDone){flex-direction:column;gap:4px;text-align:center}",
-  ".dsh-wt_panePick{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:92px;height:78px;padding:8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:10px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:11px;line-height:15px;cursor:pointer;transition:border-color .15s,background .15s,transform .15s}",
-  ".dsh-wt_panePick:hover{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05));transform:translateY(-1px)}",
-  ".dsh-wt_panePick span{font-size:22px;line-height:24px}",
-  ".dsh-wt_paneCustom{flex:none;width:100%;max-width:320px;display:flex;align-items:center;gap:6px;padding:4px}",
-  ".dsh-wt_paneCustom input{flex:1;min-width:0;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;padding:5px 8px;outline:none}",
-  ".dsh-wt_paneCustom input:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_paneCustomGo{flex:none;padding:5px 10px;border:none;border-radius:6px;background:var(--dsw-alias-state-accent-primary,#4f8ef7);color:#fff;font:inherit;font-size:12px;cursor:pointer}",
-  ".dsh-wt_browserBar{flex:none;display:flex;align-items:center;gap:5px;padding:4px 6px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02))}",
-  ".dsh-wt_browserInput{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:11px;line-height:16px}",
-  ".dsh-wt_browserGo{flex:none;width:20px;height:20px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:12px;cursor:pointer}",
-  ".dsh-wt_browserGo:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
-  ".dsh-wt_paneWip{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--dsw-alias-label-tertiary,#6e7683)}",
-  ".dsh-wt_paneWipIcon{font-size:26px;line-height:30px}",
-  ".dsh-wt_paneWipText{font-size:11px}",
-  ".dsh-wt_splitFlip{flex:none;display:flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:13px;cursor:pointer}",
-  ".dsh-wt_splitFlip:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
-  // + 右侧弹出面板
-  ".dsh-wt_popBackdrop{position:fixed;left:0;top:0;right:0;bottom:0;z-index:79;background:transparent}",
-  // 删除二次确认（fixed 居中模态，压在弹窗之上）
-  ".dsh-wt_confirmBackdrop{position:fixed;left:0;top:0;right:0;bottom:0;z-index:81;background:rgba(0,0,0,.35)}",
-  ".dsh-wt_confirm{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:82;width:292px;display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:10px;background:var(--dsw-alias-bg-base,#0b0e14);box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
-  ".dsh-wt_confirmTitle{font-size:13px;font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb)}",
-  ".dsh-wt_confirmBody{font-size:11.5px;line-height:17px;color:var(--dsw-alias-label-secondary,#9aa4b2)}",
-  ".dsh-wt_confirmActions{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}",
-  ".dsh-wt_confirmCancel{padding:5px 12px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:12px;cursor:pointer}",
-  ".dsh-wt_confirmCancel:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_confirmDelete{padding:5px 12px;border:none;border-radius:6px;background:var(--dsw-alias-state-danger,#e5484d);color:#fff;font:inherit;font-size:12px;cursor:pointer}",
-  ".dsh-wt_confirmDelete:hover{filter:brightness(1.1)}",
-  ".dsh-wt_pop{max-height:min(540px,calc(100vh - 32px));overflow:auto;box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
-  // 功能窗（资源管理器/SCM/任务/终端）
-  ".dsh-wt_subBar{flex:none;display:flex;align-items:center;gap:4px;padding:3px 6px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02))}",
-  ".dsh-wt_subBtn{flex:none;display:flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:11px;cursor:pointer}",
-  ".dsh-wt_subBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
-  ".dsh-wt_subPath{flex:1;min-width:0;font-size:10.5px;color:var(--dsw-alias-label-tertiary,#6e7683);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_subList{flex:1;min-height:0;overflow:auto;padding:3px}",
-  ".dsh-wt_subRow{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;padding:3px 6px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:11px;line-height:16px;cursor:pointer;text-align:left}",
-  ".dsh-wt_subRow:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_subRowStatic{cursor:default}",
-  ".dsh-wt_subRowStatic:hover{background:transparent}",
-  ".dsh-wt_subIcon{flex:none;font-size:11px}",
-  ".dsh-wt_subName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_subEmpty{padding:14px 10px;font-size:11px;color:var(--dsw-alias-label-tertiary,#6e7683);text-align:center}",
-  ".dsh-wt_subTag{flex:none;font-size:9px;color:var(--dsw-alias-label-tertiary,#6e7683);padding:0 5px;border-radius:8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
-  ".dsh-wt_gitXY{flex:none;width:20px;font-size:9px;text-align:center;border-radius:4px;padding:1px 0}",
-  ".dsh-wt_gitXYMod{color:#e5b567;background:rgba(229,181,103,.12)}",
-  ".dsh-wt_gitXYNew{color:#7fd88f;background:rgba(127,216,143,.12)}",
-  ".dsh-wt_jobDot{flex:none;font-size:8px;line-height:16px}",
-  ".dsh-wt_jobDot-running{color:#e5b567}",
-  ".dsh-wt_jobDot-completed{color:#7fd88f}",
-  ".dsh-wt_jobDot-failed{color:#e5484d}",
-  ".dsh-wt_jobDot-killed{color:#6e7683}",
-  ".dsh-wt_jobDot-stopping{color:#9aa4b2}",
-  ".dsh-wt_termHost{flex:1;min-height:0;padding:6px 2px 2px 8px;background:#010409;overflow:hidden}",
-  ".dsh-wt_termHost .xterm{height:100%}",
-  // 窗内标签页
-  ".dsh-wt_tabBar{flex:none;display:flex;align-items:center;gap:3px;padding:3px 5px 0;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));overflow-x:auto}",
-  ".dsh-wt_tab{flex:none;display:flex;align-items:center;gap:5px;max-width:150px;padding:3px 8px;border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:10.5px;line-height:16px;cursor:grab;user-select:none;-webkit-user-select:none}",
-  ".dsh-wt_tab:active{cursor:grabbing}",
-  ".dsh-wt_tab:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.04))}",
-  ".dsh-wt_tabOn{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-bg-base,#0b0e14);border-color:var(--dsw-alias-border-l1,#262b36)}",
-  ".dsh-wt_tabTitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_tabClose{flex:none;width:14px;height:14px;padding:0;border:none;border-radius:3px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:9px;line-height:1;cursor:pointer}",
-  ".dsh-wt_tabClose:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.08))}",
-  // 树形资源管理器
-  ".dsh-wt_treeRow{display:flex;align-items:center;gap:5px;width:100%;box-sizing:border-box;padding:3px 6px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:11px;line-height:16px;cursor:pointer;text-align:left}",
-  ".dsh-wt_treeRow:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_treeArrow{flex:none;width:10px;font-size:8px;color:var(--dsw-alias-label-tertiary,#6e7683);transition:transform .12s ease}",
-  ".dsh-wt_treeArrowOpen{transform:rotate(90deg)}",
-  ".dsh-wt_treeIcon{flex:none}",
-  ".dsh-wt_treeName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_subSection{flex:none;padding:6px 8px 2px;font-size:10px;font-weight:600;letter-spacing:.05em;color:var(--dsw-alias-label-tertiary,#6e7683)}",
-  // 控制室面板：项目卡片网格（每行 3 张、超出换行；DSH 简洁 + 苹果式卡片）。
-  // 主题变量自带作用域：dark 缺省；data-wt-theme=light 换浅色；system 由面板读宿主 color-scheme 落成 dark/light。
-  ".dsh-wt_console{--wt-bg:#0a0d13;--wt-card:#171c25;--wt-cardHover:#1d232e;--wt-border:#2a3140;--wt-borderHover:#39445a;--wt-text:#e6e8eb;--wt-text2:#9aa4b2;--wt-text3:#6e7683;--wt-chip:rgba(255,255,255,.06);--wt-grid:rgba(255,255,255,.045);--wt-shadow:0 6px 20px rgba(0,0,0,.35);position:relative;flex:1;min-height:0;overflow:hidden;padding:22px;display:flex;flex-direction:column;background-color:var(--wt-bg)}",
-  // 流光玻璃背景：30px 网格不变；网格下层是缓慢漂移的模糊彩光光晕
-  ".dsh-wt_consoleBg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}",
-  '.dsh-wt_consoleBg::after{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--wt-grid) 1px,transparent 1px),linear-gradient(90deg,var(--wt-grid) 1px,transparent 1px);background-size:30px 30px}',
-  ".dsh-wt_blob{position:absolute;width:56vmax;height:56vmax;border-radius:50%;filter:blur(64px);opacity:.45;mix-blend-mode:screen}",
-  ".dsh-wt_blob1{background:radial-gradient(circle,#ff5f9e,transparent 66%);top:-18%;left:-14%;animation:wtBlob1 calc(13s * var(--wt-glowScale,1)) ease-in-out infinite alternate}",
-  ".dsh-wt_blob2{background:radial-gradient(circle,#7a5cff,transparent 66%);top:4%;right:-20%;animation:wtBlob2 calc(17s * var(--wt-glowScale,1)) ease-in-out infinite alternate}",
-  ".dsh-wt_blob3{background:radial-gradient(circle,#00c2ff,transparent 66%);bottom:-22%;left:14%;animation:wtBlob3 calc(11s * var(--wt-glowScale,1)) ease-in-out infinite alternate}",
-  ".dsh-wt_blob4{background:radial-gradient(circle,#ff9a3d,transparent 66%);bottom:-8%;right:4%;animation:wtBlob4 calc(15s * var(--wt-glowScale,1)) ease-in-out infinite alternate}",
-  "@keyframes wtBlob1{from{transform:translate(0,0) scale(1)}to{transform:translate(14vw,10vh) scale(1.12)}}",
-  "@keyframes wtBlob2{from{transform:translate(0,0) scale(1)}to{transform:translate(-13vw,11vh) scale(1.1)}}",
-  "@keyframes wtBlob3{from{transform:translate(0,0) scale(1)}to{transform:translate(12vw,-8vh) scale(1.15)}}",
-  "@keyframes wtBlob4{from{transform:translate(0,0) scale(1)}to{transform:translate(-10vw,-10vh) scale(1.12)}}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_blob{opacity:.28}",
-  ".dsh-wt_consoleGrid{position:relative;z-index:1}",
-  // 底部中央玻璃 dock：4 个 ghost 按钮（图标常显，hover 才浮现圆角矩形）+ 统一下拉面板（宽度 = dock 宽 150px）
-  ".dsh-wt_consoleScroll{flex:1;min-height:0;overflow:auto;padding-bottom:10px}",
-  ".dsh-wt_announceCtr{display:flex;min-height:100%;align-items:center;justify-content:center;box-sizing:border-box}",
-  ".dsh-wt_announceCtr .dsh-wt_announce{margin:auto}",
-  ".dsh-wt_announce{width:100%;max-width:856px;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding:26px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.07) 30%,rgba(255,255,255,.01) 60%,rgba(0,0,0,.07) 100%),rgba(18,23,32,.24);border:1px solid transparent;box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.13);box-sizing:border-box;backdrop-filter:blur(8px) saturate(1.15);animation:wtAnnounceIn .28s cubic-bezier(.25,.6,.3,1)}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_announce{background:linear-gradient(135deg,rgba(255,255,255,1) 0%,rgba(255,255,255,.65) 30%,rgba(255,255,255,.12) 60%,rgba(31,41,55,.06) 100%),rgba(255,255,255,.34);box-shadow:0 10px 28px rgba(31,41,55,.18),inset 0 1px 0 rgba(255,255,255,1)}",
-  ".dsh-wt_announceHead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--wt-border)}",
-  ".dsh-wt_announceVer{font-size:15px;font-weight:700;color:var(--wt-text)}",
-  ".dsh-wt_announceBtn{flex:none;padding:4px 12px;border:none;border-radius:7px;background:var(--wt-chip);color:var(--wt-text2);font:inherit;font-size:12px;line-height:17px;cursor:pointer;transition:background .15s ease,color .15s ease}",
-  ".dsh-wt_announceBtn:hover{background:rgba(79,142,247,.22);color:var(--wt-text)}",
-  ".dsh-wt_announceBtn:disabled{opacity:.6;cursor:default}",
-  ".dsh-wt_announceAuto{flex:none;font-size:12px;line-height:17px;color:var(--wt-text2);margin-left:auto}",
-  ".dsh-wt_announceUpdate{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border-radius:8px;background:rgba(79,142,247,.12)}",
-  ".dsh-wt_announceNewVer{font-size:12px;line-height:17px;color:#7eb3ff;font-weight:600}",
-  ".dsh-wt_announceUpg{flex:none;padding:3px 10px;border:none;border-radius:6px;background:rgba(79,142,247,.16);color:#7eb3ff;font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_announceUpg:hover{background:rgba(79,142,247,.3);color:#bcd6ff}",
-  ".dsh-wt_announceUpgOk{background:rgba(29,154,85,.2);color:#4ade80}",
-  ".dsh-wt_announceUpgOk:hover{background:rgba(29,154,85,.3);color:#86efac}",
-  ".dsh-wt_announceHow{flex:none;width:100%;font-size:11px;line-height:16px;color:var(--wt-text);padding-top:2px}",
-  ".dsh-wt_announceSkip.dsh-wt_announceSkipGo:hover{background:rgba(79,142,247,.16);color:#7eb3ff}",
-  ".dsh-wt_announceSkip{flex:none;padding:3px 10px;border:none;border-radius:6px;background:transparent;color:var(--wt-text3);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_announceSkip:hover{background:rgba(244,63,94,.14);color:#f87171}",
-  ".dsh-wt_announceStatus{font-size:11px;line-height:16px;color:var(--wt-text3)}",
-  ".dsh-wt_announceBody{white-space:pre-wrap;font-size:13px;line-height:1.75;color:var(--wt-text2);user-select:text}",
-  ".dsh-wt_consoleDockWrap{position:relative;z-index:12;flex:none;display:flex;justify-content:center;padding-top:12px}",
-  ".dsh-wt_consoleDock{display:flex;align-items:center;gap:4px;padding:5px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);box-shadow:0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(14px) saturate(1.3)}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleDock{background:rgba(255,255,255,.62);border-color:rgba(27,31,36,.12);box-shadow:0 8px 24px rgba(31,41,55,.12)}",
-  ".dsh-wt_dockBtn{position:relative;width:32px;height:32px;padding:0;border:none;border-radius:9px;background:transparent;color:var(--wt-text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease}",
-  ".dsh-wt_dockBadge{position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#f5a623;box-shadow:0 0 6px rgba(245,166,35,.95);animation:wtAnnPulse 1.6s ease-in-out infinite}",
-  "@keyframes wtAnnPulse{0%,100%{opacity:1}50%{opacity:.3}}",
-  "@keyframes wtAnnounceIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}",
-  ".dsh-wt_dockBtn svg{transition:transform .15s ease}",
-  ".dsh-wt_dockBtn:hover svg{transform:scale(1.12)}",
-  ".dsh-wt_dockBtn:hover{background:rgba(255,255,255,.14)}",
-  ".dsh-wt_dockBtnOn{background:rgba(255,255,255,.22)}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_dockBtn:hover{background:rgba(27,31,36,.10)}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_dockBtnOn{background:rgba(27,31,36,.14)}",
-  ".dsh-wt_dropMask{position:fixed;inset:0;z-index:9;background:transparent;border:none}",
-  ".dsh-wt_drop{position:absolute;bottom:calc(100% - 4px);left:50%;transform:translateX(-50%);width:186px;box-sizing:border-box;padding:5px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);box-shadow:0 8px 24px rgba(0,0,0,.4);backdrop-filter:blur(14px) saturate(1.3);z-index:11;display:flex;flex-direction:column;gap:2px}",
-  ".dsh-wt_dropItem{width:100%;padding:6px 9px;border:none;border-radius:7px;background:transparent;color:var(--wt-text2);font:inherit;font-size:12px;line-height:17px;cursor:pointer;display:flex;align-items:center;gap:7px;text-align:left}",
-  ".dsh-wt_dropItem:hover{background:var(--wt-chip);color:var(--wt-text)}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_drop{background:rgba(255,255,255,.62);border-color:rgba(27,31,36,.12)}",
-  ".dsh-wt_dropRow{display:flex;align-items:center;width:100%}",
-  ".dsh-wt_dropRow .dsh-wt_dropItem{flex:1;min-width:0}",
-  ".dsh-wt_dropGear{flex:none;width:24px;height:24px;margin-right:2px;padding:0;border:none;border-radius:6px;background:transparent;color:var(--wt-text2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease,color .15s ease}",
-  ".dsh-wt_dropGear:hover{background:var(--wt-chip);color:var(--wt-text)}",
-  ".dsh-wt_dropWide{width:264px}",
-  ".dsh-wt_dropTrash{flex:none;width:22px;height:22px;margin-right:2px;padding:0;border:none;border-radius:6px;background:transparent;color:var(--wt-text3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease,color .15s ease}",
-  ".dsh-wt_dragHandle{flex:none;width:18px;height:22px;padding:0;border:none;border-radius:6px;background:transparent;color:var(--wt-text3);cursor:grab;display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease,color .15s ease;touch-action:none}",
-  ".dsh-wt_dragHandle:hover{background:var(--wt-chip);color:var(--wt-text2)}",
-  ".dsh-wt_dragHandleOn{background:var(--wt-chip);color:var(--wt-text);cursor:grabbing}",
-  ".dsh-wt_dropTrash:hover{background:rgba(244,63,94,.16);color:#f87171}",
-  ".dsh-wt_gridLabel{flex:none;white-space:nowrap;font-size:12px;line-height:17px;color:var(--wt-text2);padding:2px 2px 2px 4px}",
-  ".dsh-wt_gridHalf .dsh-wt_switch{margin-right:2px}",
-  ".dsh-wt_switch{flex:none;position:relative;width:30px;height:17px;margin-right:4px;padding:0;border:none;border-radius:999px;background:rgba(255,255,255,.14);cursor:pointer;transition:background .15s ease}",
-  ".dsh-wt_switchOn{background:#4f8ef7}",
-  ".dsh-wt_switchKnob{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.4);transition:left .18s cubic-bezier(.22,.61,.36,1)}",
-  ".dsh-wt_switchOn .dsh-wt_switchKnob{left:15px}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_switch{background:rgba(27,31,36,.15)}",
-  ".dsh-wt_console[data-wt-bg=plain][data-wt-grid=on] .dsh-wt_consoleBg::after{background-image:linear-gradient(var(--wt-gridPlain,rgba(255,255,255,.045)) 1px,transparent 1px),linear-gradient(90deg,var(--wt-gridPlain,rgba(255,255,255,.045)) 1px,transparent 1px);background-size:30px 30px}",
-  ".dsh-wt_console[data-wt-bg=glow][data-wt-grid=on] .dsh-wt_consoleBg::after{background-image:linear-gradient(var(--wt-gridGlow,rgba(255,255,255,.045)) 1px,transparent 1px),linear-gradient(90deg,var(--wt-gridGlow,rgba(255,255,255,.045)) 1px,transparent 1px);background-size:30px 30px}",
-  ".dsh-wt_console[data-wt-bg=photo][data-wt-grid=on] .dsh-wt_consoleBg::after{background-image:linear-gradient(var(--wt-gridPhoto,rgba(255,255,255,.08)) 1px,transparent 1px),linear-gradient(90deg,var(--wt-gridPhoto,rgba(255,255,255,.08)) 1px,transparent 1px);background-size:30px 30px}",
-  ".dsh-wt_console[data-wt-theme=light][data-wt-bg=plain][data-wt-grid=on] .dsh-wt_consoleBg::after{background-image:linear-gradient(var(--wt-gridPlainLight,rgba(27,31,36,.14)) 1px,transparent 1px),linear-gradient(90deg,var(--wt-gridPlainLight,rgba(27,31,36,.14)) 1px,transparent 1px);background-size:30px 30px}",
-  ".dsh-wt_console[data-wt-theme=light][data-wt-bg=glow][data-wt-grid=on] .dsh-wt_consoleBg::after{background-image:linear-gradient(var(--wt-gridGlowLight,rgba(27,31,36,.14)) 1px,transparent 1px),linear-gradient(90deg,var(--wt-gridGlowLight,rgba(27,31,36,.14)) 1px,transparent 1px);background-size:30px 30px}",
-  ".dsh-wt_console[data-wt-bg=photo][data-wt-grid=off] .dsh-wt_consoleBg::after{display:none}",
-  ".dsh-wt_hslHead{display:flex;align-items:center;gap:4px;padding:2px 4px 4px}",
-  ".dsh-wt_hslBack{flex:none;width:20px;height:20px;padding:0;border:none;border-radius:6px;background:transparent;color:var(--wt-text3);cursor:pointer;font-size:14px;line-height:1;display:inline-flex;align-items:center;justify-content:center}",
-  ".dsh-wt_hslBack:hover{background:var(--wt-chip);color:var(--wt-text)}",
-  ".dsh-wt_hslTitle{flex:1;min-width:0;font-size:12px;line-height:17px;color:var(--wt-text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
-  ".dsh-wt_hslRow{position:relative;display:flex;align-items:center;gap:4px;padding:2px 3px;width:100%;box-sizing:border-box}",
-  ".dsh-wt_hslRow::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% - 2px);transform:translateX(-50%);padding:3px 8px;border-radius:6px;background:rgba(10,13,19,.94);border:1px solid rgba(255,255,255,.22);color:#e6e8eb;font-size:11px;line-height:16px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s ease;z-index:30}",
-  ".dsh-wt_hslRow:hover::after{opacity:1}",
-  ".dsh-wt_hslLabel{flex:none;width:10px;font-size:9px;font-weight:600;color:var(--wt-text3);text-align:center}",
-  ".dsh-wt_hslSlider{flex:1;min-width:0;height:14px;accent-color:#4f8ef7;cursor:pointer}",
-  ".dsh-wt_hslInput{flex:none;width:42px;height:20px;padding:0 4px;border:1px solid var(--wt-border);border-radius:6px;background:var(--wt-chip);color:var(--wt-text2);font:inherit;font-size:10px;text-align:center;outline:none;box-sizing:border-box;font-variant-numeric:tabular-nums;-moz-appearance:textfield;appearance:textfield}",
-  ".dsh-wt_hslInput::-webkit-outer-spin-button,.dsh-wt_hslInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}",
-  ".dsh-wt_hslInput:focus{border-color:#4f8ef7;color:var(--wt-text)}",
-  ".dsh-wt_hslReset{margin:4px 4px 2px;padding:5px 9px;border:none;border-radius:7px;background:var(--wt-chip);color:var(--wt-text2);font:inherit;font-size:12px;line-height:17px;cursor:pointer;text-align:center}",
-  ".dsh-wt_hslReset:hover{background:rgba(79,142,247,.22);color:var(--wt-text)}",
-  ".dsh-wt_photoRow{cursor:pointer;padding:3px 4px;border-radius:7px;box-sizing:border-box}",
-  ".dsh-wt_photoRow:hover{background:var(--wt-chip)}",
-  ".dsh-wt_photoRowOn{background:var(--wt-chip)}",
-  ".dsh-wt_photoThumb{flex:none;width:30px;height:30px;border-radius:7px;object-fit:cover;border:1px solid var(--wt-border);background:var(--wt-chip);box-sizing:border-box}",
-  ".dsh-wt_photoName{flex:1;min-width:0;font-size:11px;line-height:16px;color:var(--wt-text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
-  ".dsh-wt_photoEmpty{padding:4px 4px 2px;font-size:11px;line-height:16px;color:var(--wt-text3)}",
-  ".dsh-wt_hslDivider{height:1px;margin:5px 4px;background:var(--wt-border);opacity:.5}",
-  ".dsh-wt_consoleMedia{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}",
-  ".dsh-wt_gridHalf{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 2px;box-sizing:border-box}",
-  ".dsh-wt_thumbWrap{position:relative;flex:none;width:30px;height:30px}",
-  ".dsh-wt_thumbWrap .dsh-wt_photoThumb{position:absolute;inset:0}",
-  ".dsh-wt_thumbBadge{position:absolute;right:-3px;bottom:-3px;width:14px;height:14px;border-radius:50%;background:rgba(10,13,19,.88);border:1px solid rgba(255,255,255,.4);color:#e6e8eb;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2}",
-  ".dsh-wt_photoThumb video,.dsh-wt_photoThumb{display:block}",
-  ".dsh-wt_dropItemOn{background:var(--wt-chip);color:var(--wt-text);font-weight:600}",
-  ".dsh-wt_hbar{position:relative;width:130px;height:26px;margin:4px auto;border-radius:999px;background:rgba(255,255,255,.08)}",
-  ".dsh-wt_hbarFill{position:absolute;top:3px;bottom:3px;left:0;border-radius:999px;background:linear-gradient(90deg,#4f8ef7,#3b82f6);pointer-events:none;transition:width .25s cubic-bezier(.22,.61,.36,1)}",
-  ".dsh-wt_hbarLine{position:absolute;top:0;bottom:0;transform:translateX(-50%);width:20%;padding:0;border:none;background:transparent;cursor:pointer;z-index:2}",
-  '.dsh-wt_hbarLine::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:2px;height:9px;border-radius:2px;background:rgba(255,255,255,.9);transition:height .12s ease,background .12s ease}',
-  ".dsh-wt_hbarLine:hover::before{height:14px;background:#fff}",
-  ".dsh-wt_hbarKnob{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid rgba(79,142,247,.8);box-shadow:0 1px 4px rgba(0,0,0,.4);z-index:3;pointer-events:none;transition:left .25s cubic-bezier(.22,.61,.36,1)}",
-  // 工作中的卡片流光：光带加长羽化 + 光层超出卡片（移动时不露整齐边缘），每 ~3.2s 从左上斜扫到右下
-  ".dsh-wt_consoleSweep{position:absolute;inset:-30%;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.01) 0%,rgba(255,255,255,.045) 30%,rgba(255,255,255,.13) 50%,rgba(255,255,255,.045) 70%,rgba(255,255,255,.01) 100%);opacity:0;animation:consoleSweep 3.2s ease-in-out infinite}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleSweep{background:linear-gradient(115deg,rgba(255,255,255,.1) 0%,rgba(255,255,255,.3) 30%,rgba(255,255,255,.55) 50%,rgba(255,255,255,.3) 70%,rgba(255,255,255,.1) 100%)}",
-  "@keyframes consoleSweep{0%{opacity:0;transform:translate(-12%,-12%)}35%{opacity:1}55%{opacity:1}92%,100%{opacity:0;transform:translate(12%,12%)}}",
-  ".dsh-wt_console[data-wt-theme=light]{--wt-bg:#eef1f5;--wt-card:#ffffff;--wt-cardHover:#f7f9fb;--wt-border:#d8dee6;--wt-borderHover:#b9c4d2;--wt-grid:rgba(27,31,36,.07);--wt-text:#1c2128;--wt-text2:#57606a;--wt-text3:#8b949e;--wt-chip:rgba(27,31,36,.07);--wt-shadow:0 6px 20px rgba(31,41,55,.10)}",
-  ".dsh-wt_consoleHead{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:12px}",
-  ".dsh-wt_consoleTitle{font-size:14px;font-weight:700;line-height:20px;color:var(--wt-text)}",
-  ".dsh-wt_consoleTheme{display:inline-flex;align-items:center;padding:2px;border:1px solid var(--wt-border);border-radius:999px;background:var(--wt-card)}",
-  ".dsh-wt_consoleThemeBtn{flex:none;padding:3px 9px;border:none;border-radius:999px;background:transparent;color:var(--wt-text3);font:inherit;font-size:12px;line-height:18px;cursor:pointer;opacity:.85}",
-  ".dsh-wt_consoleThemeBtn:hover{opacity:1;background:var(--wt-chip)}",
-  ".dsh-wt_consoleThemeBtnOn{background:var(--wt-chip);color:var(--wt-text);opacity:1}",
-  ".dsh-wt_consoleShape{display:inline-flex;align-items:center;padding:2px;border:1px solid var(--wt-border);border-radius:999px;background:var(--wt-card)}",
-  ".dsh-wt_consoleShapeBtn{flex:none;width:26px;height:26px;padding:0;border:none;border-radius:999px;background:transparent;color:var(--wt-text3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;opacity:.85}",
-  ".dsh-wt_consoleShapeBtn:hover{opacity:1;background:var(--wt-chip)}",
-  ".dsh-wt_consoleShapeBtnOn{background:var(--wt-chip);color:var(--wt-text);opacity:1}",
-  ".dsh-wt_consoleBgBtns{display:inline-flex;align-items:center;padding:2px;border:1px solid var(--wt-border);border-radius:999px;background:var(--wt-card)}",
-  ".dsh-wt_consoleBgBtn{flex:none;width:26px;height:26px;padding:0;border:none;border-radius:999px;background:transparent;color:var(--wt-text3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;opacity:.85}",
-  ".dsh-wt_consoleBgBtn:hover{opacity:1;background:var(--wt-chip)}",
-  ".dsh-wt_consoleBgBtnOn{background:var(--wt-chip);color:var(--wt-text);opacity:1}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleGrid{max-width:calc(var(--wt-cols,3)*268px + (var(--wt-cols,3) - 1)*64px)}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleCard{border-radius:50%;justify-content:center;align-items:center;padding:24px 24px 38px;gap:9px}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleCardHead{width:100%;flex-direction:column;justify-content:center;gap:5px;text-align:center}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleIcon{font-size:27px;line-height:1}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleName{flex:none;max-width:88%;font-size:19px;font-weight:700;line-height:26px;text-align:center}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleDivider{width:56%;margin:2px auto}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleStatusRow{justify-content:center;gap:8px}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleStatus{font-size:17px;line-height:24px}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleRuntime{font-size:15px;line-height:21px}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consolePreview{text-align:center;max-width:82%;margin:0 auto;-webkit-line-clamp:2;font-size:9px;line-height:13px}",
-  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleCard-busy::before{border-radius:50%}",
-  ".dsh-wt_consoleGrid{display:flex;flex-wrap:wrap;justify-content:center;gap:64px;align-content:start;margin-top:clamp(32px,9vh,110px);width:100%;max-width:calc(var(--wt-cols,3)*242px + (var(--wt-cols,3) - 1)*64px);margin-left:auto;margin-right:auto}",
-  ".dsh-wt_consoleCols{display:inline-flex;align-items:center;gap:8px;padding:2px 8px;border:1px solid var(--wt-border);border-radius:999px;background:var(--wt-card);color:var(--wt-text3);font-size:11px}",
-  ".dsh-wt_consoleCard{position:relative;box-sizing:border-box;flex:none;width:calc((100% - (var(--wt-cols,3) - 1)*64px)/var(--wt-cols,3));display:flex;flex-direction:column;gap:14px;aspect-ratio:1/1;min-height:192px;padding:21px;background:linear-gradient(135deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.07) 30%,rgba(255,255,255,.01) 60%,rgba(0,0,0,.07) 100%),rgba(18,23,32,.24);border:1px solid transparent;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.13);cursor:pointer;transition:transform .14s ease,box-shadow .14s ease;overflow:hidden;backdrop-filter:blur(var(--wt-cardBlur,0px)) saturate(1.15)}",
-  // 玻璃边缘：四角黑白渐变描边（左上/右下=白，右上/左下=黑），1px 环挖空实现
-  '.dsh-wt_consoleCard::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:conic-gradient(from 45deg,rgba(0,0,0,.4) 0deg,rgba(255,255,255,.55) 90deg,rgba(0,0,0,.4) 180deg,rgba(255,255,255,.55) 270deg,rgba(0,0,0,.4) 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none;opacity:.5}',
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleCard{background:linear-gradient(135deg,rgba(255,255,255,1) 0%,rgba(255,255,255,.65) 30%,rgba(255,255,255,.12) 60%,rgba(31,41,55,.06) 100%),rgba(255,255,255,.34);box-shadow:0 10px 28px rgba(31,41,55,.18),inset 0 1px 0 rgba(255,255,255,1);backdrop-filter:blur(var(--wt-cardBlur,0px)) saturate(1.15)}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleCard::after{background:conic-gradient(from 45deg,rgba(27,31,36,.4) 0deg,rgba(255,255,255,1) 90deg,rgba(27,31,36,.4) 180deg,rgba(255,255,255,1) 270deg,rgba(27,31,36,.4) 360deg);opacity:.9}",
-  // 状态光效卡片：玻璃边缘让位给霓虹描边/旋转光环
-  ".dsh-wt_consoleCard-glowDone::after,.dsh-wt_consoleCard-glowNeed::after{opacity:0}",
-  ".dsh-wt_consoleCard:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.09)}",
-  ".dsh-wt_consoleCardSelf{cursor:default;opacity:.97}",
-  ".dsh-wt_consoleCardHead{display:flex;align-items:center;gap:13px;min-width:0}",
-  ".dsh-wt_consoleIcon{flex:none;font-size:31px;line-height:1}",
-  ".dsh-wt_consoleName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:20px;font-weight:700;line-height:28px;color:var(--wt-text)}",
-  ".dsh-wt_consoleDivider{flex:none;height:1px;background:var(--wt-border)}",
-  ".dsh-wt_consoleStatusRow{display:flex;align-items:baseline;justify-content:space-between;gap:9px;min-width:0}",
-  ".dsh-wt_consoleStatus{flex:none;font-size:22px;font-weight:700;line-height:30px;color:var(--wt-text2)}",
-  ".dsh-wt_consoleStatus-busy{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_consoleStatus-need{color:var(--dsw-alias-state-warning,#d29922)}",
-  ".dsh-wt_consoleStatus-done{color:var(--dsw-alias-state-success,#3fb950)}",
-  ".dsh-wt_consoleRuntime{flex:none;font-size:17px;font-weight:600;line-height:24px;color:var(--wt-text2);font-variant-numeric:tabular-nums}",
-  ".dsh-wt_consolePreview{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;font-size:8.5px;line-height:13px;color:var(--wt-text2);word-break:break-word}",
-  ".dsh-wt_consolePreviewNone{color:var(--wt-text3);font-style:italic;-webkit-line-clamp:1}",
-  // 三色光效：整卡霓虹描边光晕（像侧栏双圆点的发光质感）——完成=绿、待决=黄；工作=蓝色描边顺时针旋转
-  ".dsh-wt_consoleCard-glowDone{border-color:rgba(63,185,80,.9);box-shadow:0 0 8px rgba(63,185,80,.5),0 0 26px rgba(63,185,80,.3),inset 0 0 16px rgba(63,185,80,.07)}",
-  ".dsh-wt_consoleCard-glowNeed{border-color:rgba(210,153,34,.95);box-shadow:0 0 8px rgba(210,153,34,.5),0 0 26px rgba(210,153,34,.3),inset 0 0 16px rgba(210,153,34,.08)}",
-  '@property --consoleAngle{syntax:"<angle>";initial-value:0deg;inherits:false}',
-  ".dsh-wt_consoleCard-busy{box-shadow:0 0 10px rgba(94,160,255,.55),0 0 34px rgba(79,142,247,.4)}",
-  '.dsh-wt_consoleCard-busy::before{content:"";position:absolute;inset:-4px;border-radius:19px;padding:4px;background:conic-gradient(from var(--consoleAngle),transparent 0deg,rgba(94,160,255,0) 25deg,#dcebff 55deg,#9cc6ff 85deg,rgba(94,160,255,0) 125deg,transparent 200deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;animation:consoleAngleSpin 1.4s linear infinite;filter:drop-shadow(0 0 8px rgba(140,190,255,.85));pointer-events:none}',
-  "@keyframes consoleAngleSpin{to{--consoleAngle:360deg}}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleCard-busy{box-shadow:0 0 10px rgba(37,99,235,.5),0 0 34px rgba(37,99,235,.32)}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleCard-busy::before{background:conic-gradient(from var(--consoleAngle),transparent 0deg,rgba(37,99,235,0) 25deg,#2563eb 55deg,#38bdf8 85deg,rgba(37,99,235,0) 125deg,transparent 200deg);filter:drop-shadow(0 0 8px rgba(37,99,235,.8))}",
-  ".dsh-wt_consoleEmpty{padding:40px 0;text-align:center;font-size:12px;color:var(--wt-text3)}",
-  // 创建卡片：虚线 + 居中加号，永远最后一位
-  // 创建卡片：玻璃底 + 虚线边，永远最后一位
-  ".dsh-wt_consoleAdd{justify-content:center;align-items:center;gap:10px;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.09),rgba(255,255,255,0) 65%),rgba(18,23,32,.34);border:1.5px dashed var(--wt-borderHover)}",
-  ".dsh-wt_consoleAdd::after{display:none}",
-  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleAdd{background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.95),rgba(255,255,255,0) 65%),rgba(255,255,255,.55)}",
-  ".dsh-wt_consoleAdd:hover{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:rgba(23,28,37,.45)}",
-  ".dsh-wt_consoleAddPlus{font-size:34px;line-height:1;color:var(--wt-text2);font-weight:400}",
-  ".dsh-wt_consoleAdd:hover .dsh-wt_consoleAddPlus{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_consoleAddLabel{font-size:17px;font-weight:600;color:var(--wt-text2)}",
-  ".dsh-wt_consoleAdd:hover .dsh-wt_consoleAddLabel{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  // 控制室入口卡：统筹主程序的差异化（渐变底 + 微光；无描边，颜色更亮更饱和）
-  ".dsh-wt_projects .dsh-wt_consoleEntry{background:linear-gradient(135deg,rgba(109,164,255,.30),rgba(167,130,255,.22));border-color:transparent;box-shadow:0 0 14px rgba(96,150,255,.22)}",
-  ".dsh-wt_projects .dsh-wt_consoleEntry:hover{background:linear-gradient(135deg,rgba(109,164,255,.42),rgba(167,130,255,.32));box-shadow:0 0 18px rgba(96,150,255,.32)}",
-  ".dsh-wt_projects .dsh-wt_consoleEntry[data-on=true]{background:linear-gradient(135deg,rgba(109,164,255,.38),rgba(167,130,255,.28));box-shadow:0 0 18px rgba(96,150,255,.34)}",
-  ".dsh-wt_projects .dsh-wt_consoleEntry .dsh-wt_layoutIcon{font-size:15px}",
-  ".dsh-wt_projects .dsh-wt_consoleEntry .dsh-wt_layoutName{font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb)}",
-  // 控制室强制绑定弹窗：左加入现有 / 右新建对话
-  ".dsh-wt_consoleBindCols{display:flex;gap:12px}",
-  ".dsh-wt_consoleBindCol{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}",
-  ".dsh-wt_consoleBindColNew{border-left:1px solid var(--dsw-alias-border-l1,#262b36);padding-left:12px}",
-  ".dsh-wt_consoleBindLabel{font-size:12px;font-weight:600;line-height:18px;color:var(--dsw-alias-label-primary,#e6e8eb)}",
-  ".dsh-wt_consoleBindList{max-height:300px;overflow:auto;position:static}",
-  ".dsh-wt_consoleBindEmpty{padding:20px 0;text-align:center;font-size:11px;color:var(--dsw-alias-label-tertiary,#6e7683)}",
-  ".dsh-wt_consoleSelect,.dsh-wt_consoleInput{width:100%;box-sizing:border-box;padding:6px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:11.5px;line-height:16px;outline:none}",
-  ".dsh-wt_consoleSelect:focus,.dsh-wt_consoleInput:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_consoleErr{margin:0;font-size:11px;line-height:16px;color:var(--dsw-alias-state-danger,#f85149)}",
-  ".dsh-wt_consoleHint{margin:0;font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary,#aab6cd)}",
-  ".dsh-wt_consoleCreateBtn{margin-top:2px;padding:7px 10px;border:1px solid var(--dsw-alias-state-accent-primary,#4f8ef7);border-radius:8px;background:transparent;color:var(--dsw-alias-state-accent-primary,#4f8ef7);font:inherit;font-size:12px;line-height:18px;cursor:pointer}",
-  ".dsh-wt_consoleCreateBtn:hover:not(:disabled){background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_consoleCreateBtn:disabled{opacity:.55;cursor:default}",
-  // ── 更新提示：侧栏标题旁徽标（仅图标 + 琥珀呼吸光）与设置面板更新卡 / 版本行 ──
-  ".dsh-wt_updateBadge{flex:none;display:flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:3px;padding:0;border:none;border-radius:50%;background:rgba(245,185,66,.16);color:#f7d488;font-size:11px;line-height:1;cursor:pointer;position:relative}",
-  '.dsh-wt_updateBadge::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(245,185,66,.55);animation:dsh-wt_updatePulse 1.8s ease-out infinite}',
-  "@keyframes dsh-wt_updatePulse{0%{opacity:.9;box-shadow:0 0 0 0 rgba(245,185,66,.5)}70%{opacity:.35;box-shadow:0 0 0 6px rgba(245,185,66,0)}100%{opacity:.9;box-shadow:0 0 0 0 rgba(245,185,66,0)}}",
-  ".dsh-wt_updateCard{margin:0 0 10px;padding:10px;border:1px solid rgba(245,185,66,.45);border-radius:10px;background:rgba(245,185,66,.08);display:flex;flex-direction:column;gap:6px}",
-  ".dsh-wt_updateHead{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:#f7d488}",
-  ".dsh-wt_updateDot{width:7px;height:7px;border-radius:50%;background:#f5b942;animation:dsh-wt_updatePulse 1.8s ease-out infinite}",
-  ".dsh-wt_updateVers{font-size:11.5px;color:var(--dsw-alias-label-tertiary,#7d8aa5)}",
-  ".dsh-wt_updateNotes{max-height:96px;overflow:auto;font-size:11px;line-height:1.6;color:var(--dsw-alias-label-tertiary,#7d8aa5);white-space:pre-wrap;word-break:break-all}",
-  ".dsh-wt_updateCmd{margin:2px 0;padding:7px 8px;background:var(--dsw-alias-bg-base,#0b0e14);border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;font-family:Consolas,monospace;font-size:10.5px;line-height:1.5;color:#9cc6ff;word-break:break-all}",
-  ".dsh-wt_updateBtns{display:flex;gap:6px;flex-wrap:wrap}",
-  ".dsh-wt_updateBtn{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:7px;border:1px solid var(--dsw-alias-border-l1,#262b36);background:transparent;color:var(--dsw-alias-label-secondary,#aab6cd);font-size:11px;cursor:pointer}",
-  ".dsh-wt_updateBtn svg{width:12px;height:12px;flex:none}",
-  ".dsh-wt_updateBadge svg{width:12px;height:12px;flex:none}",
-  ".dsh-wt_updateBtn:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
-  ".dsh-wt_updateBtnCopy{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:rgba(79,142,247,.18);color:#cfe0ff}",
-  ".dsh-wt_updateHint{font-size:10.5px;color:var(--dsw-alias-label-tertiary,#7d8aa5)}",
-  ".dsh-wt_versionRow{margin-top:8px;padding-top:8px;border-top:1px solid var(--dsw-alias-border-l1,#262b36);display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--dsw-alias-label-tertiary,#7d8aa5)}",
-  ".dsh-wt_updateToggle{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none}",
-  ".dsh-wt_versionActions{display:flex;align-items:center;gap:8px}",
-  ".dsh-wt_updateSwitch{position:relative;width:26px;height:14px;border-radius:999px;background:var(--dsw-alias-state-accent-primary,#4f8ef7);cursor:pointer}",
-  '.dsh-wt_updateSwitch::after{content:"";position:absolute;top:2px;right:2px;width:10px;height:10px;border-radius:50%;background:#fff;transition:right .15s}',
-  ".dsh-wt_updateSwitch[data-off=true]{background:var(--dsw-alias-border-l1,#333a48)}",
-  ".dsh-wt_updateSwitch[data-off=true]::after{right:14px}"
-].join("\n");
-
-// src/client/studio.generated.css
-var studio_generated_default = '/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer properties;\n@layer theme, utilities;\n@layer theme {\n  :root, :host {\n    --studio-color-blue-500: oklch(62.3% 0.214 259.815);\n    --studio-color-black: #000;\n    --studio-spacing: 0.25rem;\n    --studio-text-xs: 0.75rem;\n    --studio-text-xs--line-height: calc(1 / 0.75);\n    --studio-text-sm: 0.875rem;\n    --studio-text-sm--line-height: calc(1.25 / 0.875);\n    --studio-text-base: 1rem;\n    --studio-text-base--line-height: calc(1.5 / 1);\n    --studio-font-weight-medium: 500;\n    --studio-ease-out: cubic-bezier(0, 0, 0.2, 1);\n    --studio-default-transition-duration: 150ms;\n    --studio-default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  }\n}\n@layer utilities {\n  .studio\\:absolute {\n    position: absolute;\n  }\n  .studio\\:top-1\\/2 {\n    top: calc(1 / 2 * 100%);\n  }\n  .studio\\:right-\\[26px\\] {\n    right: 26px;\n  }\n  .studio\\:m-0 {\n    margin: 0px;\n  }\n  .studio\\:m-auto {\n    margin: auto;\n  }\n  .studio\\:mt-1 {\n    margin-top: var(--studio-spacing);\n  }\n  .studio\\:mt-2 {\n    margin-top: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:mb-0 {\n    margin-bottom: 0px;\n  }\n  .studio\\:mb-4 {\n    margin-bottom: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:ml-auto {\n    margin-left: auto;\n  }\n  .studio\\:box-border {\n    box-sizing: border-box;\n  }\n  .studio\\:flex {\n    display: flex;\n  }\n  .studio\\:grid {\n    display: grid;\n  }\n  .studio\\:hidden {\n    display: none;\n  }\n  .studio\\:inline-block {\n    display: inline-block;\n  }\n  .studio\\:size-\\[22px\\] {\n    width: 22px;\n    height: 22px;\n  }\n  .studio\\:h-5 {\n    height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:h-7 {\n    height: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:h-60 {\n    height: calc(var(--studio-spacing) * 60);\n  }\n  .studio\\:h-\\[34px\\] {\n    height: 34px;\n  }\n  .studio\\:max-h-\\[40vh\\] {\n    max-height: 40vh;\n  }\n  .studio\\:max-h-\\[calc\\(100dvh-2rem\\)\\] {\n    max-height: calc(100dvh - 2rem);\n  }\n  .studio\\:min-h-0 {\n    min-height: 0px;\n  }\n  .studio\\:w-4 {\n    width: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:w-7 {\n    width: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:w-\\[min\\(48rem\\,calc\\(100vw-2rem\\)\\)\\] {\n    width: min(48rem, calc(100vw - 2rem));\n  }\n  .studio\\:w-full {\n    width: 100%;\n  }\n  .studio\\:max-w-none {\n    max-width: none;\n  }\n  .studio\\:min-w-0 {\n    min-width: 0px;\n  }\n  .studio\\:flex-1 {\n    flex: 1;\n  }\n  .studio\\:shrink-0 {\n    flex-shrink: 0;\n  }\n  .studio\\:-translate-y-1\\/2 {\n    --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);\n    translate: var(--tw-translate-x) var(--tw-translate-y);\n  }\n  .studio\\:rotate-90 {\n    rotate: 90deg;\n  }\n  .studio\\:cursor-pointer {\n    cursor: pointer;\n  }\n  .studio\\:\\[scrollbar-width\\:none\\] {\n    scrollbar-width: none;\n  }\n  .studio\\:grid-rows-\\[0fr\\] {\n    grid-template-rows: 0fr;\n  }\n  .studio\\:grid-rows-\\[1fr\\] {\n    grid-template-rows: 1fr;\n  }\n  .studio\\:flex-col {\n    flex-direction: column;\n  }\n  .studio\\:flex-wrap {\n    flex-wrap: wrap;\n  }\n  .studio\\:items-center {\n    align-items: center;\n  }\n  .studio\\:items-start {\n    align-items: flex-start;\n  }\n  .studio\\:justify-between {\n    justify-content: space-between;\n  }\n  .studio\\:justify-center {\n    justify-content: center;\n  }\n  .studio\\:gap-1 {\n    gap: var(--studio-spacing);\n  }\n  .studio\\:gap-1\\.5 {\n    gap: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:gap-2 {\n    gap: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:gap-3 {\n    gap: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:truncate {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .studio\\:overflow-hidden {\n    overflow: hidden;\n  }\n  .studio\\:overflow-x-hidden {\n    overflow-x: hidden;\n  }\n  .studio\\:overflow-y-auto {\n    overflow-y: auto;\n  }\n  .studio\\:overscroll-contain {\n    overscroll-behavior: contain;\n  }\n  .studio\\:rounded {\n    border-radius: 0.25rem;\n  }\n  .studio\\:rounded-\\(--dsw-radius-lg\\) {\n    border-radius: var(--dsw-radius-lg);\n  }\n  .studio\\:rounded-\\(--dsw-radius-md\\) {\n    border-radius: var(--dsw-radius-md);\n  }\n  .studio\\:rounded-\\(--dsw-radius-sm\\) {\n    border-radius: var(--dsw-radius-sm);\n  }\n  .studio\\:border {\n    border-style: var(--tw-border-style);\n    border-width: 1px;\n  }\n  .studio\\:border-0 {\n    border-style: var(--tw-border-style);\n    border-width: 0px;\n  }\n  .studio\\:border-\\(--dsw-alias-border-l1\\) {\n    border-color: var(--dsw-alias-border-l1);\n  }\n  .studio\\:bg-\\(--dsw-alias-bg-base\\) {\n    background-color: var(--dsw-alias-bg-base);\n  }\n  .studio\\:bg-transparent {\n    background-color: transparent;\n  }\n  .studio\\:p-3 {\n    padding: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:p-5 {\n    padding: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:px-1 {\n    padding-inline: var(--studio-spacing);\n  }\n  .studio\\:px-2 {\n    padding-inline: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:px-3 {\n    padding-inline: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:py-0\\.5 {\n    padding-block: calc(var(--studio-spacing) * 0.5);\n  }\n  .studio\\:py-1\\.5 {\n    padding-block: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:text-left {\n    text-align: left;\n  }\n  .studio\\:text-base {\n    font-size: var(--studio-text-base);\n    line-height: var(--tw-leading, var(--studio-text-base--line-height));\n  }\n  .studio\\:text-sm {\n    font-size: var(--studio-text-sm);\n    line-height: var(--tw-leading, var(--studio-text-sm--line-height));\n  }\n  .studio\\:text-xs {\n    font-size: var(--studio-text-xs);\n    line-height: var(--tw-leading, var(--studio-text-xs--line-height));\n  }\n  .studio\\:leading-5 {\n    --tw-leading: calc(var(--studio-spacing) * 5);\n    line-height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:leading-6 {\n    --tw-leading: calc(var(--studio-spacing) * 6);\n    line-height: calc(var(--studio-spacing) * 6);\n  }\n  .studio\\:font-medium {\n    --tw-font-weight: var(--studio-font-weight-medium);\n    font-weight: var(--studio-font-weight-medium);\n  }\n  .studio\\:break-words {\n    overflow-wrap: break-word;\n  }\n  .studio\\:break-all {\n    word-break: break-all;\n  }\n  .studio\\:text-\\(--dsw-alias-label-primary\\) {\n    color: var(--dsw-alias-label-primary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-secondary\\) {\n    color: var(--dsw-alias-label-secondary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-tertiary\\) {\n    color: var(--dsw-alias-label-tertiary);\n  }\n  .studio\\:text-inherit {\n    color: inherit;\n  }\n  .studio\\:underline {\n    text-decoration-line: underline;\n  }\n  .studio\\:opacity-0 {\n    opacity: 0%;\n  }\n  .studio\\:opacity-100 {\n    opacity: 100%;\n  }\n  .studio\\:shadow-xl {\n    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);\n  }\n  .studio\\:transition-\\[grid-template-rows\\] {\n    transition-property: grid-template-rows;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-opacity {\n    transition-property: opacity;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-transform {\n    transition-property: transform, translate, scale, rotate;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:duration-100 {\n    --tw-duration: 100ms;\n    transition-duration: 100ms;\n  }\n  .studio\\:duration-150 {\n    --tw-duration: 150ms;\n    transition-duration: 150ms;\n  }\n  .studio\\:duration-200 {\n    --tw-duration: 200ms;\n    transition-duration: 200ms;\n  }\n  .studio\\:ease-\\(--ds-ease-in-out\\) {\n    --tw-ease: var(--ds-ease-in-out);\n    transition-timing-function: var(--ds-ease-in-out);\n  }\n  .studio\\:ease-out {\n    --tw-ease: var(--studio-ease-out);\n    transition-timing-function: var(--studio-ease-out);\n  }\n  @media (hover: hover) {\n    .studio\\:group-hover\\:hidden:is(:where(.studio\\:group):hover *) {\n      display: none;\n    }\n    .studio\\:group-hover\\:inline-flex:is(:where(.studio\\:group):hover *) {\n      display: inline-flex;\n    }\n  }\n  .studio\\:group-focus-visible\\:hidden:is(:where(.studio\\:group):focus-visible *) {\n    display: none;\n  }\n  .studio\\:group-focus-visible\\:inline-flex:is(:where(.studio\\:group):focus-visible *) {\n    display: inline-flex;\n  }\n  .studio\\:backdrop\\:bg-black\\/30::backdrop {\n    background-color: var(--studio-color-black);\n    @supports (color: color-mix(in lab, red, red)) {\n      background-color: color-mix(in oklab, var(--studio-color-black) 30%, transparent);\n    }\n  }\n  @media (hover: hover) {\n    .studio\\:hover\\:bg-\\(--dsw-alias-interactive-bg-hover\\):hover {\n      background-color: var(--dsw-alias-interactive-bg-hover);\n    }\n    .studio\\:hover\\:bg-black\\/5:hover {\n      background-color: var(--studio-color-black);\n    }\n    @supports (color: color-mix(in lab, red, red)) {\n      .studio\\:hover\\:bg-black\\/5:hover {\n        background-color: color-mix(in oklab, var(--studio-color-black) 5%, transparent);\n      }\n    }\n  }\n  .studio\\:focus-visible\\:outline-2:focus-visible {\n    outline-style: var(--tw-outline-style);\n    outline-width: 2px;\n  }\n  .studio\\:focus-visible\\:outline-blue-500:focus-visible {\n    outline-color: var(--studio-color-blue-500);\n  }\n  .studio\\:disabled\\:cursor-default:disabled {\n    cursor: default;\n  }\n  .studio\\:disabled\\:opacity-50:disabled {\n    opacity: 50%;\n  }\n  @media (prefers-reduced-motion: reduce) {\n    .studio\\:motion-reduce\\:transition-none {\n      transition-property: none;\n    }\n  }\n  .studio\\:\\[\\&_\\.dsh-wt_divider\\]\\:hidden .dsh-wt divider {\n    display: none;\n  }\n  .studio\\:\\[\\&_\\.dsh-wt_handle\\]\\:hidden .dsh-wt handle {\n    display: none;\n  }\n  .studio\\:\\[\\&_\\.dsh-wt_title\\]\\:hidden .dsh-wt title {\n    display: none;\n  }\n  .studio\\:\\[\\&_svg\\]\\:size-4 svg {\n    width: calc(var(--studio-spacing) * 4);\n    height: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:\\[\\&\\:\\:-webkit-scrollbar\\]\\:hidden::-webkit-scrollbar {\n    display: none;\n  }\n  .studio\\:\\[\\&\\[hidden\\]\\]\\:hidden[hidden] {\n    display: none;\n  }\n}\n@property --tw-translate-x {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0;\n}\n@property --tw-translate-y {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0;\n}\n@property --tw-translate-z {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0;\n}\n@property --tw-border-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@property --tw-leading {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-font-weight {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-inset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-ring-inset {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-offset-width {\n  syntax: "<length>";\n  inherits: false;\n  initial-value: 0px;\n}\n@property --tw-ring-offset-color {\n  syntax: "*";\n  inherits: false;\n  initial-value: #fff;\n}\n@property --tw-ring-offset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-duration {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ease {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-outline-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@layer properties {\n  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {\n    *, ::before, ::after, ::backdrop {\n      --tw-translate-x: 0;\n      --tw-translate-y: 0;\n      --tw-translate-z: 0;\n      --tw-border-style: solid;\n      --tw-leading: initial;\n      --tw-font-weight: initial;\n      --tw-shadow: 0 0 #0000;\n      --tw-shadow-color: initial;\n      --tw-shadow-alpha: 100%;\n      --tw-inset-shadow: 0 0 #0000;\n      --tw-inset-shadow-color: initial;\n      --tw-inset-shadow-alpha: 100%;\n      --tw-ring-color: initial;\n      --tw-ring-shadow: 0 0 #0000;\n      --tw-inset-ring-color: initial;\n      --tw-inset-ring-shadow: 0 0 #0000;\n      --tw-ring-inset: initial;\n      --tw-ring-offset-width: 0px;\n      --tw-ring-offset-color: #fff;\n      --tw-ring-offset-shadow: 0 0 #0000;\n      --tw-duration: initial;\n      --tw-ease: initial;\n      --tw-outline-style: solid;\n    }\n  }\n}\n';
-
-// src/client/locales.ts
-var zh = {
-  "studiosUpdates.title": "\u7248\u672C\u4E0E\u66F4\u65B0",
-  "studiosUpdates.close": "\u5173\u95ED",
-  "studiosUpdates.loading": "\u6B63\u5728\u8BFB\u53D6\u7248\u672C\u2026",
-  "studiosUpdates.description": "\u7EDF\u4E00\u68C0\u67E5\u5DF2\u9002\u914D\u7684\u5DE5\u4F5C\u5BA4\u63D2\u4EF6\uFF0C\u901A\u8FC7 dsh \u5B89\u88C5\u66F4\u65B0\u5E76\u4FDD\u7559\u73B0\u6709\u6570\u636E\uFF1B\u539F\u5E94\u7528\u7248\u672C\u4EC5\u4F9B\u53C2\u8003",
-  "studiosUpdates.check": "\u68C0\u67E5\u66F4\u65B0",
-  "studiosUpdates.checkAll": "\u68C0\u67E5\u5168\u90E8",
-  "studiosUpdates.checking": "\u6B63\u5728\u68C0\u67E5\u2026",
-  "studiosUpdates.current": "\u63D2\u4EF6 v{version}",
-  "studiosUpdates.upstream": "\u539F\u5E94\u7528 v{version}",
-  "studiosUpdates.install": "\u5347\u7EA7\u81F3 v{version}",
-  "studiosUpdates.releases": "\u67E5\u770B\u53D1\u5E03\u8BB0\u5F55",
-  "studiosUpdates.connection": "\u66F4\u65B0\u670D\u52A1\u8FDE\u63A5\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5",
-  "studiosUpdates.recheck": "\u7248\u672C\u6216\u66F4\u65B0\u72B6\u6001\u5DF2\u53D8\u5316\uFF0C\u8BF7\u91CD\u65B0\u68C0\u67E5",
-  "studiosUpdates.retry": "\u91CD\u8BD5",
-  "studiosUpdates.empty": "\u6CA1\u6709\u5DF2\u542F\u7528\u7684\u5DE5\u4F5C\u5BA4",
-  "studiosUpdates.record": "\u66F4\u65B0\u8BB0\u5F55\u65E0\u6CD5\u8BFB\u53D6\uFF0C\u5DF2\u6682\u505C\u5347\u7EA7\uFF1B\u8BF7\u68C0\u67E5\u66F4\u65B0\u76EE\u5F55\u6743\u9650\u6216\u6062\u590D\u8BB0\u5F55\u540E\u91CD\u8BD5\uFF0C\u5176\u4ED6\u5DE5\u4F5C\u5BA4\u529F\u80FD\u53EF\u7EE7\u7EED\u4F7F\u7528",
-  "studiosUpdates.state.idle": "\u5C1A\u672A\u68C0\u67E5",
-  "studiosUpdates.state.available": "\u53EF\u5347\u7EA7\u81F3 v{version}",
-  "studiosUpdates.state.latest": "\u5F53\u524D\u63D2\u4EF6\u5DF2\u662F\u6700\u65B0\u53D1\u5E03\u7248\u672C",
-  "studiosUpdates.state.unpublished": "\u6682\u672A\u53D1\u5E03\u9002\u914D\u5B89\u88C5\u5305",
-  "studiosUpdates.state.incompatible": "\u53D1\u73B0 v{version}\uFF0C\u5C1A\u672A\u9002\u914D\u5F53\u524D dsh",
-  "studiosUpdates.state.unconfigured": "\u5C1A\u672A\u914D\u7F6E\u63D2\u4EF6\u66F4\u65B0\u6765\u6E90",
-  "studiosUpdates.state.failed": "\u68C0\u67E5\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5\u6216\u67E5\u770B\u53D1\u5E03\u8BB0\u5F55",
-  "studiosUpdates.phase.downloading": "\u6B63\u5728\u4E0B\u8F7D\u5B89\u88C5\u5305\u2026",
-  "studiosUpdates.phase.verifying": "\u6B63\u5728\u6838\u5BF9\u5B89\u88C5\u5305\u2026",
-  "studiosUpdates.phase.installing": "dsh \u6B63\u5728\u5B89\u88C5\u66F4\u65B0\u2026",
-  "studiosUpdates.phase.complete": "\u5DF2\u5B89\u88C5 v{version}",
-  "studiosUpdates.phase.restart-required": "\u5DF2\u5B89\u88C5 v{version}\uFF0C\u8BF7\u5B8C\u6574\u91CD\u542F dsh \u540E\u4F7F\u7528",
-  "studiosUpdates.phase.failed": "\u5347\u7EA7\u5931\u8D25\uFF0C\u8BF7\u91CD\u65B0\u68C0\u67E5\uFF1B\u73B0\u6709\u5DE5\u4F5C\u5BA4\u6570\u636E\u4FDD\u7559",
-  "studiosUpdates.phase.unknown": "\u5347\u7EA7\u7ED3\u679C\u5C1A\u672A\u786E\u8BA4\uFF0C\u8BF7\u91CD\u542F dsh \u540E\u6838\u5BF9\u63D2\u4EF6\u7248\u672C",
-  "mentions.unavailable": "\u5DE5\u4F5C\u5BA4\u76EE\u5F55\u6682\u4E0D\u53EF\u7528",
-  "mentions.disabled": "\u6307\u5B9A\u5DE5\u4F5C\u5BA4\u5DF2\u505C\u7528\uFF0C\u8BF7\u91CD\u65B0\u9009\u62E9",
-  "title": "\u5DE5\u4F5C\u5BA4",
-  "rail.title": "\u5DE5\u4F5C\u5BA4\uFF08\u5C55\u5F00\u4FA7\u8FB9\u680F\u67E5\u770B\uFF09",
-  "handle.title": "\u6309\u4F4F\u62D6\u52A8\u4F4D\u7F6E \xB7 \u53CC\u51FB\u590D\u4F4D",
-  "handle.aria": "\u62D6\u52A8\u5DE5\u4F5C\u53F0\u4F4D\u7F6E",
-  "menu.search": "\u641C\u7D22\u9879\u76EE",
-  "menu.viewOptions": "\u8BBE\u7F6E",
-  "menu.add": "\u6DFB\u52A0\u9879\u76EE",
-  "search.placeholder": "\u641C\u7D22\u9879\u76EE\u2026",
-  "search.close": "\u5173\u95ED\u641C\u7D22",
-  "sort.label": "\u6392\u5E8F\u65B9\u5F0F",
-  "sort.manual": "\u624B\u52A8",
-  "sort.recent": "\u6700\u8FD1",
-  "menu.manage": "\u7BA1\u7406\u9879\u76EE\u2026",
-  "add.guideTitle": "\u63A5\u5165\u65B0\u9879\u76EE",
-  "add.guideBody": "\u5DE5\u4F5C\u53F0\u91CC\u7684\u9879\u76EE\u5C31\u662F DSH \u63D2\u4EF6\u2014\u2014\u63D2\u4EF6\u6CE8\u518C\u4E00\u5F20\u300C\u5DE5\u4F5C\u53F0\u9879\u76EE\u5361\u7247\u300D\u5373\u81EA\u52A8\u5165\u9A7B\uFF08\u534F\u8BAE\u89C1\u9879\u76EE PRD \xA75.3\uFF09\u3002\u5DF2\u5B89\u88C5\u4F46\u672A\u5165\u9A7B\u7684\u63D2\u4EF6\u9700\u5728\u63D2\u4EF6\u4EE3\u7801\u91CC\u5B8C\u6210\u6CE8\u518C\u3002",
-  "add.market": "\u6D4F\u89C8\u63D2\u4EF6\u5E02\u573A",
-  "add.shortcutTitle": "\u672C\u5730\u5FEB\u6377\u65B9\u5F0F",
-  "add.shortcutDesc": "\u628A\u4EFB\u610F\u7F51\u5740\u6536\u8FDB\u5DE5\u4F5C\u53F0\uFF0C\u70B9\u51FB\u65B0\u6807\u7B7E\u6253\u5F00\uFF08\u4EC5\u5B58\u672C\u673A\uFF09\u3002",
-  "add.shortcutNamePh": "\u540D\u79F0",
-  "add.shortcutIcon": "\u56FE\u6807\uFF08emoji\uFF0C\u53EF\u9009\uFF09",
-  "add.shortcutHref": "\u94FE\u63A5\uFF08http/https\uFF09",
-  "add.shortcutAdd": "\u6DFB\u52A0",
-  "add.shortcutInvalid": "\u8BF7\u586B\u5199\u540D\u79F0\u4E0E\u5408\u6CD5\u7684 http/https \u94FE\u63A5",
-  "manage.title": "\u7BA1\u7406\u9879\u76EE",
-  "manage.done": "\u5B8C\u6210",
-  "manage.renamePh": "\u663E\u793A\u540D",
-  "manage.hide": "\u9690\u85CF",
-  "manage.show": "\u663E\u793A",
-  "manage.removed": "\u5DF2\u5220\u9664\u7684\u9879\u76EE",
-  "manage.readd": "\u91CD\u65B0\u6DFB\u52A0",
-  "manage.deleteShortcut": "\u5220\u9664\u5FEB\u6377\u65B9\u5F0F",
-  "shortcut.badge": "\u672C\u5730",
-  "add.chooseLayout": "\u9009\u62E9\u5E03\u5C40\u6A21\u5F0F",
-  "add.layoutNamePh": "\u5E03\u5C40\u540D\u79F0",
-  "add.folderParent": "\u9879\u76EE\u6587\u4EF6\u5939",
-  "add.folderPick": "\u9009\u62E9\u4F4D\u7F6E\u2026",
-  "add.folderNone": "\u672A\u9009\u62E9\uFF08\u70B9\u53F3\u4FA7\u300C\u9009\u62E9\u4F4D\u7F6E\u2026\u300D\u5728\u8D44\u6E90\u7BA1\u7406\u5668\u7A97\u53E3\u91CC\u6311\u4E00\u4E2A\u6587\u4EF6\u5939\uFF09",
-  "add.folderRequired": "\u8BF7\u5148\u9009\u62E9\u9879\u76EE\u6587\u4EF6\u5939\u7684\u4F4D\u7F6E",
-  "add.folderPicking": "\u7B49\u5F85\u9009\u62E9\u2026",
-  "add.folderPickerHint": "\u6B63\u5728\u7B49\u5F85\u6587\u4EF6\u5939\u9009\u62E9\uFF1B\u82E5\u672A\u770B\u5230\u9009\u62E9\u7A97\u53E3\uFF0C\u53EF\u68C0\u67E5\u4EFB\u52A1\u680F\uFF0C\u6216\u4F7F\u7528\u300C\u624B\u52A8\u8F93\u5165\u300D\u3002",
-  "add.folderPickFail": "\u76EE\u5F55\u9009\u62E9\u5931\u8D25\uFF1A{msg}",
-  "add.folderPickerUnavailable": "\u7CFB\u7EDF\u76EE\u5F55\u9009\u62E9\u5668\u4E0D\u53EF\u7528\uFF0C\u8BF7\u7528\u300C\u624B\u52A8\u8F93\u5165\u300D\u7C98\u8D34\u8DEF\u5F84",
-  "add.folderManual": "\u624B\u52A8\u8F93\u5165",
-  "add.folderManualPh": "\u7C98\u8D34\u6587\u4EF6\u5939\u7EDD\u5BF9\u8DEF\u5F84\uFF0C\u56DE\u8F66\u786E\u8BA4",
-  "add.folderManualOk": "\u4F7F\u7528\u6B64\u8DEF\u5F84",
-  "add.folderManualEmpty": "\u8BF7\u8F93\u5165\u6587\u4EF6\u5939\u7EDD\u5BF9\u8DEF\u5F84",
-  "add.folderManualAbs": "\u8BF7\u8F93\u5165\u7EDD\u5BF9\u8DEF\u5F84\uFF08\u5982 C:\\Users\\me\\Projects \u6216 /home/me/projects\uFF09",
-  "add.folderCreateFail": "\u9879\u76EE\u6587\u4EF6\u5939\u521B\u5EFA\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u8DEF\u5F84\u540E\u91CD\u8BD5",
-  "add.layoutSave": "\u8FDB\u5165\u5DE5\u4F5C\u533A",
-  "add.layoutInvalid": "\u8BF7\u586B\u5199\u5E03\u5C40\u540D\u79F0",
-  "manage.deleteLayout": "\u5220\u9664\u5E03\u5C40",
-  "manage.deleteProject": "\u5220\u9664\u9879\u76EE",
-  "manage.changeView": "\u53D8\u66F4\u89C6\u56FE",
-  "viewPick.title": "\u9009\u62E9\u65B0\u89C6\u56FE\uFF08\u5185\u5BB9\u7A97\u81EA\u52A8\u8FC1\u5165\uFF09",
-  "confirm.title": "\u5220\u9664\u9879\u76EE",
-  "confirm.cancel": "\u53D6\u6D88",
-  "confirm.delete": "\u5220\u9664",
-  "confirm.layoutBody": "\u786E\u5B9A\u5220\u9664\u300C{name}\u300D\uFF1F\u8BE5\u5DE5\u4F5C\u533A\u53CA\u5176\u5E03\u5C40\u5C06\u88AB\u79FB\u9664\uFF0C\u6B64\u64CD\u4F5C\u4E0D\u53EF\u6062\u590D\u3002",
-  "confirm.shortcutBody": "\u786E\u5B9A\u5220\u9664\u5FEB\u6377\u65B9\u5F0F\u300C{name}\u300D\uFF1F\u6B64\u64CD\u4F5C\u4E0D\u53EF\u6062\u590D\u3002",
-  "confirm.projectBody": "\u300C{name}\u300D\u5C06\u4ECE\u5DE5\u4F5C\u53F0\u5F7B\u5E95\u79FB\u9664\uFF08\u5BF9\u8BDD\u4E0E\u9879\u76EE\u6587\u4EF6\u90FD\u4FDD\u7559\uFF0C\u53EA\u662F\u4E0D\u518D\u663E\u793A\u9879\u76EE\u5361\u7247\uFF09\u3002",
-  "pane.browser": "\u6D4F\u89C8\u5668",
-  "pane.explorer": "\u8D44\u6E90\u7BA1\u7406\u5668",
-  "pane.scm": "\u6E90\u4EE3\u7801\u7BA1\u7406",
-  "pane.tasks": "\u4EFB\u52A1\u7BA1\u7406",
-  "pane.terminal": "\u7EC8\u7AEF",
-  "pane.custom": "\u81EA\u5B9A\u4E49",
-  "pane.anim": "\u52A8\u753B",
-  "pane.console": "\u63A7\u5236\u5BA4",
-  "pane.refresh": "\u5237\u65B0",
-  "pane.animUrlPh": "\u7C98\u8D34\u52A8\u753B\u7AD9\u70B9\u5730\u5740\u540E\u56DE\u8F66",
-  "custom.title": "\u81EA\u5B9A\u4E49\u8FD9\u4E2A\u7A97\u53E3",
-  "custom.hint": "\u53D1\u9001\u540E\u5C06\u81EA\u52A8\u65B0\u5EFA\u4E00\u4E2A\u4F1A\u8BDD\uFF0C\u4E13\u95E8\u8D1F\u8D23\u8FD9\u4E2A\u7A97\u53E3\u7684\u81EA\u5B9A\u4E49\u8BBE\u8BA1\u3002",
-  "custom.placeholder": "\u544A\u8BC9 AI \u4F60\u60F3\u8BA9\u8FD9\u4E2A\u7A97\u53E3\u505A\u4EC0\u4E48\uFF0C\u4F8B\u5982\uFF1A\u505A\u4E00\u4E2A\u5C55\u793A\u6211\u65C5\u884C\u8DB3\u8FF9\u7684\u65F6\u95F4\u7EBF\u9875\u9762\u2026",
-  "custom.project": "\u6240\u5C5E\u9879\u76EE",
-  "custom.modeNew": "\u65B0\u5EFA\u5BF9\u8BDD",
-  "custom.modeSend": "\u53D1\u9001\u5230\u4F1A\u8BDD",
-  "custom.session": "\u9009\u62E9\u4F1A\u8BDD",
-  "custom.sessionCurrent": "\uFF08\u5F53\u524D\uFF09",
-  "custom.hintSend": "\u5185\u5BB9\u5C06\u76F4\u63A5\u53D1\u9001\u5230\u4F60\u9009\u62E9\u7684\u4F1A\u8BDD\uFF08\u9ED8\u8BA4\u5F53\u524D\u4F1A\u8BDD\uFF09\uFF0C\u7528\u4E8E\u8BA8\u8BBA\u8FD9\u4E2A\u7A97\u53E3\u7684\u81EA\u5B9A\u4E49\u8BBE\u8BA1\u3002",
-  "custom.send": "\u53D1\u9001\u5E76\u65B0\u5EFA\u5BF9\u8BDD",
-  "custom.sendToSession": "\u53D1\u9001\u5230\u8BE5\u4F1A\u8BDD",
-  "custom.sent": "\u5DF2\u53D1\u9001\u5230\u4F1A\u8BDD",
-  "custom.done": "\u5DF2\u65B0\u5EFA\u4E13\u5C5E\u5BF9\u8BDD",
-  "custom.doneHint": "AI \u6B63\u5728\u65B0\u4F1A\u8BDD\u4E2D\u4E3A\u4F60\u8BBE\u8BA1\u8FD9\u4E2A\u7A97\u53E3\u3002\u5173\u95ED\u672C\u6807\u7B7E\u5373\u53EF\u8FD4\u56DE\u7A97\u53E3\u9009\u62E9\u3002",
-  "custom.fail": "\u521B\u5EFA\u5BF9\u8BDD\u5931\u8D25",
-  "custom.group": "\u5206\u7EC4\uFF08\u5DE5\u4F5C\u533A\uFF09",
-  "custom.groupNone": "\u672A\u5206\u7EC4",
-  "custom.groupNew": "\uFF0B \u65B0\u5EFA\u4E00\u4E2A\u5206\u7EC4\u2026",
-  "custom.groupNewParent": "\u5206\u7EC4\u7236\u76EE\u5F55",
-  "custom.groupNewName": "\u65B0\u5206\u7EC4\u540D",
-  "custom.groupNewParentPh": "\u4F8B\u5982 E:\\AI_Workspace\\DeepseekHarness",
-  "custom.groupNewNamePh": "\u4F8B\u5982 MyProject\uFF08\u5C06\u65B0\u5EFA\u6B64\u6587\u4EF6\u5939\u5E76\u6CE8\u518C\u4E3A\u5206\u7EC4\uFF09",
-  "custom.groupNeedPath": "\u8BF7\u586B\u5199\u5206\u7EC4\u7236\u76EE\u5F55\u548C\u65B0\u5206\u7EC4\u540D",
-  "bind.folder": "\u9879\u76EE\u6587\u4EF6\u5939",
-  "bind.folderChange": "\u66F4\u6539",
-  "bind.folderNone": "\u672A\u8BBE\u7F6E\uFF08\u5EFA\u8BAE\u8BBE\u7F6E\uFF1A\u9879\u76EE\u4EA7\u51FA\u6587\u4EF6\u90FD\u4F1A\u653E\u8FDB\u8FD9\u91CC\uFF09",
-  "customLayout.add": "\u81EA\u5B9A\u4E49",
-  "customLayout.addTitle": "\u81EA\u5B9A\u4E49\u4E00\u4E2A\u5E03\u5C40\uFF08\u751F\u6210\u63D0\u793A\u8BCD\uFF09",
-  "customLayout.title": "\u81EA\u5B9A\u4E49\u5E03\u5C40",
-  "customLayout.placeholder": "\u63CF\u8FF0\u4F60\u60F3\u8981\u7684\u5E03\u5C40\uFF0C\u4F8B\u5982\uFF1A\u53F3\u4FA7\u7AD6\u957F\u5BF9\u8BDD\u7A97\uFF0C\u5DE6\u4FA7\u4E0A\u4E0B\u4E24\u4E2A\u4E00\u6837\u5927\u7684\u7A97\u2026",
-  "customLayout.copy": "\u590D\u5236\u63D0\u793A\u8BCD\u5230\u526A\u8D34\u677F",
-  "customLayout.copied": "\u63D0\u793A\u8BCD\u5DF2\u590D\u5236\u5230\u526A\u8D34\u677F\u3002\u53BB\u4EFB\u610F\u4E00\u4E2A DSH \u5BF9\u8BDD\u91CC\u7C98\u8D34\u53D1\u9001\uFF0C\u5BF9\u65B9\u7684 dsh \u5C31\u77E5\u9053\u8981\u505A\u4EC0\u4E48\u4E86\u3002",
-  "customLayout.copyFail": "\u590D\u5236\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u5168\u9009\u8F93\u5165\u6846\u5185\u5BB9\u590D\u5236\u3002",
-  "custom.autoBound": "\u5DF2\u4E3A\u8BE5\u9879\u76EE\u5173\u8054\u5F53\u524D\u5BF9\u8BDD\u3002",
-  "custom.keptBinding": "\u8BE5\u9879\u76EE\u5DF2\u6709\u7ED1\u5B9A\u7684\u5BF9\u8BDD\uFF0C\u6309\u89C4\u5219\u672A\u81EA\u52A8\u66F4\u6539\u3002",
-  "console.name": "\u63A7\u5236\u5BA4",
-  "console.title": "\u63A7\u5236\u5BA4",
-  "console.themeLabel": "\u9762\u677F\u4E3B\u9898",
-  "console.cols": "\u6BCF\u884C",
-  "console.colsLabel": "\u6BCF\u884C\u663E\u793A\u9879\u76EE\u6570",
-  "console.shapeLabel": "\u5361\u7247\u5F62\u72B6",
-  "console.bgLabel": "\u80CC\u666F",
-  "console.bgPlain": "\u7EAF\u8272\u80CC\u666F",
-  "console.bgGlow": "\u6D41\u5149\u80CC\u666F",
-  "console.bgPhoto": "\u4E0A\u4F20\u5A92\u4F53",
-  "console.bgCustom": "\u81EA\u5B9A\u4E49\u80CC\u666F",
-  "console.bgEdit": "\u80CC\u666F\u8BBE\u7F6E",
-  "console.bgEditPlain": "\u7EAF\u8272\u80CC\u666F\u8BBE\u7F6E",
-  "console.bgEditGlow": "\u6D41\u5149\u80CC\u666F\u8BBE\u7F6E",
-  "console.bgEditPhoto": "\u7167\u7247\u8BBE\u7F6E",
-  "console.bgEditBack": "\u8FD4\u56DE",
-  "console.bgEditReset": "\u6062\u590D\u521D\u59CB",
-  "console.bgEditType": "\u70B9\u51FB\u6216\u60AC\u505C\u8F93\u5165\u6570\u503C",
-  "console.bgPhotoUse": "\u4F7F\u7528\u6B64\u7167\u7247",
-  "console.bgPhotoCurrent": "\u5F53\u524D\u4F7F\u7528",
-  "console.bgPhotoNone": "\u8FD8\u6CA1\u6709\u4E0A\u4F20\u8FC7\u7167\u7247",
-  "console.bgMediaDrag": "\u62D6\u52A8\u8C03\u6574\u987A\u5E8F",
-  "console.bgPhotoDelete": "\u5220\u9664\u8FD9\u6761\u5A92\u4F53",
-  "console.bgGridLabel": "\u7F51\u683C\u80CC\u666F",
-  "console.bgTipB": "\u8D34\u7247\u6A21\u7CCA\u7A0B\u5EA6",
-  "console.bgTipT": "\u7F51\u683C\u7EBF\u900F\u660E\u5EA6",
-  "console.bgTipH": "\u8272\u76F8",
-  "console.bgTipS": "\u9971\u548C\u5EA6",
-  "console.bgTipSpeed": "\u6D41\u5149\u79FB\u52A8\u901F\u5EA6\uFF080=\u5B8C\u5168\u4E0D\u52A8\uFF0C50=\u9ED8\u8BA4\uFF0C100 \u6700\u5FEB 2\xD7\uFF09",
-  "console.bgTipL": "\u660E\u5EA6",
-  "console.shapeSquare": "\u65B9\u5F62",
-  "console.shapeCircle": "\u5706\u5F62",
-  "console.themeDark": "\u6DF1\u8272",
-  "console.themeLight": "\u767D\u8272",
-  "console.themeSystem": "\u8DDF\u968F\u7CFB\u7EDF",
-  "console.idle": "\u7A7A\u95F2",
-  "console.busy": "\u5DE5\u4F5C\u4E2D",
-  "console.need": "\u5F85\u4F60\u51B3\u5B9A",
-  "console.done": "\u5DF2\u5B8C\u6210",
-  "console.kids": "\u5B50\u4EE3\u7406",
-  "console.noPreview": "\u6682\u65E0\u6D88\u606F",
-  "console.jump": "\u8DF3\u8F6C\u5230\u7ED1\u5B9A\u5BF9\u8BDD",
-  "console.empty": "\u8FD8\u6CA1\u6709\u9879\u76EE",
-  "console.joinExisting": "\u52A0\u5165\u73B0\u6709\u5BF9\u8BDD",
-  "console.newConv": "\u65B0\u5EFA\u5BF9\u8BDD",
-  "console.groupNone": "\u65E0\u5206\u7EC4\uFF08\u7528\u9879\u76EE\u6587\u4EF6\u5939\uFF09",
-  "console.groupExisting": "\u52A0\u5165\u73B0\u6709\u5206\u7EC4",
-  "console.groupNew": "\u65B0\u5EFA\u5206\u7EC4",
-  "console.chooseGroup": "\u9009\u62E9\u5206\u7EC4\u2026",
-  "console.blankNeedsGroup": "\u5F53\u524D DSH \u7684\u672A\u5206\u7EC4\u7A7A\u5BF9\u8BDD\u65E0\u6CD5\u8F93\u5165\uFF0C\u8BF7\u9009\u62E9\u5206\u7EC4\u6216\u52A0\u5165\u73B0\u6709\u5BF9\u8BDD\u3002",
-  "console.newParentPh": "\u5206\u7EC4\u7236\u76EE\u5F55\uFF0C\u4F8B\u5982 E:\\AI_Workspace",
-  "console.newNamePh": "\u5206\u7EC4\u6587\u4EF6\u5939\u540D\uFF08\u5C06\u521B\u5EFA\u5E76\u6CE8\u518C\uFF09",
-  "console.createBind": "\u65B0\u5EFA\u5E76\u7ED1\u5B9A",
-  "console.bindFail": "\u521B\u5EFA\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5",
-  "console.noSessions": "\u6CA1\u6709\u53EF\u7528\u5BF9\u8BDD",
-  "console.addProject": "\u6DFB\u52A0\u9879\u76EE",
-  "pane.wip": "\u5F00\u53D1\u4E2D\uFF08\u540E\u7EED\u7248\u672C\u63A5\u5165\uFF09",
-  "pane.explorerNoCwd": "\u5F53\u524D\u4F1A\u8BDD\u6CA1\u6709\u5DE5\u4F5C\u76EE\u5F55",
-  "pane.openLater": "\u8BE5\u7C7B\u578B\u6682\u4E0D\u652F\u6301\u9884\u89C8",
-  "file.loading": "\u52A0\u8F7D\u4E2D\u2026",
-  "file.fail": "\u6587\u4EF6\u8BFB\u53D6\u5931\u8D25",
-  "file.preview": "\u9884\u89C8",
-  "file.edit": "\u7F16\u8F91",
-  "file.save": "\u4FDD\u5B58",
-  "file.saveFail": "\u4FDD\u5B58\u5931\u8D25",
-  "pane.gitNotRepo": "\u5F53\u524D\u76EE\u5F55\u4E0D\u662F git \u4ED3\u5E93",
-  "pane.gitClean": "\u5DE5\u4F5C\u533A\u5E72\u51C0",
-  "pane.jobsEmpty": "\u5F53\u524D\u4F1A\u8BDD\u6682\u65E0\u540E\u53F0\u4EFB\u52A1",
-  "pane.termFail": "\u7EC8\u7AEF\u4E0D\u53EF\u7528\uFF08\u5BBF\u4E3B\u7F3A\u5C11 node-pty/ws \u6216\u8FDE\u63A5\u5931\u8D25\uFF09",
-  "pane.closeTab": "\u5173\u95ED\u6807\u7B7E\u9875",
-  "pane.collapse": "\u6298\u53E0\u7A97\u683C",
-  "annot.label": "\u6807\u6CE8\uFF1A\u70B9\u51FB\u6216\u62D6\u52A8\u7A97\u53E3\u4E2D\u7684\u4F4D\u7F6E\u63D0\u8981\u6C42",
-  "annot.hint": "\u70B9\u51FB\u6216\u62D6\u52A8\u6846\u9009\u7A97\u53E3\u4E2D\u7684\u4EFB\u610F\u4F4D\u7F6E\uFF0C\u518D\u8F93\u5165\u4F60\u7684\u8981\u6C42\uFF1B\u8FDE\u7EED\u6807\u6CE8\u4F1A\u4F9D\u6B21\u8FFD\u52A0\u5230\u8F93\u5165\u6846",
-  "annot.placeholder": "\u5BF9\u8FD9\u91CC\u63D0\u8981\u6C42\u2026\uFF08Enter \u786E\u8BA4\uFF0CShift+Enter \u6362\u884C\uFF0CEsc \u53D6\u6D88\uFF09",
-  "annot.ok": "\u786E\u8BA4\uFF1A\u6CE8\u5165\u5BF9\u8BDD\u6846\u8F93\u5165\u6846\uFF08\u4E0D\u53D1\u9001\uFF09",
-  "annot.cancel": "\u53D6\u6D88",
-  "annot.updateTitle": "\u66F4\u65B0\u516C\u544A",
-  "annot.curVer": "\u5F53\u524D\u7248\u672C",
-  "annot.checkNow": "\u68C0\u67E5\u66F4\u65B0",
-  "annot.checking": "\u68C0\u67E5\u4E2D\u2026",
-  "annot.autoCheck": "\u81EA\u52A8\u68C0\u67E5\u66F4\u65B0",
-  "annot.newVer": "\u53D1\u73B0\u65B0\u7248\u672C",
-  "annot.gotoRelease": "\u67E5\u770B\u53D1\u5E03\u9875",
-  "annot.skipVer": "\u5FFD\u7565\u6B64\u7248\u672C",
-  "annot.latest": "\u5DF2\u662F\u6700\u65B0\u7248\u672C",
-  "annot.checkFail": "\u68C0\u67E5\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u518D\u8BD5",
-  "annot.copyUpgrade": "\u590D\u5236\u5347\u7EA7\u6307\u4EE4",
-  "annot.copied": "\u5DF2\u590D\u5236 \u2713 \u8BF7\u5728\u4EFB\u610F\u5BF9\u8BDD\u4E2D\u53D1\u9001",
-  "annot.howUpdate": "\u66F4\u65B0\u65B9\u6CD5\uFF1A\u70B9\u300C\u590D\u5236\u5347\u7EA7\u6307\u4EE4\u300D\u2192 \u7C98\u8D34\u7ED9\u5F53\u524D AI \u4F1A\u8BDD\u7531\u5B83\u6267\u884C\uFF0C\u5B8C\u6210\u540E\u91CD\u542F DSH\uFF1B\u6216\u624B\u52A8\u5728\u7EC8\u7AEF\u8FD0\u884C\u5347\u7EA7\u547D\u4EE4\u3002",
-  "pane.expand": "\u5C55\u5F00\u7A97\u683C",
-  "pane.jobsTitle": "\u540E\u53F0\u4EFB\u52A1",
-  "pane.subagents": "\u5B50\u4EE3\u7406",
-  "pane.subagentsEmpty": "\u5F53\u524D\u4F1A\u8BDD\u6682\u65E0\u5B50\u4EE3\u7406",
-  "split.flip": "\u5207\u6362\u5BF9\u8BDD\u7A97\u4F4D\u7F6E\uFF08\u5DE6\u21C4\u53F3\uFF09",
-  "collab.unavailable": "\u8BF7\u5148\u5728 App \u4E2D\u6253\u5F00\u53EF\u7F16\u8F91\u7684\u5BF9\u8BDD\uFF0C\u518D\u4ECE\u5F53\u524D\u77ED\u5267\u5DE5\u4F5C\u53F0\u91CD\u8BD5\u534F\u4F5C\u3002",
-  "split.showChat": "\u663E\u793A\u804A\u5929",
-  "split.hideChat": "\u9690\u85CF\u804A\u5929",
-  "split.close": "\u8FD4\u56DE\u804A\u5929",
-  "split.dragSwap": "\u62D6\u52A8\u6807\u9898\u680F\u4E0E\u5176\u4ED6\u7A97\u4EA4\u6362\u4F4D\u7F6E",
-  "icons.title": "\u9009\u62E9\u56FE\u6807",
-  "icons.change": "\u66F4\u6362\u56FE\u6807",
-  "empty": "\u6682\u65E0\u9879\u76EE",
-  "update.badgeTitle": "\u6709\u65B0\u7248\u672C\u53EF\u7528",
-  "update.available": "\u65B0\u7248\u672C\u53EF\u7528",
-  "update.current": "\u5F53\u524D\u7248\u672C",
-  "update.copyAi": "\u590D\u5236 AI \u63D0\u793A\u8BCD",
-  "update.skip": "\u5FFD\u7565\u6B64\u7248\u672C",
-  "update.autoCheck": "\u81EA\u52A8\u68C0\u67E5\u66F4\u65B0",
-  "update.checkNow": "\u7ACB\u5373\u68C0\u67E5",
-  "update.checkFail": "\u4E0A\u6B21\u68C0\u67E5\u672A\u6210\u529F",
-  "update.checking": "\u68C0\u67E5\u4E2D\u2026",
-  "update.upToDate": "\u5DF2\u662F\u6700\u65B0\u7248\u672C",
-  "update.copied": "\u5DF2\u590D\u5236",
-  "update.copyFail": "\u590D\u5236\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u9009\u62E9\u6587\u672C",
-  "update.skipDone": "\u5DF2\u5FFD\u7565\u6B64\u7248\u672C\uFF08\u4E0B\u4E00\u7248\u53D1\u5E03\u65F6\u518D\u63D0\u9192\uFF09",
-  "update.upgradeHint": "\u6267\u884C\u547D\u4EE4\u540E\u9700\u91CD\u542F dsh web \u5E76\u5237\u65B0\u9875\u9762",
-  "update.upgradeHintDesktop": "\u8BF7\u4F7F\u7528\u684C\u9762\u7AEF\u81EA\u5E26 CLI\uFF1B\u5B89\u88C5\u524D\u5B8C\u6574\u9000\u51FA\uFF0C\u5B8C\u6210\u540E\u624B\u52A8\u91CD\u65B0\u6253\u5F00\u684C\u9762\u7AEF"
-};
-var en = {
-  "studiosUpdates.title": "Versions and updates",
-  "studiosUpdates.close": "Close",
-  "studiosUpdates.loading": "Loading versions\u2026",
-  "studiosUpdates.description": "Check adapted studio plugins and install through dsh while retaining existing data. Original app versions are shown for reference.",
-  "studiosUpdates.check": "Check updates",
-  "studiosUpdates.checkAll": "Check all",
-  "studiosUpdates.checking": "Checking\u2026",
-  "studiosUpdates.current": "Plugin v{version}",
-  "studiosUpdates.upstream": "Original app v{version}",
-  "studiosUpdates.install": "Update to v{version}",
-  "studiosUpdates.releases": "View releases",
-  "studiosUpdates.connection": "Cannot reach the update service. Retry.",
-  "studiosUpdates.recheck": "The version or update state has changed. Check again.",
-  "studiosUpdates.retry": "Retry",
-  "studiosUpdates.empty": "No enabled studios",
-  "studiosUpdates.record": "Update history cannot be read, so installation is paused. Check the update directory permissions or restore its record, then retry. Other studio features remain available.",
-  "studiosUpdates.state.idle": "Not checked",
-  "studiosUpdates.state.available": "v{version} is available",
-  "studiosUpdates.state.latest": "The installed plugin is the latest published version",
-  "studiosUpdates.state.unpublished": "No adapted installation package has been published",
-  "studiosUpdates.state.incompatible": "v{version} is not compatible with this dsh version",
-  "studiosUpdates.state.unconfigured": "No plugin update source is configured",
-  "studiosUpdates.state.failed": "Check failed. Retry or view the releases.",
-  "studiosUpdates.phase.downloading": "Downloading the package\u2026",
-  "studiosUpdates.phase.verifying": "Verifying the package\u2026",
-  "studiosUpdates.phase.installing": "dsh is installing the update\u2026",
-  "studiosUpdates.phase.complete": "Installed v{version}",
-  "studiosUpdates.phase.restart-required": "Installed v{version}. Fully restart dsh to use it.",
-  "studiosUpdates.phase.failed": "Update failed. Check again; existing studio data is retained.",
-  "studiosUpdates.phase.unknown": "The update outcome is unconfirmed. Restart dsh and verify the plugin version.",
-  "mentions.unavailable": "The studio catalog is unavailable",
-  "mentions.disabled": "This studio is disabled. Choose another studio.",
-  "title": "Worktable",
-  "rail.title": "Worktable (expand sidebar to view)",
-  "handle.title": "Drag to move \xB7 double-click to reset",
-  "handle.aria": "Drag worktable position",
-  "menu.search": "Search projects",
-  "menu.viewOptions": "Settings",
-  "menu.add": "Add project",
-  "search.placeholder": "Search projects\u2026",
-  "search.close": "Close search",
-  "sort.label": "Sort by",
-  "sort.manual": "Manual",
-  "sort.recent": "Recent",
-  "menu.manage": "Manage projects\u2026",
-  "add.guideTitle": "Add a project",
-  "add.guideBody": "Projects in the worktable are DSH plugins \u2014 a plugin joins by registering a worktable project card (protocol in the project PRD \xA75.3). Installed plugins that have not registered need to do so in their code.",
-  "add.market": "Browse plugin marketplace",
-  "add.shortcutTitle": "Local shortcut",
-  "add.shortcutDesc": "Pin any URL into the worktable; opens in a new tab (stored locally only).",
-  "add.shortcutNamePh": "Name",
-  "add.shortcutIcon": "Icon (emoji, optional)",
-  "add.shortcutHref": "URL (http/https)",
-  "add.shortcutAdd": "Add",
-  "add.shortcutInvalid": "Enter a name and a valid http/https URL",
-  "manage.title": "Manage projects",
-  "manage.done": "Done",
-  "manage.renamePh": "Display name",
-  "manage.hide": "Hide",
-  "manage.show": "Show",
-  "manage.removed": "Removed projects",
-  "manage.readd": "Re-add",
-  "manage.deleteShortcut": "Delete shortcut",
-  "shortcut.badge": "Local",
-  "add.chooseLayout": "Choose a layout",
-  "add.layoutNamePh": "Layout name",
-  "add.folderParent": "Project folder",
-  "add.folderPick": "Choose\u2026",
-  "add.folderNone": "Not chosen (click Choose\u2026 to pick a folder in the explorer window)",
-  "add.folderRequired": "Pick the project folder location first",
-  "add.folderPicking": "Waiting for picker\u2026",
-  "add.folderPickerHint": "Waiting for the folder picker. If no window appears, check the taskbar or use \u201CManual\u201D.",
-  "add.folderPickFail": "Folder pick failed: {msg}",
-  "add.folderPickerUnavailable": "System folder picker unavailable \u2014 paste the path via \u201CManual\u201D",
-  "add.folderManual": "Manual",
-  "add.folderManualPh": "Paste an absolute folder path, Enter to confirm",
-  "add.folderManualOk": "Use this path",
-  "add.folderManualEmpty": "Enter an absolute folder path first",
-  "add.folderManualAbs": "Absolute path required (e.g. C:\\Users\\me\\Projects or /home/me/projects)",
-  "add.folderCreateFail": "Failed to create the project folder \u2014 check the path and retry",
-  "add.layoutSave": "Enter workspace",
-  "add.layoutInvalid": "Enter a layout name",
-  "manage.deleteLayout": "Delete layout",
-  "manage.deleteProject": "Delete project",
-  "manage.changeView": "Change layout",
-  "viewPick.title": "Pick a new layout (panes migrate automatically)",
-  "confirm.title": "Delete project",
-  "confirm.cancel": "Cancel",
-  "confirm.delete": "Delete",
-  "confirm.layoutBody": 'Delete "{name}"? Its workspace and layout will be removed. This cannot be undone.',
-  "confirm.shortcutBody": 'Delete shortcut "{name}"? This cannot be undone.',
-  "confirm.projectBody": '"{name}" will be removed from the worktable permanently (the conversation and project files are kept).',
-  "pane.browser": "Browser",
-  "pane.explorer": "Explorer",
-  "pane.scm": "Source control",
-  "pane.tasks": "Tasks",
-  "pane.terminal": "Terminal",
-  "pane.custom": "Custom",
-  "pane.anim": "Animation",
-  "pane.console": "Console",
-  "pane.refresh": "Refresh",
-  "pane.animUrlPh": "Paste the animation site URL and press Enter",
-  "custom.title": "Customize this pane",
-  "custom.hint": "Sending will create a new conversation dedicated to designing this pane.",
-  "custom.placeholder": "Tell the AI what you want this pane to do, e.g. a timeline page of my travels\u2026",
-  "custom.project": "Project",
-  "custom.modeNew": "New conversation",
-  "custom.modeSend": "Send to a conversation",
-  "custom.session": "Conversation",
-  "custom.sessionCurrent": " (current)",
-  "custom.hintSend": "The content will be sent directly to the conversation you pick (current by default).",
-  "custom.send": "Send & create conversation",
-  "custom.sendToSession": "Send to this conversation",
-  "custom.sent": "Sent to the conversation",
-  "custom.done": "Conversation created",
-  "custom.doneHint": "The AI is designing your pane in the new conversation. Close this tab to return to the pane picker.",
-  "custom.fail": "Failed to create conversation",
-  "custom.group": "Group (workspace)",
-  "custom.groupNone": "Ungrouped",
-  "custom.groupNew": "\uFF0B Create a new group\u2026",
-  "custom.groupNewParent": "Group parent folder",
-  "custom.groupNewName": "New group name",
-  "custom.groupNewParentPh": "e.g. E:\\AI_Workspace\\DeepseekHarness",
-  "custom.groupNewNamePh": "e.g. MyProject (folder will be created and registered)",
-  "custom.groupNeedPath": "Fill in the parent folder and new group name",
-  "bind.folder": "Project folder",
-  "bind.folderChange": "Change",
-  "bind.folderNone": "Not set (recommended: project outputs go here)",
-  "customLayout.add": "Custom",
-  "customLayout.addTitle": "Customize a layout (generate a prompt)",
-  "customLayout.title": "Custom layout",
-  "customLayout.placeholder": "Describe the layout you want, e.g. a tall chat column on the right and two equal panes stacked on the left\u2026",
-  "customLayout.copy": "Copy prompt to clipboard",
-  "customLayout.copied": "Prompt copied to clipboard. Paste it into any DSH conversation and send \u2014 that dsh will know what to do.",
-  "customLayout.copyFail": "Copy failed \u2014 select the text above and copy it manually.",
-  "custom.autoBound": "The project is linked to this chat.",
-  "custom.keptBinding": "This project already has a bound conversation, so it was not auto-changed.",
-  "console.name": "Console",
-  "console.title": "Console",
-  "console.themeLabel": "Panel theme",
-  "console.cols": "Per row",
-  "console.colsLabel": "Projects per row",
-  "console.shapeLabel": "Card shape",
-  "console.bgLabel": "Background",
-  "console.bgPlain": "Plain",
-  "console.bgGlow": "Glow",
-  "console.bgPhoto": "Upload media",
-  "console.bgCustom": "Custom background",
-  "console.bgEdit": "Background settings",
-  "console.bgEditPlain": "Plain background",
-  "console.bgEditGlow": "Glow background",
-  "console.bgEditPhoto": "Photo setup",
-  "console.bgEditBack": "Back",
-  "console.bgEditReset": "Reset",
-  "console.bgEditType": "Click or hover to type a value",
-  "console.bgPhotoUse": "Use this photo",
-  "console.bgPhotoCurrent": "In use",
-  "console.bgPhotoNone": "No photos yet",
-  "console.bgMediaDrag": "Drag to reorder",
-  "console.bgPhotoDelete": "Delete this media",
-  "console.bgGridLabel": "Background grid",
-  "console.bgTipB": "Card blur",
-  "console.bgTipT": "Grid opacity",
-  "console.bgTipH": "Hue",
-  "console.bgTipS": "Saturation",
-  "console.bgTipSpeed": "Glow speed (0 = still, 50 = default, 100 = 2\xD7 fastest)",
-  "console.bgTipL": "Lightness",
-  "console.shapeSquare": "Square",
-  "console.shapeCircle": "Circle",
-  "console.themeDark": "Dark",
-  "console.themeLight": "Light",
-  "console.themeSystem": "System",
-  "console.idle": "Idle",
-  "console.busy": "Working",
-  "console.need": "Needs you",
-  "console.done": "Done",
-  "console.kids": "subagents",
-  "console.noPreview": "No messages yet",
-  "console.jump": "Jump to bound conversation",
-  "console.empty": "No projects yet",
-  "console.joinExisting": "Join existing conversation",
-  "console.newConv": "New conversation",
-  "console.groupNone": "No group (use project folder)",
-  "console.groupExisting": "Join existing group",
-  "console.groupNew": "New group",
-  "console.chooseGroup": "Choose a group\u2026",
-  "console.blankNeedsGroup": "Blank ungrouped chats cannot accept input in this DSH. Choose a group or join an existing chat.",
-  "console.newParentPh": "Group parent folder, e.g. E:\\AI_Workspace",
-  "console.newNamePh": "Group folder name (created & registered)",
-  "console.createBind": "Create & bind",
-  "console.bindFail": "Creation failed, try again",
-  "console.noSessions": "No sessions available",
-  "console.addProject": "Add project",
-  "pane.wip": "Coming in a later version",
-  "pane.explorerNoCwd": "No working directory for the current session",
-  "pane.openLater": "Preview not supported for this type",
-  "file.loading": "Loading\u2026",
-  "file.fail": "Failed to read file",
-  "file.preview": "Preview",
-  "file.edit": "Edit",
-  "file.save": "Save",
-  "file.saveFail": "Save failed",
-  "pane.gitNotRepo": "Not a git repository",
-  "pane.gitClean": "Working tree clean",
-  "pane.jobsEmpty": "No background jobs in the current session",
-  "pane.termFail": "Terminal unavailable (host missing node-pty/ws, or connection failed)",
-  "pane.closeTab": "Close tab",
-  "pane.collapse": "Collapse pane",
-  "annot.label": "Annotate: click or drag a spot in the window",
-  "annot.hint": "Click or drag to select a spot in any window, then type your request; consecutive annotations append to the input.",
-  "annot.placeholder": "Describe what to change here\u2026 (Enter to confirm, Shift+Enter newline, Esc cancel)",
-  "annot.ok": "Confirm: put into chat input (not sent)",
-  "annot.cancel": "Cancel",
-  "annot.updateTitle": "Changelog",
-  "annot.curVer": "Current version",
-  "annot.checkNow": "Check now",
-  "annot.checking": "Checking\u2026",
-  "annot.autoCheck": "Auto check",
-  "annot.newVer": "New version",
-  "annot.gotoRelease": "View release",
-  "annot.skipVer": "Ignore this version",
-  "annot.latest": "Up to date",
-  "annot.checkFail": "Check failed \u2014 try again later",
-  "annot.copyUpgrade": "Copy upgrade command",
-  "annot.copied": "Copied \u2713 paste it in any conversation",
-  "annot.howUpdate": "How to update: click \u201CCopy upgrade command\u201D and paste it to your AI session to run, then restart DSH; or run the upgrade command in a terminal manually.",
-  "pane.expand": "Expand pane",
-  "pane.jobsTitle": "Background jobs",
-  "pane.subagents": "Subagents",
-  "pane.subagentsEmpty": "No subagents in the current session",
-  "split.flip": "Flip chat side (left \u21C4 right)",
-  "collab.unavailable": "Open an editable App conversation, then retry from the active short drama workspace.",
-  "split.showChat": "Show chat",
-  "split.hideChat": "Hide chat",
-  "split.close": "Back to chat",
-  "split.dragSwap": "Drag the title bar to swap panes",
-  "icons.title": "Pick an icon",
-  "icons.change": "Change icon",
-  "empty": "No projects yet",
-  "update.badgeTitle": "New version available",
-  "update.available": "New version available",
-  "update.current": "Current version",
-  "update.copyAi": "Copy AI prompt",
-  "update.skip": "Skip this version",
-  "update.autoCheck": "Auto-check updates",
-  "update.checkNow": "Check now",
-  "update.checkFail": "Last check failed",
-  "update.checking": "Checking\u2026",
-  "update.upToDate": "Up to date",
-  "update.copied": "Copied",
-  "update.copyFail": "Copy failed \u2014 select the text manually",
-  "update.skipDone": "Skipped (will remind on the next release)",
-  "update.upgradeHint": "Run the command, then restart dsh web and refresh",
-  "update.upgradeHintDesktop": "Use the Desktop bundled CLI; fully quit before installing, then reopen Desktop manually"
-};
-var NS = "worktable";
 
 // src/client/pathutil.ts
 function isAbs(p) {
@@ -9147,9 +7578,6 @@ function basenameOf(p) {
   const idx = Math.max(p.lastIndexOf("/"), p.lastIndexOf("\\"));
   return idx < 0 ? p : p.slice(idx + 1);
 }
-
-// src/client/split.tsx
-var import_react3 = require("react");
 
 // src/client/splitLifecycle.ts
 function installSplitLifecycle(splitStore2) {
@@ -9329,8 +7757,549 @@ var CHANGELOG_V030 = `\u66F4\u65B0\u516C\u544A \xB7 v0.4.0
 
 \u30103.1 \u6587\u5B57\u4E0E\u7EC6\u8282\u6253\u78E8\u3011\u5168\u5C40\u5B57\u4F53\u4E0E\u5B57\u53F7\u7EDF\u4E00\u4F18\u5316\u3001\u4E0B\u62C9\u9762\u677F\u73BB\u7483\u5316\u4E0E\u5BF9\u9F50\u3001\u83DC\u5355\u70B9\u9009\u540E\u4FDD\u6301\u6253\u5F00\u4FBF\u4E8E\u8FDE\u7EED\u9884\u89C8\u3001\u6309\u94AE\u63CF\u8FB9\u4E0E\u60AC\u505C\u53CD\u9988\u7B49\u4EA4\u4E92\u7EC6\u8282\uFF1B\u540C\u65F6\u4FEE\u590D\u4E86\u591A\u9879\u4F53\u9A8C\u95EE\u9898\uFF08\u7167\u7247\u4E0A\u4F20\u6E05\u6670\u5EA6\u3001\u80CC\u666F\u7F51\u683C\u7EBF\u5728\u7167\u7247\u6A21\u5F0F\u4E0B\u4E0D\u751F\u6548\u3001\u6D45\u8272\u4E3B\u9898\u4E0B\u5DE5\u4F5C\u72B6\u6001\u5149\u6548\u4E0D\u53EF\u89C1\u7B49\uFF09\u3002`;
 
+// src/client/locales.ts
+var zh = {
+  "studiosUpdates.title": "\u7248\u672C\u4E0E\u66F4\u65B0",
+  "studiosUpdates.close": "\u5173\u95ED",
+  "studiosUpdates.loading": "\u6B63\u5728\u8BFB\u53D6\u7248\u672C\u2026",
+  "studiosUpdates.description": "\u7EDF\u4E00\u68C0\u67E5\u5DF2\u9002\u914D\u7684\u5DE5\u4F5C\u5BA4\u63D2\u4EF6\uFF0C\u901A\u8FC7 dsh \u5B89\u88C5\u66F4\u65B0\u5E76\u4FDD\u7559\u73B0\u6709\u6570\u636E\uFF1B\u539F\u5E94\u7528\u7248\u672C\u4EC5\u4F9B\u53C2\u8003",
+  "studiosUpdates.check": "\u68C0\u67E5\u66F4\u65B0",
+  "studiosUpdates.checkAll": "\u68C0\u67E5\u5168\u90E8",
+  "studiosUpdates.checking": "\u6B63\u5728\u68C0\u67E5\u2026",
+  "studiosUpdates.current": "\u63D2\u4EF6 v{version}",
+  "studiosUpdates.upstream": "\u539F\u5E94\u7528 v{version}",
+  "studiosUpdates.install": "\u5347\u7EA7\u81F3 v{version}",
+  "studiosUpdates.releases": "\u67E5\u770B\u53D1\u5E03\u8BB0\u5F55",
+  "studiosUpdates.connection": "\u66F4\u65B0\u670D\u52A1\u8FDE\u63A5\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5",
+  "studiosUpdates.recheck": "\u7248\u672C\u6216\u66F4\u65B0\u72B6\u6001\u5DF2\u53D8\u5316\uFF0C\u8BF7\u91CD\u65B0\u68C0\u67E5",
+  "studiosUpdates.retry": "\u91CD\u8BD5",
+  "studiosUpdates.empty": "\u6CA1\u6709\u5DF2\u542F\u7528\u7684\u5DE5\u4F5C\u5BA4",
+  "studiosUpdates.record": "\u66F4\u65B0\u8BB0\u5F55\u65E0\u6CD5\u8BFB\u53D6\uFF0C\u5DF2\u6682\u505C\u5347\u7EA7\uFF1B\u8BF7\u68C0\u67E5\u66F4\u65B0\u76EE\u5F55\u6743\u9650\u6216\u6062\u590D\u8BB0\u5F55\u540E\u91CD\u8BD5\uFF0C\u5176\u4ED6\u5DE5\u4F5C\u5BA4\u529F\u80FD\u53EF\u7EE7\u7EED\u4F7F\u7528",
+  "studiosUpdates.state.idle": "\u5C1A\u672A\u68C0\u67E5",
+  "studiosUpdates.state.available": "\u53EF\u5347\u7EA7\u81F3 v{version}",
+  "studiosUpdates.state.latest": "\u5F53\u524D\u63D2\u4EF6\u5DF2\u662F\u6700\u65B0\u53D1\u5E03\u7248\u672C",
+  "studiosUpdates.state.unpublished": "\u6682\u672A\u53D1\u5E03\u9002\u914D\u5B89\u88C5\u5305",
+  "studiosUpdates.state.incompatible": "\u53D1\u73B0 v{version}\uFF0C\u5C1A\u672A\u9002\u914D\u5F53\u524D dsh",
+  "studiosUpdates.state.unconfigured": "\u5C1A\u672A\u914D\u7F6E\u63D2\u4EF6\u66F4\u65B0\u6765\u6E90",
+  "studiosUpdates.state.failed": "\u68C0\u67E5\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5\u6216\u67E5\u770B\u53D1\u5E03\u8BB0\u5F55",
+  "studiosUpdates.phase.downloading": "\u6B63\u5728\u4E0B\u8F7D\u5B89\u88C5\u5305\u2026",
+  "studiosUpdates.phase.verifying": "\u6B63\u5728\u6838\u5BF9\u5B89\u88C5\u5305\u2026",
+  "studiosUpdates.phase.installing": "dsh \u6B63\u5728\u5B89\u88C5\u66F4\u65B0\u2026",
+  "studiosUpdates.phase.complete": "\u5DF2\u5B89\u88C5 v{version}",
+  "studiosUpdates.phase.restart-required": "\u5DF2\u5B89\u88C5 v{version}\uFF0C\u8BF7\u5B8C\u6574\u91CD\u542F dsh \u540E\u4F7F\u7528",
+  "studiosUpdates.phase.failed": "\u5347\u7EA7\u5931\u8D25\uFF0C\u8BF7\u91CD\u65B0\u68C0\u67E5\uFF1B\u73B0\u6709\u5DE5\u4F5C\u5BA4\u6570\u636E\u4FDD\u7559",
+  "studiosUpdates.phase.unknown": "\u5347\u7EA7\u7ED3\u679C\u5C1A\u672A\u786E\u8BA4\uFF0C\u8BF7\u91CD\u542F dsh \u540E\u6838\u5BF9\u63D2\u4EF6\u7248\u672C",
+  "mentions.unavailable": "\u5DE5\u4F5C\u5BA4\u76EE\u5F55\u6682\u4E0D\u53EF\u7528",
+  "mentions.disabled": "\u6307\u5B9A\u5DE5\u4F5C\u5BA4\u5DF2\u505C\u7528\uFF0C\u8BF7\u91CD\u65B0\u9009\u62E9",
+  "title": "\u5DE5\u4F5C\u5BA4",
+  "rail.title": "\u5DE5\u4F5C\u5BA4\uFF08\u5C55\u5F00\u4FA7\u8FB9\u680F\u67E5\u770B\uFF09",
+  "handle.title": "\u6309\u4F4F\u62D6\u52A8\u4F4D\u7F6E \xB7 \u53CC\u51FB\u590D\u4F4D",
+  "handle.aria": "\u62D6\u52A8\u5DE5\u4F5C\u53F0\u4F4D\u7F6E",
+  "menu.search": "\u641C\u7D22\u9879\u76EE",
+  "menu.viewOptions": "\u8BBE\u7F6E",
+  "menu.add": "\u6DFB\u52A0\u9879\u76EE",
+  "search.placeholder": "\u641C\u7D22\u9879\u76EE\u2026",
+  "search.close": "\u5173\u95ED\u641C\u7D22",
+  "sort.label": "\u6392\u5E8F\u65B9\u5F0F",
+  "sort.manual": "\u624B\u52A8",
+  "sort.recent": "\u6700\u8FD1",
+  "menu.manage": "\u7BA1\u7406\u9879\u76EE\u2026",
+  "add.guideTitle": "\u63A5\u5165\u65B0\u9879\u76EE",
+  "add.guideBody": "\u5DE5\u4F5C\u53F0\u91CC\u7684\u9879\u76EE\u5C31\u662F DSH \u63D2\u4EF6\u2014\u2014\u63D2\u4EF6\u6CE8\u518C\u4E00\u5F20\u300C\u5DE5\u4F5C\u53F0\u9879\u76EE\u5361\u7247\u300D\u5373\u81EA\u52A8\u5165\u9A7B\uFF08\u534F\u8BAE\u89C1\u9879\u76EE PRD \xA75.3\uFF09\u3002\u5DF2\u5B89\u88C5\u4F46\u672A\u5165\u9A7B\u7684\u63D2\u4EF6\u9700\u5728\u63D2\u4EF6\u4EE3\u7801\u91CC\u5B8C\u6210\u6CE8\u518C\u3002",
+  "add.market": "\u6D4F\u89C8\u63D2\u4EF6\u5E02\u573A",
+  "add.shortcutTitle": "\u672C\u5730\u5FEB\u6377\u65B9\u5F0F",
+  "add.shortcutDesc": "\u628A\u4EFB\u610F\u7F51\u5740\u6536\u8FDB\u5DE5\u4F5C\u53F0\uFF0C\u70B9\u51FB\u65B0\u6807\u7B7E\u6253\u5F00\uFF08\u4EC5\u5B58\u672C\u673A\uFF09\u3002",
+  "add.shortcutNamePh": "\u540D\u79F0",
+  "add.shortcutIcon": "\u56FE\u6807\uFF08emoji\uFF0C\u53EF\u9009\uFF09",
+  "add.shortcutHref": "\u94FE\u63A5\uFF08http/https\uFF09",
+  "add.shortcutAdd": "\u6DFB\u52A0",
+  "add.shortcutInvalid": "\u8BF7\u586B\u5199\u540D\u79F0\u4E0E\u5408\u6CD5\u7684 http/https \u94FE\u63A5",
+  "manage.title": "\u7BA1\u7406\u9879\u76EE",
+  "manage.done": "\u5B8C\u6210",
+  "manage.renamePh": "\u663E\u793A\u540D",
+  "manage.hide": "\u9690\u85CF",
+  "manage.show": "\u663E\u793A",
+  "manage.removed": "\u5DF2\u5220\u9664\u7684\u9879\u76EE",
+  "manage.readd": "\u91CD\u65B0\u6DFB\u52A0",
+  "manage.deleteShortcut": "\u5220\u9664\u5FEB\u6377\u65B9\u5F0F",
+  "shortcut.badge": "\u672C\u5730",
+  "add.chooseLayout": "\u9009\u62E9\u5E03\u5C40\u6A21\u5F0F",
+  "add.layoutNamePh": "\u5E03\u5C40\u540D\u79F0",
+  "add.folderParent": "\u9879\u76EE\u6587\u4EF6\u5939",
+  "add.folderPick": "\u9009\u62E9\u4F4D\u7F6E\u2026",
+  "add.folderNone": "\u672A\u9009\u62E9\uFF08\u70B9\u53F3\u4FA7\u300C\u9009\u62E9\u4F4D\u7F6E\u2026\u300D\u5728\u8D44\u6E90\u7BA1\u7406\u5668\u7A97\u53E3\u91CC\u6311\u4E00\u4E2A\u6587\u4EF6\u5939\uFF09",
+  "add.folderRequired": "\u8BF7\u5148\u9009\u62E9\u9879\u76EE\u6587\u4EF6\u5939\u7684\u4F4D\u7F6E",
+  "add.folderPicking": "\u7B49\u5F85\u9009\u62E9\u2026",
+  "add.folderPickerHint": "\u6B63\u5728\u7B49\u5F85\u6587\u4EF6\u5939\u9009\u62E9\uFF1B\u82E5\u672A\u770B\u5230\u9009\u62E9\u7A97\u53E3\uFF0C\u53EF\u68C0\u67E5\u4EFB\u52A1\u680F\uFF0C\u6216\u4F7F\u7528\u300C\u624B\u52A8\u8F93\u5165\u300D\u3002",
+  "add.folderPickFail": "\u76EE\u5F55\u9009\u62E9\u5931\u8D25\uFF1A{msg}",
+  "add.folderPickerUnavailable": "\u7CFB\u7EDF\u76EE\u5F55\u9009\u62E9\u5668\u4E0D\u53EF\u7528\uFF0C\u8BF7\u7528\u300C\u624B\u52A8\u8F93\u5165\u300D\u7C98\u8D34\u8DEF\u5F84",
+  "add.folderManual": "\u624B\u52A8\u8F93\u5165",
+  "add.folderManualPh": "\u7C98\u8D34\u6587\u4EF6\u5939\u7EDD\u5BF9\u8DEF\u5F84\uFF0C\u56DE\u8F66\u786E\u8BA4",
+  "add.folderManualOk": "\u4F7F\u7528\u6B64\u8DEF\u5F84",
+  "add.folderManualEmpty": "\u8BF7\u8F93\u5165\u6587\u4EF6\u5939\u7EDD\u5BF9\u8DEF\u5F84",
+  "add.folderManualAbs": "\u8BF7\u8F93\u5165\u7EDD\u5BF9\u8DEF\u5F84\uFF08\u5982 C:\\Users\\me\\Projects \u6216 /home/me/projects\uFF09",
+  "add.folderCreateFail": "\u9879\u76EE\u6587\u4EF6\u5939\u521B\u5EFA\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u8DEF\u5F84\u540E\u91CD\u8BD5",
+  "add.layoutSave": "\u8FDB\u5165\u5DE5\u4F5C\u533A",
+  "add.studio": "\u65B0\u589E\u5DE5\u4F5C\u5BA4",
+  "add.studioHint": "\u8BA9 AI \u8BE2\u95EE\u4FDD\u5B58\u5230\u672C\u5730\u6216 GitHub\uFF0C\u5E76\u5728\u521B\u5EFA\u540E\u8BE2\u95EE\u662F\u5426\u7ACB\u5373\u5BFC\u5165\u3002",
+  "add.layoutInvalid": "\u8BF7\u586B\u5199\u5E03\u5C40\u540D\u79F0",
+  "manage.deleteLayout": "\u5220\u9664\u5E03\u5C40",
+  "manage.deleteProject": "\u5220\u9664\u9879\u76EE",
+  "manage.changeView": "\u53D8\u66F4\u89C6\u56FE",
+  "viewPick.title": "\u9009\u62E9\u65B0\u89C6\u56FE\uFF08\u5185\u5BB9\u7A97\u81EA\u52A8\u8FC1\u5165\uFF09",
+  "confirm.title": "\u5220\u9664\u9879\u76EE",
+  "confirm.cancel": "\u53D6\u6D88",
+  "confirm.delete": "\u5220\u9664",
+  "confirm.layoutBody": "\u786E\u5B9A\u5220\u9664\u300C{name}\u300D\uFF1F\u8BE5\u5DE5\u4F5C\u533A\u53CA\u5176\u5E03\u5C40\u5C06\u88AB\u79FB\u9664\uFF0C\u6B64\u64CD\u4F5C\u4E0D\u53EF\u6062\u590D\u3002",
+  "confirm.shortcutBody": "\u786E\u5B9A\u5220\u9664\u5FEB\u6377\u65B9\u5F0F\u300C{name}\u300D\uFF1F\u6B64\u64CD\u4F5C\u4E0D\u53EF\u6062\u590D\u3002",
+  "confirm.projectBody": "\u300C{name}\u300D\u5C06\u4ECE\u5DE5\u4F5C\u53F0\u5F7B\u5E95\u79FB\u9664\uFF08\u5BF9\u8BDD\u4E0E\u9879\u76EE\u6587\u4EF6\u90FD\u4FDD\u7559\uFF0C\u53EA\u662F\u4E0D\u518D\u663E\u793A\u9879\u76EE\u5361\u7247\uFF09\u3002",
+  "pane.browser": "\u6D4F\u89C8\u5668",
+  "pane.explorer": "\u8D44\u6E90\u7BA1\u7406\u5668",
+  "pane.scm": "\u6E90\u4EE3\u7801\u7BA1\u7406",
+  "pane.tasks": "\u4EFB\u52A1\u7BA1\u7406",
+  "pane.terminal": "\u7EC8\u7AEF",
+  "pane.custom": "\u81EA\u5B9A\u4E49",
+  "pane.anim": "\u52A8\u753B",
+  "pane.console": "\u63A7\u5236\u5BA4",
+  "pane.refresh": "\u5237\u65B0",
+  "pane.animUrlPh": "\u7C98\u8D34\u52A8\u753B\u7AD9\u70B9\u5730\u5740\u540E\u56DE\u8F66",
+  "custom.title": "\u81EA\u5B9A\u4E49\u8FD9\u4E2A\u7A97\u53E3",
+  "custom.hint": "\u53D1\u9001\u540E\u5C06\u81EA\u52A8\u65B0\u5EFA\u4E00\u4E2A\u4F1A\u8BDD\uFF0C\u4E13\u95E8\u8D1F\u8D23\u8FD9\u4E2A\u7A97\u53E3\u7684\u81EA\u5B9A\u4E49\u8BBE\u8BA1\u3002",
+  "custom.placeholder": "\u544A\u8BC9 AI \u4F60\u60F3\u8BA9\u8FD9\u4E2A\u7A97\u53E3\u505A\u4EC0\u4E48\uFF0C\u4F8B\u5982\uFF1A\u505A\u4E00\u4E2A\u5C55\u793A\u6211\u65C5\u884C\u8DB3\u8FF9\u7684\u65F6\u95F4\u7EBF\u9875\u9762\u2026",
+  "custom.project": "\u6240\u5C5E\u9879\u76EE",
+  "custom.modeNew": "\u65B0\u5EFA\u5BF9\u8BDD",
+  "custom.modeSend": "\u53D1\u9001\u5230\u4F1A\u8BDD",
+  "custom.session": "\u9009\u62E9\u4F1A\u8BDD",
+  "custom.sessionCurrent": "\uFF08\u5F53\u524D\uFF09",
+  "custom.hintSend": "\u5185\u5BB9\u5C06\u76F4\u63A5\u53D1\u9001\u5230\u4F60\u9009\u62E9\u7684\u4F1A\u8BDD\uFF08\u9ED8\u8BA4\u5F53\u524D\u4F1A\u8BDD\uFF09\uFF0C\u7528\u4E8E\u8BA8\u8BBA\u8FD9\u4E2A\u7A97\u53E3\u7684\u81EA\u5B9A\u4E49\u8BBE\u8BA1\u3002",
+  "custom.send": "\u53D1\u9001\u5E76\u65B0\u5EFA\u5BF9\u8BDD",
+  "custom.sendToSession": "\u53D1\u9001\u5230\u8BE5\u4F1A\u8BDD",
+  "custom.sent": "\u5DF2\u53D1\u9001\u5230\u4F1A\u8BDD",
+  "custom.done": "\u5DF2\u65B0\u5EFA\u4E13\u5C5E\u5BF9\u8BDD",
+  "custom.doneHint": "AI \u6B63\u5728\u65B0\u4F1A\u8BDD\u4E2D\u4E3A\u4F60\u8BBE\u8BA1\u8FD9\u4E2A\u7A97\u53E3\u3002\u5173\u95ED\u672C\u6807\u7B7E\u5373\u53EF\u8FD4\u56DE\u7A97\u53E3\u9009\u62E9\u3002",
+  "custom.fail": "\u521B\u5EFA\u5BF9\u8BDD\u5931\u8D25",
+  "custom.group": "\u5206\u7EC4\uFF08\u5DE5\u4F5C\u533A\uFF09",
+  "custom.groupNone": "\u672A\u5206\u7EC4",
+  "custom.groupNew": "\uFF0B \u65B0\u5EFA\u4E00\u4E2A\u5206\u7EC4\u2026",
+  "custom.groupNewParent": "\u5206\u7EC4\u7236\u76EE\u5F55",
+  "custom.groupNewName": "\u65B0\u5206\u7EC4\u540D",
+  "custom.groupNewParentPh": "\u4F8B\u5982 E:\\AI_Workspace\\DeepseekHarness",
+  "custom.groupNewNamePh": "\u4F8B\u5982 MyProject\uFF08\u5C06\u65B0\u5EFA\u6B64\u6587\u4EF6\u5939\u5E76\u6CE8\u518C\u4E3A\u5206\u7EC4\uFF09",
+  "custom.groupNeedPath": "\u8BF7\u586B\u5199\u5206\u7EC4\u7236\u76EE\u5F55\u548C\u65B0\u5206\u7EC4\u540D",
+  "bind.folder": "\u9879\u76EE\u6587\u4EF6\u5939",
+  "bind.folderChange": "\u66F4\u6539",
+  "bind.folderNone": "\u672A\u8BBE\u7F6E\uFF08\u5EFA\u8BAE\u8BBE\u7F6E\uFF1A\u9879\u76EE\u4EA7\u51FA\u6587\u4EF6\u90FD\u4F1A\u653E\u8FDB\u8FD9\u91CC\uFF09",
+  "customLayout.add": "\u81EA\u5B9A\u4E49",
+  "customLayout.addTitle": "\u81EA\u5B9A\u4E49\u4E00\u4E2A\u5E03\u5C40\uFF08\u751F\u6210\u63D0\u793A\u8BCD\uFF09",
+  "customLayout.title": "\u81EA\u5B9A\u4E49\u5E03\u5C40",
+  "customLayout.placeholder": "\u63CF\u8FF0\u4F60\u60F3\u8981\u7684\u5E03\u5C40\uFF0C\u4F8B\u5982\uFF1A\u53F3\u4FA7\u7AD6\u957F\u5BF9\u8BDD\u7A97\uFF0C\u5DE6\u4FA7\u4E0A\u4E0B\u4E24\u4E2A\u4E00\u6837\u5927\u7684\u7A97\u2026",
+  "customLayout.copy": "\u590D\u5236\u63D0\u793A\u8BCD\u5230\u526A\u8D34\u677F",
+  "customLayout.copied": "\u63D0\u793A\u8BCD\u5DF2\u590D\u5236\u5230\u526A\u8D34\u677F\u3002\u53BB\u4EFB\u610F\u4E00\u4E2A DSH \u5BF9\u8BDD\u91CC\u7C98\u8D34\u53D1\u9001\uFF0C\u5BF9\u65B9\u7684 dsh \u5C31\u77E5\u9053\u8981\u505A\u4EC0\u4E48\u4E86\u3002",
+  "customLayout.copyFail": "\u590D\u5236\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u5168\u9009\u8F93\u5165\u6846\u5185\u5BB9\u590D\u5236\u3002",
+  "custom.autoBound": "\u5DF2\u4E3A\u8BE5\u9879\u76EE\u5173\u8054\u5F53\u524D\u5BF9\u8BDD\u3002",
+  "custom.keptBinding": "\u8BE5\u9879\u76EE\u5DF2\u6709\u7ED1\u5B9A\u7684\u5BF9\u8BDD\uFF0C\u6309\u89C4\u5219\u672A\u81EA\u52A8\u66F4\u6539\u3002",
+  "console.name": "\u63A7\u5236\u5BA4",
+  "console.title": "\u63A7\u5236\u5BA4",
+  "console.themeLabel": "\u9762\u677F\u4E3B\u9898",
+  "console.cols": "\u6BCF\u884C",
+  "console.colsLabel": "\u6BCF\u884C\u663E\u793A\u9879\u76EE\u6570",
+  "console.shapeLabel": "\u5361\u7247\u5F62\u72B6",
+  "console.bgLabel": "\u80CC\u666F",
+  "console.bgPlain": "\u7EAF\u8272\u80CC\u666F",
+  "console.bgGlow": "\u6D41\u5149\u80CC\u666F",
+  "console.bgPhoto": "\u4E0A\u4F20\u5A92\u4F53",
+  "console.bgCustom": "\u81EA\u5B9A\u4E49\u80CC\u666F",
+  "console.bgEdit": "\u80CC\u666F\u8BBE\u7F6E",
+  "console.bgEditPlain": "\u7EAF\u8272\u80CC\u666F\u8BBE\u7F6E",
+  "console.bgEditGlow": "\u6D41\u5149\u80CC\u666F\u8BBE\u7F6E",
+  "console.bgEditPhoto": "\u7167\u7247\u8BBE\u7F6E",
+  "console.bgEditBack": "\u8FD4\u56DE",
+  "console.bgEditReset": "\u6062\u590D\u521D\u59CB",
+  "console.bgEditType": "\u70B9\u51FB\u6216\u60AC\u505C\u8F93\u5165\u6570\u503C",
+  "console.bgPhotoUse": "\u4F7F\u7528\u6B64\u7167\u7247",
+  "console.bgPhotoCurrent": "\u5F53\u524D\u4F7F\u7528",
+  "console.bgPhotoNone": "\u8FD8\u6CA1\u6709\u4E0A\u4F20\u8FC7\u7167\u7247",
+  "console.bgMediaDrag": "\u62D6\u52A8\u8C03\u6574\u987A\u5E8F",
+  "console.bgPhotoDelete": "\u5220\u9664\u8FD9\u6761\u5A92\u4F53",
+  "console.bgGridLabel": "\u7F51\u683C\u80CC\u666F",
+  "console.bgTipB": "\u8D34\u7247\u6A21\u7CCA\u7A0B\u5EA6",
+  "console.bgTipT": "\u7F51\u683C\u7EBF\u900F\u660E\u5EA6",
+  "console.bgTipH": "\u8272\u76F8",
+  "console.bgTipS": "\u9971\u548C\u5EA6",
+  "console.bgTipSpeed": "\u6D41\u5149\u79FB\u52A8\u901F\u5EA6\uFF080=\u5B8C\u5168\u4E0D\u52A8\uFF0C50=\u9ED8\u8BA4\uFF0C100 \u6700\u5FEB 2\xD7\uFF09",
+  "console.bgTipL": "\u660E\u5EA6",
+  "console.shapeSquare": "\u65B9\u5F62",
+  "console.shapeCircle": "\u5706\u5F62",
+  "console.themeDark": "\u6DF1\u8272",
+  "console.themeLight": "\u767D\u8272",
+  "console.themeSystem": "\u8DDF\u968F\u7CFB\u7EDF",
+  "console.idle": "\u7A7A\u95F2",
+  "console.busy": "\u5DE5\u4F5C\u4E2D",
+  "console.need": "\u5F85\u4F60\u51B3\u5B9A",
+  "console.done": "\u5DF2\u5B8C\u6210",
+  "console.kids": "\u5B50\u4EE3\u7406",
+  "console.noPreview": "\u6682\u65E0\u6D88\u606F",
+  "console.jump": "\u8DF3\u8F6C\u5230\u7ED1\u5B9A\u5BF9\u8BDD",
+  "console.empty": "\u8FD8\u6CA1\u6709\u9879\u76EE",
+  "console.joinExisting": "\u52A0\u5165\u73B0\u6709\u5BF9\u8BDD",
+  "console.newConv": "\u65B0\u5EFA\u5BF9\u8BDD",
+  "console.groupNone": "\u65E0\u5206\u7EC4\uFF08\u7528\u9879\u76EE\u6587\u4EF6\u5939\uFF09",
+  "console.groupExisting": "\u52A0\u5165\u73B0\u6709\u5206\u7EC4",
+  "console.groupNew": "\u65B0\u5EFA\u5206\u7EC4",
+  "console.chooseGroup": "\u9009\u62E9\u5206\u7EC4\u2026",
+  "console.blankNeedsGroup": "\u5F53\u524D DSH \u7684\u672A\u5206\u7EC4\u7A7A\u5BF9\u8BDD\u65E0\u6CD5\u8F93\u5165\uFF0C\u8BF7\u9009\u62E9\u5206\u7EC4\u6216\u52A0\u5165\u73B0\u6709\u5BF9\u8BDD\u3002",
+  "console.newParentPh": "\u5206\u7EC4\u7236\u76EE\u5F55\uFF0C\u4F8B\u5982 E:\\AI_Workspace",
+  "console.newNamePh": "\u5206\u7EC4\u6587\u4EF6\u5939\u540D\uFF08\u5C06\u521B\u5EFA\u5E76\u6CE8\u518C\uFF09",
+  "console.createBind": "\u65B0\u5EFA\u5E76\u7ED1\u5B9A",
+  "console.bindFail": "\u521B\u5EFA\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5",
+  "console.noSessions": "\u6CA1\u6709\u53EF\u7528\u5BF9\u8BDD",
+  "console.addProject": "\u6DFB\u52A0\u9879\u76EE",
+  "console.statusLabel": "\u5DE5\u4F5C\u5BA4\u72B6\u6001",
+  "console.statusTitle": "\u5F53\u524D\u5DE5\u4F5C\u5BA4\u4E0E\u670D\u52A1\u72B6\u6001",
+  "console.statusRefresh": "\u5237\u65B0",
+  "console.statusLoading": "\u8BFB\u53D6\u4E2D\u2026",
+  "console.statusFail": "\u5DE5\u4F5C\u5BA4\u72B6\u6001\u8BFB\u53D6\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5\u3002",
+  "console.installedStudios": "\u5DF2\u5B89\u88C5\u5DE5\u4F5C\u5BA4",
+  "console.noStudios": "\u5F53\u524D\u6CA1\u6709\u5B89\u88C5\u5B50\u5DE5\u4F5C\u5BA4",
+  "console.statusReady": "\u670D\u52A1\u5DF2\u542F\u52A8",
+  "console.statusOffline": "\u5DE5\u4F5C\u53F0\u6682\u672A\u8FDE\u63A5",
+  "console.workspacePath": "\u5DE5\u4F5C\u533A",
+  "console.workspaceUnknown": "\u8DDF\u968F\u5F53\u524D\u4F1A\u8BDD",
+  "pane.wip": "\u5F00\u53D1\u4E2D\uFF08\u540E\u7EED\u7248\u672C\u63A5\u5165\uFF09",
+  "pane.explorerNoCwd": "\u5F53\u524D\u4F1A\u8BDD\u6CA1\u6709\u5DE5\u4F5C\u76EE\u5F55",
+  "pane.openLater": "\u8BE5\u7C7B\u578B\u6682\u4E0D\u652F\u6301\u9884\u89C8",
+  "file.loading": "\u52A0\u8F7D\u4E2D\u2026",
+  "file.fail": "\u6587\u4EF6\u8BFB\u53D6\u5931\u8D25",
+  "file.preview": "\u9884\u89C8",
+  "file.edit": "\u7F16\u8F91",
+  "file.save": "\u4FDD\u5B58",
+  "file.saveFail": "\u4FDD\u5B58\u5931\u8D25",
+  "pane.gitNotRepo": "\u5F53\u524D\u76EE\u5F55\u4E0D\u662F git \u4ED3\u5E93",
+  "pane.gitClean": "\u5DE5\u4F5C\u533A\u5E72\u51C0",
+  "pane.jobsEmpty": "\u5F53\u524D\u4F1A\u8BDD\u6682\u65E0\u540E\u53F0\u4EFB\u52A1",
+  "pane.termFail": "\u7EC8\u7AEF\u4E0D\u53EF\u7528\uFF08\u5BBF\u4E3B\u7F3A\u5C11 node-pty/ws \u6216\u8FDE\u63A5\u5931\u8D25\uFF09",
+  "pane.closeTab": "\u5173\u95ED\u6807\u7B7E\u9875",
+  "pane.collapse": "\u6298\u53E0\u7A97\u683C",
+  "annot.label": "\u6807\u6CE8\uFF1A\u70B9\u51FB\u6216\u62D6\u52A8\u7A97\u53E3\u4E2D\u7684\u4F4D\u7F6E\u63D0\u8981\u6C42",
+  "annot.hint": "\u70B9\u51FB\u6216\u62D6\u52A8\u6846\u9009\u7A97\u53E3\u4E2D\u7684\u4EFB\u610F\u4F4D\u7F6E\uFF0C\u518D\u8F93\u5165\u4F60\u7684\u8981\u6C42\uFF1B\u8FDE\u7EED\u6807\u6CE8\u4F1A\u4F9D\u6B21\u8FFD\u52A0\u5230\u8F93\u5165\u6846",
+  "annot.placeholder": "\u5BF9\u8FD9\u91CC\u63D0\u8981\u6C42\u2026\uFF08Enter \u786E\u8BA4\uFF0CShift+Enter \u6362\u884C\uFF0CEsc \u53D6\u6D88\uFF09",
+  "annot.ok": "\u786E\u8BA4\uFF1A\u6CE8\u5165\u5BF9\u8BDD\u6846\u8F93\u5165\u6846\uFF08\u4E0D\u53D1\u9001\uFF09",
+  "annot.cancel": "\u53D6\u6D88",
+  "annot.updateTitle": "\u66F4\u65B0\u516C\u544A",
+  "annot.curVer": "\u5F53\u524D\u7248\u672C",
+  "annot.checkNow": "\u68C0\u67E5\u66F4\u65B0",
+  "annot.checking": "\u68C0\u67E5\u4E2D\u2026",
+  "annot.autoCheck": "\u81EA\u52A8\u68C0\u67E5\u66F4\u65B0",
+  "annot.newVer": "\u53D1\u73B0\u65B0\u7248\u672C",
+  "annot.gotoRelease": "\u67E5\u770B\u53D1\u5E03\u9875",
+  "annot.skipVer": "\u5FFD\u7565\u6B64\u7248\u672C",
+  "annot.latest": "\u5DF2\u662F\u6700\u65B0\u7248\u672C",
+  "annot.checkFail": "\u68C0\u67E5\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u518D\u8BD5",
+  "annot.copyUpgrade": "\u590D\u5236\u5347\u7EA7\u6307\u4EE4",
+  "annot.copied": "\u5DF2\u590D\u5236 \u2713 \u8BF7\u5728\u4EFB\u610F\u5BF9\u8BDD\u4E2D\u53D1\u9001",
+  "annot.howUpdate": "\u66F4\u65B0\u65B9\u6CD5\uFF1A\u70B9\u300C\u590D\u5236\u5347\u7EA7\u6307\u4EE4\u300D\u2192 \u7C98\u8D34\u7ED9\u5F53\u524D AI \u4F1A\u8BDD\u7531\u5B83\u6267\u884C\uFF0C\u5B8C\u6210\u540E\u91CD\u542F DSH\uFF1B\u6216\u624B\u52A8\u5728\u7EC8\u7AEF\u8FD0\u884C\u5347\u7EA7\u547D\u4EE4\u3002",
+  "pane.expand": "\u5C55\u5F00\u7A97\u683C",
+  "pane.jobsTitle": "\u540E\u53F0\u4EFB\u52A1",
+  "pane.subagents": "\u5B50\u4EE3\u7406",
+  "pane.subagentsEmpty": "\u5F53\u524D\u4F1A\u8BDD\u6682\u65E0\u5B50\u4EE3\u7406",
+  "split.flip": "\u5207\u6362\u5BF9\u8BDD\u7A97\u4F4D\u7F6E\uFF08\u5DE6\u21C4\u53F3\uFF09",
+  "collab.unavailable": "\u8BF7\u5148\u5728 App \u4E2D\u6253\u5F00\u53EF\u7F16\u8F91\u7684\u5BF9\u8BDD\uFF0C\u518D\u4ECE\u5F53\u524D\u77ED\u5267\u5DE5\u4F5C\u53F0\u91CD\u8BD5\u534F\u4F5C\u3002",
+  "split.showChat": "\u663E\u793A\u804A\u5929",
+  "split.hideChat": "\u9690\u85CF\u804A\u5929",
+  "split.close": "\u8FD4\u56DE\u804A\u5929",
+  "split.dragSwap": "\u62D6\u52A8\u6807\u9898\u680F\u4E0E\u5176\u4ED6\u7A97\u4EA4\u6362\u4F4D\u7F6E",
+  "icons.title": "\u9009\u62E9\u56FE\u6807",
+  "icons.change": "\u66F4\u6362\u56FE\u6807",
+  "empty": "\u6682\u65E0\u9879\u76EE",
+  "update.badgeTitle": "\u6709\u65B0\u7248\u672C\u53EF\u7528",
+  "update.available": "\u65B0\u7248\u672C\u53EF\u7528",
+  "update.current": "\u5F53\u524D\u7248\u672C",
+  "update.copyAi": "\u590D\u5236 AI \u63D0\u793A\u8BCD",
+  "update.skip": "\u5FFD\u7565\u6B64\u7248\u672C",
+  "update.autoCheck": "\u81EA\u52A8\u68C0\u67E5\u66F4\u65B0",
+  "update.checkNow": "\u7ACB\u5373\u68C0\u67E5",
+  "update.checkFail": "\u4E0A\u6B21\u68C0\u67E5\u672A\u6210\u529F",
+  "update.checking": "\u68C0\u67E5\u4E2D\u2026",
+  "update.upToDate": "\u5DF2\u662F\u6700\u65B0\u7248\u672C",
+  "update.copied": "\u5DF2\u590D\u5236",
+  "update.copyFail": "\u590D\u5236\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u9009\u62E9\u6587\u672C",
+  "update.skipDone": "\u5DF2\u5FFD\u7565\u6B64\u7248\u672C\uFF08\u4E0B\u4E00\u7248\u53D1\u5E03\u65F6\u518D\u63D0\u9192\uFF09",
+  "update.upgradeHint": "\u6267\u884C\u547D\u4EE4\u540E\u9700\u91CD\u542F dsh web \u5E76\u5237\u65B0\u9875\u9762",
+  "update.upgradeHintDesktop": "\u8BF7\u4F7F\u7528\u684C\u9762\u7AEF\u81EA\u5E26 CLI\uFF1B\u5B89\u88C5\u524D\u5B8C\u6574\u9000\u51FA\uFF0C\u5B8C\u6210\u540E\u624B\u52A8\u91CD\u65B0\u6253\u5F00\u684C\u9762\u7AEF"
+};
+var en = {
+  "studiosUpdates.title": "Versions and updates",
+  "studiosUpdates.close": "Close",
+  "studiosUpdates.loading": "Loading versions\u2026",
+  "studiosUpdates.description": "Check adapted studio plugins and install through dsh while retaining existing data. Original app versions are shown for reference.",
+  "studiosUpdates.check": "Check updates",
+  "studiosUpdates.checkAll": "Check all",
+  "studiosUpdates.checking": "Checking\u2026",
+  "studiosUpdates.current": "Plugin v{version}",
+  "studiosUpdates.upstream": "Original app v{version}",
+  "studiosUpdates.install": "Update to v{version}",
+  "studiosUpdates.releases": "View releases",
+  "studiosUpdates.connection": "Cannot reach the update service. Retry.",
+  "studiosUpdates.recheck": "The version or update state has changed. Check again.",
+  "studiosUpdates.retry": "Retry",
+  "studiosUpdates.empty": "No enabled studios",
+  "studiosUpdates.record": "Update history cannot be read, so installation is paused. Check the update directory permissions or restore its record, then retry. Other studio features remain available.",
+  "studiosUpdates.state.idle": "Not checked",
+  "studiosUpdates.state.available": "v{version} is available",
+  "studiosUpdates.state.latest": "The installed plugin is the latest published version",
+  "studiosUpdates.state.unpublished": "No adapted installation package has been published",
+  "studiosUpdates.state.incompatible": "v{version} is not compatible with this dsh version",
+  "studiosUpdates.state.unconfigured": "No plugin update source is configured",
+  "studiosUpdates.state.failed": "Check failed. Retry or view the releases.",
+  "studiosUpdates.phase.downloading": "Downloading the package\u2026",
+  "studiosUpdates.phase.verifying": "Verifying the package\u2026",
+  "studiosUpdates.phase.installing": "dsh is installing the update\u2026",
+  "studiosUpdates.phase.complete": "Installed v{version}",
+  "studiosUpdates.phase.restart-required": "Installed v{version}. Fully restart dsh to use it.",
+  "studiosUpdates.phase.failed": "Update failed. Check again; existing studio data is retained.",
+  "studiosUpdates.phase.unknown": "The update outcome is unconfirmed. Restart dsh and verify the plugin version.",
+  "mentions.unavailable": "The studio catalog is unavailable",
+  "mentions.disabled": "This studio is disabled. Choose another studio.",
+  "title": "Worktable",
+  "rail.title": "Worktable (expand sidebar to view)",
+  "handle.title": "Drag to move \xB7 double-click to reset",
+  "handle.aria": "Drag worktable position",
+  "menu.search": "Search projects",
+  "menu.viewOptions": "Settings",
+  "menu.add": "Add project",
+  "search.placeholder": "Search projects\u2026",
+  "search.close": "Close search",
+  "sort.label": "Sort by",
+  "sort.manual": "Manual",
+  "sort.recent": "Recent",
+  "menu.manage": "Manage projects\u2026",
+  "add.guideTitle": "Add a project",
+  "add.guideBody": "Projects in the worktable are DSH plugins \u2014 a plugin joins by registering a worktable project card (protocol in the project PRD \xA75.3). Installed plugins that have not registered need to do so in their code.",
+  "add.market": "Browse plugin marketplace",
+  "add.shortcutTitle": "Local shortcut",
+  "add.shortcutDesc": "Pin any URL into the worktable; opens in a new tab (stored locally only).",
+  "add.shortcutNamePh": "Name",
+  "add.shortcutIcon": "Icon (emoji, optional)",
+  "add.shortcutHref": "URL (http/https)",
+  "add.shortcutAdd": "Add",
+  "add.shortcutInvalid": "Enter a name and a valid http/https URL",
+  "manage.title": "Manage projects",
+  "manage.done": "Done",
+  "manage.renamePh": "Display name",
+  "manage.hide": "Hide",
+  "manage.show": "Show",
+  "manage.removed": "Removed projects",
+  "manage.readd": "Re-add",
+  "manage.deleteShortcut": "Delete shortcut",
+  "shortcut.badge": "Local",
+  "add.chooseLayout": "Choose a layout",
+  "add.layoutNamePh": "Layout name",
+  "add.folderParent": "Project folder",
+  "add.folderPick": "Choose\u2026",
+  "add.folderNone": "Not chosen (click Choose\u2026 to pick a folder in the explorer window)",
+  "add.folderRequired": "Pick the project folder location first",
+  "add.folderPicking": "Waiting for picker\u2026",
+  "add.folderPickerHint": "Waiting for the folder picker. If no window appears, check the taskbar or use \u201CManual\u201D.",
+  "add.folderPickFail": "Folder pick failed: {msg}",
+  "add.folderPickerUnavailable": "System folder picker unavailable \u2014 paste the path via \u201CManual\u201D",
+  "add.folderManual": "Manual",
+  "add.folderManualPh": "Paste an absolute folder path, Enter to confirm",
+  "add.folderManualOk": "Use this path",
+  "add.folderManualEmpty": "Enter an absolute folder path first",
+  "add.folderManualAbs": "Absolute path required (e.g. C:\\Users\\me\\Projects or /home/me/projects)",
+  "add.folderCreateFail": "Failed to create the project folder \u2014 check the path and retry",
+  "add.layoutSave": "Enter workspace",
+  "add.studio": "Add studio",
+  "add.studioHint": "Ask AI to choose local or GitHub, then ask whether to import it now.",
+  "add.layoutInvalid": "Enter a layout name",
+  "manage.deleteLayout": "Delete layout",
+  "manage.deleteProject": "Delete project",
+  "manage.changeView": "Change layout",
+  "viewPick.title": "Pick a new layout (panes migrate automatically)",
+  "confirm.title": "Delete project",
+  "confirm.cancel": "Cancel",
+  "confirm.delete": "Delete",
+  "confirm.layoutBody": 'Delete "{name}"? Its workspace and layout will be removed. This cannot be undone.',
+  "confirm.shortcutBody": 'Delete shortcut "{name}"? This cannot be undone.',
+  "confirm.projectBody": '"{name}" will be removed from the worktable permanently (the conversation and project files are kept).',
+  "pane.browser": "Browser",
+  "pane.explorer": "Explorer",
+  "pane.scm": "Source control",
+  "pane.tasks": "Tasks",
+  "pane.terminal": "Terminal",
+  "pane.custom": "Custom",
+  "pane.anim": "Animation",
+  "pane.console": "Console",
+  "pane.refresh": "Refresh",
+  "pane.animUrlPh": "Paste the animation site URL and press Enter",
+  "custom.title": "Customize this pane",
+  "custom.hint": "Sending will create a new conversation dedicated to designing this pane.",
+  "custom.placeholder": "Tell the AI what you want this pane to do, e.g. a timeline page of my travels\u2026",
+  "custom.project": "Project",
+  "custom.modeNew": "New conversation",
+  "custom.modeSend": "Send to a conversation",
+  "custom.session": "Conversation",
+  "custom.sessionCurrent": " (current)",
+  "custom.hintSend": "The content will be sent directly to the conversation you pick (current by default).",
+  "custom.send": "Send & create conversation",
+  "custom.sendToSession": "Send to this conversation",
+  "custom.sent": "Sent to the conversation",
+  "custom.done": "Conversation created",
+  "custom.doneHint": "The AI is designing your pane in the new conversation. Close this tab to return to the pane picker.",
+  "custom.fail": "Failed to create conversation",
+  "custom.group": "Group (workspace)",
+  "custom.groupNone": "Ungrouped",
+  "custom.groupNew": "\uFF0B Create a new group\u2026",
+  "custom.groupNewParent": "Group parent folder",
+  "custom.groupNewName": "New group name",
+  "custom.groupNewParentPh": "e.g. E:\\AI_Workspace\\DeepseekHarness",
+  "custom.groupNewNamePh": "e.g. MyProject (folder will be created and registered)",
+  "custom.groupNeedPath": "Fill in the parent folder and new group name",
+  "bind.folder": "Project folder",
+  "bind.folderChange": "Change",
+  "bind.folderNone": "Not set (recommended: project outputs go here)",
+  "customLayout.add": "Custom",
+  "customLayout.addTitle": "Customize a layout (generate a prompt)",
+  "customLayout.title": "Custom layout",
+  "customLayout.placeholder": "Describe the layout you want, e.g. a tall chat column on the right and two equal panes stacked on the left\u2026",
+  "customLayout.copy": "Copy prompt to clipboard",
+  "customLayout.copied": "Prompt copied to clipboard. Paste it into any DSH conversation and send \u2014 that dsh will know what to do.",
+  "customLayout.copyFail": "Copy failed \u2014 select the text above and copy it manually.",
+  "custom.autoBound": "The project is linked to this chat.",
+  "custom.keptBinding": "This project already has a bound conversation, so it was not auto-changed.",
+  "console.name": "Console",
+  "console.title": "Console",
+  "console.themeLabel": "Panel theme",
+  "console.cols": "Per row",
+  "console.colsLabel": "Projects per row",
+  "console.shapeLabel": "Card shape",
+  "console.bgLabel": "Background",
+  "console.bgPlain": "Plain",
+  "console.bgGlow": "Glow",
+  "console.bgPhoto": "Upload media",
+  "console.bgCustom": "Custom background",
+  "console.bgEdit": "Background settings",
+  "console.bgEditPlain": "Plain background",
+  "console.bgEditGlow": "Glow background",
+  "console.bgEditPhoto": "Photo setup",
+  "console.bgEditBack": "Back",
+  "console.bgEditReset": "Reset",
+  "console.bgEditType": "Click or hover to type a value",
+  "console.bgPhotoUse": "Use this photo",
+  "console.bgPhotoCurrent": "In use",
+  "console.bgPhotoNone": "No photos yet",
+  "console.bgMediaDrag": "Drag to reorder",
+  "console.bgPhotoDelete": "Delete this media",
+  "console.bgGridLabel": "Background grid",
+  "console.bgTipB": "Card blur",
+  "console.bgTipT": "Grid opacity",
+  "console.bgTipH": "Hue",
+  "console.bgTipS": "Saturation",
+  "console.bgTipSpeed": "Glow speed (0 = still, 50 = default, 100 = 2\xD7 fastest)",
+  "console.bgTipL": "Lightness",
+  "console.shapeSquare": "Square",
+  "console.shapeCircle": "Circle",
+  "console.themeDark": "Dark",
+  "console.themeLight": "Light",
+  "console.themeSystem": "System",
+  "console.idle": "Idle",
+  "console.busy": "Working",
+  "console.need": "Needs you",
+  "console.done": "Done",
+  "console.kids": "subagents",
+  "console.noPreview": "No messages yet",
+  "console.jump": "Jump to bound conversation",
+  "console.empty": "No projects yet",
+  "console.joinExisting": "Join existing conversation",
+  "console.newConv": "New conversation",
+  "console.groupNone": "No group (use project folder)",
+  "console.groupExisting": "Join existing group",
+  "console.groupNew": "New group",
+  "console.chooseGroup": "Choose a group\u2026",
+  "console.blankNeedsGroup": "Blank ungrouped chats cannot accept input in this DSH. Choose a group or join an existing chat.",
+  "console.newParentPh": "Group parent folder, e.g. E:\\AI_Workspace",
+  "console.newNamePh": "Group folder name (created & registered)",
+  "console.createBind": "Create & bind",
+  "console.bindFail": "Creation failed, try again",
+  "console.noSessions": "No sessions available",
+  "console.addProject": "Add project",
+  "console.statusLabel": "Studio status",
+  "console.statusTitle": "Current studios and services",
+  "console.statusRefresh": "Refresh",
+  "console.statusLoading": "Loading\u2026",
+  "console.statusFail": "Unable to read studio status. Try again later.",
+  "console.installedStudios": "Installed studios",
+  "console.noStudios": "No child studios are installed",
+  "console.statusReady": "Service running",
+  "console.statusOffline": "Workbench not connected",
+  "console.workspacePath": "Workspace",
+  "console.workspaceUnknown": "Uses the current session",
+  "pane.wip": "Coming in a later version",
+  "pane.explorerNoCwd": "No working directory for the current session",
+  "pane.openLater": "Preview not supported for this type",
+  "file.loading": "Loading\u2026",
+  "file.fail": "Failed to read file",
+  "file.preview": "Preview",
+  "file.edit": "Edit",
+  "file.save": "Save",
+  "file.saveFail": "Save failed",
+  "pane.gitNotRepo": "Not a git repository",
+  "pane.gitClean": "Working tree clean",
+  "pane.jobsEmpty": "No background jobs in the current session",
+  "pane.termFail": "Terminal unavailable (host missing node-pty/ws, or connection failed)",
+  "pane.closeTab": "Close tab",
+  "pane.collapse": "Collapse pane",
+  "annot.label": "Annotate: click or drag a spot in the window",
+  "annot.hint": "Click or drag to select a spot in any window, then type your request; consecutive annotations append to the input.",
+  "annot.placeholder": "Describe what to change here\u2026 (Enter to confirm, Shift+Enter newline, Esc cancel)",
+  "annot.ok": "Confirm: put into chat input (not sent)",
+  "annot.cancel": "Cancel",
+  "annot.updateTitle": "Changelog",
+  "annot.curVer": "Current version",
+  "annot.checkNow": "Check now",
+  "annot.checking": "Checking\u2026",
+  "annot.autoCheck": "Auto check",
+  "annot.newVer": "New version",
+  "annot.gotoRelease": "View release",
+  "annot.skipVer": "Ignore this version",
+  "annot.latest": "Up to date",
+  "annot.checkFail": "Check failed \u2014 try again later",
+  "annot.copyUpgrade": "Copy upgrade command",
+  "annot.copied": "Copied \u2713 paste it in any conversation",
+  "annot.howUpdate": "How to update: click \u201CCopy upgrade command\u201D and paste it to your AI session to run, then restart DSH; or run the upgrade command in a terminal manually.",
+  "pane.expand": "Expand pane",
+  "pane.jobsTitle": "Background jobs",
+  "pane.subagents": "Subagents",
+  "pane.subagentsEmpty": "No subagents in the current session",
+  "split.flip": "Flip chat side (left \u21C4 right)",
+  "collab.unavailable": "Open an editable App conversation, then retry from the active short drama workspace.",
+  "split.showChat": "Show chat",
+  "split.hideChat": "Hide chat",
+  "split.close": "Back to chat",
+  "split.dragSwap": "Drag the title bar to swap panes",
+  "icons.title": "Pick an icon",
+  "icons.change": "Change icon",
+  "empty": "No projects yet",
+  "update.badgeTitle": "New version available",
+  "update.available": "New version available",
+  "update.current": "Current version",
+  "update.copyAi": "Copy AI prompt",
+  "update.skip": "Skip this version",
+  "update.autoCheck": "Auto-check updates",
+  "update.checkNow": "Check now",
+  "update.checkFail": "Last check failed",
+  "update.checking": "Checking\u2026",
+  "update.upToDate": "Up to date",
+  "update.copied": "Copied",
+  "update.copyFail": "Copy failed \u2014 select the text manually",
+  "update.skipDone": "Skipped (will remind on the next release)",
+  "update.upgradeHint": "Run the command, then restart dsh web and refresh",
+  "update.upgradeHintDesktop": "Use the Desktop bundled CLI; fully quit before installing, then reopen Desktop manually"
+};
+var NS = "worktable";
+
 // src/client/updateCheck.ts
-var LOCAL_VERSION = false ? "dev" : "0.6.1";
+var LOCAL_VERSION = false ? "dev" : "0.6.2";
 var UPDATE_REPO = "Aisland-SJL/dsh-worktable";
 var K_UPDATE_CHECK = "dsh.worktable.updateCheck.v1";
 var K_LAST_CHECK = "dsh.worktable.lastUpdateCheck.v1";
@@ -9429,9 +8398,9 @@ async function checkUpdate(force = false) {
 }
 
 // src/client/split.tsx
-var import_xterm2 = __toESM(require_xterm(), 1);
+var import_xterm = __toESM(require_xterm(), 1);
 
-// ../../../../../../studio-library/packages/worktable/node_modules/mdurl/index.mjs
+// ../../../../../../../studio-library/node_modules/mdurl/index.mjs
 var mdurl_exports = {};
 __export(mdurl_exports, {
   decode: () => decode_default,
@@ -9440,7 +8409,7 @@ __export(mdurl_exports, {
   parse: () => parse_default
 });
 
-// ../../../../../../studio-library/packages/worktable/node_modules/mdurl/lib/decode.mjs
+// ../../../../../../../studio-library/node_modules/mdurl/lib/decode.mjs
 var decodeCache = {};
 function getDecodeCache(exclude) {
   let cache = decodeCache[exclude];
@@ -9523,7 +8492,7 @@ decode.defaultChars = ";/?:@&=+$,#";
 decode.componentChars = "";
 var decode_default = decode;
 
-// ../../../../../../studio-library/packages/worktable/node_modules/mdurl/lib/encode.mjs
+// ../../../../../../../studio-library/node_modules/mdurl/lib/encode.mjs
 var encodeCache = {};
 function getEncodeCache(exclude) {
   let cache = encodeCache[exclude];
@@ -9587,7 +8556,7 @@ encode.defaultChars = ";/?:@&=+$,-_.!~*'()#";
 encode.componentChars = "-_.!~*'()";
 var encode_default = encode;
 
-// ../../../../../../studio-library/packages/worktable/node_modules/mdurl/lib/format.mjs
+// ../../../../../../../studio-library/node_modules/mdurl/lib/format.mjs
 function format(url) {
   let result = "";
   result += url.protocol || "";
@@ -9605,7 +8574,7 @@ function format(url) {
   return result;
 }
 
-// ../../../../../../studio-library/packages/worktable/node_modules/mdurl/lib/parse.mjs
+// ../../../../../../../studio-library/node_modules/mdurl/lib/parse.mjs
 function Url() {
   this.protocol = null;
   this.slashes = null;
@@ -9787,7 +8756,7 @@ Url.prototype.parseHost = function(host) {
 };
 var parse_default = urlParse;
 
-// ../../../../../../studio-library/packages/worktable/node_modules/uc.micro/build/index.mjs
+// ../../../../../../../studio-library/node_modules/uc.micro/build/index.mjs
 var build_exports = {};
 __export(build_exports, {
   Any: () => Any,
@@ -9804,98 +8773,207 @@ var P = /[!-#%-\*,-\/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u05
 var S = /[\$\+<->\^`\|~\xA2-\xA6\xA8\xA9\xAC\xAE-\xB1\xB4\xB8\xD7\xF7\u02C2-\u02C5\u02D2-\u02DF\u02E5-\u02EB\u02ED\u02EF-\u02FF\u0375\u0384\u0385\u03F6\u0482\u058D-\u058F\u0606-\u0608\u060B\u060E\u060F\u06DE\u06E9\u06FD\u06FE\u07F6\u07FE\u07FF\u0888\u09F2\u09F3\u09FA\u09FB\u0AF1\u0B70\u0BF3-\u0BFA\u0C7F\u0D4F\u0D79\u0E3F\u0F01-\u0F03\u0F13\u0F15-\u0F17\u0F1A-\u0F1F\u0F34\u0F36\u0F38\u0FBE-\u0FC5\u0FC7-\u0FCC\u0FCE\u0FCF\u0FD5-\u0FD8\u109E\u109F\u1390-\u1399\u166D\u17DB\u1940\u19DE-\u19FF\u1B61-\u1B6A\u1B74-\u1B7C\u1FBD\u1FBF-\u1FC1\u1FCD-\u1FCF\u1FDD-\u1FDF\u1FED-\u1FEF\u1FFD\u1FFE\u2044\u2052\u207A-\u207C\u208A-\u208C\u20A0-\u20C1\u2100\u2101\u2103-\u2106\u2108\u2109\u2114\u2116-\u2118\u211E-\u2123\u2125\u2127\u2129\u212E\u213A\u213B\u2140-\u2144\u214A-\u214D\u214F\u218A\u218B\u2190-\u2307\u230C-\u2328\u232B-\u2429\u2440-\u244A\u249C-\u24E9\u2500-\u2767\u2794-\u27C4\u27C7-\u27E5\u27F0-\u2982\u2999-\u29D7\u29DC-\u29FB\u29FE-\u2B73\u2B76-\u2BFF\u2CE5-\u2CEA\u2E50\u2E51\u2E80-\u2E99\u2E9B-\u2EF3\u2F00-\u2FD5\u2FF0-\u2FFF\u3004\u3012\u3013\u3020\u3036\u3037\u303E\u303F\u309B\u309C\u3190\u3191\u3196-\u319F\u31C0-\u31E5\u31EF\u3200-\u321E\u322A-\u3247\u3250\u3260-\u327F\u328A-\u32B0\u32C0-\u33FF\u4DC0-\u4DFF\uA490-\uA4C6\uA700-\uA716\uA720\uA721\uA789\uA78A\uA828-\uA82B\uA836-\uA839\uAA77-\uAA79\uAB5B\uAB6A\uAB6B\uFB29\uFBB2-\uFBD2\uFD40-\uFD4F\uFD90\uFD91\uFDC8-\uFDCF\uFDFC-\uFDFF\uFE62\uFE64-\uFE66\uFE69\uFF04\uFF0B\uFF1C-\uFF1E\uFF3E\uFF40\uFF5C\uFF5E\uFFE0-\uFFE6\uFFE8-\uFFEE\uFFFC\uFFFD]|\uD800[\uDD37-\uDD3F\uDD79-\uDD89\uDD8C-\uDD8E\uDD90-\uDD9C\uDDA0\uDDD0-\uDDFC]|\uD802[\uDC77\uDC78\uDEC8]|\uD803[\uDD8E\uDD8F\uDED1-\uDED8]|\uD805\uDF3F|\uD807[\uDFD5-\uDFF1]|\uD81A[\uDF3C-\uDF3F\uDF45]|\uD82F\uDC9C|\uD833[\uDC00-\uDCEF\uDCFA-\uDCFC\uDD00-\uDEB3\uDEBA-\uDED0\uDEE0-\uDEF0\uDF50-\uDFC3]|\uD834[\uDC00-\uDCF5\uDD00-\uDD26\uDD29-\uDD64\uDD6A-\uDD6C\uDD83\uDD84\uDD8C-\uDDA9\uDDAE-\uDDEA\uDE00-\uDE41\uDE45\uDF00-\uDF56]|\uD835[\uDEC1\uDEDB\uDEFB\uDF15\uDF35\uDF4F\uDF6F\uDF89\uDFA9\uDFC3]|\uD836[\uDC00-\uDDFF\uDE37-\uDE3A\uDE6D-\uDE74\uDE76-\uDE83\uDE85\uDE86]|\uD838[\uDD4F\uDEFF]|\uD83B[\uDCAC\uDCB0\uDD2E\uDEF0\uDEF1]|\uD83C[\uDC00-\uDC2B\uDC30-\uDC93\uDCA0-\uDCAE\uDCB1-\uDCBF\uDCC1-\uDCCF\uDCD1-\uDCF5\uDD0D-\uDDAD\uDDE6-\uDE02\uDE10-\uDE3B\uDE40-\uDE48\uDE50\uDE51\uDE60-\uDE65\uDF00-\uDFFF]|\uD83D[\uDC00-\uDED8\uDEDC-\uDEEC\uDEF0-\uDEFC\uDF00-\uDFD9\uDFE0-\uDFEB\uDFF0]|\uD83E[\uDC00-\uDC0B\uDC10-\uDC47\uDC50-\uDC59\uDC60-\uDC87\uDC90-\uDCAD\uDCB0-\uDCBB\uDCC0\uDCC1\uDCD0-\uDCD8\uDD00-\uDE57\uDE60-\uDE6D\uDE70-\uDE7C\uDE80-\uDE8A\uDE8E-\uDEC6\uDEC8\uDECD-\uDEDC\uDEDF-\uDEEA\uDEEF-\uDEF8\uDF00-\uDF92\uDF94-\uDFEF\uDFFA]/;
 var Z = /[ \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]/;
 
-// ../../../../../../studio-library/packages/worktable/node_modules/entities/dist/decode-codepoint.js
-var decodeMap = /* @__PURE__ */ new Map([
-  [0, 65533],
-  // C1 Unicode control character reference replacements
-  [128, 8364],
-  [130, 8218],
-  [131, 402],
-  [132, 8222],
-  [133, 8230],
-  [134, 8224],
-  [135, 8225],
-  [136, 710],
-  [137, 8240],
-  [138, 352],
-  [139, 8249],
-  [140, 338],
-  [142, 381],
-  [145, 8216],
-  [146, 8217],
-  [147, 8220],
-  [148, 8221],
-  [149, 8226],
-  [150, 8211],
-  [151, 8212],
-  [152, 732],
-  [153, 8482],
-  [154, 353],
-  [155, 8250],
-  [156, 339],
-  [158, 382],
-  [159, 376]
-]);
+// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/decode-codepoint.js
+var c1 = [
+  8364,
+  0,
+  8218,
+  402,
+  8222,
+  8230,
+  8224,
+  8225,
+  710,
+  8240,
+  352,
+  8249,
+  338,
+  0,
+  381,
+  0,
+  0,
+  8216,
+  8217,
+  8220,
+  8221,
+  8226,
+  8211,
+  8212,
+  732,
+  8482,
+  353,
+  8250,
+  339,
+  0,
+  382,
+  376
+];
+function isInvalidCodePoint(codePoint) {
+  return codePoint === 0 || codePoint >= 55296 && codePoint <= 57343 || codePoint > 1114111;
+}
 function replaceCodePoint(codePoint) {
-  if (codePoint >= 55296 && codePoint <= 57343 || codePoint > 1114111) {
+  if (isInvalidCodePoint(codePoint)) {
     return 65533;
   }
-  return decodeMap.get(codePoint) ?? codePoint;
+  if (codePoint >= 128 && codePoint <= 159) {
+    return c1[codePoint - 128] || codePoint;
+  }
+  return codePoint;
+}
+function codePointToString(codePoint) {
+  return codePoint - 1 >>> 0 < 127 || codePoint - 160 >>> 0 < 55136 ? String.fromCharCode(codePoint) : String.fromCodePoint(replaceCodePoint(codePoint));
 }
 
-// ../../../../../../studio-library/packages/worktable/node_modules/entities/dist/internal/decode-shared.js
-function decodeBase64(input) {
-  const binary = atob(input);
-  const evenLength = binary.length & ~1;
-  const out = new Uint16Array(evenLength / 2);
-  for (let index = 0, outIndex = 0; index < evenLength; index += 2) {
-    const lo = binary.charCodeAt(index);
-    const hi = binary.charCodeAt(index + 1);
-    out[outIndex++] = lo | hi << 8;
+// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/internal/decode-shared.js
+var BASE91_INVERSE = /* @__PURE__ */ (() => {
+  const table2 = new Uint8Array(127);
+  let code2 = 0;
+  for (let char = 33; char <= 126; char++) {
+    if (char !== 34 && char !== 36 && char !== 92) {
+      table2[char] = code2++;
+    }
+  }
+  return table2;
+})();
+function decodeTrieDict(input, resultLength, atomCount, dict1AtomCount, ngramCount, dictSize) {
+  const base2 = 91;
+  const inputLength = input.length;
+  const twoCharBias = dictSize * (base2 - 1);
+  let pos = 0;
+  const readSlotCode = () => {
+    const c12 = BASE91_INVERSE[input.charCodeAt(pos++)];
+    return c12 < dictSize ? c12 : c12 * base2 - twoCharBias + BASE91_INVERSE[input.charCodeAt(pos++)];
+  };
+  const dict2AtomCount = atomCount - dict1AtomCount;
+  const slotCount = atomCount + ngramCount;
+  const single = new Int32Array(slotCount);
+  single.fill(-1, dict1AtomCount, dictSize);
+  single.fill(-1, dictSize + dict2AtomCount, slotCount);
+  const start = new Int32Array(slotCount);
+  const length = new Int32Array(slotCount);
+  function decodeDelta(count, off) {
+    let previous = 0;
+    let slot = off;
+    const end = off + count;
+    while (slot < end) {
+      const code2 = BASE91_INVERSE[input.charCodeAt(pos++)];
+      if (code2 < 89) {
+        previous += code2;
+        single[slot++] = previous;
+      } else if (code2 === 89) {
+        let runLength = BASE91_INVERSE[input.charCodeAt(pos++)] + 2;
+        while (runLength--)
+          single[slot++] = ++previous;
+      } else {
+        const next = BASE91_INVERSE[input.charCodeAt(pos++)];
+        previous += 89 + // eslint-disable-next-line unicorn/prefer-minimal-ternary -- branches read a different number of side-effecting input bytes
+        (next < 90 ? next * base2 + BASE91_INVERSE[input.charCodeAt(pos++)] : BASE91_INVERSE[input.charCodeAt(pos++)] * 8281 + BASE91_INVERSE[input.charCodeAt(pos++)] * base2 + BASE91_INVERSE[input.charCodeAt(pos++)]);
+        single[slot++] = previous;
+      }
+    }
+  }
+  decodeDelta(dict1AtomCount, 0);
+  decodeDelta(dict2AtomCount, dictSize);
+  const references = new Int32Array(ngramCount * 2);
+  let poolSize = 0;
+  let ngramIndex = 0;
+  function readNgramReferences(count, startSlot) {
+    for (let index = 0; index < count; index++) {
+      const slot = startSlot + index;
+      const a = readSlotCode();
+      const b = readSlotCode();
+      references[ngramIndex * 2] = a;
+      references[ngramIndex * 2 + 1] = b;
+      ngramIndex += 1;
+      start[slot] = poolSize;
+      const entryLength = (single[a] < 0 ? length[a] : 1) + (single[b] < 0 ? length[b] : 1);
+      length[slot] = entryLength;
+      poolSize += entryLength;
+    }
+  }
+  readNgramReferences(ngramCount - dictSize + dict1AtomCount, dictSize + dict2AtomCount);
+  readNgramReferences(dictSize - dict1AtomCount, dict1AtomCount);
+  const pool = new Uint16Array(poolSize);
+  let write = 0;
+  for (let index = 0; index < ngramIndex; index++) {
+    for (let half = 0; half < 2; half++) {
+      const source = references[index * 2 + half];
+      const value = single[source];
+      if (value < 0) {
+        let read = start[source];
+        const readEnd = read + length[source];
+        while (read < readEnd)
+          pool[write++] = pool[read++];
+      } else {
+        pool[write++] = value;
+      }
+    }
+  }
+  const out = new Uint16Array(resultLength);
+  let outIndex = 0;
+  while (pos < inputLength) {
+    let slot = BASE91_INVERSE[input.charCodeAt(pos++)];
+    if (slot >= dictSize) {
+      slot = slot * base2 - twoCharBias + BASE91_INVERSE[input.charCodeAt(pos++)];
+    }
+    const value = single[slot];
+    if (value < 0) {
+      let read = start[slot];
+      const readEnd = read + length[slot];
+      while (read < readEnd)
+        out[outIndex++] = pool[read++];
+    } else {
+      out[outIndex++] = value;
+    }
   }
   return out;
 }
 
-// ../../../../../../studio-library/packages/worktable/node_modules/entities/dist/generated/decode-data-html.js
-var htmlDecodeTree = /* @__PURE__ */ decodeBase64("QR08ALkAAgH6AYsDNQR2BO0EPgXZBQEGLAbdBxMISQrvCmQLfQurDKQNLw4fD4YPpA+6D/IPAAAAAAAAAAAAAAAAKhBMEY8TmxUWF2EYLBkxGuAa3RsJHDscWR8YIC8jSCSIJcMl6ie3Ku8rEC0CLjoupS7kLgAIRU1hYmNmZ2xtbm9wcnN0dVQAWgBeAGUAaQBzAHcAfgCBAIQAhwCSAJoAoACsALMAbABpAGcAO4DGAMZAUAA7gCYAJkBjAHUAdABlADuAwQDBQHIiZXZlAAJhAAFpeW0AcgByAGMAO4DCAMJAEGRyAADgNdgE3XIAYQB2AGUAO4DAAMBA8CFoYZFj4SFjcgBhZAAAoFMqAAFncIsAjgBvAG4ABGFmAADgNdg43fAlbHlGdW5jdGlvbgCgYSBpAG4AZwA7gMUAxUAAAWNzpACoAHIAAOA12Jzc6SFnbgCgVCJpAGwAZABlADuAwwDDQG0AbAA7gMQAxEAABGFjZWZvcnN1xQDYANoA7QDxAPYA+QD8AAABY3LJAM8AayNzbGFzaAAAoBYidgHTANUAAKDnKmUAZAAAoAYjeQARZIABY3J0AOAA5QDrAGEidXNlAACgNSLuI291bGxpcwCgLCFhAJJjcgAA4DXYBd1wAGYAAOA12Dnd5SF2ZdhiYwDyAOoAbSJwZXEAAKBOIgAHSE9hY2RlZmhpbG9yc3UXARoBHwE6AVIBVQFiAWQBZgGCAakB6QHtAfIBYwB5ACdkUABZADuAqQCpQIABY3B5ACUBKAE1AfUhdGUGYWmg0iJ0KGFsRGlmZmVyZW50aWFsRAAAoEUhbCJleXMAAKAtIQACYWVpb0EBRAFKAU0B8iFvbgxhZABpAGwAO4DHAMdAcgBjAAhhbiJpbnQAAKAwIm8AdAAKYQABZG5ZAV0BaSJsbGEAuGB0I2VyRG90ALdg8gA5AWkAp2NyImNsZQAAAkRNUFRwAXQBeQF9AW8AdAAAoJkiaSJudXMAAKCWIuwhdXMAoJUiaSJtZXMAAKCXIm8AAAFjc4cBlAFrKndpc2VDb250b3VySW50ZWdyYWwAAKAyImUjQ3VybHkAAAFEUZwBpAFvJXVibGVRdW90ZQAAoB0gdSJvdGUAAKAZIAACbG5wdbABtgHNAdgBbwBuAGWgNyIAoHQqgAFnaXQAvAHBAcUB8iJ1ZW50AKBhIm4AdAAAoC8i7yV1ckludGVncmFsAKAuIgABZnLRAdMBAKACIe8iZHVjdACgECJuLnRlckNsb2Nrd2lzZUNvbnRvdXJJbnRlZ3JhbAAAoDMi7yFzcwCgLypjAHIAAOA12J7ccABDoNMiYQBwAACgTSKABURKU1phY2VmaW9zAAsCEgIVAhgCGwIsAjQCOQI9AnMCfwNvoEUh9CJyYWhkAKARKWMAeQACZGMAeQAFZGMAeQAPZIABZ3JzACECJQIoAuchZXIAoCEgcgAAoKEhaAB2AACg5CoAAWF5MAIzAvIhb24OYRRkbAB0oAciYQCUY3IAAOA12AfdAAFhZkECawIAAWNtRQJnAvIjaXRpY2FsAAJBREdUUAJUAl8CYwJjInV0ZQC0YG8AdAFZAloC2WJiJGxlQWN1dGUA3WJyImF2ZQBgYGkibGRlANxi7yFuZACgxCJmJWVyZW50aWFsRAAAoEYhcAR9AgAAAAAAAIECjgIAABoDZgAA4DXYO91EoagAhQKJAm8AdAAAoNwgcSJ1YWwAAKBQIuIhbGUAA0NETFJVVpkCqAK1Au8C/wIRA28AbgB0AG8AdQByAEkAbgB0AGUAZwByAGEA7ADEAW8AdAKvAgAAAACwAqhgbiNBcnJvdwAAoNMhAAFlb7kC0AJmAHQAgAFBUlQAwQLGAs0CciJyb3cAAKDQIekkZ2h0QXJyb3cAoNQhZQDlACsCbgBnAAABTFLWAugC5SFmdAABQVLcAuECciJyb3cAAKD4J+kkZ2h0QXJyb3cAoPon6SRnaHRBcnJvdwCg+SdpImdodAAAAUFU9gL7AnIicm93AACg0iFlAGUAAKCoInAAQQIGAwAAAAALA3Iicm93AACg0SFvJHduQXJyb3cAAKDVIWUlcnRpY2FsQmFyAACgJSJuAAADQUJMUlRhJAM2AzoDWgNxA3oDciJyb3cAAKGTIUJVLAMwA2EAcgAAoBMpcCNBcnJvdwAAoPUhciJldmUAEWPlIWZ00gJDAwAASwMAAFIDaSVnaHRWZWN0b3IAAKBQKWUkZVZlY3RvcgAAoF4p5SJjdG9yQqC9IWEAcgAAoFYpaSJnaHQA1AFiAwAAaQNlJGVWZWN0b3IAAKBfKeUiY3RvckKgwSFhAHIAAKBXKWUAZQBBoKQiciJyb3cAAKCnIXIAcgBvAPcAtAIAAWN0gwOHA3IAAOA12J/c8iFvaxBhAAhOVGFjZGZnbG1vcHFzdHV4owOlA6kDsAO/A8IDxgPNA9ID8gP9AwEEFAQeBCAEJQRHAEphSAA7gNAA0EBjAHUAdABlADuAyQDJQIABYWl5ALYDuQO+A/Ihb24aYXIAYwA7gMoAykAtZG8AdAAWYXIAAOA12AjdcgBhAHYAZQA7gMgAyEDlIm1lbnQAoAgiAAFhcNYD2QNjAHIAEmF0AHkAUwLhAwAAAADpA20lYWxsU3F1YXJlAACg+yVlJ3J5U21hbGxTcXVhcmUAAKCrJQABZ3D2A/kDbwBuABhhZgAA4DXYPN3zImlsb26VY3UAAAFhaQYEDgRsAFSgdSppImxkZQAAoEIi7CNpYnJpdW0AoMwhAAFjaRgEGwRyAACgMCFtAACgcyphAJdjbQBsADuAywDLQAABaXApBC0E8yF0cwCgAyLvJG5lbnRpYWxFAKBHIYACY2Zpb3MAPQQ/BEMEXQRyBHkAJGRyAADgNdgJ3WwibGVkAFMCTAQAAAAAVARtJWFsbFNxdWFyZQAAoPwlZSdyeVNtYWxsU3F1YXJlAACgqiVwA2UEAABpBAAAAABtBGYAAOA12D3dwSFsbACgACLyI2llcnRyZgCgMSFjAPIAcQQABkpUYWJjZGZnb3JzdIgEiwSOBJMElwSkBKcEqwStBLIE5QTqBGMAeQADZDuAPgA+QO0hbWFkoJMD3GNyImV2ZQAeYYABZWl5AJ0EoASjBOQhaWwiYXIAYwAcYRNkbwB0ACBhcgAA4DXYCt0AoNkicABmAADgNdg+3eUiYXRlcgADRUZHTFNUvwTIBM8E1QTZBOAEcSJ1YWwATKBlIuUhc3MAoNsidSRsbEVxdWFsAACgZyJyI2VhdGVyAACgoirlIXNzAKB3IuwkYW50RXF1YWwAoH4qaSJsZGUAAKBzImMAcgAA4DXYotwAoGsiAARBYWNmaW9zdfkE/QQFBQgFCwUTBSIFKwVSIkRjeQAqZAABY3QBBQQFZQBrAMdiXmDpIXJjJGFyAACgDCFsJWJlcnRTcGFjZQAAoAsh8AEYBQAAGwVmAACgDSHpJXpvbnRhbExpbmUAoAAlAAFjdCYFKAXyABIF8iFvayZhbQBwAEQBMQU5BW8AdwBuAEgAdQBtAPAAAAFxInVhbAAAoE8iAAdFSk9hY2RmZ21ub3N0dVMFVgVZBVwFYwVtBXAFcwV6BZAFtgXFBckFzQVjAHkAFWTsIWlnMmFjAHkAAWRjAHUAdABlADuAzQDNQAABaXlnBWwFcgBjADuAzgDOQBhkbwB0ADBhcgAAoBEhcgBhAHYAZQA7gMwAzEAAoREhYXB/BYsFAAFjZ4MFhQVyACphaSNuYXJ5SQAAoEghbABpAGUA8wD6AvQBlQUAAKUFZaAsIgABZ3KaBZ4F8iFhbACgKyLzI2VjdGlvbgCgwiJpI3NpYmxlAAABQ1SsBbEFbyJtbWEAAKBjIGkibWVzAACgYiCAAWdwdAC8Bb8FwwVvAG4ALmFmAADgNdhA3WEAmWNjAHIAAKAQIWkibGRlAChh6wHSBQAA1QVjAHkABmRsADuAzwDPQIACY2Zvc3UA4QXpBe0F8gX9BQABaXnlBegFcgBjADRhGWRyAADgNdgN3XAAZgAA4DXYQd3jAfcFAAD7BXIAAOA12KXc8iFjeQhk6yFjeQRkgANISmFjZm9zAAwGDwYSBhUGHQYhBiYGYwB5ACVkYwB5AAxk8CFwYZpjAAFleRkGHAbkIWlsNmEaZHIAAOA12A7dcABmAADgNdhC3WMAcgAA4DXYptyABUpUYWNlZmxtb3N0AD0GQAZDBl4GawZkB2gHcAd0B80H2gdjAHkACWQ7gDwAPECAAmNtbnByAEwGTwZSBlUGWwb1IXRlOWHiIWRhm2NnAACg6ifsI2FjZXRyZgCgEiFyAACgniGAAWFleQBkBmcGagbyIW9uPWHkIWlsO2EbZAABZnNvBjQHdAAABUFDREZSVFVWYXKABp4GpAbGBssG3AYDByEHwQIqBwABbnKEBowGZyVsZUJyYWNrZXQAAKDoJ/Ihb3cAoZAhQlKTBpcGYQByAACg5CHpJGdodEFycm93AKDGIWUjaWxpbmcAAKAII28A9QGqBgAAsgZiJWxlQnJhY2tldAAAoOYnbgDUAbcGAAC+BmUkZVZlY3RvcgAAoGEp5SJjdG9yQqDDIWEAcgAAoFkpbCJvb3IAAKAKI2kiZ2h0AAABQVbSBtcGciJyb3cAAKCUIeUiY3RvcgCgTikAAWVy4AbwBmUAAKGjIkFW5gbrBnIicm93AACgpCHlImN0b3IAoFopaSNhbmdsZQBCorIi+wYAAAAA/wZhAHIAAKDPKXEidWFsAACgtCJwAIABRFRWAAoHEQcYB+8kd25WZWN0b3IAoFEpZSRlVmVjdG9yAACgYCnlImN0b3JCoL8hYQByAACgWCnlImN0b3JCoLwhYQByAACgUilpAGcAaAB0AGEAcgByAG8A9wDMAnMAAANFRkdMU1Q/B0cHTgdUB1gHXwfxJXVhbEdyZWF0ZXIAoNoidSRsbEVxdWFsAACgZiJyI2VhdGVyAACgdiLlIXNzAKChKuwkYW50RXF1YWwAoH0qaSJsZGUAAKByInIAAOA12A/dZaDYIuYjdGFycm93AKDaIWkiZG90AD9hgAFucHcAege1B7kHZwAAAkxSbHKCB5QHmwerB+UhZnQAAUFSiAeNB3Iicm93AACg9SfpJGdodEFycm93AKD3J+kkZ2h0QXJyb3cAoPYn5SFmdAABYXLcAqEHaQBnAGgAdABhAHIAcgBvAPcA5wJpAGcAaAB0AGEAcgByAG8A9wDuAmYAAOA12EPdZQByAAABTFK/B8YHZSRmdEFycm93AACgmSHpJGdodEFycm93AKCYIYABY2h0ANMH1QfXB/IAWgYAoLAh8iFva0FhAKBqIgAEYWNlZmlvc3XpB+wH7gf/BwMICQgOCBEIcAAAoAUpeQAcZAABZGzyB/kHaSR1bVNwYWNlAACgXyBsI2ludHJmAACgMyFyAADgNdgQ3e4jdXNQbHVzAKATInAAZgAA4DXYRN1jAPIA/gecY4AESmFjZWZvc3R1ACEIJAgoCDUIgQiFCDsKQApHCmMAeQAKZGMidXRlAENhgAFhZXkALggxCDQI8iFvbkdh5CFpbEVhHWSAAWdzdwA7CGEIfQjhInRpdmWAAU1UVgBECEwIWQhlJWRpdW1TcGFjZQAAoAsgaABpAAABY25SCFMIawBTAHAAYQBjAOUASwhlAHIAeQBUAGgAaQDuAFQI9CFlZAABR0xnCHUIcgBlAGEAdABlAHIARwByAGUAYQB0AGUA8gDrBGUAcwBzAEwAZQBzAPMA2wdMImluZQAKYHIAAOA12BHdAAJCbnB0jAiRCJkInAhyImVhawAAoGAgwiZyZWFraW5nU3BhY2WgYGYAAKAVIUOq7CqzCMIIzQgAAOcIGwkAAAAAAAAtCQAAbwkAAIcJAACdCcAJGQoAADQKAAFvdbYIvAjuI2dydWVudACgYiJwIkNhcAAAoG0ibyh1YmxlVmVydGljYWxCYXIAAKAmIoABbHF4ANII1wjhCOUibWVudACgCSL1IWFsVKBgImkibGRlAADgQiI4A2kic3RzAACgBCJyI2VhdGVyAACjbyJFRkdMU1T1CPoIAgkJCQ0JFQlxInVhbAAAoHEidSRsbEVxdWFsAADgZyI4A3IjZWF0ZXIAAOBrIjgD5SFzcwCgeSLsJGFudEVxdWFsAOB+KjgDaSJsZGUAAKB1IvUhbXBEASAJJwnvI3duSHVtcADgTiI4A3EidWFsAADgTyI4A2UAAAFmczEJRgn0JFRyaWFuZ2xlQqLqIj0JAAAAAEIJYQByAADgzyk4A3EidWFsAACg7CJzAICibiJFR0xTVABRCVYJXAlhCWkJcSJ1YWwAAKBwInIjZWF0ZXIAAKB4IuUhc3MA4GoiOAPsJGFudEVxdWFsAOB9KjgDaSJsZGUAAKB0IuUic3RlZAABR0x1CX8J8iZlYXRlckdyZWF0ZXIA4KIqOAPlI3NzTGVzcwDgoSo4A/IjZWNlZGVzAKGAIkVTjwmVCXEidWFsAADgryo4A+wkYW50RXF1YWwAoOAiAAFlaaAJqQl2JmVyc2VFbGVtZW50AACgDCLnJWh0VHJpYW5nbGVCousitgkAAAAAuwlhAHIAAODQKTgDcSJ1YWwAAKDtIgABcXXDCeAJdSNhcmVTdQAAAWJwywnVCfMhZXRF4I8iOANxInVhbAAAoOIi5SJyc2V0ReCQIjgDcSJ1YWwAAKDjIoABYmNwAOYJ8AkNCvMhZXRF4IIi0iBxInVhbAAAoIgi4yJlZWRzgKGBIkVTVAD6CQAKBwpxInVhbAAA4LAqOAPsJGFudEVxdWFsAKDhImkibGRlAADgfyI4A+UicnNldEXggyLSIHEidWFsAACgiSJpImxkZQCAoUEiRUZUACIKJwouCnEidWFsAACgRCJ1JGxsRXF1YWwAAKBHImkibGRlAACgSSJlJXJ0aWNhbEJhcgAAoCQiYwByAADgNdip3GkAbABkAGUAO4DRANFAnWMAB0VhY2RmZ21vcHJzdHV2XgphCmgKcgp2CnoKgQqRCpYKqwqtCrsKyArNCuwhaWdSYWMAdQB0AGUAO4DTANNAAAFpeWwKcQpyAGMAO4DUANRAHmRiImxhYwBQYXIAAOA12BLdcgBhAHYAZQA7gNIA0kCAAWFlaQCHCooKjQpjAHIATGFnAGEAqWNjInJvbgCfY3AAZgAA4DXYRt3lI25DdXJseQABRFGeCqYKbyV1YmxlUXVvdGUAAKAcIHUib3RlAACgGCAAoFQqAAFjbLEKtQpyAADgNdiq3GEAcwBoADuA2ADYQGkAbAHACsUKZABlADuA1QDVQGUAcwAAoDcqbQBsADuA1gDWQGUAcgAAAUJQ0wrmCgABYXLXCtoKcgAAoD4gYQBjAAABZWvgCuIKAKDeI2UAdAAAoLQjYSVyZW50aGVzaXMAAKDcI4AEYWNmaGlsb3JzAP0KAwsFCwkLCwsMCxELIwtaC3IjdGlhbEQAAKACInkAH2RyAADgNdgT3WkApmOgY/Ujc01pbnVzsWAAAWlwFQsgC24AYwBhAHIAZQBwAGwAYQBuAOUACgVmAACgGSGAobsqZWlvACoLRQtJC+MiZWRlc4CheiJFU1QANAs5C0ALcSJ1YWwAAKCvKuwkYW50RXF1YWwAoHwiaSJsZGUAAKB+Im0AZQAAoDMgAAFkcE0LUQv1IWN0AKAPIm8jcnRpb24AYaA3ImwAAKAdIgABY2leC2ILcgAA4DXYq9yoYwACVWZvc2oLbwtzC3cLTwBUADuAIgAiQHIAAOA12BTdcABmAACgGiFjAHIAAOA12KzcAAZCRWFjZWZoaW9yc3WPC5MLlwupC7YL2AvbC90LhQyTDJoMowzhIXJyAKAQKUcAO4CuAK5AgAFjbnIAnQugC6ML9SF0ZVRhZwAAoOsncgB0oKAhbAAAoBYpgAFhZXkArwuyC7UL8iFvblhh5CFpbFZhIGR2oBwhZSJyc2UAAAFFVb8LzwsAAWxxwwvIC+UibWVudACgCyL1JGlsaWJyaXVtAKDLIXAmRXF1aWxpYnJpdW0AAKBvKXIAAKAcIW8AoWPnIWh0AARBQ0RGVFVWYewLCgwQDDIMNwxeDHwM9gIAAW5y8Av4C2clbGVCcmFja2V0AACg6SfyIW93AKGSIUJM/wsDDGEAcgAAoOUhZSRmdEFycm93AACgxCFlI2lsaW5nAACgCSNvAPUBFgwAAB4MYiVsZUJyYWNrZXQAAKDnJ24A1AEjDAAAKgxlJGVWZWN0b3IAAKBdKeUiY3RvckKgwiFhAHIAAKBVKWwib29yAACgCyMAAWVyOwxLDGUAAKGiIkFWQQxGDHIicm93AACgpiHlImN0b3IAoFspaSNhbmdsZQBCorMiVgwAAAAAWgxhAHIAAKDQKXEidWFsAACgtSJwAIABRFRWAGUMbAxzDO8kd25WZWN0b3IAoE8pZSRlVmVjdG9yAACgXCnlImN0b3JCoL4hYQByAACgVCnlImN0b3JCoMAhYQByAACgUykAAXB1iQyMDGYAAKAdIe4kZEltcGxpZXMAoHAp6SRnaHRhcnJvdwCg2yEAAWNongyhDHIAAKAbIQCgsSHsJGVEZWxheWVkAKD0KYAGSE9hY2ZoaW1vcXN0dQC/DMgMzAzQDOIM5gwKDQ0NFA0ZDU8NVA1YDQABQ2PDDMYMyCFjeSlkeQAoZEYiVGN5ACxkYyJ1dGUAWmEAorwqYWVpedgM2wzeDOEM8iFvbmBh5CFpbF5hcgBjAFxhIWRyAADgNdgW3e8hcnQAAkRMUlXvDPYM/QwEDW8kd25BcnJvdwAAoJMhZSRmdEFycm93AACgkCHpJGdodEFycm93AKCSIXAjQXJyb3cAAKCRIechbWGjY+EkbGxDaXJjbGUAoBgicABmAADgNdhK3XICHw0AAAAAIg10AACgGiLhIXJlgKGhJUlTVQAqDTINSg3uJXRlcnNlY3Rpb24AoJMidQAAAWJwNw1ADfMhZXRFoI8icSJ1YWwAAKCRIuUicnNldEWgkCJxInVhbAAAoJIibiJpb24AAKCUImMAcgAA4DXYrtxhAHIAAKDGIgACYmNtcF8Nag2ODZANc6DQImUAdABFoNAicSJ1YWwAAKCGIgABY2huDYkNZSJlZHMAgKF7IkVTVAB4DX0NhA1xInVhbAAAoLAq7CRhbnRFcXVhbACgfSJpImxkZQAAoH8iVABoAGEA9ADHCwCgESIAodEiZXOVDZ8NciJzZXQARaCDInEidWFsAACghyJlAHQAAKDRIoAFSFJTYWNmaGlvcnMAtQ27Db8NyA3ODdsN3w3+DRgOHQ4jDk8AUgBOADuA3gDeQMEhREUAoCIhAAFIY8MNxg1jAHkAC2R5ACZkAAFidcwNzQ0JYKRjgAFhZXkA1A3XDdoN8iFvbmRh5CFpbGJhImRyAADgNdgX3QABZWnjDe4N8gHoDQAA7Q3lImZvcmUAoDQiYQCYYwABY27yDfkNayNTcGFjZQAA4F8gCiDTInBhY2UAoAkg7CFkZYChPCJFRlQABw4MDhMOcSJ1YWwAAKBDInUkbGxFcXVhbAAAoEUiaSJsZGUAAKBIInAAZgAA4DXYS93pI3BsZURvdACg2yAAAWN0Jw4rDnIAAOA12K/c8iFva2Zh4QpFDlYOYA5qDgAAbg5yDgAAAAAAAAAAAAB5DnwOqA6zDgAADg8RDxYPGg8AAWNySA5ODnUAdABlADuA2gDaQHIAb6CfIeMhaXIAoEkpcgDjAVsOAABdDnkADmR2AGUAbGEAAWl5Yw5oDnIAYwA7gNsA20AjZGIibGFjAHBhcgAA4DXYGN1yAGEAdgBlADuA2QDZQOEhY3JqYQABZGl/Dp8OZQByAAABQlCFDpcOAAFhcokOiw5yAF9gYQBjAAABZWuRDpMOAKDfI2UAdAAAoLUjYSVyZW50aGVzaXMAAKDdI28AbgBQoMMi7CF1cwCgjiIAAWdwqw6uDm8AbgByYWYAAOA12EzdAARBREVUYWRwc78O0g7ZDuEOBQPqDvMOBw9yInJvdwDCoZEhyA4AAMwOYQByAACgEilvJHduQXJyb3cAAKDFIW8kd25BcnJvdwAAoJUhcSV1aWxpYnJpdW0AAKBuKWUAZQBBoKUiciJyb3cAAKClIW8AdwBuAGEAcgByAG8A9wAQA2UAcgAAAUxS+Q4AD2UkZnRBcnJvdwAAoJYh6SRnaHRBcnJvdwCglyFpAGyg0gNvAG4ApWPpIW5nbmFjAHIAAOA12LDcaSJsZGUAaGFtAGwAO4DcANxAgAREYmNkZWZvc3YALQ8xDzUPNw89D3IPdg97D4AP4SFzaACgqyJhAHIAAKDrKnkAEmThIXNobKCpIgCg5ioAAWVyQQ9DDwCgwSKAAWJ0eQBJD00Paw9hAHIAAKAWIGmgFiDjIWFsAAJCTFNUWA9cD18PZg9hAHIAAKAjIukhbmV8YGUkcGFyYXRvcgAAoFgnaSJsZGUAAKBAItQkaGluU3BhY2UAoAogcgAA4DXYGd1wAGYAAOA12E3dYwByAADgNdix3GQiYXNoAACgqiKAAmNlZm9zAI4PkQ+VD5kPng/pIXJjdGHkIWdlAKDAInIAAOA12BrdcABmAADgNdhO3WMAcgAA4DXYstwAAmZpb3OqD64Prw+0D3IAAOA12BvdnmNwAGYAAOA12E/dYwByAADgNdiz3IAEQUlVYWNmb3N1AMgPyw/OD9EP2A/gD+QP6Q/uD2MAeQAvZGMAeQAHZGMAeQAuZGMAdQB0AGUAO4DdAN1AAAFpedwP3w9yAGMAdmErZHIAAOA12BzdcABmAADgNdhQ3WMAcgAA4DXYtNxtAGwAeGEABEhhY2RlZm9z/g8BEAUQDRAQEB0QIBAkEGMAeQAWZGMidXRlAHlhAAFheQkQDBDyIW9ufWEXZG8AdAB7YfIBFRAAABwQbwBXAGkAZAB0AOgAVAhhAJZjcgAAoCghcABmAACgJCFjAHIAAOA12LXc4QtCEEkQTRAAAGcQbRByEAAAAAAAAAAAeRCKEJcQ8hD9EAAAGxEhETIROREAAD4RYwB1AHQAZQA7gOEA4UByImV2ZQADYYCiPiJFZGl1eQBWEFkQWxBgEGUQAOA+IjMDAKA/InIAYwA7gOIA4kB0AGUAO4C0ALRAMGRsAGkAZwA7gOYA5kByoGEgAOA12B7dcgBhAHYAZQA7gOAA4EAAAWVwfBCGEAABZnCAEIQQ8yF5bQCgNSHoAIMQaABhALFjAAFhcI0QWwAAAWNskRCTEHIAAWFnAACgPypkApwQAAAAALEQAKInImFkc3ajEKcQqRCuEG4AZAAAoFUqAKBcKmwib3BlAACgWCoAoFoqAKMgImVsbXJzersQvRDAEN0Q5RDtEACgpCllAACgICJzAGQAYaAhImEEzhDQENIQ1BDWENgQ2hDcEACgqCkAoKkpAKCqKQCgqykAoKwpAKCtKQCgrikAoK8pdAB2oB8iYgBkoL4iAKCdKQABcHTpEOwQaAAAoCIixWDhIXJyAKB8IwABZ3D1EPgQbwBuAAVhZgAA4DXYUt0Ao0giRWFlaW9wBxEJEQ0RDxESERQRAKBwKuMhaXIAoG8qAKBKImQAAKBLInMAJ2DyIW94ZaBIIvEADhFpAG4AZwA7gOUA5UCAAWN0eQAmESoRKxFyAADgNdi23CpgbQBwAGWgSCLxAPgBaQBsAGQAZQA7gOMA40BtAGwAO4DkAORAAAFjaUERRxFvAG4AaQBuAPQA6AFuAHQAAKARKgAITmFiY2RlZmlrbG5vcHJzdWQRaBGXEZ8RpxGrEdIR1hErEjASexKKEn0RThNbE3oTbwB0AACg7SoAAWNybBGJEWsAAAJjZXBzdBF4EX0RghHvIW5nAKBMInAjc2lsb24A9mNyImltZQAAoDUgaQBtAGWgPSJxAACgzSJ2AY0RkRFlAGUAAKC9ImUAZABnoAUjZQAAoAUjcgBrAHSgtSPiIXJrAKC2IwABb3mjEaYRbgDnAHcRMWTxIXVvAKAeIIACY21wcnQAtBG5Eb4RwRHFEeEhdXPloDUi5ABwInR5dgAAoLApcwDpAH0RbgBvAPUA6gCAAWFodwDLEcwRzhGyYwCgNiHlIWVuAKBsInIAAOA12B/dZwCAA2Nvc3R1dncA4xHyEQUSEhIhEiYSKRKAAWFpdQDpEesR7xHwAKMFcgBjAACg7yVwAACgwyKAAWRwdAD4EfwRABJvAHQAAKAAKuwhdXMAoAEqaSJtZXMAAKACKnECCxIAAAAADxLjIXVwAKAGKmEAcgAAoAUm8iNpYW5nbGUAAWR1GhIeEu8hd24AoL0lcAAAoLMlcCJsdXMAAKAEKmUA5QBCD+UAkg9hInJvdwAAoA0pgAFha28ANhJoEncSAAFjbjoSZRJrAIABbHN0AEESRxJNEm8jemVuZ2UAAKDrKXEAdQBhAHIA5QBcBPIjaWFuZ2xlgKG0JWRscgBYElwSYBLvIXduAKC+JeUhZnQAoMIlaSJnaHQAAKC4JWsAAKAjJLEBbRIAAHUSsgFxEgAAcxIAoJIlAKCRJTQAAKCTJWMAawAAoIglAAFlb38ShxJx4D0A5SD1IWl2AOBhIuUgdAAAoBAjAAJwdHd4kRKVEpsSnxJmAADgNdhT3XSgpSJvAG0AAKClIvQhaWUAoMgiAAZESFVWYmRobXB0dXayEsES0RLgEvcS+xIKExoTHxMjEygTNxMAAkxSbHK5ErsSvRK/EgCgVyUAoFQlAKBWJQCgUyUAolAlRFVkdckSyxLNEs8SAKBmJQCgaSUAoGQlAKBnJQACTFJsctgS2hLcEt4SAKBdJQCgWiUAoFwlAKBZJQCjUSVITFJobHLrEu0S7xLxEvMS9RIAoGwlAKBjJQCgYCUAoGslAKBiJQCgXyVvAHgAAKDJKQACTFJscgITBBMGEwgTAKBVJQCgUiUAoBAlAKAMJQCiACVEVWR1EhMUExYTGBMAoGUlAKBoJQCgLCUAoDQlaSJudXMAAKCfIuwhdXMAoJ4iaSJtZXMAAKCgIgACTFJsci8TMRMzEzUTAKBbJQCgWCUAoBglAKAUJQCjAiVITFJobHJCE0QTRhNIE0oTTBMAoGolAKBhJQCgXiUAoDwlAKAkJQCgHCUAAWV2UhNVE3YA5QD5AGIAYQByADuApgCmQAACY2Vpb2ITZhNqE24TcgAA4DXYt9xtAGkAAKBPIG0A5aA9IogRbAAAoVwAYmh0E3YTAKDFKfMhdWIAoMgnbAF+E4QTbABloCIgdAAAoCIgcAAAoU4iRWWJE4sTAKCuKvGgTyI8BeEMqRMAAN8TABQDFB8UAAAjFDQUAAAAAIUUAAAAAI0UAAAAANcU4xT3FPsUAACIFQAAlhWAAWNwcgCuE7ET1RP1IXRlB2GAoikiYWJjZHMAuxO/E8QTzhPSE24AZAAAoEQqciJjdXAAAKBJKgABYXXIE8sTcAAAoEsqcAAAoEcqbwB0AACgQCoA4CkiAP4AAWVv2RPcE3QAAKBBIO4ABAUAAmFlaXXlE+8T9RP4E/AB6hMAAO0TcwAAoE0qbwBuAA1hZABpAGwAO4DnAOdAcgBjAAlhcABzAHOgTCptAACgUCpvAHQAC2GAAWRtbgAIFA0UEhRpAGwAO4C4ALhAcCJ0eXYAAKCyKXQAAIGiADtlGBQZFKJAcgBkAG8A9ABiAXIAAOA12CDdgAFjZWkAKBQqFDIUeQBHZGMAawBtoBMn4SFyawCgEyfHY3IAAKPLJUVjZWZtcz8UQRRHFHcUfBSAFACgwykAocYCZWxGFEkUcQAAoFciZQBhAlAUAAAAAGAUciJyb3cAAAFsclYUWhTlIWZ0AKC6IWkiZ2h0AACguyGAAlJTYWNkAGgUaRRrFG8UcxSuYACgyCRzAHQAAKCbIukhcmMAoJoi4SFzaACgnSJuImludAAAoBAqaQBkAACg7yrjIWlyAKDCKfUhYnN1oGMmaQB0AACgYybsApMUmhS2FAAAwxRvAG4AZaA6APGgVCKrAG0CnxQAAAAAoxRhAHSgLABAYAChASJmbKcUqRTuABMNZQAAAW14rhSyFOUhbnQAoAEiZQDzANIB5wG6FAAAwBRkoEUibwB0AACgbSpuAPQAzAGAAWZyeQDIFMsUzhQA4DXYVN1vAOQA1wEAgakAO3MeAdMUcgAAoBchAAFhb9oU3hRyAHIAAKC1IXMAcwAAoBcnAAFjdeYU6hRyAADgNdi43AABYnDuFPIUZaDPKgCg0SploNAqAKDSKuQhb3QAoO8igANkZWxwcnZ3AAYVEBUbFSEVRBVlFYQV4SFycgABbHIMFQ4VAKA4KQCgNSlwAhYVAAAAABkVcgAAoN4iYwAAoN8i4SFycnCgtiEAoD0pgKIqImJjZG9zACsVMBU6FT4VQRVyImNhcAAAoEgqAAFhdTQVNxVwAACgRipwAACgSipvAHQAAKCNInIAAKBFKgDgKiIA/gACYWxydksVURVuFXMVcgByAG2gtyEAoDwpeQCAAWV2dwBYFWUVaRVxAHACXxUAAAAAYxVyAGUA4wAXFXUA4wAZFWUAZQAAoM4iZSJkZ2UAAKDPImUAbgA7gKQApEBlI2Fycm93AAABbHJ7FX8V5SFmdACgtiFpImdodAAAoLchZQDkAG0VAAFjaYsVkRVvAG4AaQBuAPQAkwFuAHQAAKAxImwiY3R5AACgLSOACUFIYWJjZGVmaGlqbG9yc3R1d3oAuBW7Fb8V1RXgFegV+RUKFhUWHxZUFlcWZRbFFtsW7xb7FgUXChdyAPIAtAJhAHIAAKBlKQACZ2xyc8YVyhXOFdAV5yFlcgCgICDlIXRoAKA4IfIA9QxoAHagECAAoKMiawHZFd4VYSJyb3cAAKAPKWEA4wBfAgABYXnkFecV8iFvbg9hNGQAoUYhYW/tFfQVAAFnciEC8RVyAACgyiF0InNlcQAAoHcqgAFnbG0A/xUCFgUWO4CwALBAdABhALRjcCJ0eXYAAKCxKQABaXIOFhIW8yFodACgfykA4DXYId1hAHIAAAFschsWHRYAoMMhAKDCIYACYWVnc3YAKBauAjYWOhY+Fm0AAKHEIm9zLhY0Fm4AZABzoMQi9SFpdACgZiZhIm1tYQDdY2kAbgAAoPIiAKH3AGlvQxZRFmQAZQAAgfcAO29KFksW90BuI3RpbWVzAACgxyJuAPgAUBZjAHkAUmRjAG8CXhYAAAAAYhZyAG4AAKAeI28AcAAAoA0jgAJscHR1dwBuFnEWdRaSFp4W7CFhciRgZgAA4DXYVd0AotkCZW1wc30WhBaJFo0WcQBkoFAibwB0AACgUSJpIm51cwAAoDgi7CF1cwCgFCLxInVhcmUAoKEiYgBsAGUAYgBhAHIAdwBlAGQAZwDlANcAbgCAAWFkaAClFqoWtBZyAHIAbwD3APUMbwB3AG4AYQByAHIAbwB3APMA8xVhI3Jwb29uAAABbHK8FsAWZQBmAPQAHBZpAGcAaAD0AB4WYgHJFs8WawBhAHIAbwD3AJILbwLUFgAAAADYFnIAbgAAoB8jbwBwAACgDCOAAWNvdADhFukW7BYAAXJ55RboFgDgNdi53FVkbAAAoPYp8iFvaxFhAAFkcvMW9xZvAHQAAKDxImkA5qC/JVsSAAFhaP8WAhdyAPIANQNhAPIA1wvhIm5nbGUAoKYpAAFjaQ4XEBd5AF9k5yJyYXJyAKD/JwAJRGFjZGVmZ2xtbm9wcXJzdHV4MRc4F0YXWxcyBF4XaRd5F40XrBe0F78X2RcVGCEYLRg1GEAYAAFEbzUXgRZvAPQA+BUAAWNzPBdCF3UAdABlADuA6QDpQPQhZXIAoG4qAAJhaW95TRdQF1YXWhfyIW9uG2FyAGOgViI7gOoA6kDsIW9uAKBVIk1kbwB0ABdhAAFEcmIXZhdvAHQAAKBSIgDgNdgi3XKhmipuF3QXYQB2AGUAO4DoAOhAZKCWKm8AdAAAoJgqgKGZKmlscwCAF4UXhxfuInRlcnMAoOcjAKATIWSglSpvAHQAAKCXKoABYXBzAJMXlheiF2MAcgATYXQAeQBzogUinxcAAAAAoRdlAHQAAKAFInAAMaADIDMBqRerFwCgBCAAoAUgAAFnc7AXsRdLYXAAAKACIAABZ3C4F7sXbwBuABlhZgAA4DXYVt2AAWFscwDFF8sXzxdyAHOg1SJsAACg4yl1AHMAAKBxKmkAAKG1A2x21RfYF28AbgC1Y/VjAAJjc3V24BfoF/0XEBgAAWlv5BdWF3IAYwAAoFYiaQLuFwAAAADwF+0ADQThIW50AAFnbPUX+Rd0AHIAAKCWKuUhc3MAoJUqgAFhZWkAAxgGGAoYbABzAD1gcwB0AACgXyJ2AESgYSJEAACgeCrwImFyc2wAoOUpAAFEYRkYHRhvAHQAAKBTInIAcgAAoHEpgAFjZGkAJxgqGO0XcgAAoC8hbwD0AIwCAAFhaDEYMhi3YzuA8ADwQAABbXI5GD0YbAA7gOsA60BvAACgrCCAAWNpcABGGEgYSxhsACFgcwD0ACwEAAFlb08YVxhjAHQAYQB0AGkAbwDuABoEbgBlAG4AdABpAGEAbADlADME4Ql1GAAAgRgAAIMYiBgAAAAAoRilGAAAqhgAALsYvhjRGAAA1xgnGWwAbABpAG4AZwBkAG8AdABzAGUA8QBlF3kARGRtImFsZQAAoEAmgAFpbHIAjRiRGJ0Y7CFpZwCgA/tpApcYAAAAAJoYZwAAoAD7aQBnAACgBPsA4DXYI93sIWlnAKAB++whaWcA4GYAagCAAWFsdACvGLIYthh0AACgbSZpAGcAAKAC+24AcwAAoLElbwBmAJJh8AHCGAAAxhhmAADgNdhX3QABYWvJGMwYbADsAGsEdqDUIgCg2SphI3J0aW50AACgDSoAAWFv2hgiGQABY3PeGB8ZsQPnGP0YBRkSGRUZAAAdGbID7xjyGPQY9xj5GAAA+xg7gL0AvUAAoFMhO4C8ALxAAKBVIQCgWSEAoFshswEBGQAAAxkAoFQhAKBWIbQCCxkOGQAAAAAQGTuAvgC+QACgVyEAoFwhNQAAoFghtgEZGQAAGxkAoFohAKBdITgAAKBeIWwAAKBEIHcAbgAAoCIjYwByAADgNdi73IAIRWFiY2RlZmdpamxub3JzdHYARhlKGVoZXhlmGWkZkhmWGZkZnRmgGa0ZxhnLGc8Z4BkjGmygZyIAoIwqgAFjbXAAUBlTGVgZ9SF0ZfVhbQBhAOSgswM6FgCghipyImV2ZQAfYQABaXliGWUZcgBjAB1hM2RvAHQAIWGAoWUibHFzAMYEcBl6GfGhZSLOBAAAdhlsAGEAbgD0AN8EgKF+KmNkbACBGYQZjBljAACgqSpvAHQAb6CAKmyggioAoIQqZeDbIgD+cwAAoJQqcgAA4DXYJN3noGsirATtIWVsAKA3IWMAeQBTZIChdyJFYWoApxmpGasZAKCSKgCgpSoAoKQqAAJFYWVztBm2Gb0ZwhkAoGkicABwoIoq8iFveACgiipxoIgq8aCIKrUZaQBtAACg5yJwAGYAAOA12FjdYQB2AOUAYwIAAWNp0xnWGXIAAKAKIW0AAKFzImVs3BneGQCgjioAoJAqAIM+ADtjZGxxco0E6xn0GfgZ/BkBGgABY2nvGfEZAKCnKnIAAKB6Km8AdAAAoNci0CFhcgCglSl1ImVzdAAAoHwqgAJhZGVscwAKGvQZFhrVBCAa8AEPGgAAFBpwAHIAbwD4AFkZcgAAoHgpcQAAAWxxxAQbGmwAZQBzAPMASRlpAO0A5AQAAWVuJxouGnIjdG5lcXEAAOBpIgD+xQAsGgAFQWFiY2Vma29zeUAaQxpmGmoabRqDGocalhrCGtMacgDyAMwCAAJpbG1yShpOGlAaVBpyAHMA8ABxD2YAvWBpAGwA9AASBQABZHJYGlsaYwB5AEpkAKGUIWN3YBpkGmkAcgAAoEgpAKCtIWEAcgAAoA8h6SFyYyVhgAFhbHIAcxp7Gn8a8iF0c3WgZSZpAHQAAKBlJuwhaXAAoCYg4yFvbgCguSJyAADgNdgl3XMAAAFld4wakRphInJvdwAAoCUpYSJyb3cAAKAmKYACYW1vcHIAnxqjGqcauhq+GnIAcgAAoP8h9CFodACgOyJrAAABbHKsGrMaZSRmdGFycm93AACgqSHpJGdodGFycm93AKCqIWYAAOA12Fnd4iFhcgCgFSCAAWNsdADIGswa0BpyAADgNdi93GEAcwDoAGka8iFvaydhAAFicNca2xr1IWxsAKBDIOghZW4AoBAg4Qr2GgAA/RoAAAgbExsaGwAAIRs7GwAAAAA+G2IbmRuVG6sbAACyG80b0htjAHUAdABlADuA7QDtQAChYyBpeQEbBhtyAGMAO4DuAO5AOGQAAWN4CxsNG3kANWRjAGwAO4ChAKFAAAFmcssCFhsA4DXYJt1yAGEAdgBlADuA7ADsQIChSCFpbm8AJxsyGzYbAAFpbisbLxtuAHQAAKAMKnQAAKAtIuYhaW4AoNwpdABhAACgKSHsIWlnM2GAAWFvcABDG1sbXhuAAWNndABJG0sbWRtyACthgAFlbHAAcQVRG1UbaQBuAOUAyAVhAHIA9AByBWgAMWFmAACgtyJlAGQAtWEAoggiY2ZvdGkbbRt1G3kb4SFyZQCgBSFpAG4AdKAeImkAZQAAoN0pZABvAPQAWxsAoisiY2VscIEbhRuPG5QbYQBsAACguiIAAWdyiRuNG2UAcgDzACMQ4wCCG2EicmhrAACgFyryIW9kAKA8KgACY2dwdJ8boRukG6gbeQBRZG8AbgAvYWYAAOA12FrdYQC5Y3UAZQBzAHQAO4C/AL9AAAFjabUbuRtyAADgNdi+3G4AAKIIIkVkc3bCG8QbyBvQAwCg+SJvAHQAAKD1Inag9CIAoPMiaaBiIOwhZGUpYesB1hsAANkbYwB5AFZkbAA7gO8A70AAA2NmbW9zdeYb7hvyG/Ub+hsFHAABaXnqG+0bcgBjADVhOWRyAADgNdgn3eEhdGg3YnAAZgAA4DXYW93jAf8bAAADHHIAAOA12L/c8iFjeVhk6yFjeVRkAARhY2ZnaGpvcxUcGhwiHCYcKhwtHDAcNRzwIXBhdqC6A/BjAAFleR4cIRzkIWlsN2E6ZHIAAOA12CjdciJlZW4AOGFjAHkARWRjAHkAXGRwAGYAAOA12FzdYwByAADgNdjA3IALQUJFSGFiY2RlZmdoamxtbm9wcnN0dXYAXhxtHHEcdRx5HN8cBx0dHTwd3B3tHfEdAR4EHh0eLB5FHrwewx7hHgkfPR9LH4ABYXJ0AGQcZxxpHHIA8gBvB/IAxQLhIWlsAKAbKeEhcnIAoA4pZ6BmIgCgiyphAHIAAKBiKWMJjRwAAJAcAACVHAAAAAAAAAAAAACZHJwcAACmHKgcrRwAANIc9SF0ZTph7SJwdHl2AKC0KXIAYQDuAFoG4iFkYbtjZwAAoegnZGyhHKMcAKCRKeUAiwYAoIUqdQBvADuAqwCrQHIAgKOQIWJmaGxwc3QAuhy/HMIcxBzHHMoczhxmoOQhcwAAoB8pcwAAoB0p6wCyGnAAAKCrIWwAAKA5KWkAbQAAoHMpbAAAoKIhAKGrKmFl1hzaHGkAbAAAoBkpc6CtKgDgrSoA/oABYWJyAOUc6RztHHIAcgAAoAwpcgBrAACgcicAAWFr8Rz4HGMAAAFla/Yc9xx7YFtgAAFlc/wc/hwAoIspbAAAAWR1Ax0FHQCgjykAoI0pAAJhZXV5Dh0RHRodHB3yIW9uPmEAAWRpFR0YHWkAbAA8YewAowbiAPccO2QAAmNxcnMkHScdLB05HWEAAKA2KXUAbwDyoBwgqhEAAWR1MB00HeghYXIAoGcpcyJoYXIAAKBLKWgAAKCyIQCiZCJmZ3FzRB1FB5Qdnh10AIACYWhscnQATh1WHWUdbB2NHXIicm93AHSgkCFhAOkAzxxhI3Jwb29uAAABZHVeHWId7yF3bgCgvSFwAACgvCHlJGZ0YXJyb3dzAKDHIWkiZ2h0AIABYWhzAHUdex2DHXIicm93APOglCGdBmEAcgBwAG8AbwBuAPMAzgtxAHUAaQBnAGEAcgByAG8A9wBlGugkcmVldGltZXMAoMsi8aFkIk0HAACaHWwAYQBuAPQAXgcAon0qY2Rnc6YdqR2xHbcdYwAAoKgqbwB0AG+gfypyoIEqAKCDKmXg2iIA/nMAAKCTKoACYWRlZ3MAwB3GHcod1h3ZHXAAcAByAG8A+ACmHG8AdAAAoNYicQAAAWdxzx3SHXQA8gBGB2cAdADyAHQcdADyAFMHaQDtAGMHgAFpbHIA4h3mHeod8yFodACgfClvAG8A8gDKBgDgNdgp3UWgdiIAoJEqYQH1Hf4dcgAAAWR1YB35HWygvCEAoGopbABrAACghCVjAHkAWWQAomoiYWNodAweDx4VHhkecgDyAGsdbwByAG4AZQDyAGAW4SFyZACgaylyAGkAAKD6JQABaW8hHiQe5CFvdEBh9SFzdGGgsCPjIWhlAKCwIwACRWFlczMeNR48HkEeAKBoInAAcKCJKvIhb3gAoIkqcaCHKvGghyo0HmkAbQAAoOYiAARhYm5vcHR3elIeXB5fHoUelh6mHqsetB4AAW5yVh5ZHmcAAKDsJ3IAAKD9IXIA6wCwBmcAgAFsbXIAZh52Hnse5SFmdAABYXKIB2weaQBnAGgAdABhAHIAcgBvAPcAkwfhInBzdG8AoPwnaQBnAGgAdABhAHIAcgBvAPcAmgdwI2Fycm93AAABbHKNHpEeZQBmAPQAxhxpImdodAAAoKwhgAFhZmwAnB6fHqIecgAAoIUpAOA12F3ddQBzAACgLSppIm1lcwAAoDQqYQGvHrMecwB0AACgFyLhAIoOZaHKJbkeRhLuIWdlAKDKJWEAcgBsoCgAdAAAoJMpgAJhY2htdADMHs8e1R7bHt0ecgDyAJ0GbwByAG4AZQDyANYWYQByAGSgyyEAoG0pAKAOIHIAaQAAoL8iAANhY2hpcXTrHu8e1QfzHv0eBh/xIXVvAKA5IHIAAOA12MHcbQDloXIi+h4AAPweAKCNKgCgjyoAAWJ19xwBH28AcqAYIACgGiDyIW9rQmEAhDwAO2NkaGlscXJCBhcfxh0gHyQfKB8sHzEfAAFjaRsfHR8AoKYqcgAAoHkqcgBlAOUAkx3tIWVzAKDJIuEhcnIAoHYpdSJlc3QAAKB7KgABUGk1HzkfYQByAACglillocMlAgdfEnIAAAFkdUIfRx9zImhhcgAAoEop6CFhcgCgZikAAWVuTx9WH3IjdG5lcXEAAOBoIgD+xQBUHwAHRGFjZGVmaGlsbm9wc3VuH3Ifoh+rH68ftx+7H74f5h/uH/MfBwj/HwsgxCFvdACgOiIAAmNscHJ5H30fiR+eH3IAO4CvAK9AAAFldIEfgx8AoEImZaAgJ3MAZQAAoCAnc6CmIXQAbwCAoaYhZGx1AJQfmB+cH28AdwDuAHkDZQBmAPQA6gbwAOkO6yFlcgCgriUAAW95ph+qH+0hbWEAoCkqPGThIXNoAKAUIOElc3VyZWRhbmdsZQCgISJyAADgNdgq3W8AAKAnIYABY2RuAMQfyR/bH3IAbwA7gLUAtUBhoiMi0B8AANMf1x9zAPQAKxFpAHIAAKDwKm8AdAA7gLcAt0B1AHMA4qESIh4TAADjH3WgOCIAoCoqYwHqH+0fcAAAoNsq8gB+GnAAbAB1APMACAgAAWRw9x/7H+UhbHMAoKciZgAA4DXYXt0AAWN0AyAHIHIAAOA12MLc8CFvcwCgPiJsobwDECAVIPQiaW1hcACguCJhAPAAEyAADEdMUlZhYmNkZWZnaGlqbG1vcHJzdHV2dzwgRyBmIG0geSCqILgg2iDeIBEhFSEyIUMhTSFQIZwhnyHSIQAiIyKLIrEivyIUIwABZ3RAIEMgAODZIjgD9uBrItIgBwmAAWVsdABNIF8gYiBmAHQAAAFhclMgWCByInJvdwAAoM0h6SRnaHRhcnJvdwCgziEA4NgiOAP24Goi0iBfCekkZ2h0YXJyb3cAoM8hAAFEZHEgdSDhIXNoAKCvIuEhc2gAoK4igAJiY25wdACCIIYgiSCNIKIgbABhAACgByL1IXRlRGFnAADgICLSIACiSSJFaW9wlSCYIJwgniAA4HAqOANkAADgSyI4A3MASWFyAG8A+AAyCnUAcgBhoG4mbADzoG4mmwjzAa8gAACzIHAAO4CgAKBAbQBwAOXgTiI4AyoJgAJhZW91eQDBIMogzSDWINkg8AHGIAAAyCAAoEMqbwBuAEhh5CFpbEZhbgBnAGSgRyJvAHQAAOBtKjgDcAAAoEIqPWThIXNoAKATIACjYCJBYWRxc3jpIO0g+SD+IAIhDCFyAHIAAKDXIXIAAAFocvIg9SBrAACgJClvoJch9wAGD28AdAAA4FAiOAN1AGkA9gC7CAABZWkGIQohYQByAACgKCntAN8I6SFzdPOgBCLlCHIAAOA12CvdAAJFZXN0/wgcISshLiHxoXEiIiEAABMJ8aFxIgAJAAAnIWwAYQBuAPQAEwlpAO0AGQlyoG8iAKBvIoABQWFwADghOyE/IXIA8gBeIHIAcgAAoK4hYQByAACg8ipzogsiSiEAAAAAxwtkoPwiAKD6ImMAeQBaZIADQUVhZGVzdABcIV8hYiFmIWkhkyGWIXIA8gBXIADgZiI4A3IAcgAAoJohcgAAoCUggKFwImZxcwBwIYQhjiF0AAABYXJ1IXohcgByAG8A9wBlIWkAZwBoAHQAYQByAHIAbwD3AD4h8aFwImAhAACKIWwAYQBuAPQAZwlz4H0qOAMAoG4iaQDtAG0JcqBuImkA5aDqIkUJaQDkADoKAAFwdKMhpyFmAADgNdhf3YCBrAA7aW4AriGvIcchrEBuAIChCSJFZHYAtyG6Ib8hAOD5IjgDbwB0AADg9SI4A+EB1gjEIcYhAKD3IgCg9iJpAHagDCLhAagJzyHRIQCg/iIAoP0igAFhb3IA2CHsIfEhcgCAoSYiYXN0AOAh5SHpIWwAbABlAOwAywhsAADg/SrlIADgAiI4A2wiaW50AACgFCrjoYAi9yEAAPohdQDlAJsJY+CvKjgDZaCAIvEAkwkAAkFhaXQHIgoiFyIeInIA8gBsIHIAcgAAoZshY3cRIhQiAOAzKTgDAOCdITgDZyRodGFycm93AACgmyFyAGkA5aDrIr4JgANjaGltcHF1AC8iPCJHIpwhTSJQIloigKGBImNlcgA2Iv0JOSJ1AOUABgoA4DXYw9zvIXJ0bQKdIQAAAABEImEAcgDhAOEhbQBloEEi8aBEIiYKYQDyAMsIcwB1AAABYnBWIlgi5QDUCeUA3wmAAWJjcABgInMieCKAoYQiRWVzAGci7glqIgDgxSo4A2UAdABl4IIi0iBxAPGgiCJoImMAZaCBIvEA/gmAoYUiRWVzAH8iFgqCIgDgxio4A2UAdABl4IMi0iBxAPGgiSKAIgACZ2lscpIilCKaIpwi7AAMCWwAZABlADuA8QDxQOcAWwlpI2FuZ2xlAAABbHKkIqoi5SFmdGWg6iLxAEUJaSJnaHQAZaDrIvEAvgltoL0DAKEjAGVzuCK8InIAbwAAoBYhcAAAoAcggARESGFkZ2lscnMAziLSItYi2iLeIugi7SICIw8j4SFzaACgrSLhIXJyAKAEKXAAAOBNItIg4SFzaACgrCIAAWV04iLlIgDgZSLSIADgPgDSIG4iZmluAACg3imAAUFldADzIvci+iJyAHIAAKACKQDgZCLSIHLgPADSIGkAZQAA4LQi0iAAAUF0BiMKI3IAcgAAoAMp8iFpZQDgtSLSIGkAbQAA4Dwi0iCAAUFhbgAaIx4jKiNyAHIAAKDWIXIAAAFociMjJiNrAACgIylvoJYh9wD/DuUhYXIAoCcpUxJqFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVCMAAF4jaSN/I4IjjSOeI8AUAAAAAKYjwCMAANoj3yMAAO8jHiQvJD8kRCQAAWNzVyNsFHUAdABlADuA8wDzQAABaXlhI2cjcgBjoJoiO4D0APRAPmSAAmFiaW9zAHEjdCN3I3EBeiNzAOgAdhTsIWFjUWF2AACgOCrvIWxkAKC8KewhaWdTYQABY3KFI4kjaQByAACgvykA4DXYLN1vA5QjAAAAAJYjAACcI24A22JhAHYAZQA7gPIA8kAAoMEpAAFibaEjjAphAHIAAKC1KQACYWNpdKwjryO6I70jcgDyAFkUAAFpcrMjtiNyAACgvinvIXNzAKC7KW4A5QDZCgCgwCmAAWFlaQDFI8gjyyNjAHIATWFnAGEAyWOAAWNkbgDRI9Qj1iPyIW9uv2MAoLYpdQDzAHgBcABmAADgNdhg3YABYWVsAOQj5yPrI3IAAKC3KXIAcAAAoLkpdQDzAHwBAKMoImFkaW9zdvkj/CMPJBMkFiQbJHIA8gBeFIChXSplZm0AAyQJJAwkcgBvoDQhZgAAoDQhO4CqAKpAO4C6ALpA5yFvZgCgtiJyAACgVipsIm9wZQAAoFcqAKBbKoABY2xvACMkJSQrJPIACCRhAHMAaAA7gPgA+EBsAACgmCJpAGwBMyQ4JGQAZQA7gPUA9UBlAHMAYaCXInMAAKA2Km0AbAA7gPYA9kDiIWFyAKA9I+EKXiQAAHokAAB8JJQkAACYJKkkAAAAALUkEQsAAPAkAAAAAAQleiUAAIMlcgCAoSUiYXN0AGUkbyQBCwCBtgA7bGokayS2QGwAZQDsABgDaQJ1JAAAAAB4JG0AAKDzKgCg/Sp5AD9kcgCAAmNpbXB0AIUkiCSLJJkSjyRuAHQAJWBvAGQALmBpAGwAAKAwIOUhbmsAoDEgcgAA4DXYLd2AAWltbwCdJKAkpCR2oMYD1WNtAGEA9AD+B24AZQAAoA4m9KHAA64kAAC0JGMjaGZvcmsAAKDUItZjAAFhdbgkxCRuAAABY2u9JMIkawBooA8hAKAOIfYAaRpzAACkKwBhYmNkZW1zdNMkIRPXJNsk4STjJOck6yTjIWlyAKAjKmkAcgAAoCIqAAFvdYsW3yQAoCUqAKByKm4AO4CxALFAaQBtAACgJip3AG8AAKAnKoABaXB1APUk+iT+JO4idGludACgFSpmAADgNdhh3W4AZAA7gKMAo0CApHoiRWFjZWlub3N1ABMlFSUYJRslTCVRJVklSSV1JQCgsypwAACgtyp1AOUAPwtjoK8qgKJ6ImFjZW5zACclLSU0JTYlSSVwAHAAcgBvAPgAFyV1AHIAbAB5AGUA8QA/C/EAOAuAAWFlcwA8JUElRSXwInByb3gAoLkqcQBxAACgtSppAG0AAKDoImkA7QBEC20AZQDzoDIgIguAAUVhcwBDJVclRSXwAEAlgAFkZnAATwtfJXElgAFhbHMAZSVpJW0l7CFhcgCgLiPpIW5lAKASI/UhcmYAoBMjdKAdIu8AWQvyIWVsAKCwIgABY2l9JYElcgAA4DXYxdzIY24iY3NwAACgCCAAA2Zpb3BzdZElKxuVJZolnyWkJXIAAOA12C7dcABmAADgNdhi3XIiaW1lAACgVyBjAHIAAOA12MbcgAFhZW8AqiW6JcAldAAAAWVpryW2JXIAbgBpAG8AbgDzABkFbgB0AACgFipzAHQAZaA/APEACRj0AG0LgApBQkhhYmNkZWZoaWxtbm9wcnN0dXgA4yXyJfYl+iVpJpAmpia9JtUm5ib4JlonaCdxJ3UnnietJ7EnyCfiJ+cngAFhcnQA6SXsJe4lcgDyAJkM8gD6AuEhaWwAoBwpYQByAPIA3BVhAHIAAKBkKYADY2RlbnFydAAGJhAmEyYYJiYmKyZaJgABZXUKJg0mAOA9IjEDdABlAFVhaQDjACAN7SJwdHl2AKCzKWcAgKHpJ2RlbAAgJiImJCYAoJIpAKClKeUA9wt1AG8AO4C7ALtAcgAApZIhYWJjZmhscHN0dz0mQCZFJkcmSiZMJk4mUSZVJlgmcAAAoHUpZqDlIXMAAKAgKQCgMylzAACgHinrALka8ACVHmwAAKBFKWkAbQAAoHQpbAAAoKMhAKCdIQABYWleJmImaQBsAACgGilvAG6gNiJhAGwA8wB2C4ABYWJyAG8mciZ2JnIA8gAvEnIAawAAoHMnAAFha3omgSZjAAABZWt/JoAmfWBdYAABZXOFJocmAKCMKWwAAAFkdYwmjiYAoI4pAKCQKQACYWV1eZcmmiajJqUm8iFvbllhAAFkaZ4moSZpAGwAV2HsAA8M4gCAJkBkAAJjbHFzrSawJrUmuiZhAACgNylkImhhcgAAoGkpdQBvAPKgHSCjAWgAAKCzIYABYWNnAMMm0iaUC2wAgKEcIWlwcwDLJs4migxuAOUAoAxhAHIA9ADaC3QAAKCtJYABaWxyANsm3ybjJvMhaHQAoH0pbwBvAPIANgwA4DXYL90AAWFv6ib1JnIAAAFkde8m8SYAoMEhbKDAIQCgbCl2oMED8WOAAWducwD+Jk4nUCdoAHQAAANhaGxyc3QKJxInISc1Jz0nRydyInJvdwB0oJIhYQDpAFYmYSNycG9vbgAAAWR1GiceJ28AdwDuAPAmcAAAoMAh5SFmdAABYWgnJy0ncgByAG8AdwDzAAkMYQByAHAAbwBvAG4A8wATBGklZ2h0YXJyb3dzAACgySFxAHUAaQBnAGEAcgByAG8A9wBZJugkcmVldGltZXMAoMwiZwDaYmkAbgBnAGQAbwB0AHMAZQDxABwYgAFhaG0AYCdjJ2YncgDyAAkMYQDyABMEAKAPIG8idXN0AGGgsSPjIWhlAKCxI+0haWQAoO4qAAJhYnB0fCeGJ4knmScAAW5ygCeDJ2cAAKDtJ3IAAKD+IXIA6wAcDIABYWZsAI8nkieVJ3IAAKCGKQDgNdhj3XUAcwAAoC4qaSJtZXMAAKA1KgABYXCiJ6gncgBnoCkAdAAAoJQp7yJsaW50AKASKmEAcgDyADwnAAJhY2hxuCe8J6EMwCfxIXVvAKA6IHIAAOA12MfcAAFidYAmxCdvAPKgGSCoAYABaGlyAM4n0ifWJ3IAZQDlAE0n7SFlcwCgyiJpAIChuSVlZmwAXAxjEt4n9CFyaQCgzinsInVoYXIAoGgpAKAeIWENBSgJKA0oSyhVKIYoAACLKLAoAAAAAOMo5ygAABApJCkxKW0pcSmHKaYpAACYKgAAAACxKmMidXRlAFthcQB1AO8ABR+ApHsiRWFjZWlucHN5ABwoHignKCooLygyKEEoRihJKACgtCrwASMoAAAlKACguCpvAG4AYWF1AOUAgw1koLAqaQBsAF9hcgBjAF1hgAFFYXMAOCg6KD0oAKC2KnAAAKC6KmkAbQAAoOki7yJsaW50AKATKmkA7QCIDUFkbwB0AGKixSKRFgAAAABTKACgZiqAA0FhY21zdHgAYChkKG8ocyh1KHkogihyAHIAAKDYIXIAAAFocmkoayjrAJAab6CYIfcAzAd0ADuApwCnQGkAO2D3IWFyAKApKW0AAAFpbn4ozQBuAHUA8wDOAHQAAKA2J3IA7+A12DDdIxkAAmFjb3mRKJUonSisKHIAcAAAoG8mAAFoeZkonChjAHkASWRIZHIAdABtAqUoAAAAAKgoaQDkAFsPYQByAGEA7ABsJDuArQCtQAABZ22zKLsobQBhAAChwwNmdroouijCY4CjPCJkZWdsbnByAMgozCjPKNMo1yjaKN4obwB0AACgairxoEMiCw5FoJ4qAKCgKkWgnSoAoJ8qZQAAoEYi7CF1cwCgJCrhIXJyAKByKWEAcgDyAPwMAAJhZWl07Sj8KAEpCCkAAWxz8Sj4KGwAcwBlAHQAbQDpAH8oaABwAACgMyrwImFyc2wAoOQpAAFkbFoPBSllAACgIyNloKoqc6CsKgDgrCoA/oABZmxwABUpGCkfKfQhY3lMZGKgLwBhoMQpcgAAoD8jZgAA4DXYZN1hAAABZHIoKRcDZQBzAHWgYCZpAHQAAKBgJoABY3N1ADYpRilhKQABYXU6KUApcABzoJMiAOCTIgD+cABzoJQiAOCUIgD+dQAAAWJwSylWKQChjyJlcz4NUCllAHQAZaCPIvEAPw0AoZAiZXNIDVspZQB0AGWgkCLxAEkNAKGhJWFmZilbBHIAZQFrKVwEAKChJWEAcgDyAAMNAAJjZW10dyl7KX8pgilyAADgNdjI3HQAbQDuAM4AaQDsAAYpYQByAOYAVw0AAWFyiimOKXIA5qAGJhESAAFhbpIpoylpImdodAAAAWVwmSmgKXAAcwBpAGwAbwDuANkXaADpAKAkcwCvYIACYmNtbnAArin8KY4NJSooKgCkgiJFZGVtbnByc7wpvinCKcgpzCnUKdgp3CkAoMUqbwB0AACgvSpkoIYibwB0AACgwyr1IWx0AKDBKgABRWXQKdIpAKDLKgCgiiLsIXVzAKC/KuEhcnIAoHkpgAFlaXUA4inxKfQpdAAAoYIiZW7oKewpcQDxoIYivSllAHEA8aCKItEpbQAAoMcqAAFicPgp+ikAoNUqAKDTKmMAgKJ7ImFjZW5zAAcqDSoUKhYqRihwAHAAcgBvAPgAIyh1AHIAbAB5AGUA8QCDDfEAfA2AAWFlcwAcKiIqPShwAHAAcgBvAPgAPChxAPEAOShnAACgaiYApoMiMTIzRWRlaGxtbnBzPCo/KkIqRSpHKlIqWCpjKmcqaypzKncqO4C5ALlAO4CyALJAO4CzALNAAKDGKgABb3NLKk4qdAAAoL4qdQBiAACg2CpkoIcibwB0AACgxCpzAAABb3VdKmAqbAAAoMknYgAAoNcq4SFycgCgeyn1IWx0AKDCKgABRWVvKnEqAKDMKgCgiyLsIXVzAKDAKoABZWl1AH0qjCqPKnQAAKGDImVugyqHKnEA8aCHIkYqZQBxAPGgiyJwKm0AAKDIKgABYnCTKpUqAKDUKgCg1iqAAUFhbgCdKqEqrCpyAHIAAKDZIXIAAAFocqYqqCrrAJUab6CZIfcAxQf3IWFyAKAqKWwAaQBnADuA3wDfQOELzyrZKtwq6SrsKvEqAAD1KjQrAAAAAAAAAAAAAEwrbCsAAHErvSsAAAAAAADRK3IC1CoAAAAA2CrnIWV0AKAWI8RjcgDrAOUKgAFhZXkA4SrkKucq8iFvbmVh5CFpbGNhQmRvAPQAIg5sInJlYwAAoBUjcgAA4DXYMd0AAmVpa2/7KhIrKCsuK/IBACsAAAkrZQAAATRm6g0EK28AcgDlAOsNYQBzorgDECsAAAAAEit5AG0A0WMAAWNuFislK2sAAAFhcxsrIStwAHAAcgBvAPgAFw5pAG0AAKA8InMA8AD9DQABYXMsKyEr8AAXDnIAbgA7gP4A/kDsATgrOyswG2QA5QBnAmUAcwCAgdcAO2JkAEMrRCtJK9dAYaCgInIAAKAxKgCgMCqAAWVwcwBRK1MraSvhAAkh4qKkIlsrXysAAAAAYytvAHQAAKA2I2kAcgAAoPEqb+A12GXdcgBrAACg2irhAHgociJpbWUAAKA0IIABYWlwAHYreSu3K2QA5QC+DYADYWRlbXBzdACFK6MrmiunK6wrsCuzK24iZ2xlAACitSVkbHFykCuUK5ornCvvIXduAKC/JeUhZnRloMMl8QACBwCgXCJpImdodABloLkl8QBdDG8AdAAAoOwlaSJudXMAAKA6KuwhdXMAoDkqYgAAoM0p6SFtZQCgOyrlInppdW0AoOIjgAFjaHQAwivKK80rAAFyecYrySsA4DXYydxGZGMAeQBbZPIhb2tnYQABaW/UK9creAD0ANERaCJlYWQAAAFsct4r5ytlAGYAdABhAHIAcgBvAPcAXQbpJGdodGFycm93AKCgIQAJQUhhYmNkZmdobG1vcHJzdHV3CiwNLBEsHSwnLDEsQCxLLFIsYix6LIQsjyzLLOgs7Sz/LAotcgDyAAkDYQByAACgYykAAWNyFSwbLHUAdABlADuA+gD6QPIACQ1yAOMBIywAACUseQBeZHYAZQBtYQABaXkrLDAscgBjADuA+wD7QENkgAFhYmgANyw6LD0scgDyANEO7CFhY3FhYQDyAOAOAAFpckQsSCzzIWh0AKB+KQDgNdgy3XIAYQB2AGUAO4D5APlAYQFWLF8scgAAAWxyWixcLACgvyEAoL4hbABrAACggCUAAWN0Zix2LG8CbCwAAAAAcyxyAG4AZaAcI3IAAKAcI28AcAAAoA8jcgBpAACg+CUAAWFsfiyBLGMAcgBrYTuAqACoQAABZ3CILIssbwBuAHNhZgAA4DXYZt0AA2FkaGxzdZksniynLLgsuyzFLHIAcgBvAPcACQ1vAHcAbgBhAHIAcgBvAPcA2A5hI3Jwb29uAAABbHKvLLMsZQBmAPQAWyxpAGcAaAD0AF0sdQDzAKYOaQAAocUDaGzBLMIs0mNvAG4AxWPwI2Fycm93cwCgyCGAAWNpdADRLOEs5CxvAtcsAAAAAN4scgBuAGWgHSNyAACgHSNvAHAAAKAOI24AZwBvYXIAaQAAoPklYwByAADgNdjK3IABZGlyAPMs9yz6LG8AdAAAoPAi7CFkZWlhaQBmoLUlAKC0JQABYW0DLQYtcgDyAMosbAA7gPwA/EDhIm5nbGUAoKcpgAdBQkRhY2RlZmxub3Byc3oAJy0qLTAtNC2bLZ0toS2/LcMtxy3TLdgt3C3gLfwtcgDyABADYQByAHag6CoAoOkqYQBzAOgA/gIAAW5yOC08LechcnQAoJwpgANla25wcnN0AJkpSC1NLVQtXi1iLYItYQBwAHAA4QAaHG8AdABoAGkAbgDnAKEXgAFoaXIAoSmzJFotbwBwAPQAdCVooJUh7wD4JgABaXVmLWotZwBtAOEAuygAAWJwbi14LXMjZXRuZXEAceCKIgD+AODLKgD+cyNldG5lcQBx4IsiAP4A4MwqAP4AAWhyhi2KLWUAdADhABIraSNhbmdsZQAAAWxyki2WLeUhZnQAoLIiaSJnaHQAAKCzInkAMmThIXNoAKCiIoABZWxyAKcttC24LWKiKCKuLQAAAACyLWEAcgAAoLsicQAAoFoi7CFpcACg7iIAAWJ0vC1eD2EA8gBfD3IAAOA12DPddAByAOkAlS1zAHUAAAFicM0t0C0A4IIi0iAA4IMi0iBwAGYAAOA12GfdcgBvAPAAWQt0AHIA6QCaLQABY3XkLegtcgAA4DXYy9wAAWJw7C30LW4AAAFFZXUt8S0A4IoiAP5uAAABRWV/LfktAOCLIgD+6SJnemFnAKCaKYADY2Vmb3BycwANLhAuJS4pLiMuLi40LukhcmN1YQABZGkULiEuAAFiZxguHC5hAHIAAKBfKmUAcaAnIgCgWSLlIXJwAKAYIXIAAOA12DTdcABmAADgNdho3WWgQCJhAHQA6ABqD2MAcgAA4DXYzNzjCuQRUC4AAFQuAABYLmIuAAAAAGMubS5wLnQuAAAAAIguki4AAJouJxIqEnQAcgDpAB0ScgAA4DXYNd0AAUFhWy5eLnIA8gDnAnIA8gCTB75jAAFBYWYuaS5yAPIA4AJyAPIAjAdhAPAAeh5pAHMAAKD7IoABZHB0APgReS6DLgABZmx9LoAuAOA12GnddQDzAP8RaQBtAOUABBIAAUFhiy6OLnIA8gDuAnIA8gCaBwABY3GVLgoScgAA4DXYzdwAAXB0nS6hLmwAdQDzACUScgDpACASAARhY2VmaW9zdbEuvC7ELsguzC7PLtQu2S5jAAABdXm2LrsudABlADuA/QD9QE9kAAFpecAuwy5yAGMAd2FLZG4AO4ClAKVAcgAA4DXYNt1jAHkAV2RwAGYAAOA12GrdYwByAADgNdjO3AABY23dLt8ueQBOZGwAO4D/AP9AAAVhY2RlZmhpb3N38y73Lv8uAi8MLxAvEy8YLx0vIi9jInV0ZQB6YQABYXn7Lv4u8iFvbn5hN2RvAHQAfGEAAWV0Bi8KL3QAcgDmAB8QYQC2Y3IAAOA12DfdYwB5ADZk5yJyYXJyAKDdIXAAZgAA4DXYa91jAHIAAOA12M/cAAFqbiYvKC8AoA0gagAAoAwg");
+// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/generated/decode-data-html.js
+var htmlDecodeTree = /* @__PURE__ */ decodeTrieDict("!}.&u%}'&}*'~!6*)%&,~!J~!J~%L~y<~!R,~~%Lu~~#GD~~#|)1#%}^%}2%+#.##%##%}&%##%'#%##&%#%#'%#&#%#&#'#%%#&#%##%#)%''%&%#%#'%#%%#%%}%%%#%#&(23#%%#&-%0%('1#(##%#'##+%'*.:1}#%#6-+(%'%%#%%%}#L'2351&('%}&/N'(0(/*-%(%%}#'+&T%7.2}#&%&#%#36/5##%&%%#&#%%#))2%%##%&&'0~!#*+&'%1~!%).'3q?&%'1~!.##%6(~!+%%%(Gw'rT~!E#<nA%#jZ~!H%(~!42##~!*31&~!G%U~#)5~#`3~!J~!Z~%]~%Y~%C~!q~!u~#kz~%#~!6'~!D~!U~!?~#T~!c%~!G#'~%7|~!G~!J~!G&~#pb~(Df}#%}*&}#%##%##%##&#-}&'#'&%#.++}%mI,#,@&(}*%}*'%&##&#%##%}&0}#.},U},%}+%}&%}#%##&}B%(}(%}+%)})%##%#&}&%##%&}<%}>%#%&}*%}(%}9%}/%})%}*%}*%}?&}&%}3%}&*#%})%#%#)}#&#-#+*%E%%'%'#%}#*V##&##I}#&&##%&%#&&Qf%%))w/0+&%#(#.%-''''++++7}>%4'',##1,#%#&%##&#'##&#*#9)%&%}#*}%,#+P(%A&%#'&##wSD',9E00#y#@}(+}&%&>~!#~!X}#*}(&&}(&}(,%}%&#+&}#&}I%#%}%)#(},'%#*}4%%#%}(''}#/##(##),%-##%%)#&}(.}&%#&}%%}*&#%},&&}&%}#%*'#%})%}D&}&%}-&}6&#&}-,%}#%})-(~+`~,=?~I9'9%~!,#%})%})%}@%}?%}(~!?~#<~#pP~#BG~#=1#%K+~#?#~%;)~#A~#mF1~#A'~'X%'~#lR~#N~'N~#r~#m#-~#i'?%#'%~#B%##%,%#~#_%#0%~#]732~,w~2+#:&#%&'0%&>%}#>##F+)#%&&#(+_}4&}-%}(&}@&}O7Fdf0@+/v4}&WU##&/0#&'('B#%}.%}'+#%}#%%&#&%#%##+#&#)#6#'#.},%}c%},%#%##%&#&%#&~#>'*-.%##%##%}#%%}%'~#)D1}#%*&~#_%%'(~#S2%'.}#~#=##*'*-%}&'%'##&&~'E%.#&~#M4}%%##&'%#~#O1##%&#'+~#<B%##%%'%+~#;#@%}#&%#&&%#(~#H1}'%'##&&~#?A}&'~#D#%32}'&&&&~#[}'(#%}'~#;C})&}%%#%~#=&%,3}%'(#%%~#^'#&&)#%'~#Y%-~#d-%'~#^%%&#&&&}#~#b~2t*&'~&(~&@~0%~e~3}%*''0})&}+~!9##-}#%-hD*)1fC#%/&/fB#40~!+#)*4~!+~!K'&:~!/*7~!.#~!H~!L':~%x&~!H#~!*~%1~!I#~!+A~#p'~!F~~#-#~,,(~.Z~!V~%;'B'mq-W~!N~%I%#&&#&}#%},%%}'%}+X#%}#&}(%}'%}<%}#%}%%'}'%}:~![)9@~%>~#UA%-%##&~!C%~!-.9:~!1~!-^2/:a~!y,D*J#-5)/4~%23,~#G~!L1~!0X3`~!2+~!!0-~&E~!W~!o,>Y&]~%cZx_&~#O*9#A#'#+I'%#)~!0B*-5A+-((F&*M#)(-7-5+'-3a5Vi~!Y~!?+[)%3),ERHm~!+:D,VG.+)?fB%%*(%)'(#&80%1'8`K8?`+'Z#&O&'H5#*9)A%%5&3))0%39+.*7#()&&*=4@**L)<'_&*+..;(#*+)./&0#3)%')-8(4ixD(&.}%,('aI:,)%,k2231T)I'#/-W7,/'Q#.'Y24+h')37</31&83##&0#),H(?'&?/1##%#&&#%''-%&&&#(&''&#.-'%#%%(,')*'&#&#'##%(%(#%('#&##%%%%('%#%#%%#%#&%##h>w+v<ayvyvcg.uuhKr}g/v|g>u9i[~>g5uI~=RvdwEg;v/g;uk!!TTSx]@RT!U!#!@VBRUU!'UTe-d0c`e&gSdicedFcrdTaqb.kYcAohdYd@a3e+d}dMdtd.aJ#bqcK`dle/e.e'dwdPdodddjbEb}ogd^ofdpduc6j?l%d{drdqc)d7bacOdQ%T#Y)X.sR[yH>6Vyv3[xwLu>vo'!*.[yBacahoj>6Rew3[xqdZa#!a&#^(X-[yG>6Vyu3[xvg3sEr|g.u/Ri9db0T#^(Xa)!-[y;>6Vylg4wKs{JwNZt3@3r=c4Z([xlg;wKt!cpq's@v7A'*a(a+!-a#[y<3Dt?3Dt'>6Vym3[xmg9rxsNJwLZt4~?r?db1T#`-!(Xa,!0[yS>6Vz%NuQs.g4wKtnJwNZtS@3r>c4Z([y%g;wKtrdga8!a(!#&T*Y-Xa#!a0<or[yc3Dtq>6Vz43[y3JwNZtf@3s!Ju}!%Dti:pm3c_%X#tjB5pkd6q!r]u?voC'*-a.a2!0a&a+[yI3DtI3Ds~3DtH>6Vyw3[xx;:s#~<5pKJwNZtE@3r~d`a)!a2T#a.(!+U.X1[yT3Dt`3Dtv>6Vz&3[y&g9rxwzcxstPu.<rAJwLZtT~?r@dZa%!a.&^*Za(/Reu[ya>6Vz23[y1g3sEr}wkg{NuQRg{ci(U#5@b`~,cg#U(2WnH5wugcRh7dX#T(Y,a'Ta!!a,[yZ<]mj>6Vz,3[y+Pv#5ReZKu+=,%!H}7ABwkaS?Rh:BcW(X#<]mrj:ubv/ARekdg%!(!a.*Ta(Y.X1!#sP>Rl*Dt6[y>>6Vyo3Wf*jOvuumvuRgRJuq*!:9<B@bX~3jVv&v@s@5Re[d/rQt{uAvo&a&a*)a2!,0Wf!3Dt0=Bs'>6Re}3[xy~<5s%JwJZt1~Gs)c;&!#2sJkNuXvzq7rxu,Re8dka4!a8(aEZ+a@Y.X1Xa)[yd=Bs(3DtP>6Vz53[y4cX#X&Re:avRe9~<5s&JwJZtQ~Gs*i^rzvdRg+Jv{%!2sbB@bX}kdga,!Za?&^*T1/!a'Dt+[y6>6Vyf3Wf%g/u;s4hGu6?Rh-JvZ,!c%#&RoX54Rivj7uyvf8RgTKvZB%*!2sGh<vu5Rgq<=C::9bb~#dZ#T&Ta6Y.X*Dt>[y93Wf)coZ(T,6VyifluvRgC@95@B@bX~/hFu34cC#T,k/unq8w8Q5RkUklwQuzunq8w8Q5Rk8d/rJu?v8w9)-&!a0a;a&aIWejg3sEr/h1s<DtDJvyZqY5aws3Jvy!&Wei~Hr1:au5@Bag>23E~5c:Z&bX};kKv?w&unuVu5Rjc;>bs)#~@:Rh.=ay<a]C;b`}Vd6s/t{uAvoaxa()!a,a7%-a#a2Dt,[yF2Wo[>6Vyt3[xuNuPRi&NuPwpi#RoWh?vf8Ri%Jv]!%Ri:KvxD!.'2WeAjZu`q9rxu,Re7woeAg-unLq(qA_/*2Wg_g3u5q^9:4E}/jTrxrzv=Wkkd~0UX#^^Xa-a1a5T&a=U1a'*aEa]!a*aPaA-adok[y54Rn>;:p3~Dp5g9rpsFNvZqjg3uJp4~<5p0Pw;5qlJwNZt*@3p1Pw:5p/Ou!5p2JvG'!6Vye=<qnJvh_[xhg3v,Rh3kOwOw-sDuev/Re^dha[a%!%!a+#Ta7)-5TaCaO!aka!a)sf[yb2>Rl!9ARiq5E}Qg=ucRkBE|oJrJ_@Wk~@Wk{JrJ_@Wk|@WkyJrJ_@Wk}@WkzJvO_[y2g-vMRmiKuYC!)&>Ri;>Ri<@3RkNc](X#@9Rk=g5vuRmhKvDB!+'=]meg3u4Rmgd)#Y'Vz3CARmfd`a+!%T'!+#Ta1Ta6TaM-sTDt9[yA9sYd'%Y#s[[xpj:ueunaXRgEjRq,v-vuqdd2'`#6Rev<32@5>:2<E}5xIo9a*X#Y(;5RePJvD_g>vyRgNj8w)v8<wggs:RgXiZt|vjx,hSq3ah!-(~@:Ro/Ou!5RhWj^v(pyw8unRhUdx-UY#^Ua.a3a70!)%UX1TaDa)'omRiRRhE[y:3Dsz=Br,>6Vyj3[xkg6ruwjcqsrPw;5r*Ku]D'Zt-@3r(~?r.i[vwv]dU1a--U#`a4(g/vsRhPOu!5RhLj:rmu9Wo!~@:wdh@g/vsRiTjXuvvNr}:RhBj^v(pyw8unRn]dz1UYa'a+^Y(!aETZalaRY.Ta?a4[yDJw1!#qLsW>6Vyrfzq-pLflpwRe|Js>%!Dt@3Dt&Jvy_[xs~HrnjMuwpsw'RecKu+D#'!t<~Grl~?rjg5u-x,gwp{ah!-(~@:Rg~Ou!5Rh'jXuvvNr}:Rh#cW#X/c;&!#2sLi[v7u7RgpJv)(!iLrxu,Re6j7v@s@5Se[e7d`aW!Za(a`T.a#!a3!&aDa-!9)Dt_=6s+3[x~~DR|h~DS6avhGun5RkZj3w)v-]mkKunB!&*]kb97R|i<ARk<c:Z(6Vy}Juh'!wziMRoS:F|vkLuauJv5vtvQRh1d='T+Y#VyO~DR|jcF#T'7R|g97R|kJv3'!ay<Rj,Jvh&!:ReXcsa6*a+#a#_aIRf9aLRf?c,Z&Rf5Rf7c.Z&Rf;Rf>cQ#%T'p-Rf8Rf=ct#%'(*!,p,Rf4p+Rf6Rf:Rf<d~'Ua%U*^UYa(!a,-!#a4YaTalaEX0a8a<Weo3Dt/3Dsx=Br93Wen~Dr;~<5p<JwNZt2@3p=Pw:5p;Ou!5r3c7&!#:p>3Ds}KvGB)_6Vyk2sM=<r7x'eovA(!hFu1ARf}cV#X&@r5j6rvwQa^Rf3c=Za'wkghJv__g;unRggA53B9=b^}%j6uduo5Jq;!(hIv%2Re`Ou4ARe_e%a#^^^Xa&!a*a2!&a6YaP!*ad!#a:aE/5Rn?[y@>6Vyp;:pE~DrY~<5pBJwNZt8@3pCh=rt3rWPw:5pAJup_[xoNuPpF9c!#'45pD5ARn)d8#X'X*3@rU72s]h>v<<sSjJpqvewOJq/(!hNw'5ReBk0s2u3w/w'5ReE5@Jq.!a+JQ!&WeU23d(#Y&RjG5]jBk!u7w&u0udARjEe#+^^^Ub#!a2/a`Z(agT1!a-a;|@TaG!aS[yV=Re~fow'RguNuPRe?bz#'>RoUWeL>:Cbb|?JwPZtVg6ruRmzJvD'!6Vz(g/vmRh~Jvy_[y(g9voRgyx*cy(#2>Ri2B9b]~9kIw9u7rluJu3Rg]dI#a%UY'@=p%CAx.gQZ&RhwwygtRm{x5g_Z'+ABqR9Woa=Bp&dV#^*Xa'!&@o{g4v]Rk;Jv{!%Rk[wkkiA5RkiwwfUB=x,fUuqC&*!>RfTg8v0RfV~ARfSd;rJsAuAv9wR'ae+/aO!a@aza/a#[yQ@Wg!2Wemg3sEr0JvB_g>uvReWg2v+Re=KupB_+[y!2AbY~-~Hr2AJwD!(h<~El>h<~El?Kun@+_:9b`}Kg-v/Ri3g;vtwyk_9]k_d=&T#*U.6qh@Ab`|K9:H|CJv[!&3Dtex'fDwC%!Rf[9WlMd[(^X,!a%Z06Vz!@WgBg=v~Rgvg,QRe@awd,#Y+jTv|Q~EfWj]uNr|~FRfXdy#Y&^Ua%!aO.!(a)Ua;=!a@aKap!a-,a!Ta]a[rSa]p?[y82sK=Bq~;:p:~<5p8Pw:5p7d'#Y'Wf(;RnRi[u4w&RgJJvG'!6Vyh=<r#ijuuv/sIKuYD'ZtG@3p9~Gr&d2#`(g<vtRgFj`u5w&rqpxRf2CJuY!+:wfnTOu!5Rg}jNs1ucv&RfwJvA!&3@q|BDcC#T,k/unq8w8Q5RkTklwQuzunq8w8Q5Rk9dga#!a'!a=#a0!:+Tb*b@aO.a4!aba8aFJv^}?!VyR~Dr<g;u%Rn.~<5p[x'e`wNZtR@3p]Pw:5pZhNvjBp.woe_g5u-r4JwF!%DtO3:ooc7&!#:p^3DtpLuGw(!+%)Dtk6Vz#2sd=<r8d'#Y([y#<x3gJt`w@!)%}MRiowzikRij=]ilxAf3,U(#B2Rf#g0v-Rm[ck{`U#]giKv3>)!&6Ri154s,KuGB_%@r68r:dJ|t`#X(9<E|u2@H|rx3gJu?w'!+'1Nu7Reg4=H~+9<wxgY95Rm]xLggZ-`(X}U2:Ri4h<uOawRmsJv__5@bb{jbV~3dka#a'a]!,#a+U=a>b6a3b%!/aKa/)!arwve^VyJ;:pR~DpTg3uJpS~<5pOPw;5qmPw:5pNOu!5pQJvG'!6Vyx=<qoJvA!{~Jup!%@qk7Rn/KvyD!}''[xz;>wkh'?Rh,x8gyt`w5D!&),(SgyccRgztJ@3pPB5p#d'(Y#<]mmifubw&RgoJvE&!82s^JvF&!8Rf,ADb]~;x=h'rNu]vK!,%'*0RnORh)4Rh*AqQg-vaRnNg;wHwkh'ba~4cE#Ta*x3gctyw@'!+%RnFRnD<4Rn@hFvK5RnCxWg[#`&a0Ua()`1Rm75Rg[c]%X#qi8Rg^NvdRj>BwzgZauwji7Rm6A4wgg]d1#&(*,.0a#Rm;Rm<Rm=Rm>Rm?Rm@RmARmBe%#^^^Xaea?aC/b+(,!a+a#!a/!>a&Ta<aKbD!2wphBRnk[yPw}hE|.=Br-3Dtm>6Vy~g6urRf.x,hPrNav!%'RnqRo%Ro#Nu;q[Pw;5r+JwNZtM@3r)d'#Y'Weh;xChL#`&RnmRnoKu}>%(!Rne~Bs-;2wjcussJv+'!aYSO}6@B<5?ba~8LrNvj!.%*ROwungw~ng~:9;Ri^>wtnig;wHRnixDh@|(UZ.x1h@|)!#:2<H|*xHn]#-UX'3Ro)z=iT}6ARns=Bwsn_wpnaRncw]aR(#UXa&Ua*a/=]iPd'#Y&Ro'WnXf{QRm2hNvj]nZd`'T~&1`{|`#9b]{}c:'!#Wl{>@=be}]?cl{{U#:5Abb}Jds#^YaF!a*b4a#a3aPa>&Tb!bH!*a_!Eau?/a&RjY<]gj>6Vz*;:pe~DrZg,QRj1JwNZtX@wihspcJvZ&!VyX9WmOJu|!|N2WmHJvh&!]ht~Bpbcn&T(!#RmQ<s7Nu;padH#X'`+WmJ@>RmKCARhnKup=!)&Wf+:RhqNuPpf9c!#'45pd5AwghpARn(Ls@w!%,)!RmP@Wfe<E|IJva!&WmNg8vsRmLd`*.`#Y'Xa!axRn*]hrA8Rhug5s@rXg8u!RmMd8#X'X*3@rV72smdI*#UY&RmICARho~GsgxVgd)Ta'U-Y&Xa!T#RnEWnA@Wffg1uDRi0hFvK5RnBxGnG&#`%owp)@wsf+bX}Ze-*1!a*^^^Ua|!#a.aq&Ya2!a>.a6!a:aO`aJDtL[y`@Wg#>6Vz12@wzoYRoZNuPRi!NuPRhzg=ucRi,@=b`{Yg=ucRi-ACJvB!&Sh[ebSh]ebi`wUuFRm4Jw2_[y0JvB!.<Ju(!&SoG}6Shd}6<Ju(!&SoH}6She}6Kur@._g5vHRieJvx!{L2G{Kx6gd'T#?Rh82Wi5cZ#X(g1w)Rm5dW-Y(Ta#!a)!#aYa=wnfE=su2>>bU{0j9udv:<svj8uQv-7RgHdE%#^'sq9sp=>Bb_{TJv`!&g/r|snj6v(us5d,#Y(56H}[978H}]Jw5!&g1rushJvB!+j;v{u5?zDhd}6}bj;v{u5?zDhe}6}ce*#`(^^^a[aea!=!a6a*aoXb1a.!aAbL!b>,b'aL!aV@Wf|2Wlg3[y/JwNZt^@3piPw:5pgJunZou3@rsJva&!Vy_g<v~Rm#JvG'!6Vz0=<r{Ju{%!:pj@WfsiXuJu3Rm:JvZ&!WfA~Bph@c4Z&Dtwax5rubx(#:awRk1@d,#Y&RfjRfid1#,Y(@Wfp2Wlrg5s@ryKu[@!,'=]ig9wlk?Rk>g5u-rqJvy'!@9RkQcH(T#=>Ri~@<wkj(Wj(KuZB*!&<7rw@9RkRcH(T#=>Ri}@<wkj)Wj)dg(Ta2Xa9X#`-!a*CARhg@@=I}d9x;c~#X%so=<sj>2@@=aybb}XjWv0Q~EfEj3vLv;<d,#Y(56H}`978H}_dgaPaFa'a/!#a3Y0a_a;a|!1(a7-[yE3[xt;:pJNvZrrg3uJrvJwNZt=@3pIh=rt3rxPw:5pGOu!5rpJvG'!6Vys=<rz@c4Z&Dt(ax5rtJvZ!&~BpH@wsfNg-vaRlNci*U#=<wei<F}a5@Jq.!a*JQ!%@qZ23d(#Y&RjH5]jCk!u7w&u0udARjFd/prq=tyvpaEa(a:.!a1aZ(@@=I}:9wpd%=<sX55w_h}@@=I{t=ay<aU@@=I}T=ay<2@@=I})?C9:9au@9Cb]}DP~=x-fAZ(2Wl1=ay<aU@@=I}>5@d##Y+jTv|vV~EfFj]uNpn~FRfGdgaK!Z2&!a8a-Tb({E!acTbM*!a(DtY[yYd'%Y#sl[y*hHvh>Re5x2c{Z}.j4uCvcawRiMd+#X+_x&d!},<5RkX;2Hzw@x,gavfB-!{CcF&T#Roe;RodwWbBg5urRgaKvHC*_6Vz+<4opieuew&Rmq@d]&Y)X,T#X0Rh}<BqP=4qS9:ReMg/ujReNJw0!/<Jui%!bd{kawwnemRelAxUa?a3#*.&UX(Ya+a/RhvRnQ<o}9Wmtd-#Y&RgSRmw9;Rmxay=Rmyg-vaRmuxEhSrNu,v-voC!%(aR.a(a7+1Ro1>Ro5CE{A9b]{@;5x#eO{:g;urRi+KrNA!%(Ro3>Ro79;Ri_Ku@>{;&!x%gX|{KunA_+g5QRj/g3u5Rj#g>uERj%wio/xRhS&!,!#^1U}wba{8>>@=be}qC@:D5ba{7Ku+A&!}x?ba}t>>@=be}se(aA^^^Uat!b0#{pa+awUazbGa#aLb9bgaWac'a5TbS=Br!d1#`%scp_Jvl!#rT>Re0JvX&!VyN=H{Fcm#U&:pY=ReaJv2&!]h0=]nUJvG'!6Vy|=<r%JrM_=]h2@Wlud'#)U'Wf'b]{i=]h/Jvh!&~BpWg=v]RnMx+ny#'Nu;pVwjnu=]nwxJnx,T#`&Reqwjnt=]nvieu9vrRjLLuYwP(#+!th@wih5pX~Gr'g5v/Rh4KunA'!-CARnP@wwiN:Rm_9x'cvw>!|l=<saKvAA!0&3@q}>w^e1bp#&Re2Re3BDx7gH#T|f5H|eKuZ>!%(:qNAH{]Jv6!+3B2B9=b^{X<5<B92:E{ZLvhwA(a;a%!igQuyRmad+#Y}m@3Rh5d8#X'X*:AqUAHzmaxwbh<aXRnVcF}RT#Nw&cj#U(BWnug/vsRntdka)(a3+.Zb7aYYan1!bVa@Xa}[y^@b[{G=H{+hFu73Rj&Pv#5ReQcK%T#sig1v{Rj'Ku+D#'!t]~Grm~?rkKuMB!01d5#`'Vy.ta3Dtu~Hroc8#'{^45s85AwZbP&!#Rn!wghxWn#KvEA!)&2RlA2RlBx:h|#(T,=]j09Wobz>x]z/@awRoTd+#Y(az]hFhCrm4d,#Y+jTv|Q~EfMj]uNr|~FRfOdCa!Xa9_X#@<plJvf!%b`{(9;Rgwc;.!#2x7cw#T|UDb]|T5Ju={(!=@E{&Jv)&!Ab`{'awJvf!~*>>@=be{#KuY>!+&4Ezyi[ugv&RjIdea+T)#UXa&T-T&a!Rh9auRmW=]kLg5vuRn+g3u4Rn-Ow6ARn,hHus5xNk?#UX(U~)/g8v0RkD~AwkkF?Ri.OuNBwkkA?Ri/d|a2`a*^UYa.!aBTZaTa'Xa;!(!2!-a#b2[yC>6Vyq3[xr2Wi?g1rusVh%s?DtF~<5rbJs;%!DtBfswKtCj[uvuSsEu3RgVx3o:u+wN'*Zt;@3rd~Grh~?rfg8w)Lq)qE&-a%!>bI|`jWv0vV~EfCjTv|vV~Ef@j]uNpn~FRfBcK#T']gWNu7x,k7q4ai(0!hHv8<RhmkMu9vrsBuev/RhlCJvB!,g<v{wchh~@:Rhji[vrv{wchi~@:RhkdS&a5UY#Ta!RgPwwiI5BwciI~@:Rh`x'iJvj'!5]iJPu8Bwch]~@:Rhach)U#h3rp]gLh@t|Ax,hTq3ah!-(~@:Ro0Ou!5RhXj^v(pyw8unRhVd|)`,^UYas!a?/a2Z'a^Ta{Tb7Ta(a#!a,Wf&9sZ3DtAadamov=Bqt3[xig8vsRm~>waiL2b`{QJv*_Ouv2qgj<v]v2BqfdR'X*X#Y-@3qr~Gqv~?p6hHv-]glPup5Lq+q?_%*b_{qF{n9b^{rOu4ARhpKvCD!+&~Bqp:5Dbb}nwoiKl&unuTuBv]v+ueunaXRf0=Jvh!0nKufu8v1w&w7q%w&uHrz:Rgnj5w,uxDJq/(!hNw'5ReCk0s2u3w/w'5ReFd>Za&!*UaA=<wkgsRnSJv^!%Refifw3vyRgOKu_B'!,<]gkiiu:w&Rh<=C@a^<B57@2F{[<B5@aW:=3away9A5aW=<B=C@a^<B57@2F{Ie-#`(^^^bCara.b8aza6!/bZ,!adTbnTbOb+aFaS!aAT9@Wf~2Wli3Dtl2@d,#Y&RfnRfmJwJZtN~GqyJva&!VyMg<v~Rm%iXuJu3Rm9Jv[_=]ih9wlkDRkCd1#`(@Wg>2Wls3cH#T(@<Rj*=>Ri|b~'#23s9h<~El.d'#Y&Dtxi^rzvdRl#d*#U%(o|B2s`hJwSaxRmDKv4B&!1:Rmdd5#`'Vx}to~Hq{x'f1v3(!BA5ba|bJv_&!Wfug1v]ReIdO+U/Y#&G}-8wze=Rh{g1v]ReHg/uQRf/by#)ibQwERl/cH#T(@<Rj+=>Ri{cNu+vlax-!(#a0qa9<Rii2;;bU{H;x<i=&X#Rk`<4wwi=C9H~8xAI(Y#<azRi@45wXI<B9;5bb~7dL(X#Xa(+!aL6Vy{g5QqOau:5au2@ay547EzbxOcU(UX-T#Ta#:Cbb|A?wjh/b_|SOw6ARgtihr}u7Rhy<d1#T)X1@@=I|~=ay<2@@=aybb}Sj3vLv;<d,#Y(56H}A978H}@dGpvs@uAu`vcw9*!aFa+ai%(b!aXa8.a?a[ozWey=sU2@G}Nch&U#Rf_WexKu+D#'!t:~Gr`~?r^j]uNr|~FRg*j^psurwJt|RmcKv)@&!)7Rkv~Br[@wxfO:Rl3co#U'6Rezj_q#vIuavjRltwzeyh@vr5JqD0!>aY?C9:9au@9Cb]}9cl#U*5;5<H||jbuus1ucv&Rfvg1v~d/pppzqFr^a--a~!aMat1(hFv;Wiz@@=Izoj5uuv-7Rix~Cw`fk2WlVcZ#X,k)u3vWs@u2]ktg;wEx'fBq(_2Wg/jTv|vV~EfoJv]!15x'hzqG!(P~EfU~CRl_j6v(us5x4i-#T(2WmZ?C2F|d>Kq<aj1!*jTqIsBv=Wl`~Cw`fi2WlWj`v0u*~>RlR=c>Z,k#u3vWs@u2]kr<c1Z+jTqIsBv=Wla~Cw`fm2WlXdmb3!a{(arZa`bkTa%TbQTa-a9+c'!aM!/[yL=Bqug.w'RifhFvyDRj.g>vgwyk^9]k^Jv3_@WfbAARkhJw2_[x|JvB_wkoIRoKwkoJRoLd'(Y#<]gm=<9<H|yd'%_X#skDtb3awwqkgNulRkgdB#^',9:p'hJwSaxRmEBwVb8@4=H|qLu+w50&!)@3qs~?pU>Awwn;;Rn=c:Z'ARn<=<qwKvC@!/&~BqqJv6!&]eVb^z^xRge'/a%+^`#Sge}6<4Rn3=]n0Pw2>Rn8Jw0!&>Rn:>Rn6cY#a7+!a&=<wkaNw~h3z_c5Z{=wjh#=]nLKv^D!&)Vyz=bW|swYb<WetcG#T(2wxa@qVx@gD#Y&b^|V5JwG&!5bb|pg/w&RgD@x=kHs=uAvn!a%%/'+RmSRh694Ro`g-vaRmRhHv-]mlxCcS#`&ba~.5cD#Ta)P~=d,#Y(56H{>978H{Dd_#{2^Y%_+qbbb{6g3sERhsbU{?dfa.,`a(Xa<!aiX#(55RiG54RiHcI#T'WiU3RiVNvdwtfcRlKNvdd,#Y&RlHRlExQgf.1*^T'X#Sgf}6Wn4=]hfPrk>Rn7Jw0!&>Rn5>Rn9Lunw?&a2!,5<oq@@wqfdRlJj5Q~=d,#Y(~ARfcOuN]fdDKw;ay(}i!547E}j?cI#T(@5bV}iCbV}hdv(^^Tb?a40,b##Tbo!a*bR!a<b|a/!aKai!aU[yK=]o^g:v>ReGJwPZtK<7Rh+h<~El,Pv#5ReR@awwxjCg,ulRjDJv6&!]j!z?aQeeg>w=Sh<eeJw;!&axEzOg,Qosc!#*:wkeJ]eJ>x'h-u(!%Ro.w~h.zPdNZ(X,Ya![x{;9ReY;wkgxRiF:x?ap#Y&RmUg<s2Rkod]+UY0TZ'!a&A9sw<=bczLNvuw{gqzNhJwSaxRmCKuLay!#&s_Rf-55b^{uJvZa!!c%#(55Ri654wmiu5RiuawLu,vp!+}^%b_}Y9;wkgxba}o>A9:=b^}zKuh=a''!3awRk3c*'!#aHRk6c+Z&Rk5Rk4Jv)&!awRjSawd9*`#0?C2@EzMj8u<uJ5RmbjQrquJu3x,k>uq@_+=ayb^|W~ARkEOuN]k@7dhzV^X/X&a-#zRzSb`zXcJzTT#2WkVKvDBzW!%FzY9;5bbzWjQrquJu3Jw3%!b`zU=ayb^zQd:#X(T-a!6Vyywxh}=b]{Jg=u1RiAdGp~qHtzv!w(wA+a+a;<!aJaYai'anasb(=azRmV:Cbb{MLq2vb!%')RjuRjrRjtRjqx3jnqCw3!%')Rk(Rk+Rk&Rk)Lq2vb!%')Rj{RjxRjzRjwLq2vb!%')RjsRjpRjfRjex3jcqCw3!%')Rk'Rk*RjkRjl9<CbbzfOu4ARhxLq2vb!%')RjyRjvRjhRjgx=joq*uKvb!%')+-Rk.Rk%Rj~Rk-Rk#Rj}x=jdq*uKvb!%')+-Rk,Rk!Rj|RjmRjjRjidAq&qKs@uAv8Aa.'*-a@a&0!aM@a5[y73Dsy3Ds|3Dt):wxgI2sHJwJZt.~Gqxwsf0ikrzt}Rl0Jvy_[xj~HqzKv_A|D!&WfP8axRoVcf,U#k(v]v+ueunaXRf1Ju}'!g8u#Ri=jQw!sCunLprq>!,')~<5qeGzq9F{W=c##%s5au:5aU3CBE|;d4#X(D!a&6Vygx(b;#(=]ed?C2F{N<capoq2r[a&!aPa9,'Pw;5s:@@=I|,55w_h|@@=IzcP~=x'fCqB_2Wl2>aU@@=I|1OuNBc1Z+jTqIsBv=Wlc~Cw`fl2WlZ~AcTa%!Z+jTqIsBv=Wlb~Cw`fh2WlYk+uNqJsBv=WlSg,u3dca3#UXaMYa)TaB-=cM|7T#<bI}l5@B932:aV2G{BOuNBJq:|M!5Ezt=<B=C@a^<B57@2F{v>cB{/T#=ay<bI{3Jv6!a.6BKq0ah&+!5E}HP~Ef{978BaU@@=Iza<7d#.Y#978BaU@@=IzH~AJq0!(@@=IzG978BaU@@=IzFe,aU*Y&^^^bvJb,b:bFad!a,c2Ta>aL.bo6!a#CbTa'T#Re{2Wlh2@G{yg6t~Ro_NvdRfticuRQRllJv3&!x&c|zs@Jw3!%RflwpfkRlpKuL;%(!Re<@G|C2GzdhIvuBwgjAg-u0RjAKQB%!(GzZ@G|5NuuRl7d='T+Y#Vy[g<v~Rm!==G|>JvA!)@wma=]m1ifuaw&RmnLs@vT'!|/+[y,g:v>ReTJw1!#qX=x!eC{bLu+wT&)ZtZauq_~Graci&U#F|89:r_Lupvq!.)&2RlG8RfaC=x!eF{_h?rpWlmd&'!#X|&]k::xJey#`'T|+<E|&2@H|%dE#(^,g;u.RiEg6vjRiC9xCkA{O|zY#g=ucRmXKs0@!&*@G|m@awRknJuh!,3d(}gY}eJvj!%Rm):Jw3!%Rm+Rm-Ls0w(&!a(a#@b[|6cZ#X'7RkxWgAOu4ARn'dH'U#Y*Vz-Wm'CARm}d]*#a%^a*T'aK!a<9bV{PC=p*Jw4!&SgxcbB5r]idw(wBRmF7xFkt#&`(Rm/Rm8E|!JuY_9:Rl5=wrgr2:bbxd@xXfB(a*#T+!.X0X1Ta/a'T&RlDRfL>RlyARl9b[z[>RfZ:RlL:RfRwlg/ARl;9;RlxKv,A/!%7s69<74=BA5ba{-8Bde#`a<XaKYa1,a'P~=wxfB2bZ}}?C972@@=I}r8@55B9;5bb}G978B2@@=aybb}3j3vLv;<Jw3&!>Rfk=ayb^}4~Ad1#`*@@=aybb{w2@>==<bbz]dx+UY#^UaF!a9!bB'Ya1.!ajXa#%olRhD[y=3Dt#Ov5BrHKuMB%!(Rf^Wep~HrJwkiQjKr|~FRg)Ku+D#'!t5~GrF~?rDdV)UY,Z/_7RkuG{<~BrBg,rlsO:235B@bX}|d?a1!#`(6Vyn5@d##Y+jTv|vV~EfIj]uNpn~FRfH7Lq2vb1!a9-978BaU@@=Iz9978BbU}#~AJq0!(@@=Iz8978BaU@@=Iz7~AJQ|}!978BbU}!JvkaK!AdUa21-U#`a+(g/vsRn~Ou!5RPj:rmu9WhOjXuvvNr}:RhAj^v(pyw8unRn[kPr}p|u7vwv]RiSBd;pppzq@qHQa?(b.!a.a`@.|xa(hFv;Wiyj5uuv-7Riw~Cw`fg2WlU978BbU|wOuNBJqG!(P~EfD~CRlQcZ#X,k)u3vWs@u2]ksg;wEx'f@q1_2Wg.j]uNpn~FRfqJv]!15x'h{qG!(@@=IzK~CRl^j6v(us5x4i,#T(2WmY?C2F{1>Kq<aj1!*jTqIsBv=Wld~Cw`fj2Wl[j`v0u*~>RlT=c>Z,k#u3vWs@u2]kq<c1Z+jTqIsBv=Wle~Cw`fn2Wl]dn1#c(a(b^a2!b/bAT(bj!aDa7bu,a_a{c0!2T0g:v>ReD2@G{42@G{5~DpM~<5rc=Bx6i>{RT#RnI@zCx]y]z:2Jv[!zr5Awyk]9]k]dD(Y+X#6Vz.g=wKtgwhaCwgmTWj2Lu,w%_+/[y-B;b^xeg3u3Rj-2@bX{*KrJ<!+'@Wg(g?QRlC@Jv`!%b[zIwsfII}8JQ_@w|kW|=Jv(%!AqcOuNBJvEzh!bYzjLs@wP#(0!oy@>RkdJwMZtc3Dtd@BcG#T'9bWxg2@2Fznd*#Y+;2x'c}w<zizixNgwa#Z'U+!/!a'!a+w~g~z6wcn{Rn}wcnzRn|5Rh%=]nJg5vuRmvNvdRlvcprJu}w*az*a#!%.a.'Bot9qT]kj@Wg'ay2Gzv@Jv`!%b[zEwsfHI}1;ck#Ux`<Cbbx_Lu+w!a&0*!wko*wwo,So,}6Juqxf!E}PigQuyRm`d3(`#8>Rn%:A5B;bZ~%KvhCa!a2!x>k7#Uxb@b{#xaRk7Jw0!)>wwhlShl}6>wwhmShm}6CJvB!.x'hhvj{!!5Bwkhhbaz}x'hivjz~!5Bwkhibaz|xEhTrNu,v-vpD!a%&/)a3a.,%Ro2t[CE{)@3re9b]{%wjo09:rgc:Z&Ro6=<riifuaw&RmoKrNA!%(Ro4>Ro89;Ri`dSaL'UYzxZb)7Rka3xRhT&!,!#^1U}vbaz{>>@=be}yC@:D5bazzKu+A&!}{?ba}y>>@=be}wxBh[t`u~vJvr!%a!a()a,a0a4RoC=]o;Ju(!%RoGRhdwjh`=]oAg>w#Ro?g5vuRo=NvdRl|Ku]C.!&;RoEJvB!%RoORoMBx'h[v+_?w~h`}~5?w~hd~!xKh]oiptu-utv.vp!#%&a30a@a'a+(a/aOp(o~p!RoDJu(!%RoHRhewjha=]oBNvdRl}g>w#Ro@g5vuRo>c[#X']o<CauRoRAd-#Y':RkpauRoQKu]C.!&;RoFJvB!%RoNRoPBx'h]v+_?w~ha}t5?w~he}ue!/UbhYacXaW^Tc&a;b:a-c/#b&aja1(!cL+!bKbt!bmcRc9aIc?8[yW3Dtt94Rg`Jv}!&SiRMzBhEebShEMNuPRe>x7gL#TzuwjirRipc<Z&>on;>z=h-MSh.Mwqczx'a7vj&!>Re4@=ResJt__NuPRi*NuPRi)j]uNr|~FRfzKrJ>_+@Wfy@Wf]2WocKrJ<!+'@Wg%g/QRl@@Jv`!&awRl<wsfFIzgLu(w*!.*&ShBMwvhIRhI9;RhNx1hK'!#Sn]Mx1hK~0!#:2<H~7cNu+w7D*'1ZtW>Rn1~?rOc:Z&Rn2=<rQ<7wjh&=BSnLMc]#X(6Vz)w[b=a!U#9wzgMc3#&(RgMRitRis<x,gKt`ax!&+SioM=BSilMc3#&(RgKRinRimKurB,!&SiQMzBhDebShDM6BJQ!(P~Efx978B2@@=I}WLrJw!!,a*&@G}O@9wkibRid@@x'fKwC!&SlDMSfLMjUv~Q~EfKKv3@a+!(hFv-]mpx/hYZ(C5RiWz<o/MwkhY?So/M@x,gbvfB*&!SgEM:SoeeehFu3:Rgbda(,^TZa)X/7Sg[eb:2RgI~BrMC@wgkc:wwkcRerx3h(uUvK!&*,SnOM4Sh*MArRg;wHRh(x=h;rJvPwI!a4',a'0@Wg&=BSh/Mg>w=Rh=g3w*wwgGRgGcW(X#;Sg}M2Gzk@Jv`!&awRl=wsfGIz`dKZ*T'Y-:RhR7RhQg5u-p`j6v(us5d,#Y+~Awkia?RicOuNBwkibba}Ld6p~tyu_vbAa'a+!a/'a3aEa8a!>Sh,ebJv{!&Sh@ebSaReb9;SgwebNuPRi(NvdRl)NuPRi'hHu^<Rm^Jvv_@Wl(g;u1Si/ebKu'B&!*Sh?eb@Wl'z@aPeb95Si.ebcpputyvjB)!,&a+0a%ShAMWeK@G}C@WfJ9;RhMwvhH9w{ia}ix,hJvRA1(!zAn[MRhHx1hJ~*!#hFv(BSn[MBJQ!(@@=I~'978B2@@=I}2db.Ua<'X}+T#a0XaG2G}E;wkg|wuh!Rh!x,hZu,@)!&So0MVy)C5RiXACJvB!&5RiY5RiZg8w)cG}*T#2@bU}=KsA>(!a.3wkhZba~(x,h^u(A!&(SoCMRhb5Bz=h[eb?w~hb~6x,h_u(A!&(SoDMRhc5Bz=h]eb?w~hc~6e)aA1T#T,^^^c-bMb&blcPaP(a/!0!bA=b5c@a(!bfbrc#2afwmhARnjwchORnp2Wlf3DtsNvdRl-2@wpa<]m0bx(#:awRk2@Jw3!%RfhwpfgRlnKQB%!(G{V@G|'NuuRl6d='T+Y#VyUg<v~Rl~==G|<Jv+'!aYShC}6@B<5?ba~8@Jw3'!g2QRljhLrpWlOd+#Y'g.w'rIg>w*wgj@g-u0Rj@Lu+wT&)ZtUauq]~GrGci&U#F|39:rELrNvj!.%*RhCwunfw~nf~:9;Ri]>wtnhg;wHRnhx3hDs@v~!/+'@Wfr@9RkSNu&Rlo=@<5GzoKs0@_+@Wl+@awRkmJuh!-3d(}pY#qWJvj!%Rm(:Jw3!%Rm,Rm*de&!1U-U#`)Re;@G|.@9Ri82@wjfvRlq=@<5GzpLvOvr!).&2RlF8Rf`C=x!eE{.Jw3_g2QRlkhLrpWlPde(!#U{s,UXa*Ta'[y'g:v>ReS;x0PZ&RnlRnn~HrKJw1}f!=x!eB|2w]aP(#Xa&a*Ta.Ua2a7=]iOd'#Y&Ro&WnWg;u.RiDg6vjRiBNvdRlzhNvj]nYJuW_2Wm3x)kFze{9d])!a.!,Y01!#&aC!a3RndC=ox~BrC@2b^{pg,rlse7x'ksuq!%Rm.E{xidw(wBRmGx9o+)X#wwo-So-}69:Rl4@xSf@a#XZ'X)X,Ta(/ARl8b[xc>RfY:RlI:RfQwlg.ARl:9;Rlwdn'#^XafaQa1X1TaHTa)@b[{zcZ#X'7RkwWg@Ou4ARn&x)kG#{,g7u/RkGdH'U#Y*Vz'Wm&CARm|bx#(A]gUbUzJj9Q~=d,#Y(56H}l978H{U7d,0#U*2>ABb_xZ978BbU{e~AJQ{g!978BbU{hxMh?ad{oUYZ.x1h?{l!#:2<H{mx3n[t{vl!,&a%3Ro(z=iS}6ARnr=Bwsn^wvn`Rnbd`*T}B0!#^X'BG{c9b]{a>>@=be}F?JvS!&BG{d7BG}(Bde#`a1X,Ya@!a'P~=wxf@2bZ}I56B2@@=aybb}08@55B9;5bb}<j3vLv;<Jw3&!>Rfg=ayb^}&OuNBKuLA!)a!P~=x#fD{f2@>==<bbzl?C972@@=Ix^d6rSu,v7w*C(0a)a6#B+a%!sQ[y?3Dt%3[xn~<5rLOu!5p@Ku+D#'!t7~GrP~?rNKvlaya7'!h+v-5qMg=t|cd,U#5AAaa5Abb{S@52B5@a[@52B5Gx[iXueu;d<#`a(!/549C;ag>23ExY5@Dah89b^~689Jv)!~2b[~1Lv'w(%*!a#bX|aPrmawRe]keu7uhv-q6rxu,q`xTo]/a5aU!bNaDXbi!b-!ao!b<bwA!#5@B932:aV2G|:d-)Y#hJrL>RhG<7@C5<H|_=Cau:5aj5@B932:bJ|ng>vIbs)#?C2F|9jPv0w.vISh-MKvUaz(.!9ABbb|[5;5<H|Eg>unwfh;9:4E|YjQsBt|vjx'hYq3!(?C2F|J:2<BaY?C2F|GOu!5x,g|p{ah!-(?C2F|c9:4E|OjXuvvNr}:Rh&i[w*t|cd+U#jJvsu)vsSn~Mkfrmu9p}u7vwv]So!McW#Xa!ax5@A5aY:5;5<H|>kJv~vYrquJu3x4ib#T)2@SmZM?C2F|Bj:rmu9@xPhI(a*a#U#`a3-5Abb|L~@:RhK9:4E|0@52B5G|#C::aY?C2F|-:2<BaY?C2F|.5Jvk!a)javYrquJu3x4ia#T)2@SmYM?C2F|HAxPhH(!a#U#`a*-5Abb|4~@:RhJ9:4E|R@52B5G|F:2<BaY?C2F|Sc^#Xa2j=Qq5CJvB!-g<v{z;hhM?C2F|Zi[vrv{z;hiM?C2F|XKsA>!a)-g<v{z;h[eb?C2F|]i[vrv{z;h]eb?C2F|^iZu.vix,hZq3ah!.(?C2F|QOu!5ShXM:2<BaY?C2F|P", 13494, 2713, 49, 25, 61);
 
-// ../../../../../../studio-library/packages/worktable/node_modules/entities/dist/internal/bin-trie-flags.js
+// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/internal/bin-trie-flags.js
 var BinTrieFlags;
 (function(BinTrieFlags2) {
   BinTrieFlags2[BinTrieFlags2["VALUE_LENGTH"] = 49152] = "VALUE_LENGTH";
   BinTrieFlags2[BinTrieFlags2["FLAG13"] = 8192] = "FLAG13";
   BinTrieFlags2[BinTrieFlags2["BRANCH_LENGTH"] = 8064] = "BRANCH_LENGTH";
   BinTrieFlags2[BinTrieFlags2["JUMP_TABLE"] = 127] = "JUMP_TABLE";
+  BinTrieFlags2[BinTrieFlags2["VALUE_MASK"] = 8191] = "VALUE_MASK";
 })(BinTrieFlags || (BinTrieFlags = {}));
 
-// ../../../../../../studio-library/packages/worktable/node_modules/entities/dist/decode.js
+// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/decode.js
 var CharCodes;
 (function(CharCodes2) {
+  CharCodes2[CharCodes2["AMP"] = 38] = "AMP";
   CharCodes2[CharCodes2["NUM"] = 35] = "NUM";
   CharCodes2[CharCodes2["SEMI"] = 59] = "SEMI";
   CharCodes2[CharCodes2["EQUALS"] = 61] = "EQUALS";
   CharCodes2[CharCodes2["ZERO"] = 48] = "ZERO";
   CharCodes2[CharCodes2["NINE"] = 57] = "NINE";
   CharCodes2[CharCodes2["LOWER_A"] = 97] = "LOWER_A";
-  CharCodes2[CharCodes2["LOWER_F"] = 102] = "LOWER_F";
   CharCodes2[CharCodes2["LOWER_X"] = 120] = "LOWER_X";
-  CharCodes2[CharCodes2["LOWER_Z"] = 122] = "LOWER_Z";
-  CharCodes2[CharCodes2["UPPER_A"] = 65] = "UPPER_A";
-  CharCodes2[CharCodes2["UPPER_F"] = 70] = "UPPER_F";
-  CharCodes2[CharCodes2["UPPER_Z"] = 90] = "UPPER_Z";
 })(CharCodes || (CharCodes = {}));
 var TO_LOWER_BIT = 32;
+var CONSUMED_SHIFT = 21;
+var CODE_POINT_MASK = 2097151;
+var CONSUMED_OVERFLOW = 2047;
+var longNumericConsumed = 0;
+function unpackConsumed(packed) {
+  const consumed = packed >>> CONSUMED_SHIFT;
+  return consumed === CONSUMED_OVERFLOW ? longNumericConsumed : consumed;
+}
 function isNumber(code2) {
-  return code2 >= CharCodes.ZERO && code2 <= CharCodes.NINE;
+  return code2 - CharCodes.ZERO >>> 0 <= 9;
 }
 function isHexadecimalCharacter(code2) {
-  return code2 >= CharCodes.UPPER_A && code2 <= CharCodes.UPPER_F || code2 >= CharCodes.LOWER_A && code2 <= CharCodes.LOWER_F;
+  return (code2 | TO_LOWER_BIT) - CharCodes.LOWER_A >>> 0 <= 5;
 }
-function isAsciiAlphaNumeric(code2) {
-  return code2 >= CharCodes.UPPER_A && code2 <= CharCodes.UPPER_Z || code2 >= CharCodes.LOWER_A && code2 <= CharCodes.LOWER_Z || isNumber(code2);
+function isAlpha(code2) {
+  return (code2 | TO_LOWER_BIT) - CharCodes.LOWER_A >>> 0 <= 25;
 }
 function isEntityInAttributeInvalidEnd(code2) {
-  return code2 === CharCodes.EQUALS || isAsciiAlphaNumeric(code2);
+  return code2 === CharCodes.EQUALS || isAlpha(code2) || isNumber(code2);
 }
 var EntityDecoderState;
 (function(EntityDecoderState2) {
@@ -9911,364 +8989,234 @@ var DecodingMode;
   DecodingMode2[DecodingMode2["Strict"] = 1] = "Strict";
   DecodingMode2[DecodingMode2["Attribute"] = 2] = "Attribute";
 })(DecodingMode || (DecodingMode = {}));
-var EntityDecoder = class {
-  decodeTree;
-  emitCodePoint;
-  errors;
-  constructor(decodeTree, emitCodePoint, errors2) {
-    this.decodeTree = decodeTree;
-    this.emitCodePoint = emitCodePoint;
-    this.errors = errors2;
-  }
-  /** The current state of the decoder. */
-  state = EntityDecoderState.EntityStart;
-  /** Characters that were consumed while parsing an entity. */
-  consumed = 1;
-  /**
-   * The result of the entity.
-   *
-   * Either the result index of a numeric entity, or the codepoint of a
-   * numeric entity.
-   */
-  result = 0;
-  /** The current index in the decode tree. */
-  treeIndex = 0;
-  /** The number of characters that were consumed in excess. */
-  excess = 1;
-  /** The mode in which the decoder is operating. */
-  decodeMode = DecodingMode.Strict;
-  /** The number of characters that have been consumed in the current run. */
-  runConsumed = 0;
-  /**
-   * Resets the instance to make it reusable.
-   * @param decodeMode Entity decoding mode to use.
-   */
-  startEntity(decodeMode) {
-    this.decodeMode = decodeMode;
-    this.state = EntityDecoderState.EntityStart;
-    this.result = 0;
-    this.treeIndex = 0;
-    this.excess = 1;
-    this.consumed = 1;
-    this.runConsumed = 0;
-  }
-  /**
-   * Write an entity to the decoder. This can be called multiple times with partial entities.
-   * If the entity is incomplete, the decoder will return -1.
-   *
-   * Mirrors the implementation of `getDecoder`, but with the ability to stop decoding if the
-   * entity is incomplete, and resume when the next string is written.
-   * @param input The string containing the entity (or a continuation of the entity).
-   * @param offset The offset at which the entity begins. Should be 0 if this is not the first call.
-   * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
-   */
-  write(input, offset) {
-    switch (this.state) {
-      case EntityDecoderState.EntityStart: {
-        if (input.charCodeAt(offset) === CharCodes.NUM) {
-          this.state = EntityDecoderState.NumericStart;
-          this.consumed += 1;
-          return this.stateNumericStart(input, offset + 1);
-        }
-        this.state = EntityDecoderState.NamedEntity;
-        return this.stateNamedEntity(input, offset);
-      }
-      case EntityDecoderState.NumericStart: {
-        return this.stateNumericStart(input, offset);
-      }
-      case EntityDecoderState.NumericDecimal: {
-        return this.stateNumericDecimal(input, offset);
-      }
-      case EntityDecoderState.NumericHex: {
-        return this.stateNumericHex(input, offset);
-      }
-      case EntityDecoderState.NamedEntity: {
-        return this.stateNamedEntity(input, offset);
-      }
-    }
-  }
-  /**
-   * Switches between the numeric decimal and hexadecimal states.
-   *
-   * Equivalent to the `Numeric character reference state` in the HTML spec.
-   * @param input The string containing the entity (or a continuation of the entity).
-   * @param offset The current offset.
-   * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
-   */
-  stateNumericStart(input, offset) {
-    if (offset >= input.length) {
-      return -1;
-    }
-    if ((input.charCodeAt(offset) | TO_LOWER_BIT) === CharCodes.LOWER_X) {
-      this.state = EntityDecoderState.NumericHex;
-      this.consumed += 1;
-      return this.stateNumericHex(input, offset + 1);
-    }
-    this.state = EntityDecoderState.NumericDecimal;
-    return this.stateNumericDecimal(input, offset);
-  }
-  /**
-   * Parses a hexadecimal numeric entity.
-   *
-   * Equivalent to the `Hexademical character reference state` in the HTML spec.
-   * @param input The string containing the entity (or a continuation of the entity).
-   * @param offset The current offset.
-   * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
-   */
-  stateNumericHex(input, offset) {
-    while (offset < input.length) {
-      const char = input.charCodeAt(offset);
-      if (isNumber(char) || isHexadecimalCharacter(char)) {
-        const digit = char <= CharCodes.NINE ? char - CharCodes.ZERO : (char | TO_LOWER_BIT) - CharCodes.LOWER_A + 10;
-        this.result = this.result * 16 + digit;
-        this.consumed++;
-        offset++;
-      } else {
-        return this.emitNumericEntity(char, 3);
-      }
-    }
-    return -1;
-  }
-  /**
-   * Parses a decimal numeric entity.
-   *
-   * Equivalent to the `Decimal character reference state` in the HTML spec.
-   * @param input The string containing the entity (or a continuation of the entity).
-   * @param offset The current offset.
-   * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
-   */
-  stateNumericDecimal(input, offset) {
-    while (offset < input.length) {
-      const char = input.charCodeAt(offset);
-      if (isNumber(char)) {
-        this.result = this.result * 10 + (char - CharCodes.ZERO);
-        this.consumed++;
-        offset++;
-      } else {
-        return this.emitNumericEntity(char, 2);
-      }
-    }
-    return -1;
-  }
-  /**
-   * Validate and emit a numeric entity.
-   *
-   * Implements the logic from the `Hexademical character reference start
-   * state` and `Numeric character reference end state` in the HTML spec.
-   * @param lastCp The last code point of the entity. Used to see if the
-   *               entity was terminated with a semicolon.
-   * @param expectedLength The minimum number of characters that should be
-   *                       consumed. Used to validate that at least one digit
-   *                       was consumed.
-   * @returns The number of characters that were consumed.
-   */
-  emitNumericEntity(lastCp, expectedLength) {
-    if (this.consumed <= expectedLength) {
-      this.errors?.absenceOfDigitsInNumericCharacterReference(this.consumed);
-      return 0;
-    }
-    if (lastCp === CharCodes.SEMI) {
-      this.consumed += 1;
-    } else if (this.decodeMode === DecodingMode.Strict) {
-      return 0;
-    }
-    this.emitCodePoint(replaceCodePoint(this.result), this.consumed);
-    if (this.errors) {
-      if (lastCp !== CharCodes.SEMI) {
-        this.errors.missingSemicolonAfterCharacterReference();
-      }
-      this.errors.validateNumericCharacterReference(this.result);
-    }
-    return this.consumed;
-  }
-  /**
-   * Parses a named entity.
-   *
-   * Equivalent to the `Named character reference state` in the HTML spec.
-   * @param input The string containing the entity (or a continuation of the entity).
-   * @param offset The current offset.
-   * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
-   */
-  stateNamedEntity(input, offset) {
-    const { decodeTree } = this;
-    let current = decodeTree[this.treeIndex];
-    let valueLength = (current & BinTrieFlags.VALUE_LENGTH) >> 14;
-    while (offset < input.length) {
-      if (valueLength === 0 && (current & BinTrieFlags.FLAG13) !== 0) {
-        const runLength = (current & BinTrieFlags.BRANCH_LENGTH) >> 7;
-        if (this.runConsumed === 0) {
-          const firstChar = current & BinTrieFlags.JUMP_TABLE;
-          if (input.charCodeAt(offset) !== firstChar) {
-            return this.result === 0 ? 0 : this.emitNotTerminatedNamedEntity();
-          }
-          offset++;
-          this.excess++;
-          this.runConsumed++;
-        }
-        while (this.runConsumed < runLength) {
-          if (offset >= input.length) {
-            return -1;
-          }
-          const charIndexInPacked = this.runConsumed - 1;
-          const packedWord = decodeTree[this.treeIndex + 1 + (charIndexInPacked >> 1)];
-          const expectedChar = charIndexInPacked % 2 === 0 ? packedWord & 255 : packedWord >> 8 & 255;
-          if (input.charCodeAt(offset) !== expectedChar) {
-            this.runConsumed = 0;
-            return this.result === 0 ? 0 : this.emitNotTerminatedNamedEntity();
-          }
-          offset++;
-          this.excess++;
-          this.runConsumed++;
-        }
-        this.runConsumed = 0;
-        this.treeIndex += 1 + (runLength >> 1);
-        current = decodeTree[this.treeIndex];
-        valueLength = (current & BinTrieFlags.VALUE_LENGTH) >> 14;
-      }
-      if (offset >= input.length)
-        break;
-      const char = input.charCodeAt(offset);
-      if (char === CharCodes.SEMI && valueLength !== 0 && (current & BinTrieFlags.FLAG13) !== 0) {
-        return this.emitNamedEntityData(this.treeIndex, valueLength, this.consumed + this.excess);
-      }
-      this.treeIndex = determineBranch(decodeTree, current, this.treeIndex + Math.max(1, valueLength), char);
-      if (this.treeIndex < 0) {
-        return this.result === 0 || // If we are parsing an attribute
-        this.decodeMode === DecodingMode.Attribute && // We shouldn't have consumed any characters after the entity,
-        (valueLength === 0 || // And there should be no invalid characters.
-        isEntityInAttributeInvalidEnd(char)) ? 0 : this.emitNotTerminatedNamedEntity();
-      }
-      current = decodeTree[this.treeIndex];
-      valueLength = (current & BinTrieFlags.VALUE_LENGTH) >> 14;
-      if (valueLength !== 0) {
-        if (char === CharCodes.SEMI) {
-          return this.emitNamedEntityData(this.treeIndex, valueLength, this.consumed + this.excess);
-        }
-        if (this.decodeMode !== DecodingMode.Strict && (current & BinTrieFlags.FLAG13) === 0) {
-          this.result = this.treeIndex;
-          this.consumed += this.excess;
-          this.excess = 0;
-        }
-      }
-      offset++;
-      this.excess++;
-    }
-    return -1;
-  }
-  /**
-   * Emit a named entity that was not terminated with a semicolon.
-   * @returns The number of characters consumed.
-   */
-  emitNotTerminatedNamedEntity() {
-    const { result, decodeTree } = this;
-    const valueLength = (decodeTree[result] & BinTrieFlags.VALUE_LENGTH) >> 14;
-    this.emitNamedEntityData(result, valueLength, this.consumed);
-    this.errors?.missingSemicolonAfterCharacterReference();
-    return this.consumed;
-  }
-  /**
-   * Emit a named entity.
-   * @param result The index of the entity in the decode tree.
-   * @param valueLength The number of bytes in the entity.
-   * @param consumed The number of characters consumed.
-   * @returns The number of characters consumed.
-   */
-  emitNamedEntityData(result, valueLength, consumed) {
-    const { decodeTree } = this;
-    this.emitCodePoint(valueLength === 1 ? decodeTree[result] & ~(BinTrieFlags.VALUE_LENGTH | BinTrieFlags.FLAG13) : decodeTree[result + 1], consumed);
-    if (valueLength === 3) {
-      this.emitCodePoint(decodeTree[result + 2], consumed);
-    }
-    return consumed;
-  }
-  /**
-   * Signal to the parser that the end of the input was reached.
-   *
-   * Remaining data will be emitted and relevant errors will be produced.
-   * @returns The number of characters consumed.
-   */
-  end() {
-    switch (this.state) {
-      case EntityDecoderState.NamedEntity: {
-        return this.result !== 0 && (this.decodeMode !== DecodingMode.Attribute || this.result === this.treeIndex) ? this.emitNotTerminatedNamedEntity() : 0;
-      }
-      // Otherwise, emit a numeric entity if we have one.
-      case EntityDecoderState.NumericDecimal: {
-        return this.emitNumericEntity(0, 2);
-      }
-      case EntityDecoderState.NumericHex: {
-        return this.emitNumericEntity(0, 3);
-      }
-      case EntityDecoderState.NumericStart: {
-        this.errors?.absenceOfDigitsInNumericCharacterReference(this.consumed);
-        return 0;
-      }
-      case EntityDecoderState.EntityStart: {
-        return 0;
-      }
-    }
-  }
-};
-function getDecoder(decodeTree) {
-  let returnValue = "";
-  const decoder = new EntityDecoder(decodeTree, (data) => returnValue += String.fromCodePoint(data));
-  return function decodeWithTrie(input, decodeMode) {
-    let lastIndex = 0;
-    let offset = 0;
-    while ((offset = input.indexOf("&", offset)) >= 0) {
-      returnValue += input.slice(lastIndex, offset);
-      decoder.startEntity(decodeMode);
-      const length = decoder.write(
-        input,
-        // Skip the "&"
-        offset + 1
-      );
-      if (length < 0) {
-        lastIndex = offset + decoder.end();
-        break;
-      }
-      lastIndex = offset + length;
-      offset = length === 0 ? lastIndex + 1 : lastIndex;
-    }
-    const result = returnValue + input.slice(lastIndex);
-    returnValue = "";
-    return result;
-  };
-}
 function determineBranch(decodeTree, current, nodeIndex, char) {
   const branchCount = (current & BinTrieFlags.BRANCH_LENGTH) >> 7;
   const jumpOffset = current & BinTrieFlags.JUMP_TABLE;
-  if (branchCount === 0) {
-    return jumpOffset !== 0 && char === jumpOffset ? nodeIndex : -1;
-  }
   if (jumpOffset) {
-    const value = char - jumpOffset;
-    return value < 0 || value >= branchCount ? -1 : decodeTree[nodeIndex + value] - 1;
-  }
-  const packedKeySlots = branchCount + 1 >> 1;
-  let lo = 0;
-  let hi = branchCount - 1;
-  while (lo <= hi) {
-    const mid = lo + hi >>> 1;
-    const slot = mid >> 1;
-    const packed = decodeTree[nodeIndex + slot];
-    const midKey = packed >> (mid & 1) * 8 & 255;
-    if (midKey < char) {
-      lo = mid + 1;
-    } else if (midKey > char) {
-      hi = mid - 1;
-    } else {
-      return decodeTree[nodeIndex + packedKeySlots + mid];
+    if (branchCount === 0) {
+      return char === jumpOffset ? nodeIndex : -1;
     }
+    const slot = char - jumpOffset;
+    if (slot >>> 0 >= branchCount)
+      return -1;
+    const stored = decodeTree[nodeIndex + slot];
+    return stored === 0 ? -1 : nodeIndex + branchCount + stored - 1 & 65535;
+  }
+  if (branchCount === 0)
+    return -1;
+  const packedKeySlots = branchCount + 1 >> 1;
+  const branchEnd = nodeIndex + packedKeySlots + branchCount;
+  for (let index = 0; index < branchCount; index++) {
+    const packed = decodeTree[nodeIndex + (index >> 1)];
+    const key = packed >> ((index & 1) << 3) & 255;
+    if (key === char) {
+      const pointerIndex = nodeIndex + packedKeySlots + index;
+      return branchEnd + decodeTree[pointerIndex] & 65535;
+    }
+    if (key > char)
+      return -1;
   }
   return -1;
 }
-var htmlDecoder = /* @__PURE__ */ getDecoder(htmlDecodeTree);
+function readTrieValue(decodeTree, nodeIndex, valueLength) {
+  if (valueLength === 1) {
+    return String.fromCharCode(decodeTree[nodeIndex] & BinTrieFlags.VALUE_MASK);
+  }
+  if (valueLength === 2) {
+    return String.fromCharCode(decodeTree[nodeIndex + 1]);
+  }
+  return String.fromCharCode(decodeTree[nodeIndex + 1], decodeTree[nodeIndex + 2]);
+}
+function parseNumericEntity(input, numberStart, inputLength) {
+  let offset = numberStart + 1;
+  let cp = 0;
+  let digitStart = offset;
+  if (offset < inputLength && (input.charCodeAt(offset) | TO_LOWER_BIT) === CharCodes.LOWER_X) {
+    offset += 1;
+    digitStart = offset;
+    while (offset < inputLength) {
+      const char = input.charCodeAt(offset);
+      if (isNumber(char)) {
+        cp = cp * 16 + (char - CharCodes.ZERO);
+      } else if (isHexadecimalCharacter(char)) {
+        cp = cp * 16 + ((char | TO_LOWER_BIT) - CharCodes.LOWER_A + 10);
+      } else {
+        break;
+      }
+      offset += 1;
+    }
+  } else {
+    while (offset < inputLength) {
+      const digit = input.charCodeAt(offset) - CharCodes.ZERO;
+      if (digit >>> 0 > 9)
+        break;
+      cp = cp * 10 + digit;
+      offset += 1;
+    }
+  }
+  if (offset === digitStart)
+    return 0;
+  if (offset < inputLength && input.charCodeAt(offset) === CharCodes.SEMI) {
+    offset += 1;
+  }
+  if (cp > 1114111)
+    cp = 1114112;
+  let consumed = offset - numberStart;
+  if (consumed >= CONSUMED_OVERFLOW) {
+    longNumericConsumed = consumed;
+    consumed = CONSUMED_OVERFLOW;
+  }
+  return consumed << CONSUMED_SHIFT | cp;
+}
+function decodeWithTrie(input, isStrict, isAttribute) {
+  const decodeTree = htmlDecodeTree;
+  let offset = input.indexOf("&");
+  if (offset < 0)
+    return input;
+  const inputLength = input.length;
+  let chunkStart = 0;
+  let result = "";
+  const root = decodeTree[0];
+  const rootJumpOffset = root & BinTrieFlags.JUMP_TABLE;
+  const rootBranchCount = (root & BinTrieFlags.BRANCH_LENGTH) >> 7;
+  do {
+    const entityStart = offset + 1;
+    const firstChar = input.charCodeAt(entityStart);
+    let consumed;
+    let value;
+    if (firstChar === CharCodes.NUM) {
+      const packed = parseNumericEntity(input, entityStart, inputLength);
+      consumed = unpackConsumed(packed);
+      if (isStrict && consumed > 0 && input.charCodeAt(entityStart + consumed - 1) !== CharCodes.SEMI) {
+        consumed = 0;
+      }
+      value = consumed === 0 ? "" : codePointToString(packed & CODE_POINT_MASK);
+    } else if (isAlpha(firstChar)) {
+      consumed = 0;
+      value = "";
+      const rootSlotIndex = firstChar - rootJumpOffset;
+      let nodeIndex;
+      if (rootSlotIndex >>> 0 < rootBranchCount) {
+        const stored = decodeTree[1 + rootSlotIndex];
+        nodeIndex = stored === 0 ? -1 : rootBranchCount + stored & 65535;
+      } else {
+        nodeIndex = -1;
+      }
+      let bestNodeIndex = 0;
+      let bestValueLength = 0;
+      let current = nodeIndex < 0 ? 0 : decodeTree[nodeIndex];
+      let index = entityStart + 1;
+      trie: while (index < inputLength) {
+        while (
+          // Value-less, non-run node with a nonzero jump offset.
+          (current & (BinTrieFlags.VALUE_LENGTH | BinTrieFlags.FLAG13)) === 0 && (current & BinTrieFlags.JUMP_TABLE) !== 0
+        ) {
+          const jumpOffset = current & BinTrieFlags.JUMP_TABLE;
+          const branchCount = (current & BinTrieFlags.BRANCH_LENGTH) >> 7;
+          if (branchCount === 0) {
+            if (input.charCodeAt(index) !== jumpOffset)
+              break trie;
+            nodeIndex += 1;
+          } else {
+            const slot = input.charCodeAt(index) - jumpOffset;
+            if (slot >>> 0 >= branchCount)
+              break trie;
+            const stored = decodeTree[nodeIndex + 1 + slot];
+            if (stored === 0)
+              break trie;
+            nodeIndex = nodeIndex + branchCount + stored & 65535;
+          }
+          current = decodeTree[nodeIndex];
+          index += 1;
+          if (index >= inputLength)
+            break trie;
+        }
+        if ((current & (BinTrieFlags.VALUE_LENGTH | BinTrieFlags.FLAG13)) === BinTrieFlags.FLAG13) {
+          const runLength = (current & BinTrieFlags.BRANCH_LENGTH) >> 7;
+          if (input.charCodeAt(index) !== (current & BinTrieFlags.JUMP_TABLE)) {
+            break;
+          }
+          index += 1;
+          const remaining = runLength - 1;
+          let wordIndex = nodeIndex + 1;
+          let charIndexInPacked = 0;
+          for (; charIndexInPacked + 1 < remaining; charIndexInPacked += 2) {
+            const packed = decodeTree[wordIndex];
+            if (input.charCodeAt(index) !== (packed & 255))
+              break trie;
+            index += 1;
+            if (input.charCodeAt(index) !== (packed >> 8 & 255))
+              break trie;
+            index += 1;
+            wordIndex += 1;
+          }
+          if (charIndexInPacked < remaining) {
+            if (input.charCodeAt(index) !== (decodeTree[wordIndex] & 255))
+              break;
+            index += 1;
+          }
+          nodeIndex += 1 + (runLength >> 1);
+          current = decodeTree[nodeIndex];
+          continue;
+        }
+        const valueLength = current >>> 14;
+        const char = input.charCodeAt(index);
+        if (valueLength !== 0) {
+          if (char === CharCodes.SEMI) {
+            consumed = index - entityStart + 1;
+            value = valueLength === 1 ? String.fromCharCode(current & BinTrieFlags.VALUE_MASK) : readTrieValue(decodeTree, nodeIndex, valueLength);
+            break;
+          }
+          if (!isStrict && (current & BinTrieFlags.FLAG13) === 0) {
+            consumed = index - entityStart;
+            bestNodeIndex = nodeIndex;
+            bestValueLength = valueLength;
+          }
+          if (valueLength === 1)
+            break;
+        }
+        const next = determineBranch(decodeTree, current, nodeIndex + (valueLength || 1), char);
+        if (next < 0)
+          break;
+        nodeIndex = next;
+        current = decodeTree[nodeIndex];
+        index += 1;
+      }
+      if (value === "") {
+        const finalVL = current >>> 14;
+        if (finalVL !== 0 && !isStrict && (current & BinTrieFlags.FLAG13) === 0) {
+          consumed = index - entityStart;
+          bestNodeIndex = nodeIndex;
+          bestValueLength = finalVL;
+        }
+        if (consumed > 0) {
+          value = readTrieValue(decodeTree, bestNodeIndex, bestValueLength);
+        }
+      }
+    } else {
+      consumed = 0;
+      value = "";
+    }
+    if (consumed === 0 || isAttribute && firstChar !== CharCodes.NUM && input.charCodeAt(entityStart + consumed - 1) !== CharCodes.SEMI && entityStart + consumed < inputLength && isEntityInAttributeInvalidEnd(input.charCodeAt(entityStart + consumed))) {
+      offset = entityStart;
+    } else {
+      if (chunkStart < offset) {
+        result += input.slice(chunkStart, offset);
+      }
+      result += value;
+      offset = chunkStart = entityStart + consumed;
+    }
+    if (input.charCodeAt(offset) !== CharCodes.AMP) {
+      offset = input.indexOf("&", offset);
+    }
+  } while (offset >= 0);
+  return result + input.slice(chunkStart);
+}
 function decodeHTMLStrict(htmlString) {
-  return htmlDecoder(htmlString, DecodingMode.Strict);
+  return decodeWithTrie(htmlString, true, false);
 }
 
-// ../../../../../../studio-library/packages/worktable/node_modules/entities/dist/index.js
+// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/index.js
 var EntityLevel;
 (function(EntityLevel2) {
   EntityLevel2[EntityLevel2["XML"] = 0] = "XML";
@@ -10283,7 +9231,7 @@ var EncodingMode;
   EncodingMode2[EncodingMode2["Text"] = 4] = "Text";
 })(EncodingMode || (EncodingMode = {}));
 
-// ../../../../../../studio-library/packages/worktable/node_modules/linkify-it/build/index.mjs
+// ../../../../../../../studio-library/node_modules/linkify-it/build/index.mjs
 var REBuilder = class {
   src_Any = Any.source;
   src_Cc = Cc.source;
@@ -10805,7 +9753,7 @@ var LinkifyIt = class {
   }
 };
 
-// ../../../../../../studio-library/packages/worktable/node_modules/punycode.js/punycode.es6.js
+// ../../../../../../../studio-library/node_modules/punycode.js/punycode.es6.js
 var maxInt = 2147483647;
 var base = 36;
 var tMin = 1;
@@ -11039,7 +9987,7 @@ var punycode = {
 };
 var punycode_es6_default = punycode;
 
-// ../../../../../../studio-library/packages/worktable/node_modules/markdown-it/dist/markdown-it.mjs
+// ../../../../../../../studio-library/node_modules/markdown-it/dist/markdown-it.mjs
 var __defProp2 = Object.defineProperty;
 var __exportAll = (all, no_symbols) => {
   let target = {};
@@ -11517,13 +10465,25 @@ var Token = class {
 };
 var Ruler = class {
   constructor() {
-    _defineProperty(this, "__rules__", []);
-    _defineProperty(this, "__cache__", null);
+    _defineProperty(
+      this,
+      /** @internal */
+      "__rules__",
+      []
+    );
+    _defineProperty(
+      this,
+      /** @internal */
+      "__cache__",
+      null
+    );
   }
+  /** @internal */
   __find__(name) {
     for (let i = 0; i < this.__rules__.length; i++) if (this.__rules__[i].name === name) return i;
     return -1;
   }
+  /** @internal */
   __compile__() {
     const chains = /* @__PURE__ */ new Set();
     this.__rules__.forEach((rule) => {
@@ -11548,11 +10508,6 @@ var Ruler = class {
   * Replace rule by name with new function & options. Throws error if name not
   * found.
   *
-  * @param name Rule name to replace.
-  * @param fn New rule function.
-  * @param options Rule options. `alt` is an array with names of "alternate"
-  * chains.
-  *
   * @example Replace existing typographer replacement rule with new one
   * ```javascript
   * import MarkdownIt from 'markdown-it'
@@ -11573,12 +10528,6 @@ var Ruler = class {
   /**
   * Add new rule to chain before one with given name. See also
   * {@link Ruler.after}, {@link Ruler.push}.
-  *
-  * @param beforeName New rule will be added before this one.
-  * @param ruleName Name of added rule.
-  * @param fn Rule function.
-  * @param options Rule options. `alt` is an array with names of "alternate"
-  * chains.
   *
   * @example
   * ```javascript
@@ -11605,12 +10554,6 @@ var Ruler = class {
   * Add new rule to chain after one with given name. See also
   * {@link Ruler.before}, {@link Ruler.push}.
   *
-  * @param afterName New rule will be added after this one.
-  * @param ruleName Name of added rule.
-  * @param fn Rule function.
-  * @param options Rule options. `alt` is an array with names of "alternate"
-  * chains.
-  *
   * @example
   * ```javascript
   * import MarkdownIt from 'markdown-it'
@@ -11635,11 +10578,6 @@ var Ruler = class {
   /**
   * Push new rule to the end of chain. See also
   * {@link Ruler.before}, {@link Ruler.after}.
-  *
-  * @param ruleName Name of added rule.
-  * @param fn Rule function.
-  * @param options Rule options. `alt` is an array with names of "alternate"
-  * chains.
   *
   * @example
   * ```javascript
@@ -11666,9 +10604,7 @@ var Ruler = class {
   *
   * See also {@link Ruler.disable}, {@link Ruler.enableOnly}.
   *
-  * @param list List of rule names to enable.
-  * @param ignoreInvalid Set `true` to ignore errors when rule not found.
-  * @returns List of found rule names (if no exception happened).
+  * Returns list of found rule names (if no exception happened).
   */
   enable(list2, ignoreInvalid = false) {
     if (!Array.isArray(list2)) list2 = [list2];
@@ -11690,9 +10626,6 @@ var Ruler = class {
   * not found - throw Error. Errors can be disabled by second param.
   *
   * See also {@link Ruler.disable}, {@link Ruler.enable}.
-  *
-  * @param list List of rule names to enable (whitelist).
-  * @param ignoreInvalid Set `true` to ignore errors when rule not found.
   */
   enableOnly(list2, ignoreInvalid = false) {
     if (!Array.isArray(list2)) list2 = [list2];
@@ -11707,9 +10640,7 @@ var Ruler = class {
   *
   * See also {@link Ruler.enable}, {@link Ruler.enableOnly}.
   *
-  * @param list List of rule names to disable.
-  * @param ignoreInvalid Set `true` to ignore errors when rule not found.
-  * @returns List of found rule names (if no exception happened).
+  * Returns list of found rule names (if no exception happened).
   */
   disable(list2, ignoreInvalid = false) {
     if (!Array.isArray(list2)) list2 = [list2];
@@ -11843,10 +10774,6 @@ var Renderer = class {
   /**
   * Default token renderer. Can be overriden by custom function
   * in {@link Renderer.rules}.
-  *
-  * @param tokens List of tokens.
-  * @param idx Token index to render.
-  * @param options Params of parser instance.
   */
   renderToken(tokens, idx, options) {
     const token = tokens[idx];
@@ -11876,10 +10803,6 @@ var Renderer = class {
   }
   /**
   * The same as {@link Renderer.render}, but for single token of `inline` type.
-  *
-  * @param tokens List on block tokens to render.
-  * @param options Params of parser instance.
-  * @param env Additional data from parsed input (references, for example).
   */
   renderInline(tokens, options, env) {
     let result = "";
@@ -11895,10 +10818,6 @@ var Renderer = class {
   * Special kludge for image `alt` attributes to conform CommonMark spec.
   * Don't try to use it! Spec requires to show `alt` content with stripped markup,
   * instead of simple escaping.
-  *
-  * @param tokens List on block tokens to render.
-  * @param options Params of parser instance.
-  * @param env Additional data from parsed input (references, for example).
   */
   renderInlineAsText(tokens, options, env) {
     let result = "";
@@ -11923,10 +10842,6 @@ var Renderer = class {
   /**
   * Takes token stream and generates HTML. Probably, you will never need to call
   * this method directly.
-  *
-  * @param tokens List on block tokens to render.
-  * @param options Params of parser instance.
-  * @param env Additional data from parsed input (references, for example).
   */
   render(tokens, options, env) {
     let result = "";
@@ -11950,11 +10865,11 @@ var StateCore = class {
     this.md = md;
   }
 };
-var NEWLINES_RE = /\r\n?|\n/g;
+var UNNORMALIZED_NEWLINE_RE = /\r\n?/g;
 var NULL_RE = /\0/g;
 function normalize(state) {
   let str;
-  str = state.src.replace(NEWLINES_RE, "\n");
+  str = state.src.replace(UNNORMALIZED_NEWLINE_RE, "\n");
   str = str.replace(NULL_RE, "\uFFFD");
   state.src = str;
 }
@@ -11996,7 +10911,8 @@ function linkify$1(state) {
   if (!state.md.options.linkify) return;
   for (let j = 0, l = blockTokens.length; j < l; j++) {
     if (blockTokens[j].type !== "inline" || !state.md.linkify.test(blockTokens[j].content)) continue;
-    let tokens = blockTokens[j].children;
+    const tokens = blockTokens[j].children;
+    const replacements = [];
     let htmlLinkLevel = 0;
     for (let i = tokens.length - 1; i >= 0; i--) {
       const currentToken = tokens[i];
@@ -12055,8 +10971,27 @@ function linkify$1(state) {
           token.level = level;
           nodes.push(token);
         }
-        blockTokens[j].children = tokens = arrayReplaceAt(tokens, i, nodes);
+        replacements.push({
+          index: i,
+          nodes
+        });
       }
+    }
+    if (replacements.length > 0) {
+      let newTokensLength = tokens.length;
+      for (const replacement of replacements) newTokensLength += replacement.nodes.length - 1;
+      const newTokens = new Array(newTokensLength);
+      let replacementIndex = 0;
+      let newTokenIndex = 0;
+      replacements.reverse();
+      for (let i = 0; i < tokens.length; i++) {
+        const replacement = replacements[replacementIndex];
+        if ((replacement === null || replacement === void 0 ? void 0 : replacement.index) === i) {
+          for (const node of replacement.nodes) newTokens[newTokenIndex++] = node;
+          replacementIndex++;
+        } else newTokens[newTokenIndex++] = tokens[i];
+      }
+      blockTokens[j].children = newTokens;
     }
   }
 }
@@ -12103,6 +11038,14 @@ function replace(state) {
 var QUOTE_TEST_RE = /['"]/;
 var QUOTE_RE = /['"]/g;
 var APOSTROPHE = "\u2019";
+var MAX_OPENERS = 1e3;
+function truncateStack(stack, heads, length) {
+  while (stack.length > length) {
+    const item = stack.pop();
+    if (item.isSingleQuote) heads.single = item.prevSameQuoteIdx;
+    else heads.double = item.prevSameQuoteIdx;
+  }
+}
 function addReplacement(replacements, tokenIdx, pos, ch) {
   if (!replacements[tokenIdx]) replacements[tokenIdx] = [];
   replacements[tokenIdx].push({
@@ -12124,12 +11067,16 @@ function applyReplacements(str, replacements) {
 function process_inlines(tokens, state) {
   let j;
   const stack = [];
+  const heads = {
+    single: -1,
+    double: -1
+  };
   const replacements = {};
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
     const thisLevel = tokens[i].level;
     for (j = stack.length - 1; j >= 0; j--) if (stack[j].level <= thisLevel) break;
-    stack.length = j + 1;
+    truncateStack(stack, heads, j + 1);
     if (token.type !== "text") continue;
     const text2 = token.content;
     let pos = 0;
@@ -12181,11 +11128,10 @@ function process_inlines(tokens, state) {
         if (isSingle) addReplacement(replacements, i, t.index, APOSTROPHE);
         continue;
       }
-      if (canClose) for (j = stack.length - 1; j >= 0; j--) {
-        let item = stack[j];
-        if (stack[j].level < thisLevel) break;
-        if (item.single === isSingle && stack[j].level === thisLevel) {
-          item = stack[j];
+      if (canClose) {
+        j = isSingle ? heads.single : heads.double;
+        if (j >= 0 && stack[j].level === thisLevel) {
+          const item = stack[j];
           let openQuote;
           let closeQuote;
           if (isSingle) {
@@ -12196,18 +11142,23 @@ function process_inlines(tokens, state) {
             closeQuote = state.md.options.quotes[1];
           }
           addReplacement(replacements, i, t.index, closeQuote);
-          addReplacement(replacements, item.token, item.pos, openQuote);
-          stack.length = j;
+          addReplacement(replacements, item.tokenIdx, item.contentPos, openQuote);
+          truncateStack(stack, heads, j);
           continue OUTER;
         }
       }
-      if (canOpen) stack.push({
-        token: i,
-        pos: t.index,
-        single: isSingle,
-        level: thisLevel
-      });
-      else if (canClose && isSingle) addReplacement(replacements, i, t.index, APOSTROPHE);
+      if (canOpen) {
+        if (stack.length >= MAX_OPENERS) return;
+        stack.push({
+          tokenIdx: i,
+          contentPos: t.index,
+          isSingleQuote: isSingle,
+          level: thisLevel,
+          prevSameQuoteIdx: isSingle ? heads.single : heads.double
+        });
+        if (isSingle) heads.single = stack.length - 1;
+        else heads.double = stack.length - 1;
+      } else if (canClose && isSingle) addReplacement(replacements, i, t.index, APOSTROPHE);
     }
   }
   Object.keys(replacements).forEach(function(tokenIdx) {
@@ -12306,12 +11257,14 @@ var StateBlock = class {
     const s = this.src;
     for (let start = 0, pos = 0, indent = 0, offset = 0, len = s.length, indent_found = false; pos < len; pos++) {
       const ch = s.charCodeAt(pos);
-      if (!indent_found) if (isSpace(ch)) {
-        indent++;
-        if (ch === 9) offset += 4 - offset % 4;
-        else offset++;
-        continue;
-      } else indent_found = true;
+      if (!indent_found) {
+        if (isSpace(ch)) {
+          indent++;
+          if (ch === 9) offset += 4 - offset % 4;
+          else offset++;
+          continue;
+        } else indent_found = true;
+      }
       if (ch === 10 || pos === len - 1) {
         if (ch !== 10) pos++;
         this.bMarks.push(start);
@@ -12378,9 +11331,10 @@ var StateBlock = class {
       else last = this.eMarks[line];
       while (first < last && lineIndent < indent) {
         const ch = this.src.charCodeAt(first);
-        if (isSpace(ch)) if (ch === 9) lineIndent += 4 - (lineIndent + this.bsCount[line]) % 4;
-        else lineIndent++;
-        else if (first - lineStart < this.tShift[line]) lineIndent++;
+        if (isSpace(ch)) {
+          if (ch === 9) lineIndent += 4 - (lineIndent + this.bsCount[line]) % 4;
+          else lineIndent++;
+        } else if (first - lineStart < this.tShift[line]) lineIndent++;
         else break;
         first++;
       }
@@ -12405,13 +11359,15 @@ function escapedSplit(str) {
   let lastPos = 0;
   let current = "";
   while (pos < max) {
-    if (ch === 124) if (!isEscaped) {
-      result.push(current + str.substring(lastPos, pos));
-      current = "";
-      lastPos = pos + 1;
-    } else {
-      current += str.substring(lastPos, pos - 1);
-      lastPos = pos;
+    if (ch === 124) {
+      if (!isEscaped) {
+        result.push(current + str.substring(lastPos, pos));
+        current = "";
+        lastPos = pos + 1;
+      } else {
+        current += str.substring(lastPos, pos - 1);
+        lastPos = pos;
+      }
     }
     isEscaped = ch === 92;
     pos++;
@@ -12443,8 +11399,10 @@ function table(state, startLine, endLine, silent) {
   const aligns = [];
   for (let i = 0; i < columns.length; i++) {
     const t = columns[i].trim();
-    if (!t) if (i === 0 || i === columns.length - 1) continue;
-    else return false;
+    if (!t) {
+      if (i === 0 || i === columns.length - 1) continue;
+      else return false;
+    }
     if (!/^:?-+:?$/.test(t)) return false;
     if (t.charCodeAt(t.length - 1) === 58) aligns.push(t.charCodeAt(0) === 58 ? "center" : "right");
     else if (t.charCodeAt(0) === 58) aligns.push("left");
@@ -12631,9 +11589,10 @@ function blockquote(state, startLine, endLine, silent) {
       state.bMarks[nextLine] = pos;
       while (pos < max) {
         const ch = state.src.charCodeAt(pos);
-        if (isSpace(ch)) if (ch === 9) offset += 4 - (offset + state.bsCount[nextLine] + (adjustTab ? 1 : 0)) % 4;
-        else offset++;
-        else break;
+        if (isSpace(ch)) {
+          if (ch === 9) offset += 4 - (offset + state.bsCount[nextLine] + (adjustTab ? 1 : 0)) % 4;
+          else offset++;
+        } else break;
         pos++;
       }
       lastLineEmpty = pos >= max;
@@ -12860,131 +11819,141 @@ function list(state, startLine, endLine, silent) {
   if (tight) markTightParagraphs(state, listTokIdx);
   return true;
 }
+var MAX_LABEL_LENGTH = 999;
+function countCodePoints(str) {
+  let length = str.length;
+  for (let i = 0; i < str.length - 1; i++) {
+    const high = str.charCodeAt(i);
+    if (high < 55296 || high > 56319) continue;
+    const low = str.charCodeAt(i + 1);
+    if (low >= 56320 && low <= 57343) {
+      length--;
+      i++;
+    }
+  }
+  return length;
+}
+function lineEnd(state, line) {
+  return Math.min(state.eMarks[line] + 1, state.src.length);
+}
+function getNextLinePos(state, nextLine) {
+  const endLine = state.lineMax;
+  if (nextLine >= endLine || state.isEmpty(nextLine)) return -1;
+  let isContinuation = false;
+  if (state.sCount[nextLine] - state.blkIndent > 3) isContinuation = true;
+  if (state.sCount[nextLine] < 0) isContinuation = true;
+  if (!isContinuation) {
+    const terminatorRules = state.md.block.ruler.getRules("reference");
+    const oldParentType = state.parentType;
+    state.parentType = "reference";
+    let terminate = false;
+    for (let i = 0, l = terminatorRules.length; i < l; i++) if (terminatorRules[i](state, nextLine, endLine, true)) {
+      terminate = true;
+      break;
+    }
+    state.parentType = oldParentType;
+    if (terminate) return -1;
+  }
+  return state.bMarks[nextLine] + state.tShift[nextLine];
+}
 function reference(state, startLine, _endLine, silent) {
+  const src = state.src;
   let pos = state.bMarks[startLine] + state.tShift[startLine];
-  let max = state.eMarks[startLine];
   let nextLine = startLine + 1;
   if (state.sCount[startLine] - state.blkIndent >= 4) return false;
-  if (state.src.charCodeAt(pos) !== 91) return false;
-  function getNextLine(nextLine2) {
-    const endLine = state.lineMax;
-    if (nextLine2 >= endLine || state.isEmpty(nextLine2)) return null;
-    let isContinuation = false;
-    if (state.sCount[nextLine2] - state.blkIndent > 3) isContinuation = true;
-    if (state.sCount[nextLine2] < 0) isContinuation = true;
-    if (!isContinuation) {
-      const terminatorRules = state.md.block.ruler.getRules("reference");
-      const oldParentType = state.parentType;
-      state.parentType = "reference";
-      let terminate = false;
-      for (let i = 0, l = terminatorRules.length; i < l; i++) if (terminatorRules[i](state, nextLine2, endLine, true)) {
-        terminate = true;
-        break;
-      }
-      state.parentType = oldParentType;
-      if (terminate) return null;
-    }
-    const pos2 = state.bMarks[nextLine2] + state.tShift[nextLine2];
-    const max2 = state.eMarks[nextLine2];
-    return state.src.slice(pos2, max2 + 1);
-  }
-  let str = state.src.slice(pos, max + 1);
-  max = str.length;
+  if (src.charCodeAt(pos) !== 91) return false;
+  let max = lineEnd(state, startLine);
+  let rawLabel = "";
   let labelEnd = -1;
-  for (pos = 1; pos < max; pos++) {
-    const ch = str.charCodeAt(pos);
+  let segmentStart = ++pos;
+  while (pos < max) {
+    if (rawLabel.length + pos - segmentStart > MAX_LABEL_LENGTH * 2) return false;
+    let ch = src.charCodeAt(pos);
     if (ch === 91) return false;
-    else if (ch === 93) {
+    if (ch === 93) {
       labelEnd = pos;
       break;
-    } else if (ch === 10) {
-      const lineContent = getNextLine(nextLine);
-      if (lineContent !== null) {
-        str += lineContent;
-        max = str.length;
-        nextLine++;
-      }
-    } else if (ch === 92) {
-      pos++;
-      if (pos < max && str.charCodeAt(pos) === 10) {
-        const lineContent = getNextLine(nextLine);
-        if (lineContent !== null) {
-          str += lineContent;
-          max = str.length;
-          nextLine++;
-        }
-      }
     }
+    if (ch === 92) ch = src.charCodeAt(++pos);
+    if (ch === 10 && pos < max) {
+      const nextPos = getNextLinePos(state, nextLine);
+      if (nextPos < 0) return false;
+      rawLabel += src.slice(segmentStart, max);
+      pos = segmentStart = nextPos;
+      max = lineEnd(state, nextLine++);
+      continue;
+    }
+    pos++;
   }
-  if (labelEnd < 0 || str.charCodeAt(labelEnd + 1) !== 58) return false;
-  for (pos = labelEnd + 2; pos < max; pos++) {
-    const ch = str.charCodeAt(pos);
+  if (labelEnd < 0 || src.charCodeAt(labelEnd + 1) !== 58) return false;
+  rawLabel += src.slice(segmentStart, labelEnd);
+  if (rawLabel.length > MAX_LABEL_LENGTH && countCodePoints(rawLabel) > MAX_LABEL_LENGTH) return false;
+  pos = labelEnd + 2;
+  while (pos < max) {
+    const ch = src.charCodeAt(pos);
     if (ch === 10) {
-      const lineContent = getNextLine(nextLine);
-      if (lineContent !== null) {
-        str += lineContent;
-        max = str.length;
-        nextLine++;
-      }
-    } else if (isSpace(ch)) {
-    } else break;
+      const nextPos = getNextLinePos(state, nextLine);
+      if (nextPos < 0) break;
+      pos = nextPos;
+      max = lineEnd(state, nextLine++);
+    } else if (isSpace(ch)) pos++;
+    else break;
   }
-  const destRes = state.md.helpers.parseLinkDestination(str, pos, max);
+  const destRes = state.md.helpers.parseLinkDestination(src, pos, max);
   if (!destRes.ok) return false;
   const href = state.md.normalizeLink(destRes.str);
   if (!state.md.validateLink(href)) return false;
   pos = destRes.pos;
   const destEndPos = pos;
+  const destEndMax = max;
   const destEndLineNo = nextLine;
-  const start = pos;
-  for (; pos < max; pos++) {
-    const ch = str.charCodeAt(pos);
+  while (pos < max) {
+    const ch = src.charCodeAt(pos);
     if (ch === 10) {
-      const lineContent = getNextLine(nextLine);
-      if (lineContent !== null) {
-        str += lineContent;
-        max = str.length;
-        nextLine++;
-      }
-    } else if (isSpace(ch)) {
-    } else break;
+      const nextPos = getNextLinePos(state, nextLine);
+      if (nextPos < 0) break;
+      pos = nextPos;
+      max = lineEnd(state, nextLine++);
+    } else if (isSpace(ch)) pos++;
+    else break;
   }
-  let titleRes = state.md.helpers.parseLinkTitle(str, pos, max);
+  const titleStart = pos;
+  let titleRes = state.md.helpers.parseLinkTitle(src, pos, max);
   while (titleRes.can_continue) {
-    const lineContent = getNextLine(nextLine);
-    if (lineContent === null) break;
-    str += lineContent;
-    pos = max;
-    max = str.length;
-    nextLine++;
-    titleRes = state.md.helpers.parseLinkTitle(str, pos, max, titleRes);
+    const nextPos = getNextLinePos(state, nextLine);
+    if (nextPos < 0) break;
+    pos = nextPos;
+    max = lineEnd(state, nextLine++);
+    titleRes = state.md.helpers.parseLinkTitle(src, pos, max, titleRes);
   }
   let title;
-  if (pos < max && start !== pos && titleRes.ok) {
+  if (titleStart !== destEndPos && titleRes.ok) {
     title = titleRes.str;
     pos = titleRes.pos;
   } else {
     title = "";
     pos = destEndPos;
+    max = destEndMax;
     nextLine = destEndLineNo;
   }
   while (pos < max) {
-    if (!isSpace(str.charCodeAt(pos))) break;
+    if (!isSpace(src.charCodeAt(pos))) break;
     pos++;
   }
-  if (pos < max && str.charCodeAt(pos) !== 10) {
+  if (pos < max && src.charCodeAt(pos) !== 10) {
     if (title) {
       title = "";
       pos = destEndPos;
+      max = destEndMax;
       nextLine = destEndLineNo;
       while (pos < max) {
-        if (!isSpace(str.charCodeAt(pos))) break;
+        if (!isSpace(src.charCodeAt(pos))) break;
         pos++;
       }
     }
   }
-  if (pos < max && str.charCodeAt(pos) !== 10) return false;
-  const label = normalizeReference(str.slice(1, labelEnd));
+  if (pos < max && src.charCodeAt(pos) !== 10) return false;
+  const label = normalizeReference(rawLabel);
   if (!label) return false;
   if (silent) return true;
   if (typeof state.env.references === "undefined") state.env.references = {};
@@ -13067,7 +12036,7 @@ var html_blocks_default = [
 ];
 var open_tag = `<[A-Za-z][A-Za-z0-9\\-]*(?:\\s+[a-zA-Z_:][a-zA-Z0-9:._-]*(?:\\s*=\\s*(?:[^"'=<>\`\\x00-\\x20]+|'[^']*'|"[^"]*"))?)*\\s*\\/?>`;
 var close_tag = "<\\/[A-Za-z][A-Za-z0-9\\-]*\\s*>";
-var HTML_TAG_RE = new RegExp(`^(?:${open_tag}|${close_tag}|<!---?>|<!--(?:[^-]|-[^-]|--[^>])*-->|<[?][\\s\\S]*?[?]>|<![A-Za-z][^>]*>|<!\\[CDATA\\[[\\s\\S]*?\\]\\]>)`);
+new RegExp(`^(?:${open_tag}|${close_tag}|<!---?>|<!--(?:[^-]|-[^-]|--[^>])*-->|<[?][\\s\\S]*?[?]>|<![A-Za-z][^>]*>|<!\\[CDATA\\[[\\s\\S]*?\\]\\]>)`);
 var HTML_OPEN_CLOSE_TAG_RE = new RegExp(`^(?:${open_tag}|${close_tag})`);
 var HTML_SEQUENCES = [
   [
@@ -13377,6 +12346,7 @@ var StateInline = class {
     _defineProperty(this, "cache", {});
     _defineProperty(this, "backticks", {});
     _defineProperty(this, "backticksScanned", false);
+    _defineProperty(this, "skipHtmlSpecial", false);
     _defineProperty(this, "linkLevel", 0);
     _defineProperty(this, "delimiters", []);
     _defineProperty(this, "_prev_delimiters", []);
@@ -13490,7 +12460,12 @@ function text(state, silent) {
   state.pos = pos;
   return true;
 }
-var SCHEME_RE = /(?:^|[^a-z0-9.+-])([a-z][a-z0-9.+-]*)$/i;
+function isAsciiAlpha(code2) {
+  return code2 >= 65 && code2 <= 90 || code2 >= 97 && code2 <= 122;
+}
+function isSchemeChar(code2) {
+  return code2 >= 65 && code2 <= 90 || code2 >= 97 && code2 <= 122 || code2 >= 48 && code2 <= 57 || code2 === 43 || code2 === 45 || code2 === 46;
+}
 function linkify(state, silent) {
   if (!state.md.options.linkify) return false;
   if (state.linkLevel > 0) return false;
@@ -13500,20 +12475,22 @@ function linkify(state, silent) {
   if (state.src.charCodeAt(pos) !== 58) return false;
   if (state.src.charCodeAt(pos + 1) !== 47) return false;
   if (state.src.charCodeAt(pos + 2) !== 47) return false;
-  const match = state.pending.match(SCHEME_RE);
-  if (!match) return false;
-  const proto = match[1];
-  const link2 = state.md.linkify.matchAtStart(state.src.slice(pos - proto.length));
+  const protoMin = pos - Math.min(10, state.pending.length, pos);
+  let protoStart = pos;
+  while (protoStart > protoMin && isSchemeChar(state.src.charCodeAt(protoStart - 1))) protoStart--;
+  if (protoStart === pos || !isAsciiAlpha(state.src.charCodeAt(protoStart))) return false;
+  const protoLength = pos - protoStart;
+  const link2 = state.md.linkify.matchAtStart(state.src.slice(protoStart));
   if (!link2) return false;
   let url = link2.url;
-  if (url.length <= proto.length) return false;
+  if (url.length <= protoLength) return false;
   let urlEnd = url.length;
   while (urlEnd > 0 && url.charCodeAt(urlEnd - 1) === 42) urlEnd--;
   if (urlEnd !== url.length) url = url.slice(0, urlEnd);
   const fullUrl = state.md.normalizeLink(url);
   if (!state.md.validateLink(fullUrl)) return false;
   if (!silent) {
-    state.pending = state.pending.slice(0, -proto.length);
+    state.pending = state.pending.slice(0, -protoLength);
     const token_o = state.push("link_open", "a", 1);
     token_o.attrs = [["href", fullUrl]];
     token_o.markup = "linkify";
@@ -13524,7 +12501,7 @@ function linkify(state, silent) {
     token_c.markup = "linkify";
     token_c.info = "auto";
   }
-  state.pos += url.length - proto.length;
+  state.pos += url.length - protoLength;
   return true;
 }
 function newline(state, silent) {
@@ -13532,16 +12509,19 @@ function newline(state, silent) {
   if (state.src.charCodeAt(pos) !== 10) return false;
   const pmax = state.pending.length - 1;
   const max = state.posMax;
-  if (!silent) if (pmax >= 0 && state.pending.charCodeAt(pmax) === 32) if (pmax >= 1 && state.pending.charCodeAt(pmax - 1) === 32) {
-    let ws = pmax - 1;
-    while (ws >= 1 && state.pending.charCodeAt(ws - 1) === 32) ws--;
-    state.pending = state.pending.slice(0, ws);
-    state.push("hardbreak", "br", 0);
-  } else {
-    state.pending = state.pending.slice(0, -1);
-    state.push("softbreak", "br", 0);
+  if (!silent) {
+    if (pmax >= 0 && state.pending.charCodeAt(pmax) === 32) {
+      if (pmax >= 1 && state.pending.charCodeAt(pmax - 1) === 32) {
+        let ws = pmax - 1;
+        while (ws >= 1 && state.pending.charCodeAt(ws - 1) === 32) ws--;
+        state.pending = state.pending.slice(0, ws);
+        state.push("hardbreak", "br", 0);
+      } else {
+        state.pending = state.pending.slice(0, -1);
+        state.push("softbreak", "br", 0);
+      }
+    } else state.push("softbreak", "br", 0);
   }
-  else state.push("softbreak", "br", 0);
   pos++;
   while (pos < max && isSpace(state.src.charCodeAt(pos))) pos++;
   state.pos = pos;
@@ -13599,40 +12579,51 @@ function escape(state, silent) {
   state.pos = pos + 1;
   return true;
 }
+function buildLastRuns(src) {
+  const lastRuns = {};
+  let pos = 0;
+  while ((pos = src.indexOf("`", pos)) !== -1) {
+    const start = pos;
+    while (src.charCodeAt(++pos) === 96) ;
+    lastRuns[pos - start] = start;
+  }
+  return lastRuns;
+}
 function backtick(state, silent) {
-  let pos = state.pos;
-  if (state.src.charCodeAt(pos) !== 96) return false;
-  const start = pos;
-  pos++;
+  var _state$backticks$open;
+  const start = state.pos;
+  if (state.src.charCodeAt(start) !== 96) return false;
   const max = state.posMax;
+  let pos = start + 1;
   while (pos < max && state.src.charCodeAt(pos) === 96) pos++;
   const marker = state.src.slice(start, pos);
   const openerLength = marker.length;
-  if (state.backticksScanned && (state.backticks[openerLength] || 0) <= start) {
-    if (!silent) state.pending += marker;
-    state.pos += openerLength;
-    return true;
+  if (!state.backticksScanned) {
+    state.backticks = buildLastRuns(state.src);
+    state.backticksScanned = true;
   }
-  let matchEnd = pos;
-  let matchStart;
-  while ((matchStart = state.src.indexOf("`", matchEnd)) !== -1) {
-    matchEnd = matchStart + 1;
-    while (matchEnd < max && state.src.charCodeAt(matchEnd) === 96) matchEnd++;
-    const closerLength = matchEnd - matchStart;
-    if (closerLength === openerLength) {
-      if (!silent) {
-        const token = state.push("code_inline", "code", 0);
-        token.markup = marker;
-        token.content = state.src.slice(pos, matchStart).replace(/\n/g, " ").replace(/^ (.+) $/, "$1");
+  if (((_state$backticks$open = state.backticks[openerLength]) !== null && _state$backticks$open !== void 0 ? _state$backticks$open : -1) >= pos) {
+    let matchEnd = pos;
+    let matchStart;
+    while ((matchStart = state.src.indexOf("`", matchEnd)) !== -1 && matchStart < max) {
+      matchEnd = matchStart + 1;
+      while (state.src.charCodeAt(matchEnd) === 96) matchEnd++;
+      if (matchEnd > max) break;
+      if (matchEnd - matchStart === openerLength) {
+        if (!silent) {
+          const token = state.push("code_inline", "code", 0);
+          token.markup = marker;
+          let content = state.src.slice(pos, matchStart).replace(/\n/g, " ");
+          if (content.startsWith(" ") && content.endsWith(" ") && /[^ ]/.test(content)) content = content.slice(1, -1);
+          token.content = content;
+        }
+        state.pos = matchEnd;
+        return true;
       }
-      state.pos = matchEnd;
-      return true;
     }
-    state.backticks[closerLength] = matchStart;
   }
-  state.backticksScanned = true;
   if (!silent) state.pending += marker;
-  state.pos += openerLength;
+  state.pos = pos;
   return true;
 }
 function strikethrough_tokenize(state, silent) {
@@ -14003,22 +12994,53 @@ function isLetter(ch) {
   const lc = ch | 32;
   return lc >= 97 && lc <= 122;
 }
+function scanSpecial(state, pos) {
+  const src = state.src;
+  let start;
+  let terminator;
+  if (src.startsWith("<!--", pos)) {
+    if (src.startsWith(">", pos + 4)) return pos + 5;
+    if (src.startsWith("->", pos + 4)) return pos + 6;
+    start = pos + 4;
+    terminator = "-->";
+  } else if (src.startsWith("<![CDATA[", pos)) {
+    start = pos + 9;
+    terminator = "]]>";
+  } else if (src.charCodeAt(pos + 1) === 63) {
+    start = pos + 2;
+    terminator = "?>";
+  } else if (isLetter(src.charCodeAt(pos + 2))) {
+    start = pos + 3;
+    terminator = ">";
+  } else return -1;
+  if (state.skipHtmlSpecial) return -1;
+  const end = src.indexOf(terminator, start);
+  if (end < 0) {
+    state.skipHtmlSpecial = true;
+    return -1;
+  }
+  return end + terminator.length;
+}
 function html_inline(state, silent) {
   if (!state.md.options.html) return false;
   const max = state.posMax;
   const pos = state.pos;
   if (state.src.charCodeAt(pos) !== 60 || pos + 2 >= max) return false;
+  let end;
   const ch = state.src.charCodeAt(pos + 1);
-  if (ch !== 33 && ch !== 63 && ch !== 47 && !isLetter(ch)) return false;
-  const match = state.src.slice(pos).match(HTML_TAG_RE);
-  if (!match) return false;
+  if (ch === 33 || ch === 63) end = scanSpecial(state, pos);
+  else if (ch === 47 || isLetter(ch)) {
+    const match = state.src.slice(pos).match(HTML_OPEN_CLOSE_TAG_RE);
+    end = match ? pos + match[0].length : -1;
+  } else return false;
+  if (end < 0) return false;
   if (!silent) {
     const token = state.push("html_inline", "", 0);
-    token.content = match[0];
+    token.content = state.src.slice(pos, end);
     if (isLinkOpen(token.content)) state.linkLevel++;
     if (isLinkClose(token.content)) state.linkLevel--;
   }
-  state.pos += match[0].length;
+  state.pos = end;
   return true;
 }
 var DIGITAL_RE = /^&#((?:x[a-f0-9]{1,6}|[0-9]{1,7}));/i;
@@ -14378,7 +13400,12 @@ var MarkdownIt = class {
       } catch (er) {
       }
     }
-    return encode_default(format(parsed));
+    if (parsed.auth) parsed.auth = encode_default(parsed.auth);
+    if (parsed.hostname) parsed.hostname = encode_default(parsed.hostname);
+    if (parsed.pathname) parsed.pathname = encode_default(parsed.pathname);
+    if (parsed.search) parsed.search = encode_default(parsed.search);
+    if (parsed.hash) parsed.hash = encode_default(parsed.hash);
+    return format(parsed);
   }
   /**
   * Function used to decode link url to a human-readable format`
@@ -14547,9 +13574,6 @@ var MarkdownIt = class {
   * containing rules with given names. If rule not found, and `ignoreInvalid`
   * not set - throws exception.
   *
-  * @param list Rule name or list of rule names to enable.
-  * @param ignoreInvalid Set `true` to ignore errors when rule not found.
-  *
   * @example
   * ```javascript
   * import MarkdownIt from 'markdown-it'
@@ -14576,9 +13600,6 @@ var MarkdownIt = class {
   }
   /**
   * The same as {@link MarkdownIt.enable}, but turn specified rules off.
-  *
-  * @param list Rule name or list of rule names to disable.
-  * @param ignoreInvalid Set `true` to ignore errors when rule not found.
   */
   disable(list2, ignoreInvalid = false) {
     let result = [];
@@ -14624,9 +13645,6 @@ var MarkdownIt = class {
   * metadata like reference info, needed for the renderer. It also can be used to
   * inject data in specific cases. Usually, you will be ok to pass `{}`,
   * and then pass updated object to renderer.
-  *
-  * @param src Source string.
-  * @param env Environment sandbox.
   */
   parse(src, env) {
     if (typeof src !== "string") throw new Error("Input data should be a String");
@@ -14640,9 +13658,6 @@ var MarkdownIt = class {
   * `env` can be used to inject additional metadata (`{}` by default).
   * But you will not need it with high probability. See also comment
   * in {@link MarkdownIt.parse}.
-  *
-  * @param src Source string.
-  * @param env Environment sandbox.
   */
   render(src, env = {}) {
     return this.renderer.render(this.parse(src, env), this.options, env);
@@ -14651,9 +13666,6 @@ var MarkdownIt = class {
   * The same as {@link MarkdownIt.parse} but skip all block rules. It returns
   * the block tokens list with the single `inline` element, containing parsed
   * inline tokens in `children` property. Also updates `env` object.
-  *
-  * @param src Source string.
-  * @param env Environment sandbox.
   */
   parseInline(src, env) {
     const state = new this.core.State(src, this, env);
@@ -14664,9 +13676,6 @@ var MarkdownIt = class {
   /**
   * Similar to {@link MarkdownIt.render} but for single paragraph content.
   * Result will NOT be wrapped into `<p>` tags.
-  *
-  * @param src Source string.
-  * @param env Environment sandbox.
   */
   renderInline(src, env = {}) {
     return this.renderer.render(this.parseInline(src, env), this.options, env);
@@ -14683,11 +13692,11 @@ _defineProperty(MarkdownIt, "ParserInline", ParserInline);
 _defineProperty(MarkdownIt, "StateInline", StateInline);
 var MarkdownItCallable = callable(MarkdownIt);
 
-// ../../../../../../studio-library/packages/worktable/node_modules/highlight.js/es/core.js
+// ../../../../../../../studio-library/node_modules/highlight.js/es/core.js
 var import_core = __toESM(require_core(), 1);
 var core_default = import_core.default;
 
-// ../../../../../../studio-library/packages/worktable/node_modules/highlight.js/es/languages/typescript.js
+// ../../../../../../../studio-library/node_modules/highlight.js/es/languages/typescript.js
 var IDENT_RE = "[A-Za-z$_][0-9A-Za-z$_]*";
 var KEYWORDS = [
   "as",
@@ -15503,7 +14512,7 @@ function typescript(hljs) {
   return tsLanguage;
 }
 
-// ../../../../../../studio-library/packages/worktable/node_modules/highlight.js/es/languages/javascript.js
+// ../../../../../../../studio-library/node_modules/highlight.js/es/languages/javascript.js
 var IDENT_RE2 = "[A-Za-z$_][0-9A-Za-z$_]*";
 var KEYWORDS2 = [
   "as",
@@ -16206,7 +15215,7 @@ function javascript2(hljs) {
   };
 }
 
-// ../../../../../../studio-library/packages/worktable/node_modules/highlight.js/es/languages/css.js
+// ../../../../../../../studio-library/node_modules/highlight.js/es/languages/css.js
 var MODES = (hljs) => {
   return {
     IMPORTANT: {
@@ -17023,7 +16032,7 @@ var ATTRIBUTES = [
   "z-index",
   "zoom"
 ].sort().reverse();
-function css2(hljs) {
+function css(hljs) {
   const regex = hljs.regex;
   const modes = MODES(hljs);
   const VENDOR_PREFIX = { begin: /-(webkit|moz|ms|o)-(?=[a-z])/ };
@@ -17154,7 +16163,7 @@ function css2(hljs) {
   };
 }
 
-// ../../../../../../studio-library/packages/worktable/node_modules/highlight.js/es/languages/json.js
+// ../../../../../../../studio-library/node_modules/highlight.js/es/languages/json.js
 var EXTENDED_NUMBER_RE = "([-+]?)(\\b0[xX][a-fA-F0-9]+|(\\b\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)|NaN|[-+]?Infinity";
 var EXTENDED_NUMBER_MODE = {
   scope: "number",
@@ -17202,10 +16211,10 @@ function json(hljs) {
 }
 
 // src/client/split.tsx
-var import_jsx_runtime3 = require("react/jsx-runtime");
+var import_jsx_runtime = require("react/jsx-runtime");
 core_default.registerLanguage("typescript", typescript);
 core_default.registerLanguage("javascript", javascript2);
-core_default.registerLanguage("css", css2);
+core_default.registerLanguage("css", css);
 core_default.registerLanguage("json", json);
 var clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
 var GAP = 1;
@@ -17509,10 +16518,10 @@ function confirmAnnot() {
   cancelAnnot();
 }
 function AnnotationOverlay() {
-  const [, setTick] = (0, import_react3.useState)(0);
-  (0, import_react3.useEffect)(() => subscribeAnnot(() => setTick((t) => t + 1)), []);
+  const [, setTick] = (0, import_react.useState)(0);
+  (0, import_react.useEffect)(() => subscribeAnnot(() => setTick((t) => t + 1)), []);
   const s = annotState;
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
     if (!s.on || s.started) return;
     let sx = 0;
     let sy = 0;
@@ -17590,15 +16599,15 @@ function AnnotationOverlay() {
       window.removeEventListener("keydown", onKey, true);
     };
   }, [s.on, s.started]);
-  const [hintOnce] = (0, import_react3.useState)(() => {
+  const [hintOnce] = (0, import_react.useState)(() => {
     try {
       return localStorage.getItem("dsh.worktable.annotHint.v1") !== "1";
     } catch {
       return false;
     }
   });
-  const [hintVisible, setHintVisible] = (0, import_react3.useState)(false);
-  (0, import_react3.useEffect)(() => {
+  const [hintVisible, setHintVisible] = (0, import_react.useState)(false);
+  (0, import_react.useEffect)(() => {
     if (!s.on || !hintOnce) return;
     setHintVisible(true);
     try {
@@ -17610,20 +16619,20 @@ function AnnotationOverlay() {
   }, [s.on, hintOnce]);
   if (!s.on) return null;
   {
-    hintVisible && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_annotUi dsh-wt_annotHint", children: T("annot.hint") });
+    hintVisible && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_annotUi dsh-wt_annotHint", children: T("annot.hint") });
   }
   if (s.drawing) {
     const L = Math.min(s.bx0, s.bx1);
     const T2 = Math.min(s.by0, s.by1);
     const R = Math.max(s.bx0, s.bx1);
     const B = Math.max(s.by0, s.by1);
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_annotUi dsh-wt_annotSel", style: { left: L, top: T2, width: R - L, height: B - T2 } });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_annotUi dsh-wt_annotSel", style: { left: L, top: T2, width: R - L, height: B - T2 } });
   }
   if (!s.started) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_annotUi dsh-wt_annotBubble", style: { left: s.px, top: s.py }, "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { width: "12", height: "12", viewBox: "0 0 16 16", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M8 3.2v9.6M3.2 8h9.6", fill: "none", stroke: "#fff", strokeWidth: "1.8", strokeLinecap: "round" }) }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_annotUi dsh-wt_annotBubble", style: { left: s.px, top: s.py }, "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: "12", height: "12", viewBox: "0 0 16 16", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M8 3.2v9.6M3.2 8h9.6", fill: "none", stroke: "#fff", strokeWidth: "1.8", strokeLinecap: "round" }) }) });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_annotUi dsh-wt_annotEditor", style: { left: s.ex, top: s.ey }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_annotUi dsh-wt_annotEditor", style: { left: s.ex, top: s.ey }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "textarea",
       {
         className: "dsh-wt_annotInput",
@@ -17640,9 +16649,9 @@ function AnnotationOverlay() {
         }
       }
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_annotBtns", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_annotOk", title: T("annot.ok"), "aria-label": T("annot.ok"), onClick: confirmAnnot, children: "\u2713" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_annotNo", title: T("annot.cancel"), "aria-label": T("annot.cancel"), onClick: cancelAnnot, children: "\u2715" })
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_annotBtns", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_annotOk", title: T("annot.ok"), "aria-label": T("annot.ok"), onClick: confirmAnnot, children: "\u2713" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_annotNo", title: T("annot.cancel"), "aria-label": T("annot.cancel"), onClick: cancelAnnot, children: "\u2715" })
     ] })
   ] });
 }
@@ -18361,8 +17370,8 @@ function makeDividerHandler(kind, index) {
 }
 function BrowserPane(props) {
   const initial = props.content?.url || "https://example.com";
-  const [url, setUrl] = (0, import_react3.useState)(initial);
-  const [src, setSrc] = (0, import_react3.useState)(initial);
+  const [url, setUrl] = (0, import_react.useState)(initial);
+  const [src, setSrc] = (0, import_react.useState)(initial);
   const go = () => {
     const u = url.trim();
     const ok = /^(\/|https?:\/\/)/i.test(u) ? u : "about:blank";
@@ -18371,9 +17380,9 @@ function BrowserPane(props) {
       splitStore.setTabContent(props.row, props.index, props.tabId, { kind: "builtin", type: "browser", url: ok });
     }
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_browserBar", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_browserBar", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "input",
         {
           className: "dsh-wt_browserInput",
@@ -18385,18 +17394,18 @@ function BrowserPane(props) {
           }
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_browserGo", onClick: go, children: "\u2197" })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_browserGo", onClick: go, children: "\u2197" })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("iframe", { className: "dsh-wt_paneFrame", src, title: "browser" }, props.reloadKey)
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("iframe", { className: "dsh-wt_paneFrame", src, title: "browser" }, props.reloadKey)
   ] });
 }
 function IframePane(props) {
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("iframe", { className: "dsh-wt_paneFrame", src: props.url, title: props.title ?? "" }, props.reloadKey);
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("iframe", { className: "dsh-wt_paneFrame", src: props.url, title: props.title ?? "" }, props.reloadKey);
 }
 function AnimPane(props) {
   const initial = props.content?.url || "";
-  const [url, setUrl] = (0, import_react3.useState)(initial);
-  const [src, setSrc] = (0, import_react3.useState)(initial || "about:blank");
+  const [url, setUrl] = (0, import_react.useState)(initial);
+  const [src, setSrc] = (0, import_react.useState)(initial || "about:blank");
   const go = () => {
     const u = url.trim();
     const ok = /^(\/|https?:\/\/)/i.test(u) ? u : "about:blank";
@@ -18405,9 +17414,9 @@ function AnimPane(props) {
       splitStore.setTabContent(props.row, props.index, props.tabId, { kind: "builtin", type: "anim", url: ok });
     }
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_browserBar", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_browserBar", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "input",
         {
           className: "dsh-wt_browserInput",
@@ -18419,36 +17428,36 @@ function AnimPane(props) {
           }
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_browserGo", onClick: go, children: "\u2197" })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_browserGo", onClick: go, children: "\u2197" })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("iframe", { className: "dsh-wt_paneFrame", src, title: "anim" }, props.reloadKey)
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("iframe", { className: "dsh-wt_paneFrame", src, title: "anim" }, props.reloadKey)
   ] });
 }
 function ThemeIcon({ mode, size }) {
   const s = size ?? 18;
-  if (mode === "dark") return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { width: s, height: s, viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M14 8.53A6 6 0 1 1 7.47 2 4.67 4.67 0 0 0 14 8.53z", fill: "none", stroke: "currentColor", strokeWidth: "0.9", strokeLinejoin: "round" }) });
-  if (mode === "light") return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: s, height: s, viewBox: "0 0 16 16", "aria-hidden": true, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "8", cy: "8", r: "3.1", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M8 1.6v1.7M8 12.7v1.7M1.6 8h1.7M12.7 8h1.7M3.5 3.5l1.2 1.2M11.3 11.3l1.2 1.2M12.5 3.5l-1.2 1.2M4.7 11.3l-1.2 1.2", fill: "none", stroke: "currentColor", strokeWidth: "0.9", strokeLinecap: "round" })
+  if (mode === "dark") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: s, height: s, viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M14 8.53A6 6 0 1 1 7.47 2 4.67 4.67 0 0 0 14 8.53z", fill: "none", stroke: "currentColor", strokeWidth: "0.9", strokeLinejoin: "round" }) });
+  if (mode === "light") return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: s, height: s, viewBox: "0 0 16 16", "aria-hidden": true, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "8", cy: "8", r: "3.1", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M8 1.6v1.7M8 12.7v1.7M1.6 8h1.7M12.7 8h1.7M3.5 3.5l1.2 1.2M11.3 11.3l1.2 1.2M12.5 3.5l-1.2 1.2M4.7 11.3l-1.2 1.2", fill: "none", stroke: "currentColor", strokeWidth: "0.9", strokeLinecap: "round" })
   ] });
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: s, height: s, viewBox: "0 0 16 16", "aria-hidden": true, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "2", y: "3.2", width: "12", height: "8.8", rx: "1.6", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M5.4 14.4h5.2M8 12v2.4", fill: "none", stroke: "currentColor", strokeWidth: "0.9", strokeLinecap: "round" })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: s, height: s, viewBox: "0 0 16 16", "aria-hidden": true, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "2", y: "3.2", width: "12", height: "8.8", rx: "1.6", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M5.4 14.4h5.2M8 12v2.4", fill: "none", stroke: "currentColor", strokeWidth: "0.9", strokeLinecap: "round" })
   ] });
 }
 function SliderIcon({ size }) {
   const s = size ?? 14;
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: s, height: s, viewBox: "0 0 16 16", "aria-hidden": true, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M2.5 5.6h11M2.5 10.4h11", fill: "none", stroke: "currentColor", strokeWidth: "1.1" }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "10.4", cy: "5.6", r: "1.8", fill: "currentColor" }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "5.8", cy: "10.4", r: "1.8", fill: "currentColor" })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: s, height: s, viewBox: "0 0 16 16", "aria-hidden": true, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M2.5 5.6h11M2.5 10.4h11", fill: "none", stroke: "currentColor", strokeWidth: "1.1" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "10.4", cy: "5.6", r: "1.8", fill: "currentColor" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "5.8", cy: "10.4", r: "1.8", fill: "currentColor" })
   ] });
 }
 function HslValInput(props) {
   const lo = props.min ?? 0;
-  const [draft, setDraft] = (0, import_react3.useState)(String(props.value));
-  const [focused, setFocused] = (0, import_react3.useState)(false);
-  (0, import_react3.useEffect)(() => {
+  const [draft, setDraft] = (0, import_react.useState)(String(props.value));
+  const [focused, setFocused] = (0, import_react.useState)(false);
+  (0, import_react.useEffect)(() => {
     if (!focused) setDraft(String(props.value));
   }, [props.value, focused]);
   const commit = () => {
@@ -18457,7 +17466,7 @@ function HslValInput(props) {
     n = Math.min(Math.max(n, lo), props.max);
     props.onCommit(n);
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
     "input",
     {
       className: "dsh-wt_hslInput",
@@ -18487,11 +17496,11 @@ function HslValInput(props) {
 var PLAIN_HSL_DARK = { h: -140, s: 31, l: 6 };
 var PLAIN_HSL_LIGHT = { h: -146, s: 26, l: 95 };
 function ConsoleVideo(props) {
-  const aRef = (0, import_react3.useRef)(null);
-  const bRef = (0, import_react3.useRef)(null);
-  const roleRef = (0, import_react3.useRef)("a");
-  const firedRef = (0, import_react3.useRef)(false);
-  (0, import_react3.useEffect)(() => {
+  const aRef = (0, import_react.useRef)(null);
+  const bRef = (0, import_react.useRef)(null);
+  const roleRef = (0, import_react.useRef)("a");
+  const firedRef = (0, import_react.useRef)(false);
+  (0, import_react.useEffect)(() => {
     const role = () => roleRef.current === "a" ? aRef.current : bRef.current;
     const spare = () => roleRef.current === "a" ? bRef.current : aRef.current;
     firedRef.current = false;
@@ -18567,46 +17576,50 @@ function ConsoleVideo(props) {
       bRef.current?.removeEventListener("ended", onEnded);
     };
   }, []);
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("video", { ref: aRef, className: "dsh-wt_consoleMedia", src: props.src, muted: true, autoPlay: true, playsInline: true, style: props.style }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("video", { ref: bRef, className: "dsh-wt_consoleMedia", src: props.src, muted: true, playsInline: true, style: { ...props.style, opacity: 0 } })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("video", { ref: aRef, className: "dsh-wt_consoleMedia", src: props.src, muted: true, autoPlay: true, playsInline: true, style: props.style }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("video", { ref: bRef, className: "dsh-wt_consoleMedia", src: props.src, muted: true, playsInline: true, style: { ...props.style, opacity: 0 } })
   ] });
 }
 function ConsolePane() {
-  const [, setTick] = (0, import_react3.useState)(0);
-  const [now, setNow] = (0, import_react3.useState)(() => Date.now());
-  const [cols, setColsState] = (0, import_react3.useState)(() => splitEnv?.console?.getCols?.() ?? 3);
-  const [shape, setShapeState] = (0, import_react3.useState)(() => splitEnv?.console?.getShape?.() ?? "square");
-  const [bg, setBgState] = (0, import_react3.useState)(() => splitEnv?.console?.getBg?.() ?? "glow");
-  const [bgPhoto, setBgPhoto] = (0, import_react3.useState)("");
-  const [photoId, setPhotoIdLocal] = (0, import_react3.useState)("");
-  const [photoList, setPhotoList] = (0, import_react3.useState)([]);
-  const [bgVideo, setBgVideo] = (0, import_react3.useState)("");
-  const [photoGrid, setPhotoGridState] = (0, import_react3.useState)(() => splitEnv?.console?.getPhotoGrid?.() ?? true);
-  const [gridOpacity, setGridOpacityState] = (0, import_react3.useState)(() => splitEnv?.console?.getGridOpacity?.() ?? 8);
-  const [cardBlur, setCardBlurState] = (0, import_react3.useState)(() => splitEnv?.console?.getCardBlur?.() ?? 8);
-  const [plainBlur, setPlainBlurState] = (0, import_react3.useState)(() => splitEnv?.console?.getPlainBlur?.() ?? 0);
-  const [glowBlur, setGlowBlurState] = (0, import_react3.useState)(() => splitEnv?.console?.getGlowBlur?.() ?? 8);
-  const [plainGrid, setPlainGridState] = (0, import_react3.useState)(() => splitEnv?.console?.getPlainGrid?.() ?? 5);
-  const [glowGrid, setGlowGridState] = (0, import_react3.useState)(() => splitEnv?.console?.getGlowGrid?.() ?? 8);
-  const [glowSpeed, setGlowSpeedState] = (0, import_react3.useState)(() => splitEnv?.console?.getGlowSpeed?.() ?? 50);
-  const [annOpen, setAnnOpen] = (0, import_react3.useState)(false);
-  const [updStatus, setUpdStatus] = (0, import_react3.useState)(() => readCache().status);
-  const [updInfo, setUpdInfo] = (0, import_react3.useState)(() => readCache().info);
-  const [autoCheckOn, setAutoCheckOn] = (0, import_react3.useState)(() => getAutoCheck());
-  const updBusyRef = (0, import_react3.useRef)(false);
-  const photoUrlRef = (0, import_react3.useRef)("");
-  const [openMenu, setOpenMenu] = (0, import_react3.useState)(null);
-  const [bgEdit, setBgEdit] = (0, import_react3.useState)(null);
-  const [plainHsl, setPlainHslState] = (0, import_react3.useState)(() => {
+  const [, setTick] = (0, import_react.useState)(0);
+  const [now, setNow] = (0, import_react.useState)(() => Date.now());
+  const [cols, setColsState] = (0, import_react.useState)(() => splitEnv?.console?.getCols?.() ?? 3);
+  const [shape, setShapeState] = (0, import_react.useState)(() => splitEnv?.console?.getShape?.() ?? "square");
+  const [bg, setBgState] = (0, import_react.useState)(() => splitEnv?.console?.getBg?.() ?? "glow");
+  const [bgPhoto, setBgPhoto] = (0, import_react.useState)("");
+  const [photoId, setPhotoIdLocal] = (0, import_react.useState)("");
+  const [photoList, setPhotoList] = (0, import_react.useState)([]);
+  const [bgVideo, setBgVideo] = (0, import_react.useState)("");
+  const [photoGrid, setPhotoGridState] = (0, import_react.useState)(() => splitEnv?.console?.getPhotoGrid?.() ?? true);
+  const [gridOpacity, setGridOpacityState] = (0, import_react.useState)(() => splitEnv?.console?.getGridOpacity?.() ?? 8);
+  const [cardBlur, setCardBlurState] = (0, import_react.useState)(() => splitEnv?.console?.getCardBlur?.() ?? 8);
+  const [plainBlur, setPlainBlurState] = (0, import_react.useState)(() => splitEnv?.console?.getPlainBlur?.() ?? 0);
+  const [glowBlur, setGlowBlurState] = (0, import_react.useState)(() => splitEnv?.console?.getGlowBlur?.() ?? 8);
+  const [plainGrid, setPlainGridState] = (0, import_react.useState)(() => splitEnv?.console?.getPlainGrid?.() ?? 5);
+  const [glowGrid, setGlowGridState] = (0, import_react.useState)(() => splitEnv?.console?.getGlowGrid?.() ?? 8);
+  const [glowSpeed, setGlowSpeedState] = (0, import_react.useState)(() => splitEnv?.console?.getGlowSpeed?.() ?? 50);
+  const [annOpen, setAnnOpen] = (0, import_react.useState)(false);
+  const [updStatus, setUpdStatus] = (0, import_react.useState)(() => readCache().status);
+  const [updInfo, setUpdInfo] = (0, import_react.useState)(() => readCache().info);
+  const [autoCheckOn, setAutoCheckOn] = (0, import_react.useState)(() => getAutoCheck());
+  const [statusOpen, setStatusOpen] = (0, import_react.useState)(false);
+  const [studioStatus, setStudioStatus] = (0, import_react.useState)(null);
+  const [studioStatusLoading, setStudioStatusLoading] = (0, import_react.useState)(false);
+  const [studioStatusError, setStudioStatusError] = (0, import_react.useState)("");
+  const updBusyRef = (0, import_react.useRef)(false);
+  const photoUrlRef = (0, import_react.useRef)("");
+  const [openMenu, setOpenMenu] = (0, import_react.useState)(null);
+  const [bgEdit, setBgEdit] = (0, import_react.useState)(null);
+  const [plainHsl, setPlainHslState] = (0, import_react.useState)(() => {
     const saved = splitEnv?.console?.getPlainHsl?.();
     if (saved) return saved;
     return splitEnv?.console?.getTheme?.() === "light" ? { ...PLAIN_HSL_LIGHT } : { ...PLAIN_HSL_DARK };
   });
-  const [glowHsl, setGlowHslState] = (0, import_react3.useState)(() => splitEnv?.console?.getGlowHsl?.() ?? { h: 0, s: 100, l: 100 });
-  const [photoHsl, setPhotoHslState] = (0, import_react3.useState)({ h: 0, s: 100, l: 100 });
-  const gridRef = (0, import_react3.useRef)(null);
-  const firstRectsRef = (0, import_react3.useRef)(null);
+  const [glowHsl, setGlowHslState] = (0, import_react.useState)(() => splitEnv?.console?.getGlowHsl?.() ?? { h: 0, s: 100, l: 100 });
+  const [photoHsl, setPhotoHslState] = (0, import_react.useState)({ h: 0, s: 100, l: 100 });
+  const gridRef = (0, import_react.useRef)(null);
+  const firstRectsRef = (0, import_react.useRef)(null);
   const onCols = (n) => {
     const grid = gridRef.current;
     if (grid) {
@@ -18747,7 +17760,7 @@ function ConsolePane() {
       updBusyRef.current = false;
     }
   };
-  const [updCopied, setUpdCopied] = (0, import_react3.useState)(false);
+  const [updCopied, setUpdCopied] = (0, import_react.useState)(false);
   const onCopyUpgrade = async () => {
     const ok = await copyTextSafe(UPGRADE_AI);
     if (ok) {
@@ -18768,11 +17781,24 @@ function ConsolePane() {
     setAutoCheck(next);
     if (next) void runUpdateCheck(false);
   };
-  const dragRowRef = (0, import_react3.useRef)(null);
-  const dragFlipRef = (0, import_react3.useRef)(null);
-  const lastTargetRef = (0, import_react3.useRef)(-1);
-  const [dragRowId, setDragRowId] = (0, import_react3.useState)(null);
-  (0, import_react3.useLayoutEffect)(() => {
+  const refreshStudioStatus = async () => {
+    const loader = splitEnv?.console?.getStudioStatus;
+    if (!loader || studioStatusLoading) return;
+    setStudioStatusLoading(true);
+    setStudioStatusError("");
+    try {
+      setStudioStatus(await loader());
+    } catch (error2) {
+      setStudioStatusError(error2 instanceof Error ? error2.message : T("console.statusFail"));
+    } finally {
+      setStudioStatusLoading(false);
+    }
+  };
+  const dragRowRef = (0, import_react.useRef)(null);
+  const dragFlipRef = (0, import_react.useRef)(null);
+  const lastTargetRef = (0, import_react.useRef)(-1);
+  const [dragRowId, setDragRowId] = (0, import_react.useState)(null);
+  (0, import_react.useLayoutEffect)(() => {
     const first = dragFlipRef.current;
     if (!first) return;
     dragFlipRef.current = null;
@@ -18908,7 +17934,7 @@ function ConsolePane() {
       splitEnv?.console?.setPhotoGrid?.(true);
     }
   };
-  (0, import_react3.useLayoutEffect)(() => {
+  (0, import_react.useLayoutEffect)(() => {
     const first = firstRectsRef.current;
     if (!first) return;
     const grid = gridRef.current;
@@ -18926,15 +17952,15 @@ function ConsolePane() {
     });
     firstRectsRef.current = null;
   }, [cols]);
-  const [themeMode, setThemeMode] = (0, import_react3.useState)(() => splitEnv?.console?.getTheme?.() ?? "system");
-  const [sysDark, setSysDark] = (0, import_react3.useState)(() => {
+  const [themeMode, setThemeMode] = (0, import_react.useState)(() => splitEnv?.console?.getTheme?.() ?? "system");
+  const [sysDark, setSysDark] = (0, import_react.useState)(() => {
     try {
       return window.matchMedia("(prefers-color-scheme: dark)").matches;
     } catch {
       return true;
     }
   });
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
     const env2 = splitEnv?.console;
     if (!env2) return;
     const bump = () => {
@@ -18945,7 +17971,7 @@ function ConsolePane() {
     bump();
     return un;
   }, []);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
     let mq = null;
     try {
       mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -18972,13 +17998,16 @@ function ConsolePane() {
       }
     };
   }, []);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
     splitEnv?.console?.refreshPreviews?.();
   }, []);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
+    if (statusOpen) void refreshStudioStatus();
+  }, [statusOpen]);
+  (0, import_react.useEffect)(() => {
     if (getAutoCheck()) void runUpdateCheck(false);
   }, []);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
     let alive = true;
     splitEnv?.console?.getPhotoLib?.().then((lib2) => {
       if (!alive) return;
@@ -18996,11 +18025,11 @@ function ConsolePane() {
       alive = false;
     };
   }, []);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
     if (!photoId) return;
     setPhotoHslState(splitEnv?.console?.getPhotoHsl?.(photoId) ?? { h: 0, s: 100, l: 100 });
   }, [photoId]);
-  (0, import_react3.useEffect)(() => () => {
+  (0, import_react.useEffect)(() => () => {
     if (photoUrlRef.current) {
       try {
         URL.revokeObjectURL(photoUrlRef.current);
@@ -19008,7 +18037,7 @@ function ConsolePane() {
       }
     }
   }, []);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
     const iv = window.setInterval(() => setNow(Date.now()), 1e3);
     return () => window.clearInterval(iv);
   }, []);
@@ -19029,8 +18058,8 @@ function ConsolePane() {
     setThemeMode(th);
     env?.setTheme?.(th);
   };
-  const prevPlainThemeRef = (0, import_react3.useRef)(null);
-  (0, import_react3.useEffect)(() => {
+  const prevPlainThemeRef = (0, import_react.useRef)(null);
+  (0, import_react.useEffect)(() => {
     const prev = prevPlainThemeRef.current;
     prevPlainThemeRef.current = resolvedTheme;
     if (!prev || prev === resolvedTheme) return;
@@ -19055,49 +18084,49 @@ function ConsolePane() {
     { mode: "light", key: "console.themeLight" },
     { mode: "system", key: "console.themeSystem" }
   ];
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_console", "data-wt-theme": resolvedTheme, "data-wt-shape": shape, "data-wt-bg": bg, "data-wt-grid": bg === "photo" && !photoGrid ? "off" : "on", style: { ...bg === "plain" ? { ["--wt-bg"]: "hsl(" + plainHsl.h + ", " + plainHsl.s + "%, " + plainHsl.l + "%)", ["--wt-gridPlain"]: "rgba(255,255,255," + plainGrid / 100 + ")", ["--wt-gridPlainLight"]: "rgba(27,31,36," + plainGrid / 100 + ")" } : {}, ...bg === "glow" ? { ["--wt-gridGlow"]: "rgba(255,255,255," + glowGrid / 100 + ")", ["--wt-gridGlowLight"]: "rgba(27,31,36," + glowGrid / 100 + ")", ["--wt-glowScale"]: glowSpeed === 0 ? "100000000" : String(50 / glowSpeed) } : {}, ...bg === "photo" ? { ["--wt-gridPhoto"]: "rgba(255,255,255," + gridOpacity / 100 + ")" } : {}, ["--wt-cardBlur"]: (bg === "plain" ? plainBlur : bg === "glow" ? glowBlur : cardBlur) + "px" }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("span", { className: "dsh-wt_consoleBg", "aria-hidden": true, style: bg === "glow" && (glowHsl.h !== 0 || glowHsl.s !== 100 || glowHsl.l !== 100) ? { filter: "hue-rotate(" + glowHsl.h + "deg) saturate(" + glowHsl.s + "%) brightness(" + glowHsl.l + "%)" } : void 0, children: [
-      bg === "photo" && (bgVideo ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ConsoleVideo, { src: bgVideo, style: photoHsl.h !== 0 || photoHsl.s !== 100 || photoHsl.l !== 100 ? { filter: "hue-rotate(" + photoHsl.h + "deg) saturate(" + photoHsl.s + "%) brightness(" + photoHsl.l + "%)" } : void 0 }) : bgPhoto ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("img", { className: "dsh-wt_consoleMedia", src: bgPhoto, alt: "", style: photoHsl.h !== 0 || photoHsl.s !== 100 || photoHsl.l !== 100 ? { filter: "hue-rotate(" + photoHsl.h + "deg) saturate(" + photoHsl.s + "%) brightness(" + photoHsl.l + "%)" } : void 0 }) : null),
-      bg === "glow" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("i", { className: "dsh-wt_blob dsh-wt_blob1" }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("i", { className: "dsh-wt_blob dsh-wt_blob2" }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("i", { className: "dsh-wt_blob dsh-wt_blob3" }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("i", { className: "dsh-wt_blob dsh-wt_blob4" })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_console", "data-wt-theme": resolvedTheme, "data-wt-shape": shape, "data-wt-bg": bg, "data-wt-grid": bg === "photo" && !photoGrid ? "off" : "on", style: { ...bg === "plain" ? { ["--wt-bg"]: "hsl(" + plainHsl.h + ", " + plainHsl.s + "%, " + plainHsl.l + "%)", ["--wt-gridPlain"]: "rgba(255,255,255," + plainGrid / 100 + ")", ["--wt-gridPlainLight"]: "rgba(27,31,36," + plainGrid / 100 + ")" } : {}, ...bg === "glow" ? { ["--wt-gridGlow"]: "rgba(255,255,255," + glowGrid / 100 + ")", ["--wt-gridGlowLight"]: "rgba(27,31,36," + glowGrid / 100 + ")", ["--wt-glowScale"]: glowSpeed === 0 ? "100000000" : String(50 / glowSpeed) } : {}, ...bg === "photo" ? { ["--wt-gridPhoto"]: "rgba(255,255,255," + gridOpacity / 100 + ")" } : {}, ["--wt-cardBlur"]: (bg === "plain" ? plainBlur : bg === "glow" ? glowBlur : cardBlur) + "px" }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "dsh-wt_consoleBg", "aria-hidden": true, style: bg === "glow" && (glowHsl.h !== 0 || glowHsl.s !== 100 || glowHsl.l !== 100) ? { filter: "hue-rotate(" + glowHsl.h + "deg) saturate(" + glowHsl.s + "%) brightness(" + glowHsl.l + "%)" } : void 0, children: [
+      bg === "photo" && (bgVideo ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ConsoleVideo, { src: bgVideo, style: photoHsl.h !== 0 || photoHsl.s !== 100 || photoHsl.l !== 100 ? { filter: "hue-rotate(" + photoHsl.h + "deg) saturate(" + photoHsl.s + "%) brightness(" + photoHsl.l + "%)" } : void 0 }) : bgPhoto ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "dsh-wt_consoleMedia", src: bgPhoto, alt: "", style: photoHsl.h !== 0 || photoHsl.s !== 100 || photoHsl.l !== 100 ? { filter: "hue-rotate(" + photoHsl.h + "deg) saturate(" + photoHsl.s + "%) brightness(" + photoHsl.l + "%)" } : void 0 }) : null),
+      bg === "glow" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", { className: "dsh-wt_blob dsh-wt_blob1" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", { className: "dsh-wt_blob dsh-wt_blob2" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", { className: "dsh-wt_blob dsh-wt_blob3" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", { className: "dsh-wt_blob dsh-wt_blob4" })
       ] })
     ] }),
-    openMenu !== null && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_dropMask", onClick: () => setOpenMenu(null) }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_consoleScroll", children: annOpen ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_announceCtr", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_announce", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_announceHead", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("span", { className: "dsh-wt_announceVer", children: [
+    openMenu !== null && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_dropMask", onClick: () => setOpenMenu(null) }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_consoleScroll", children: annOpen ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_announceCtr", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_announce", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_announceHead", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "dsh-wt_announceVer", children: [
           T("annot.curVer"),
           " v",
           LOCAL_VERSION
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_announceBtn", disabled: updStatus === "checking", onClick: () => runUpdateCheck(true), children: updStatus === "checking" ? T("annot.checking") : T("annot.checkNow") }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_announceAuto", children: T("annot.autoCheck") }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_switch" + (autoCheckOn ? " dsh-wt_switchOn" : ""), "aria-pressed": autoCheckOn, "aria-label": T("annot.autoCheck"), onClick: onAutoCheckToggle, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_switchKnob" }) })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_announceBtn", disabled: updStatus === "checking", onClick: () => runUpdateCheck(true), children: updStatus === "checking" ? T("annot.checking") : T("annot.checkNow") }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_announceAuto", children: T("annot.autoCheck") }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_switch" + (autoCheckOn ? " dsh-wt_switchOn" : ""), "aria-pressed": autoCheckOn, "aria-label": T("annot.autoCheck"), onClick: onAutoCheckToggle, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_switchKnob" }) })
       ] }),
-      updInfo && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_announceUpdate", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("span", { className: "dsh-wt_announceNewVer", children: [
+      updInfo && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_announceUpdate", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "dsh-wt_announceNewVer", children: [
           T("annot.newVer"),
           " v",
           updInfo.latest
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_announceUpg" + (updCopied ? " dsh-wt_announceUpgOk" : ""), onClick: onCopyUpgrade, children: updCopied ? T("annot.copied") : T("annot.copyUpgrade") }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_announceSkip dsh-wt_announceSkipGo", onClick: () => {
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_announceUpg" + (updCopied ? " dsh-wt_announceUpgOk" : ""), onClick: onCopyUpgrade, children: updCopied ? T("annot.copied") : T("annot.copyUpgrade") }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_announceSkip dsh-wt_announceSkipGo", onClick: () => {
           try {
             window.open(updInfo.url, "_blank");
           } catch {
           }
         }, children: T("annot.gotoRelease") }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_announceSkip", onClick: onSkipVersion, children: T("annot.skipVer") }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_announceHow", children: T("annot.howUpdate") })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_announceSkip", onClick: onSkipVersion, children: T("annot.skipVer") }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_announceHow", children: T("annot.howUpdate") })
       ] }),
-      updStatus === "failed" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_announceStatus", children: T("annot.checkFail") }),
-      updStatus === "uptodate" && !updInfo && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_announceStatus", children: T("annot.latest") }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_announceBody", children: CHANGELOG_V030 })
-    ] }) }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { ref: gridRef, className: "dsh-wt_consoleGrid", style: { ["--wt-cols"]: cols }, children: [
-      cards.map((c) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+      updStatus === "failed" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_announceStatus", children: T("annot.checkFail") }),
+      updStatus === "uptodate" && !updInfo && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_announceStatus", children: T("annot.latest") }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_announceBody", children: CHANGELOG_V030 })
+    ] }) }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { ref: gridRef, className: "dsh-wt_consoleGrid", style: { ["--wt-cols"]: cols }, children: [
+      cards.map((c) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
         "div",
         {
           "data-flip": c.id,
@@ -19111,22 +18140,22 @@ function ConsolePane() {
             env.onOpen(c.id);
           },
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_consoleCardHead", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_consoleIcon", "aria-hidden": true, children: c.icon }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_consoleName", children: c.name })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_consoleCardHead", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_consoleIcon", "aria-hidden": true, children: c.icon }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_consoleName", children: c.name })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_consoleDivider", "aria-hidden": true }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_consoleStatusRow", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_consoleStatus dsh-wt_consoleStatus-" + c.status, children: statusLabel[c.status] }),
-              c.runtimeMs != null && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_consoleRuntime", children: fmtDur(c.runtimeMs) })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_consoleDivider", "aria-hidden": true }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_consoleStatusRow", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_consoleStatus dsh-wt_consoleStatus-" + c.status, children: statusLabel[c.status] }),
+              c.runtimeMs != null && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_consoleRuntime", children: fmtDur(c.runtimeMs) })
             ] }),
-            c.status === "busy" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_consoleSweep", "aria-hidden": true }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_consolePreview" + (c.preview ? "" : " dsh-wt_consolePreviewNone"), title: c.preview, children: c.preview || T("console.noPreview") })
+            c.status === "busy" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_consoleSweep", "aria-hidden": true }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_consolePreview" + (c.preview ? "" : " dsh-wt_consolePreviewNone"), title: c.preview, children: c.preview || T("console.noPreview") })
           ]
         },
         c.id
       )),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
         "div",
         {
           role: "button",
@@ -19135,195 +18164,229 @@ function ConsolePane() {
           title: T("console.addProject"),
           onClick: () => env?.onAdd?.(),
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_consoleAddPlus", "aria-hidden": true, children: "\uFF0B" }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_consoleAddLabel", children: T("console.addProject") })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_consoleAddPlus", "aria-hidden": true, children: "\uFF0B" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_consoleAddLabel", children: T("console.addProject") })
           ]
         }
       ),
-      cards.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_consoleEmpty", children: T("console.empty") })
+      cards.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_consoleEmpty", children: T("console.empty") })
     ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_consoleDockWrap", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_consoleDock", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (openMenu === "theme" ? " dsh-wt_dockBtnOn" : ""), title: T("console.themeLabel"), "aria-label": T("console.themeLabel"), onClick: () => setOpenMenu(openMenu === "theme" ? null : "theme"), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ThemeIcon, { mode: themeMode }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (openMenu === "shape" ? " dsh-wt_dockBtnOn" : ""), title: T("console.shapeLabel"), "aria-label": T("console.shapeLabel"), onClick: () => setOpenMenu(openMenu === "shape" ? null : "shape"), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: "20", height: "20", viewBox: "0 0 16 16", "aria-hidden": true, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "2.2", y: "2.2", width: "7", height: "7", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "10.6", cy: "10.6", r: "3.8", fill: "none", stroke: "currentColor", strokeWidth: "0.9" })
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_consoleDockWrap", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_consoleDock", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (statusOpen ? " dsh-wt_dockBtnOn" : ""), title: T("console.statusLabel"), "aria-label": T("console.statusLabel"), onClick: () => {
+          setOpenMenu(null);
+          setStatusOpen((value) => !value);
+        }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, children: "\u25C9" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (openMenu === "theme" ? " dsh-wt_dockBtnOn" : ""), title: T("console.themeLabel"), "aria-label": T("console.themeLabel"), onClick: () => setOpenMenu(openMenu === "theme" ? null : "theme"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemeIcon, { mode: themeMode }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (openMenu === "shape" ? " dsh-wt_dockBtnOn" : ""), title: T("console.shapeLabel"), "aria-label": T("console.shapeLabel"), onClick: () => setOpenMenu(openMenu === "shape" ? null : "shape"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: "20", height: "20", viewBox: "0 0 16 16", "aria-hidden": true, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "2.2", y: "2.2", width: "7", height: "7", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "10.6", cy: "10.6", r: "3.8", fill: "none", stroke: "currentColor", strokeWidth: "0.9" })
         ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (openMenu === "bg" ? " dsh-wt_dockBtnOn" : ""), title: T("console.bgLabel"), "aria-label": T("console.bgLabel"), onClick: () => {
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (openMenu === "bg" ? " dsh-wt_dockBtnOn" : ""), title: T("console.bgLabel"), "aria-label": T("console.bgLabel"), onClick: () => {
           setOpenMenu(openMenu === "bg" ? null : "bg");
           setBgEdit(null);
-        }, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: "18", height: "18", viewBox: "0 0 16 16", "aria-hidden": true, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "2.2", y: "3.2", width: "11.6", height: "9.6", rx: "1.6", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "5.9", cy: "6.7", r: "1.05", fill: "none", stroke: "currentColor", strokeWidth: "0.8" }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M3.4 11.4l3-3 2.3 2.3 1.9-1.9 3 2.6", fill: "none", stroke: "currentColor", strokeWidth: "0.9" })
+        }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: "18", height: "18", viewBox: "0 0 16 16", "aria-hidden": true, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "2.2", y: "3.2", width: "11.6", height: "9.6", rx: "1.6", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "5.9", cy: "6.7", r: "1.05", fill: "none", stroke: "currentColor", strokeWidth: "0.8" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M3.4 11.4l3-3 2.3 2.3 1.9-1.9 3 2.6", fill: "none", stroke: "currentColor", strokeWidth: "0.9" })
         ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (openMenu === "cols" ? " dsh-wt_dockBtnOn" : ""), title: T("console.colsLabel"), "aria-label": T("console.colsLabel"), onClick: () => setOpenMenu(openMenu === "cols" ? null : "cols"), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: "20", height: "20", viewBox: "0 0 16 16", "aria-hidden": true, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "2.2", y: "3.4", width: "2.7", height: "9.2", rx: "0.9", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "6.65", y: "3.4", width: "2.7", height: "9.2", rx: "0.9", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "11.1", y: "3.4", width: "2.7", height: "9.2", rx: "0.9", fill: "none", stroke: "currentColor", strokeWidth: "0.9" })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (openMenu === "cols" ? " dsh-wt_dockBtnOn" : ""), title: T("console.colsLabel"), "aria-label": T("console.colsLabel"), onClick: () => setOpenMenu(openMenu === "cols" ? null : "cols"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: "20", height: "20", viewBox: "0 0 16 16", "aria-hidden": true, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "2.2", y: "3.4", width: "2.7", height: "9.2", rx: "0.9", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "6.65", y: "3.4", width: "2.7", height: "9.2", rx: "0.9", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "11.1", y: "3.4", width: "2.7", height: "9.2", rx: "0.9", fill: "none", stroke: "currentColor", strokeWidth: "0.9" })
         ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_dockBtn" + (annOpen ? " dsh-wt_dockBtnOn" : ""), title: T("annot.updateTitle"), "aria-label": T("annot.updateTitle"), onClick: () => {
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_dockBtn" + (annOpen ? " dsh-wt_dockBtnOn" : ""), title: T("annot.updateTitle"), "aria-label": T("annot.updateTitle"), onClick: () => {
           setOpenMenu(null);
           setAnnOpen((v) => !v);
         }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: "18", height: "18", viewBox: "0 0 16 16", "aria-hidden": true, children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M2.6 7c0-2.9 2.4-4.9 5.4-4.9s5.4 2 5.4 4.9v2.9l1.2 1.7H1.4l1.2-1.7z", fill: "none", stroke: "currentColor", strokeWidth: "0.9", strokeLinejoin: "round" }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M6.2 12.9c.3.7 1 1.2 1.8 1.2s1.5-.5 1.8-1.2", fill: "none", stroke: "currentColor", strokeWidth: "0.9", strokeLinecap: "round" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: "18", height: "18", viewBox: "0 0 16 16", "aria-hidden": true, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M2.6 7c0-2.9 2.4-4.9 5.4-4.9s5.4 2 5.4 4.9v2.9l1.2 1.7H1.4l1.2-1.7z", fill: "none", stroke: "currentColor", strokeWidth: "0.9", strokeLinejoin: "round" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M6.2 12.9c.3.7 1 1.2 1.8 1.2s1.5-.5 1.8-1.2", fill: "none", stroke: "currentColor", strokeWidth: "0.9", strokeLinecap: "round" })
           ] }),
-          updInfo && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_dockBadge", "aria-hidden": true })
+          updInfo && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_dockBadge", "aria-hidden": true })
         ] })
       ] }),
-      openMenu === "theme" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_drop", children: themeOpts.map((o) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (themeMode === o.mode ? " dsh-wt_dropItemOn" : ""), onClick: () => setTheme(o.mode), children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ThemeIcon, { mode: o.mode, size: 13 }),
+      statusOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_drop dsh-wt_statusDrop", role: "status", "aria-live": "polite", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_dropRow", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: T("console.statusTitle") }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_updateBtn", onClick: () => void refreshStudioStatus(), disabled: studioStatusLoading, children: studioStatusLoading ? T("console.statusLoading") : T("console.statusRefresh") })
+        ] }),
+        studioStatusError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_consoleErr", children: studioStatusError }),
+        studioStatus?.workspace && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_statusWorkspace", title: studioStatus.workspace.path, children: [
+          T("console.workspacePath"),
+          "\uFF1A",
+          studioStatus.workspace.path || T("console.workspaceUnknown")
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_statusSection", children: T("console.installedStudios") }),
+        (studioStatus?.studios ?? []).length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_statusEmpty", children: T("console.noStudios") }) : studioStatus?.studios.map((studio) => {
+          const integration = studioStatus.integrations.find((item) => item.id === studio.id);
+          const ready = integration?.ready ?? true;
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_statusItem", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+              studio.icon ?? "\u25EB",
+              " ",
+              studio.name ?? studio.title ?? studio.id
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: ready ? "dsh-wt_statusReady" : "dsh-wt_statusOffline", children: ready ? T("console.statusReady") : T("console.statusOffline") })
+          ] }, studio.id);
+        }),
+        (studioStatus?.integrations ?? []).filter((item) => !(studioStatus?.studios ?? []).some((studio) => studio.id === item.id)).map((integration) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_statusItem", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: integration.title ?? integration.name ?? integration.id }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: integration.ready ? "dsh-wt_statusReady" : "dsh-wt_statusOffline", children: integration.ready ? T("console.statusReady") : T("console.statusOffline") })
+        ] }, integration.id)),
+        studioStatus?.serviceFailures.map((failure, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_consoleErr", children: failure.message }, index))
+      ] }),
+      openMenu === "theme" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_drop", children: themeOpts.map((o) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (themeMode === o.mode ? " dsh-wt_dropItemOn" : ""), onClick: () => setTheme(o.mode), children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemeIcon, { mode: o.mode, size: 13 }),
         T(o.key)
       ] }, o.mode)) }),
-      openMenu === "shape" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_drop", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (shape === "square" ? " dsh-wt_dropItemOn" : ""), onClick: () => onShape("square"), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "4", y: "4", width: "8", height: "8", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "1.5" }) }),
+      openMenu === "shape" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_drop", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (shape === "square" ? " dsh-wt_dropItemOn" : ""), onClick: () => onShape("square"), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "4", y: "4", width: "8", height: "8", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "1.5" }) }),
           T("console.shapeSquare")
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (shape === "circle" ? " dsh-wt_dropItemOn" : ""), onClick: () => onShape("circle"), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "8", cy: "8", r: "4.5", fill: "none", stroke: "currentColor", strokeWidth: "1.5" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (shape === "circle" ? " dsh-wt_dropItemOn" : ""), onClick: () => onShape("circle"), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "8", cy: "8", r: "4.5", fill: "none", stroke: "currentColor", strokeWidth: "1.5" }) }),
           T("console.shapeCircle")
         ] })
       ] }),
-      openMenu === "bg" && (bgEdit === null ? /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_drop", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_dropRow", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (bg === "plain" ? " dsh-wt_dropItemOn" : ""), onClick: () => onBg("plain"), children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "3", y: "3", width: "10", height: "10", rx: "2", fill: "none", stroke: "currentColor", strokeWidth: "1.2" }) }),
+      openMenu === "bg" && (bgEdit === null ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_drop", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_dropRow", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (bg === "plain" ? " dsh-wt_dropItemOn" : ""), onClick: () => onBg("plain"), children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "3", y: "3", width: "10", height: "10", rx: "2", fill: "none", stroke: "currentColor", strokeWidth: "1.2" }) }),
             T("console.bgPlain")
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_dropGear", title: T("console.bgEdit"), "aria-label": T("console.bgEdit"), onClick: () => setBgEdit("plain"), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(SliderIcon, {}) })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dropGear", title: T("console.bgEdit"), "aria-label": T("console.bgEdit"), onClick: () => setBgEdit("plain"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SliderIcon, {}) })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_dropRow", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (bg === "glow" ? " dsh-wt_dropItemOn" : ""), onClick: () => onBg("glow"), children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M2.4 5.6c2-1.5 3.9-1.5 5.6 0 1.9 1.6 3.6 1.6 5.6 0M2.4 10.4c2-1.5 3.9-1.5 5.6 0 1.9 1.6 3.6 1.6 5.6 0", fill: "none", stroke: "currentColor", strokeWidth: "1.3", strokeLinecap: "round" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_dropRow", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (bg === "glow" ? " dsh-wt_dropItemOn" : ""), onClick: () => onBg("glow"), children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M2.4 5.6c2-1.5 3.9-1.5 5.6 0 1.9 1.6 3.6 1.6 5.6 0M2.4 10.4c2-1.5 3.9-1.5 5.6 0 1.9 1.6 3.6 1.6 5.6 0", fill: "none", stroke: "currentColor", strokeWidth: "1.3", strokeLinecap: "round" }) }),
             T("console.bgGlow")
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_dropGear", title: T("console.bgEdit"), "aria-label": T("console.bgEdit"), onClick: () => setBgEdit("glow"), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(SliderIcon, {}) })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dropGear", title: T("console.bgEdit"), "aria-label": T("console.bgEdit"), onClick: () => setBgEdit("glow"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SliderIcon, {}) })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_dropRow", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (bg === "photo" ? " dsh-wt_dropItemOn" : ""), onClick: () => onBg("photo"), children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "2.5", y: "3.5", width: "11", height: "9", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "1.2" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "5.8", cy: "6.6", r: "1.1", fill: "currentColor" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M3.2 11.2l2.8-2.8 2.2 2.2 1.8-1.8 2.8 2.4", fill: "none", stroke: "currentColor", strokeWidth: "1.2" })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_dropRow", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_dropItem" + (bg === "photo" ? " dsh-wt_dropItemOn" : ""), onClick: () => onBg("photo"), children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "2.5", y: "3.5", width: "11", height: "9", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "1.2" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "5.8", cy: "6.6", r: "1.1", fill: "currentColor" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M3.2 11.2l2.8-2.8 2.2 2.2 1.8-1.8 2.8 2.4", fill: "none", stroke: "currentColor", strokeWidth: "1.2" })
             ] }),
             T("console.bgCustom")
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_dropGear", title: T("console.bgEdit"), "aria-label": T("console.bgEdit"), onClick: () => setBgEdit("photo"), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(SliderIcon, {}) })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dropGear", title: T("console.bgEdit"), "aria-label": T("console.bgEdit"), onClick: () => setBgEdit("photo"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SliderIcon, {}) })
         ] })
-      ] }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_drop" + (bgEdit === "photo" ? " dsh-wt_dropWide" : ""), children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_hslHead", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_hslBack", title: T("console.bgEditBack"), "aria-label": T("console.bgEditBack"), onClick: () => setBgEdit(null), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { width: "12", height: "12", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M10.2 3.2 5.4 8l4.8 4.8", fill: "none", stroke: "currentColor", strokeWidth: "1.3", strokeLinecap: "round", strokeLinejoin: "round" }) }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_hslTitle", children: bgEdit === "plain" ? T("console.bgEditPlain") : bgEdit === "glow" ? T("console.bgEditGlow") : T("console.bgEditPhoto") })
+      ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_drop" + (bgEdit === "photo" ? " dsh-wt_dropWide" : ""), children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_hslHead", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_hslBack", title: T("console.bgEditBack"), "aria-label": T("console.bgEditBack"), onClick: () => setBgEdit(null), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: "12", height: "12", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M10.2 3.2 5.4 8l4.8 4.8", fill: "none", stroke: "currentColor", strokeWidth: "1.3", strokeLinecap: "round", strokeLinejoin: "round" }) }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_hslTitle", children: bgEdit === "plain" ? T("console.bgEditPlain") : bgEdit === "glow" ? T("console.bgEditGlow") : T("console.bgEditPhoto") })
         ] }),
-        bgEdit === "photo" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_dropRow", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_dropItem", onClick: pickPhotoFile, children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "2.5", y: "3.5", width: "11", height: "9", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "1.2" }),
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "5.8", cy: "6.6", r: "1.1", fill: "currentColor" }),
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M3.2 11.2l2.8-2.8 2.2 2.2 1.8-1.8 2.8 2.4", fill: "none", stroke: "currentColor", strokeWidth: "1.2" })
+        bgEdit === "photo" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_dropRow", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_dropItem", onClick: pickPhotoFile, children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: "13", height: "13", viewBox: "0 0 16 16", "aria-hidden": true, children: [
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "2.5", y: "3.5", width: "11", height: "9", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "1.2" }),
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "5.8", cy: "6.6", r: "1.1", fill: "currentColor" }),
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M3.2 11.2l2.8-2.8 2.2 2.2 1.8-1.8 2.8 2.4", fill: "none", stroke: "currentColor", strokeWidth: "1.2" })
               ] }),
               T("console.bgPhoto")
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_gridHalf", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_gridLabel", children: T("console.bgGridLabel") }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_switch" + (photoGrid ? " dsh-wt_switchOn" : ""), "aria-pressed": photoGrid, "aria-label": T("console.bgGridLabel"), onClick: togglePhotoGrid, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_switchKnob" }) })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_gridHalf", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_gridLabel", children: T("console.bgGridLabel") }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_switch" + (photoGrid ? " dsh-wt_switchOn" : ""), "aria-pressed": photoGrid, "aria-label": T("console.bgGridLabel"), onClick: togglePhotoGrid, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_switchKnob" }) })
             ] })
           ] }),
-          photoList.length > 0 ? photoList.slice(0, 4).map((p) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { "data-rid": p.id, className: "dsh-wt_dropRow dsh-wt_photoRow" + (photoId === p.id ? " dsh-wt_photoRowOn" : ""), onClick: () => selectPhoto(p), children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("span", { className: "dsh-wt_thumbWrap", children: [
-              p.kind === "video" ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("video", { className: "dsh-wt_photoThumb", src: p.url, muted: true, playsInline: true, preload: "metadata" }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("img", { className: "dsh-wt_photoThumb", src: p.url, alt: "" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_thumbBadge", "aria-hidden": true, children: p.kind === "video" ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { width: "8", height: "8", viewBox: "0 0 16 16", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M4.5 3.8l8 4.2-8 4.2z", fill: "currentColor" }) }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: "8", height: "8", viewBox: "0 0 16 16", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("rect", { x: "2.5", y: "3.5", width: "11", height: "9", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "1.5" }),
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M3.4 11l2.6-2.6 2.1 2.1 1.7-1.7 2.8 2.4", fill: "none", stroke: "currentColor", strokeWidth: "1.5" })
+          photoList.length > 0 ? photoList.slice(0, 4).map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { "data-rid": p.id, className: "dsh-wt_dropRow dsh-wt_photoRow" + (photoId === p.id ? " dsh-wt_photoRowOn" : ""), onClick: () => selectPhoto(p), children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "dsh-wt_thumbWrap", children: [
+              p.kind === "video" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("video", { className: "dsh-wt_photoThumb", src: p.url, muted: true, playsInline: true, preload: "metadata" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { className: "dsh-wt_photoThumb", src: p.url, alt: "" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_thumbBadge", "aria-hidden": true, children: p.kind === "video" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: "8", height: "8", viewBox: "0 0 16 16", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M4.5 3.8l8 4.2-8 4.2z", fill: "currentColor" }) }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: "8", height: "8", viewBox: "0 0 16 16", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "2.5", y: "3.5", width: "11", height: "9", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "1.5" }),
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M3.4 11l2.6-2.6 2.1 2.1 1.7-1.7 2.8 2.4", fill: "none", stroke: "currentColor", strokeWidth: "1.5" })
               ] }) })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_photoName", children: photoId === p.id ? T("console.bgPhotoCurrent") : T("console.bgPhotoUse") }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_dragHandle" + (dragRowId === p.id ? " dsh-wt_dragHandleOn" : ""), title: T("console.bgMediaDrag"), "aria-label": T("console.bgMediaDrag"), onPointerDown: (e) => onHandleDown(p.id, e), children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { width: "10", height: "12", viewBox: "0 0 10 12", "aria-hidden": true, children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "2.5", cy: "2", r: "1.1", fill: "currentColor" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "7.5", cy: "2", r: "1.1", fill: "currentColor" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "2.5", cy: "6", r: "1.1", fill: "currentColor" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "7.5", cy: "6", r: "1.1", fill: "currentColor" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "2.5", cy: "10", r: "1.1", fill: "currentColor" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("circle", { cx: "7.5", cy: "10", r: "1.1", fill: "currentColor" })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_photoName", children: photoId === p.id ? T("console.bgPhotoCurrent") : T("console.bgPhotoUse") }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dragHandle" + (dragRowId === p.id ? " dsh-wt_dragHandleOn" : ""), title: T("console.bgMediaDrag"), "aria-label": T("console.bgMediaDrag"), onPointerDown: (e) => onHandleDown(p.id, e), children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: "10", height: "12", viewBox: "0 0 10 12", "aria-hidden": true, children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "2.5", cy: "2", r: "1.1", fill: "currentColor" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "7.5", cy: "2", r: "1.1", fill: "currentColor" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "2.5", cy: "6", r: "1.1", fill: "currentColor" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "7.5", cy: "6", r: "1.1", fill: "currentColor" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "2.5", cy: "10", r: "1.1", fill: "currentColor" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: "7.5", cy: "10", r: "1.1", fill: "currentColor" })
             ] }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_dropTrash", title: T("console.bgPhotoDelete"), "aria-label": T("console.bgPhotoDelete"), onClick: (e) => {
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dropTrash", title: T("console.bgPhotoDelete"), "aria-label": T("console.bgPhotoDelete"), onClick: (e) => {
               e.stopPropagation();
               removePhotoById(p);
-            }, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { width: "11", height: "11", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M2.5 4.2h11M6.5 4.2V2.9c0-.6.4-1 .9-1h1.2c.5 0 .9.4.9 1v1.3M4.2 4.2l.5 8.1c0 .7.5 1.2 1.2 1.2h4.2c.7 0 1.2-.5 1.2-1.2l.5-8.1", fill: "none", stroke: "currentColor", strokeWidth: "1.1", strokeLinecap: "round" }) }) })
-          ] }, p.id)) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_photoEmpty", children: T("console.bgPhotoNone") }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_hslDivider" })
+            }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { width: "11", height: "11", viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M2.5 4.2h11M6.5 4.2V2.9c0-.6.4-1 .9-1h1.2c.5 0 .9.4.9 1v1.3M4.2 4.2l.5 8.1c0 .7.5 1.2 1.2 1.2h4.2c.7 0 1.2-.5 1.2-1.2l.5-8.1", fill: "none", stroke: "currentColor", strokeWidth: "1.1", strokeLinecap: "round" }) }) })
+          ] }, p.id)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_photoEmpty", children: T("console.bgPhotoNone") }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_hslDivider" })
         ] }),
         (() => {
           const v = bgEdit === "plain" ? plainHsl : bgEdit === "glow" ? glowHsl : photoHsl;
           const sMax = bgEdit === "plain" ? 100 : 200;
           const lMax = bgEdit === "plain" ? 100 : 200;
-          return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-            bgEdit === "glow" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipSpeed"), children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_hslLabel", children: "S" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: 0, max: 100, step: 5, value: glowSpeed, onChange: (e) => onGlowSpeed(Number(e.target.value)) }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(HslValInput, { value: glowSpeed, min: 0, max: 100, onCommit: onGlowSpeed })
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+            bgEdit === "glow" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipSpeed"), children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_hslLabel", children: "S" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: 0, max: 100, step: 5, value: glowSpeed, onChange: (e) => onGlowSpeed(Number(e.target.value)) }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HslValInput, { value: glowSpeed, min: 0, max: 100, onCommit: onGlowSpeed })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipB"), children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_hslLabel", children: "B" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: 0, max: 20, step: 1, value: bgEdit === "plain" ? plainBlur : bgEdit === "glow" ? glowBlur : cardBlur, onChange: (e) => onModeBlur(bgEdit, Number(e.target.value)) }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(HslValInput, { value: bgEdit === "plain" ? plainBlur : bgEdit === "glow" ? glowBlur : cardBlur, min: 0, max: 20, onCommit: (n) => onModeBlur(bgEdit, n) })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipB"), children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_hslLabel", children: "B" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: 0, max: 20, step: 1, value: bgEdit === "plain" ? plainBlur : bgEdit === "glow" ? glowBlur : cardBlur, onChange: (e) => onModeBlur(bgEdit, Number(e.target.value)) }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HslValInput, { value: bgEdit === "plain" ? plainBlur : bgEdit === "glow" ? glowBlur : cardBlur, min: 0, max: 20, onCommit: (n) => onModeBlur(bgEdit, n) })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipT"), children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_hslLabel", children: "T" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: 0, max: 30, step: 1, value: bgEdit === "plain" ? plainGrid : bgEdit === "glow" ? glowGrid : gridOpacity, onChange: (e) => bgEdit === "photo" ? onGridOpacity(Number(e.target.value)) : onModeGrid(bgEdit, Number(e.target.value)) }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(HslValInput, { value: bgEdit === "plain" ? plainGrid : bgEdit === "glow" ? glowGrid : gridOpacity, min: 0, max: 30, onCommit: (n) => bgEdit === "photo" ? onGridOpacity(n) : onModeGrid(bgEdit, n) })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipT"), children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_hslLabel", children: "T" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: 0, max: 30, step: 1, value: bgEdit === "plain" ? plainGrid : bgEdit === "glow" ? glowGrid : gridOpacity, onChange: (e) => bgEdit === "photo" ? onGridOpacity(Number(e.target.value)) : onModeGrid(bgEdit, Number(e.target.value)) }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HslValInput, { value: bgEdit === "plain" ? plainGrid : bgEdit === "glow" ? glowGrid : gridOpacity, min: 0, max: 30, onCommit: (n) => bgEdit === "photo" ? onGridOpacity(n) : onModeGrid(bgEdit, n) })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipH"), children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_hslLabel", children: "H" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: -180, max: 180, step: 1, value: v.h, onChange: (e) => editHsl(bgEdit, { h: Number(e.target.value) }) }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(HslValInput, { value: v.h, min: -180, max: 180, onCommit: (n) => editHsl(bgEdit, { h: n }) })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipH"), children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_hslLabel", children: "H" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: -180, max: 180, step: 1, value: v.h, onChange: (e) => editHsl(bgEdit, { h: Number(e.target.value) }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HslValInput, { value: v.h, min: -180, max: 180, onCommit: (n) => editHsl(bgEdit, { h: n }) })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipS"), children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_hslLabel", children: "S" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: 0, max: sMax, step: 1, value: v.s, onChange: (e) => editHsl(bgEdit, { s: Number(e.target.value) }) }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(HslValInput, { value: v.s, max: sMax, onCommit: (n) => editHsl(bgEdit, { s: n }) })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipS"), children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_hslLabel", children: "S" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: 0, max: sMax, step: 1, value: v.s, onChange: (e) => editHsl(bgEdit, { s: Number(e.target.value) }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HslValInput, { value: v.s, max: sMax, onCommit: (n) => editHsl(bgEdit, { s: n }) })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipL"), children: [
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_hslLabel", children: "L" }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: 0, max: lMax, step: 1, value: v.l, onChange: (e) => editHsl(bgEdit, { l: Number(e.target.value) }) }),
-              /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(HslValInput, { value: v.l, max: lMax, onCommit: (n) => editHsl(bgEdit, { l: n }) })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_hslRow", "data-tip": T("console.bgTipL"), children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_hslLabel", children: "L" }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { className: "dsh-wt_hslSlider", type: "range", min: 0, max: lMax, step: 1, value: v.l, onChange: (e) => editHsl(bgEdit, { l: Number(e.target.value) }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HslValInput, { value: v.l, max: lMax, onCommit: (n) => editHsl(bgEdit, { l: n }) })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_hslReset", onClick: () => resetHsl(bgEdit), children: T("console.bgEditReset") })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_hslReset", onClick: () => resetHsl(bgEdit), children: T("console.bgEditReset") })
           ] });
         })()
       ] })),
-      openMenu === "cols" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_drop", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_hbar", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_hbarFill", style: { width: 8 + (cols - 1) * 21 + "%" } }),
-        [1, 2, 3, 4, 5].map((v) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_hbarLine", style: { left: 8 + (v - 1) * 21 + "%" }, "aria-label": String(v), title: String(v), onClick: () => onCols(v) }, v)),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_hbarKnob", style: { left: 8 + (cols - 1) * 21 + "%" } })
+      openMenu === "cols" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_drop", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_hbar", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_hbarFill", style: { width: 8 + (cols - 1) * 21 + "%" } }),
+        [1, 2, 3, 4, 5].map((v) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_hbarLine", style: { left: 8 + (v - 1) * 21 + "%" }, "aria-label": String(v), title: String(v), onClick: () => onCols(v) }, v)),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_hbarKnob", style: { left: 8 + (cols - 1) * 21 + "%" } })
       ] }) })
     ] })
   ] });
 }
 function FolderIcon() {
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { className: "dsh-wt_treeIcon", width: "13", height: "13", viewBox: "0 0 16 16", fill: "none", xmlns: "http://www.w3.org/2000/svg", "aria-hidden": true, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M1.75 3.25A1.75 1.75 0 0 1 3.5 1.5h2.63a1.75 1.75 0 0 1 1.34.66l.62.79a1.75 1.75 0 0 0 1.34.66H12.5a1.75 1.75 0 0 1 1.75 1.75v7.39A1.75 1.75 0 0 1 12.5 14.5h-9a1.75 1.75 0 0 1-1.75-1.75V3.25Z", fill: "var(--dsw-alias-state-accent-primary,#4f8ef7)", opacity: "0.9" }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M1.75 5.75h12.5v7a1.75 1.75 0 0 1-1.75 1.75h-9a1.75 1.75 0 0 1-1.75-1.75v-7Z", fill: "var(--dsw-alias-state-accent-primary,#4f8ef7)", opacity: "0.4" })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { className: "dsh-wt_treeIcon", width: "13", height: "13", viewBox: "0 0 16 16", fill: "none", xmlns: "http://www.w3.org/2000/svg", "aria-hidden": true, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M1.75 3.25A1.75 1.75 0 0 1 3.5 1.5h2.63a1.75 1.75 0 0 1 1.34.66l.62.79a1.75 1.75 0 0 0 1.34.66H12.5a1.75 1.75 0 0 1 1.75 1.75v7.39A1.75 1.75 0 0 1 12.5 14.5h-9a1.75 1.75 0 0 1-1.75-1.75V3.25Z", fill: "var(--dsw-alias-state-accent-primary,#4f8ef7)", opacity: "0.9" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M1.75 5.75h12.5v7a1.75 1.75 0 0 1-1.75 1.75h-9a1.75 1.75 0 0 1-1.75-1.75v-7Z", fill: "var(--dsw-alias-state-accent-primary,#4f8ef7)", opacity: "0.4" })
   ] });
 }
 function FileIcon() {
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("svg", { className: "dsh-wt_treeIcon", width: "13", height: "13", viewBox: "0 0 16 16", fill: "none", xmlns: "http://www.w3.org/2000/svg", "aria-hidden": true, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M4 1.5h5.25a1 1 0 0 1 .71.29l3.25 3.25a1 1 0 0 1 .29.71V13.5a1 1 0 0 1-1 1h-8.5a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1Z", fill: "var(--dsw-alias-fill-l1,rgba(255,255,255,.06))", stroke: "var(--dsw-alias-label-secondary,#9aa4b2)", strokeWidth: "1.1" }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M9.25 1.5V4.75h3.25", fill: "none", stroke: "var(--dsw-alias-label-secondary,#9aa4b2)", strokeWidth: "1.1" })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { className: "dsh-wt_treeIcon", width: "13", height: "13", viewBox: "0 0 16 16", fill: "none", xmlns: "http://www.w3.org/2000/svg", "aria-hidden": true, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M4 1.5h5.25a1 1 0 0 1 .71.29l3.25 3.25a1 1 0 0 1 .29.71V13.5a1 1 0 0 1-1 1h-8.5a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1Z", fill: "var(--dsw-alias-fill-l1,rgba(255,255,255,.06))", stroke: "var(--dsw-alias-label-secondary,#9aa4b2)", strokeWidth: "1.1" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M9.25 1.5V4.75h3.25", fill: "none", stroke: "var(--dsw-alias-label-secondary,#9aa4b2)", strokeWidth: "1.1" })
   ] });
 }
 function ExplorerPane(props) {
-  const cacheRef = (0, import_react3.useRef)({});
-  const expandedRef = (0, import_react3.useRef)(/* @__PURE__ */ new Set());
-  const [rootPath, setRootPath] = (0, import_react3.useState)("");
-  const [error2, setError] = (0, import_react3.useState)("");
-  const [, setTick] = (0, import_react3.useState)(0);
+  const cacheRef = (0, import_react.useRef)({});
+  const expandedRef = (0, import_react.useRef)(/* @__PURE__ */ new Set());
+  const [rootPath, setRootPath] = (0, import_react.useState)("");
+  const [error2, setError] = (0, import_react.useState)("");
+  const [, setTick] = (0, import_react.useState)(0);
   const rerender = () => setTick((t) => t + 1);
-  const fetchDir = (0, import_react3.useCallback)(async (path, force = false) => {
+  const fetchDir = (0, import_react.useCallback)(async (path, force = false) => {
     if (!force && cacheRef.current[path]) return { path, entries: cacheRef.current[path] };
     try {
       const d = await postJson("/api/worktable/fs", {
@@ -19342,12 +18405,12 @@ function ExplorerPane(props) {
       rerender();
     }
   }, []);
-  const initRoot = (0, import_react3.useCallback)(async () => {
+  const initRoot = (0, import_react.useCallback)(async () => {
     const r = await fetchDir(splitEnv?.getScope()?.cwd ?? "");
     setRootPath(r.path);
     rerender();
   }, [fetchDir]);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
     initRoot();
   }, [initRoot]);
   const toggle = (path) => {
@@ -19383,8 +18446,8 @@ function ExplorerPane(props) {
     for (const e of entries) {
       const isOpen = expandedRef.current.has(e.path);
       nodes.push(
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
             "button",
             {
               type: "button",
@@ -19409,9 +18472,9 @@ function ExplorerPane(props) {
                 }
               },
               children: [
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_treeArrow" + (e.isDir && isOpen ? " dsh-wt_treeArrowOpen" : ""), "aria-hidden": true, children: e.isDir ? "\u25B8" : "" }),
-                e.isDir ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(FolderIcon, {}) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(FileIcon, {}),
-                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_treeName", children: e.name })
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_treeArrow" + (e.isDir && isOpen ? " dsh-wt_treeArrowOpen" : ""), "aria-hidden": true, children: e.isDir ? "\u25B8" : "" }),
+                e.isDir ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FolderIcon, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileIcon, {}),
+                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_treeName", children: e.name })
               ]
             }
           ),
@@ -19421,83 +18484,83 @@ function ExplorerPane(props) {
     }
     return nodes;
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_subBar", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_subBtn", title: "\u4E0A\u4E00\u7EA7", onClick: goUp, children: "\u2B06" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_subBtn", title: "\u5237\u65B0", onClick: refresh, children: "\u21BB" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_subPath", children: rootPath || "\u2026" })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_subBar", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_subBtn", title: "\u4E0A\u4E00\u7EA7", onClick: goUp, children: "\u2B06" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_subBtn", title: "\u5237\u65B0", onClick: refresh, children: "\u21BB" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_subPath", children: rootPath || "\u2026" })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_subList", children: [
-      error2 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_subEmpty", children: error2 }),
-      !error2 && cacheRef.current[rootPath]?.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_subEmpty", children: "\u2014" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_subList", children: [
+      error2 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_subEmpty", children: error2 }),
+      !error2 && cacheRef.current[rootPath]?.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_subEmpty", children: "\u2014" }),
       renderLevel(rootPath, 0)
     ] })
   ] });
 }
 function GitPane() {
-  const [snap, setSnap] = (0, import_react3.useState)(null);
-  const [error2, setError] = (0, import_react3.useState)("");
-  const load = (0, import_react3.useCallback)(() => {
+  const [snap, setSnap] = (0, import_react.useState)(null);
+  const [error2, setError] = (0, import_react.useState)("");
+  const load = (0, import_react.useCallback)(() => {
     postJson("/api/worktable/git", {
       sessionId: splitEnv?.getScope()?.sessionId ?? "",
       cwd: splitEnv?.getScope()?.cwd ?? ""
     }).then(setSnap).catch((e) => setError(String(e)));
   }, []);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
     load();
   }, [load]);
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_subBar", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_subBtn", title: "\u5237\u65B0", onClick: load, children: "\u21BB" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_subPath", children: snap?.isRepo ? "\u2387 " + snap.branch : "" })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_subBar", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_subBtn", title: "\u5237\u65B0", onClick: load, children: "\u21BB" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_subPath", children: snap?.isRepo ? "\u2387 " + snap.branch : "" })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_subList", children: [
-      error2 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_subEmpty", children: error2 }),
-      !error2 && snap && !snap.isRepo && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_subEmpty", children: T("pane.gitNotRepo") }),
-      !error2 && snap?.isRepo && snap.entries.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_subEmpty", children: T("pane.gitClean") }),
-      !error2 && snap?.isRepo && snap.entries.map((e, i) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_subRow dsh-wt_subRowStatic", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_gitXY dsh-wt_gitXY" + (e.xy.includes("A") || e.xy.includes("M") ? "Mod" : "New"), children: e.xy.trim() }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_subName", children: e.path })
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_subList", children: [
+      error2 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_subEmpty", children: error2 }),
+      !error2 && snap && !snap.isRepo && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_subEmpty", children: T("pane.gitNotRepo") }),
+      !error2 && snap?.isRepo && snap.entries.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_subEmpty", children: T("pane.gitClean") }),
+      !error2 && snap?.isRepo && snap.entries.map((e, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_subRow dsh-wt_subRowStatic", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_gitXY dsh-wt_gitXY" + (e.xy.includes("A") || e.xy.includes("M") ? "Mod" : "New"), children: e.xy.trim() }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_subName", children: e.path })
       ] }, i))
     ] })
   ] });
 }
 function JobsPane() {
-  const [, setTick] = (0, import_react3.useState)(0);
-  (0, import_react3.useEffect)(() => {
+  const [, setTick] = (0, import_react.useState)(0);
+  (0, import_react.useEffect)(() => {
     const timer = window.setInterval(() => setTick((t) => t + 1), 2e3);
     return () => window.clearInterval(timer);
   }, []);
   const jobs = splitEnv?.getJobs?.() ?? [];
   const subagents = splitEnv?.getSubagents?.() ?? [];
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_subList", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_subSection", children: T("pane.jobsTitle") }),
-    jobs.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_subEmpty", children: T("pane.jobsEmpty") }),
-    jobs.map((j) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_subRow dsh-wt_subRowStatic", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_jobDot dsh-wt_jobDot-" + j.status, "aria-hidden": true, children: "\u25CF" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_subName", children: j.label }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_subTag", children: j.kind })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_subList", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_subSection", children: T("pane.jobsTitle") }),
+    jobs.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_subEmpty", children: T("pane.jobsEmpty") }),
+    jobs.map((j) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_subRow dsh-wt_subRowStatic", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_jobDot dsh-wt_jobDot-" + j.status, "aria-hidden": true, children: "\u25CF" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_subName", children: j.label }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_subTag", children: j.kind })
     ] }, j.id)),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_subSection", children: T("pane.subagents") }),
-    subagents.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_subEmpty", children: T("pane.subagentsEmpty") }),
-    subagents.map((s, i) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_subRow dsh-wt_subRowStatic", style: { paddingLeft: 8 + (s?.depth ?? 0) * 12 }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_jobDot dsh-wt_jobDot-" + (s?.status ?? "stopping"), "aria-hidden": true, children: "\u25CF" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_subName", children: s?.label ?? s?.title ?? s?.name ?? "\u2014" }),
-      s?.status && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_subTag", children: s.status })
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_subSection", children: T("pane.subagents") }),
+    subagents.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_subEmpty", children: T("pane.subagentsEmpty") }),
+    subagents.map((s, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_subRow dsh-wt_subRowStatic", style: { paddingLeft: 8 + (s?.depth ?? 0) * 12 }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_jobDot dsh-wt_jobDot-" + (s?.status ?? "stopping"), "aria-hidden": true, children: "\u25CF" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_subName", children: s?.label ?? s?.title ?? s?.name ?? "\u2014" }),
+      s?.status && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_subTag", children: s.status })
     ] }, s?.id ?? i))
   ] });
 }
 function TerminalPane() {
-  const hostRef = (0, import_react3.useRef)(null);
-  const [failed, setFailed] = (0, import_react3.useState)("");
-  (0, import_react3.useEffect)(() => {
+  const hostRef = (0, import_react.useRef)(null);
+  const [failed, setFailed] = (0, import_react.useState)("");
+  (0, import_react.useEffect)(() => {
     const el = hostRef.current;
     if (!el) return;
     let term = null;
     let ws = null;
     let disposed = false;
     try {
-      term = new import_xterm2.Terminal({
+      term = new import_xterm.Terminal({
         cursorBlink: true,
         fontFamily: "Cascadia Code, Cascadia Mono, Consolas, Menlo, monospace",
         fontSize: 12,
@@ -19581,9 +18644,9 @@ function TerminalPane() {
     };
   }, []);
   if (failed) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_paneWip", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_paneWipText", children: failed }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_paneWip", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_paneWipText", children: failed }) });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { ref: hostRef, className: "dsh-wt_termHost" });
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { ref: hostRef, className: "dsh-wt_termHost" });
 }
 var mdRenderer = new MarkdownItCallable({ linkify: true });
 var IMAGE_EXTS = /[.](png|jpe?g|gif|webp|svg|bmp|ico)$/i;
@@ -19592,12 +18655,12 @@ function FileViewer(props) {
   const ext = (props.path.split(".").pop() || "").toLowerCase();
   const fileUrl = "/api/worktable/file?path=" + encodeURIComponent(props.path);
   if (ext === "pdf") {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("iframe", { className: "dsh-wt_paneFrame", src: fileUrl, title: basenameOf2(props.path) });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("iframe", { className: "dsh-wt_paneFrame", src: fileUrl, title: basenameOf2(props.path) });
   }
   if (IMAGE_EXTS.test("." + ext)) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_imgView", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("img", { src: fileUrl, alt: basenameOf2(props.path) }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_imgView", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { src: fileUrl, alt: basenameOf2(props.path) }) });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(TextViewer, { path: props.path, fileUrl, isMd: MD_EXTS.test("." + ext) });
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TextViewer, { path: props.path, fileUrl, isMd: MD_EXTS.test("." + ext) });
 }
 var CODE_LANGS = { ts: "typescript", tsx: "typescript", js: "javascript", jsx: "javascript", css: "css", json: "json" };
 var CODE_EXTS = /[.](tsx|ts|jsx|js|css|json)$/i;
@@ -19616,13 +18679,13 @@ function codeHtml(text2, ext) {
   return escapeHtml2(text2);
 }
 function TextViewer(props) {
-  const [text2, setText] = (0, import_react3.useState)(null);
-  const [error2, setError] = (0, import_react3.useState)("");
-  const [mode, setMode] = (0, import_react3.useState)("preview");
-  const [draft, setDraft] = (0, import_react3.useState)("");
-  const [saving, setSaving] = (0, import_react3.useState)(false);
-  const [saveFail, setSaveFail] = (0, import_react3.useState)(false);
-  (0, import_react3.useEffect)(() => {
+  const [text2, setText] = (0, import_react.useState)(null);
+  const [error2, setError] = (0, import_react.useState)("");
+  const [mode, setMode] = (0, import_react.useState)("preview");
+  const [draft, setDraft] = (0, import_react.useState)("");
+  const [saving, setSaving] = (0, import_react.useState)(false);
+  const [saveFail, setSaveFail] = (0, import_react.useState)(false);
+  (0, import_react.useEffect)(() => {
     let dead = false;
     setText(null);
     setError("");
@@ -19662,25 +18725,25 @@ function TextViewer(props) {
     }
   };
   if (error2) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_paneWip", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("span", { className: "dsh-wt_paneWipText", children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_paneWip", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "dsh-wt_paneWipText", children: [
       T("file.fail"),
       "\uFF1A",
       error2
     ] }) });
   }
   if (text2 == null) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_paneWip", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_paneWipText", children: T("file.loading") }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_paneWip", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_paneWipText", children: T("file.loading") }) });
   }
   const ext = (props.path.split(".").pop() || "").toLowerCase();
   const isCode = CODE_EXTS.test("." + ext);
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_mdBar", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_mdBtn" + (mode === "preview" ? " dsh-wt_mdBtnOn" : ""), onClick: () => setMode("preview"), children: T("file.preview") }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_mdBtn" + (mode === "edit" ? " dsh-wt_mdBtnOn" : ""), onClick: enterEdit, children: T("file.edit") }),
-      mode === "edit" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_mdSave", disabled: saving, onClick: save, children: saving ? "\u2026" : T("file.save") }),
-      saveFail && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_mdMsg", children: T("file.saveFail") })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_mdBar", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_mdBtn" + (mode === "preview" ? " dsh-wt_mdBtnOn" : ""), onClick: () => setMode("preview"), children: T("file.preview") }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_mdBtn" + (mode === "edit" ? " dsh-wt_mdBtnOn" : ""), onClick: enterEdit, children: T("file.edit") }),
+      mode === "edit" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_mdSave", disabled: saving, onClick: save, children: saving ? "\u2026" : T("file.save") }),
+      saveFail && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_mdMsg", children: T("file.saveFail") })
     ] }),
-    mode === "edit" ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("textarea", { className: "dsh-wt_mdEdit", value: draft, spellCheck: false, onChange: (e) => setDraft(e.target.value) }) : props.isMd ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_fileView", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    mode === "edit" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", { className: "dsh-wt_mdEdit", value: draft, spellCheck: false, onChange: (e) => setDraft(e.target.value) }) : props.isMd ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_fileView", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "div",
       {
         className: "dsh-wt_md",
@@ -19693,27 +18756,27 @@ function TextViewer(props) {
           if (/^(https?:|mailto:)/i.test(href)) window.open(href, "_blank", "noopener");
         }
       }
-    ) }) : isCode ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_fileView", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("pre", { className: "dsh-wt_code", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("code", { dangerouslySetInnerHTML: { __html: codeHtml(text2, ext) } }) }) }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_fileView", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("pre", { className: "dsh-wt_txt", children: text2 }) })
+    ) }) : isCode ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_fileView", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("pre", { className: "dsh-wt_code", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", { dangerouslySetInnerHTML: { __html: codeHtml(text2, ext) } }) }) }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_fileView", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("pre", { className: "dsh-wt_txt", children: text2 }) })
   ] });
 }
 function SelectPop(props) {
-  const [open, setOpen] = (0, import_react3.useState)(false);
+  const [open, setOpen] = (0, import_react.useState)(false);
   const flat = props.groups.flatMap((g) => g.items);
   const selected = flat.find((i) => i.id === props.value);
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_select", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_selectBtn", onClick: () => setOpen((v) => !v), children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_selectVal" + (selected ? "" : " dsh-wt_selectPh"), children: selected?.label ?? props.placeholder ?? "" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_selectCaret", "aria-hidden": true, children: "\u25BE" })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_select", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_selectBtn", onClick: () => setOpen((v) => !v), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_selectVal" + (selected ? "" : " dsh-wt_selectPh"), children: selected?.label ?? props.placeholder ?? "" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_selectCaret", "aria-hidden": true, children: "\u25BE" })
     ] }),
-    open && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_selectList", children: props.groups.map((g, gi) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_react3.Fragment, { children: [
-      g.title && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_selectDivider" }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_selectGroup", children: [
+    open && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_selectList", children: props.groups.map((g, gi) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_react.Fragment, { children: [
+      g.title && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_selectDivider" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_selectGroup", children: [
           "\u{1F4C1} ",
           g.title
         ] })
       ] }),
-      g.items.map((it) => /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+      g.items.map((it) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
         "button",
         {
           type: "button",
@@ -19723,8 +18786,8 @@ function SelectPop(props) {
             setOpen(false);
           },
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_selectItemTitle", children: it.label }),
-            it.isCurrent && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_selectCurrent", children: T("custom.sessionCurrent") })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_selectItemTitle", children: it.label }),
+            it.isCurrent && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_selectCurrent", children: T("custom.sessionCurrent") })
           ]
         },
         it.id
@@ -19739,23 +18802,23 @@ function CustomPane(props) {
   } catch {
   }
   const custom = splitEnv?.custom;
-  const [requirement, setRequirement] = (0, import_react3.useState)("");
-  const [projectId, setProjectId] = (0, import_react3.useState)(null);
-  const [projects, setProjects] = (0, import_react3.useState)(() => custom?.getProjects?.() ?? []);
-  const [mode, setMode] = (0, import_react3.useState)("existing");
-  const [sessionGroups, setSessionGroups] = (0, import_react3.useState)([]);
-  const [sessionId, setSessionId] = (0, import_react3.useState)(null);
-  const [wsGroups, setWsGroups] = (0, import_react3.useState)([]);
-  const [groupMode, setGroupMode] = (0, import_react3.useState)("none");
-  const [groupId, setGroupId] = (0, import_react3.useState)(null);
-  const groupTouchedRef = (0, import_react3.useRef)(false);
-  const [newGroupParent, setNewGroupParent] = (0, import_react3.useState)("");
-  const [newGroupName, setNewGroupName] = (0, import_react3.useState)("");
-  const [busy, setBusy] = (0, import_react3.useState)(false);
-  const [done, setDone] = (0, import_react3.useState)(false);
-  const [fail, setFail] = (0, import_react3.useState)("");
-  const [bindNote, setBindNote] = (0, import_react3.useState)("none");
-  (0, import_react3.useEffect)(() => {
+  const [requirement, setRequirement] = (0, import_react.useState)("");
+  const [projectId, setProjectId] = (0, import_react.useState)(null);
+  const [projects, setProjects] = (0, import_react.useState)(() => custom?.getProjects?.() ?? []);
+  const [mode, setMode] = (0, import_react.useState)("existing");
+  const [sessionGroups, setSessionGroups] = (0, import_react.useState)([]);
+  const [sessionId, setSessionId] = (0, import_react.useState)(null);
+  const [wsGroups, setWsGroups] = (0, import_react.useState)([]);
+  const [groupMode, setGroupMode] = (0, import_react.useState)("none");
+  const [groupId, setGroupId] = (0, import_react.useState)(null);
+  const groupTouchedRef = (0, import_react.useRef)(false);
+  const [newGroupParent, setNewGroupParent] = (0, import_react.useState)("");
+  const [newGroupName, setNewGroupName] = (0, import_react.useState)("");
+  const [busy, setBusy] = (0, import_react.useState)(false);
+  const [done, setDone] = (0, import_react.useState)(false);
+  const [fail, setFail] = (0, import_react.useState)("");
+  const [bindNote, setBindNote] = (0, import_react.useState)("none");
+  (0, import_react.useEffect)(() => {
     const list2 = custom?.getProjects?.() ?? [];
     setProjects(list2);
     const cur = custom?.currentProjectId?.() ?? null;
@@ -19808,27 +18871,27 @@ function CustomPane(props) {
     }
   };
   if (!custom) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_paneWip", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_paneWipText", children: T("pane.wip") }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_paneWip", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_paneWipText", children: T("pane.wip") }) });
   }
   if (done) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_customBox", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_customDone", "aria-hidden": true, children: "\u2705" }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "dsh-wt_customDoneText", children: mode === "new" ? T("custom.done") : T("custom.sent") }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "dsh-wt_customDoneHint", children: T("custom.doneHint") }),
-      bindNote !== "none" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "dsh-wt_customDoneBind", children: bindNote === "auto" ? T("custom.autoBound") : T("custom.keptBinding") })
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_customBox", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_customDone", "aria-hidden": true, children: "\u2705" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "dsh-wt_customDoneText", children: mode === "new" ? T("custom.done") : T("custom.sent") }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "dsh-wt_customDoneHint", children: T("custom.doneHint") }),
+      bindNote !== "none" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "dsh-wt_customDoneBind", children: bindNote === "auto" ? T("custom.autoBound") : T("custom.keptBinding") })
     ] });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_customBox", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_customCard", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("span", { className: "dsh-wt_customTitle", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_customBox", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_customCard", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "dsh-wt_customTitle", children: [
       "\u2728 ",
       T("custom.title")
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_customModes", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_customModeBtn" + (mode === "existing" ? " dsh-wt_customModeBtnOn" : ""), onClick: () => setMode("existing"), children: T("custom.modeSend") }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_customModeBtn" + (mode === "new" ? " dsh-wt_customModeBtnOn" : ""), onClick: () => setMode("new"), children: T("custom.modeNew") })
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_customModes", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_customModeBtn" + (mode === "existing" ? " dsh-wt_customModeBtnOn" : ""), onClick: () => setMode("existing"), children: T("custom.modeSend") }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_customModeBtn" + (mode === "new" ? " dsh-wt_customModeBtnOn" : ""), onClick: () => setMode("new"), children: T("custom.modeNew") })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "dsh-wt_customHint", children: mode === "new" ? T("custom.hint") : T("custom.hintSend") }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "dsh-wt_customHint", children: mode === "new" ? T("custom.hint") : T("custom.hintSend") }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "textarea",
       {
         className: "dsh-wt_customInput",
@@ -19838,9 +18901,9 @@ function CustomPane(props) {
         onChange: (e) => setRequirement(e.target.value)
       }
     ),
-    mode === "existing" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_customRow", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_customLabel", children: T("custom.session") }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    mode === "existing" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_customRow", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_customLabel", children: T("custom.session") }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         SelectPop,
         {
           value: sessionId,
@@ -19853,9 +18916,9 @@ function CustomPane(props) {
         }
       )
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_customRow", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_customLabel", children: T("custom.project") }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_customRow", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_customLabel", children: T("custom.project") }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         SelectPop,
         {
           value: projectId,
@@ -19865,9 +18928,9 @@ function CustomPane(props) {
         }
       )
     ] }),
-    mode === "new" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_customRow", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_customLabel", children: T("custom.group") }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    mode === "new" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_customRow", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_customLabel", children: T("custom.group") }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         SelectPop,
         {
           value: groupMode === "none" ? "__none" : groupMode === "new" ? "__new" : groupId,
@@ -19892,10 +18955,10 @@ function CustomPane(props) {
         }
       )
     ] }),
-    mode === "new" && groupMode === "new" && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_customRow", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_customLabel", children: T("custom.groupNewParent") }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    mode === "new" && groupMode === "new" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_customRow", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_customLabel", children: T("custom.groupNewParent") }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "input",
           {
             className: "dsh-wt_customPathInput",
@@ -19905,9 +18968,9 @@ function CustomPane(props) {
           }
         )
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_customRow", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_customLabel", children: T("custom.groupNewName") }),
-        /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_customRow", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_customLabel", children: T("custom.groupNewName") }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "input",
           {
             className: "dsh-wt_customPathInput",
@@ -19918,7 +18981,7 @@ function CustomPane(props) {
         )
       ] })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "button",
       {
         type: "button",
@@ -19928,7 +18991,7 @@ function CustomPane(props) {
         children: busy ? "\u2026" : mode === "new" ? T("custom.send") : T("custom.sendToSession")
       }
     ),
-    fail && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("p", { className: "dsh-wt_customFail", children: [
+    fail && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "dsh-wt_customFail", children: [
       T("custom.fail"),
       "\uFF1A",
       fail
@@ -19938,22 +19001,22 @@ function CustomPane(props) {
 function PaneTabBody(props) {
   const content = props.tab.content;
   if (content.kind === "iframe") {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(IframePane, { url: content.url, title: content.title ?? props.tab.title, reloadKey: props.reloadKey });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(IframePane, { url: content.url, title: content.title ?? props.tab.title, reloadKey: props.reloadKey });
   }
   if (content.kind === "file") {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(FileViewer, { path: content.path });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileViewer, { path: content.path });
   }
-  if (content.type === "browser") return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(BrowserPane, { row: props.row, index: props.index, tabId: props.tab.id, content, reloadKey: props.reloadKey });
-  if (content.type === "anim") return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(AnimPane, { row: props.row, index: props.index, tabId: props.tab.id, content, reloadKey: props.reloadKey });
-  if (content.type === "console") return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ConsolePane, {});
-  if (content.type === "explorer") return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ExplorerPane, { row: props.row, index: props.index });
-  if (content.type === "scm") return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(GitPane, {});
-  if (content.type === "tasks") return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(JobsPane, {});
-  if (content.type === "terminal") return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(TerminalPane, {});
-  if (content.type === "custom") return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(CustomPane, { paneTitle: props.paneTitle ?? "", row: props.row, index: props.index });
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_paneWip", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_paneWipIcon", "aria-hidden": true, children: BUILTIN_ICONS[content.type] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_paneWipText", children: T("pane.wip") })
+  if (content.type === "browser") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(BrowserPane, { row: props.row, index: props.index, tabId: props.tab.id, content, reloadKey: props.reloadKey });
+  if (content.type === "anim") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnimPane, { row: props.row, index: props.index, tabId: props.tab.id, content, reloadKey: props.reloadKey });
+  if (content.type === "console") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ConsolePane, {});
+  if (content.type === "explorer") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExplorerPane, { row: props.row, index: props.index });
+  if (content.type === "scm") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(GitPane, {});
+  if (content.type === "tasks") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(JobsPane, {});
+  if (content.type === "terminal") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TerminalPane, {});
+  if (content.type === "custom") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CustomPane, { paneTitle: props.paneTitle ?? "", row: props.row, index: props.index });
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_paneWip", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_paneWipIcon", "aria-hidden": true, children: BUILTIN_ICONS[content.type] }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_paneWipText", children: T("pane.wip") })
   ] });
 }
 function refreshableTab(t) {
@@ -19964,19 +19027,19 @@ function PaneBody(props) {
   const { pane, row, index } = props;
   const tabs = pane.tabs ?? [];
   const active = Math.min(pane.active ?? 0, Math.max(0, tabs.length - 1));
-  const [reloadKeys, setReloadKeys] = (0, import_react3.useState)({});
+  const [reloadKeys, setReloadKeys] = (0, import_react.useState)({});
   if (tabs.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(PanePicker, { row, index });
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PanePicker, { row, index });
   }
   const refreshTab = (t) => {
     setReloadKeys((m) => ({ ...m, [t.id]: (m[t.id] ?? 0) + 1 }));
     splitStore.setActiveTab(row, index, t.id);
   };
   const singleTab = tabs.length === 1;
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-    !singleTab && !pane.collapsed && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "dsh-wt_tabBar", children: tabs.map((t, i) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+    !singleTab && !pane.collapsed && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_tabBar", children: tabs.map((t, i) => {
       const locked = t.content?.kind === "builtin" && t.content.type === "console";
-      return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+      return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
         "span",
         {
           className: "dsh-wt_tab" + (i === active ? " dsh-wt_tabOn" : ""),
@@ -19995,7 +19058,7 @@ function PaneBody(props) {
           },
           onClick: () => splitStore.setActiveTab(row, index, t.id),
           children: [
-            refreshableTab(t) && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+            refreshableTab(t) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "button",
               {
                 type: "button",
@@ -20009,8 +19072,8 @@ function PaneBody(props) {
                 children: "\u21BB"
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_tabTitle", children: t.title }),
-            !locked && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_tabTitle", children: t.title }),
+            !locked && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "button",
               {
                 type: "button",
@@ -20028,13 +19091,13 @@ function PaneBody(props) {
         t.id
       );
     }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(PaneTabBody, { tab: tabs[active], row, index, paneTitle: pane.title, reloadKey: reloadKeys[tabs[active].id] ?? 0 })
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PaneTabBody, { tab: tabs[active], row, index, paneTitle: pane.title, reloadKey: reloadKeys[tabs[active].id] ?? 0 })
   ] });
 }
 function PanePicker(props) {
-  const [mode, setMode] = (0, import_react3.useState)("grid");
-  const hostRef = (0, import_react3.useRef)(null);
-  (0, import_react3.useEffect)(() => {
+  const [mode, setMode] = (0, import_react.useState)("grid");
+  const hostRef = (0, import_react.useRef)(null);
+  (0, import_react.useEffect)(() => {
     const el = hostRef.current;
     if (!el) return;
     const update = () => {
@@ -20049,25 +19112,25 @@ function PanePicker(props) {
     return () => ro.disconnect();
   }, []);
   const pick = (content) => splitStore.openTab(props.row, props.index, content);
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { ref: hostRef, className: "dsh-wt_panePicker dsh-wt_panePicker-" + mode, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_panePick", onClick: () => pick({ kind: "builtin", type: "browser" }), children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { "aria-hidden": true, children: "\u{1F310}" }),
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { ref: hostRef, className: "dsh-wt_panePicker dsh-wt_panePicker-" + mode, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_panePick", onClick: () => pick({ kind: "builtin", type: "browser" }), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, children: "\u{1F310}" }),
       T("pane.browser")
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_panePick", onClick: () => pick({ kind: "builtin", type: "anim" }), children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { "aria-hidden": true, children: "\u{1F3AC}" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_panePick", onClick: () => pick({ kind: "builtin", type: "anim" }), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, children: "\u{1F3AC}" }),
       T("pane.anim")
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_panePick", onClick: () => pick({ kind: "builtin", type: "explorer" }), children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { "aria-hidden": true, children: "\u{1F4C1}" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_panePick", onClick: () => pick({ kind: "builtin", type: "explorer" }), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, children: "\u{1F4C1}" }),
       T("pane.explorer")
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_panePick", onClick: () => pick({ kind: "builtin", type: "terminal" }), children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { "aria-hidden": true, children: "\u25B8_" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_panePick", onClick: () => pick({ kind: "builtin", type: "terminal" }), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, children: "\u25B8_" }),
       T("pane.terminal")
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("button", { type: "button", className: "dsh-wt_panePick", onClick: () => pick({ kind: "builtin", type: "custom" }), children: [
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { "aria-hidden": true, children: "\u2728" }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { type: "button", className: "dsh-wt_panePick", onClick: () => pick({ kind: "builtin", type: "custom" }), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, children: "\u2728" }),
       T("pane.custom")
     ] })
   ] });
@@ -20101,7 +19164,7 @@ function WorkspaceLayer(props) {
   const topY = barTop + BAR_H;
   const renderPane = (it, row, index, x, y, h) => {
     const singleConsole = (it.pane.tabs ?? []).length === 1 && it.pane.tabs[0].content?.kind === "builtin" && it.pane.tabs[0].content.type === "console";
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
       "div",
       {
         className: "dsh-wt_pane",
@@ -20125,7 +19188,7 @@ function WorkspaceLayer(props) {
           }
         },
         children: [
-          !singlePane && !it.pane.collapsed && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+          !singlePane && !it.pane.collapsed && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
             "div",
             {
               className: "dsh-wt_paneBar",
@@ -20148,12 +19211,12 @@ function WorkspaceLayer(props) {
               onDragEnd: () => {
                 dragPane = null;
               },
-              children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_paneTitle", children: it.pane.title })
+              children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_paneTitle", children: it.pane.title })
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(PaneBody, { pane: it.pane, row, index }),
-          !singlePane && !singleConsole && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PaneBody, { pane: it.pane, row, index }),
+          !singlePane && !singleConsole && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "button",
               {
                 type: "button",
@@ -20161,10 +19224,10 @@ function WorkspaceLayer(props) {
                 title: T("annot.label"),
                 "aria-label": T("annot.label"),
                 onClick: () => startAnnot(windowLabelOf(row, index)),
-                children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M2 5.6c0-1.2 1-2.2 2.2-2.2h7.6c1.2 0 2.2 1 2.2 2.2v3.6c0 1.2-1 2.2-2.2 2.2H7.5L5 13.6l.3-2.4H4.2c-1.2 0-2.2-1-2.2-2.2z", fill: "none", stroke: "currentColor", strokeWidth: "1.2", strokeLinejoin: "round" }) })
+                children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M2 5.6c0-1.2 1-2.2 2.2-2.2h7.6c1.2 0 2.2 1 2.2 2.2v3.6c0 1.2-1 2.2-2.2 2.2H7.5L5 13.6l.3-2.4H4.2c-1.2 0-2.2-1-2.2-2.2z", fill: "none", stroke: "currentColor", strokeWidth: "1.2", strokeLinejoin: "round" }) })
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
               "button",
               {
                 type: "button",
@@ -20172,7 +19235,7 @@ function WorkspaceLayer(props) {
                 title: it.pane.collapsed ? T("pane.expand") : T("pane.collapse"),
                 "aria-label": it.pane.collapsed ? T("pane.expand") : T("pane.collapse"),
                 onClick: () => splitStore.toggleCollapsed(row, index),
-                children: it.pane.collapsed ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M4 6l4 4 4-4", fill: "none", stroke: "currentColor", strokeWidth: "1.6", strokeLinecap: "round", strokeLinejoin: "round" }) }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("svg", { viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M4 10l4-4 4 4", fill: "none", stroke: "currentColor", strokeWidth: "1.6", strokeLinecap: "round", strokeLinejoin: "round" }) })
+                children: it.pane.collapsed ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M4 6l4 4 4-4", fill: "none", stroke: "currentColor", strokeWidth: "1.6", strokeLinecap: "round", strokeLinejoin: "round" }) }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", { viewBox: "0 0 16 16", "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", { d: "M4 10l4-4 4 4", fill: "none", stroke: "currentColor", strokeWidth: "1.6", strokeLinecap: "round", strokeLinejoin: "round" }) })
               }
             )
           ] })
@@ -20181,10 +19244,10 @@ function WorkspaceLayer(props) {
       it.pane.id
     );
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "dsh-wt_splitBar", style: { position: "fixed", left: g.left, top: barTop, width: hasLeft || chatFull ? contentW : hasTop ? colW : contentW, zIndex: 70 }, children: [
-      spec.id !== "wt-console" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "dsh-wt_splitTitle", children: spec.title }),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_splitBar", style: { position: "fixed", left: g.left, top: barTop, width: hasLeft || chatFull ? contentW : hasTop ? colW : contentW, zIndex: 70 }, children: [
+      spec.id !== "wt-console" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_splitTitle", children: spec.title }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "button",
         {
           type: "button",
@@ -20194,7 +19257,7 @@ function WorkspaceLayer(props) {
           children: T(props.chatVisible ? "split.hideChat" : "split.showChat")
         }
       ),
-      !hasLeft && props.chatVisible && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      !hasLeft && props.chatVisible && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         "button",
         {
           type: "button",
@@ -20204,12 +19267,12 @@ function WorkspaceLayer(props) {
           children: "\u21C4"
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: "dsh-wt_splitClose", "aria-label": T("split.close"), onClick: () => splitStore.close(), children: "\u2715" })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_splitClose", "aria-label": T("split.close"), onClick: () => splitStore.close(), children: "\u2715" })
     ] }),
     leftItem && renderPane(leftItem, "left", 0, g.left, barTop + BAR_H, g.bottom - barTop - BAR_H),
     hasTop && topItems.map((it, i) => renderPane(it, "top", i, topRowX, topY, topH)),
     mainItems.map((it, i) => renderPane(it, "main", i, contentX, bodyTop, mainH)),
-    hasTop && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    hasTop && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "div",
       {
         className: "dsh-wt_splitDivider dsh-wt_splitDividerH",
@@ -20219,7 +19282,7 @@ function WorkspaceLayer(props) {
         onPointerDown: makeDividerHandler("top")
       }
     ),
-    hasTop && topItems.slice(0, -1).map((it, i) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    hasTop && topItems.slice(0, -1).map((it, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "div",
       {
         className: "dsh-wt_splitDivider",
@@ -20230,7 +19293,7 @@ function WorkspaceLayer(props) {
       },
       "tv" + it.pane.id
     )),
-    mainItems.slice(0, -1).map((it, i) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    mainItems.slice(0, -1).map((it, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "div",
       {
         className: "dsh-wt_splitDivider",
@@ -20241,7 +19304,7 @@ function WorkspaceLayer(props) {
       },
       "v" + it.pane.id
     )),
-    (props.chatVisible || hasLeft) && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    (props.chatVisible || hasLeft) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "div",
       {
         className: "dsh-wt_splitDivider",
@@ -20258,11 +19321,11 @@ function WorkspaceLayer(props) {
         onPointerDown: makeDividerHandler(hasLeft ? "left" : "chat")
       }
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(AnnotationOverlay, {})
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnnotationOverlay, {})
   ] });
 }
 function SplitWorkspace() {
-  const [snap, setSnap] = (0, import_react3.useState)({
+  const [snap, setSnap] = (0, import_react.useState)({
     active: splitStore.active,
     spec: splitStore.spec,
     geom: splitStore.geom,
@@ -20273,9 +19336,9 @@ function SplitWorkspace() {
     paneWs: [...splitStore.paneWs],
     topWs: [...splitStore.topWs]
   });
-  const poolRef = (0, import_react3.useRef)(/* @__PURE__ */ new Map());
-  const [, setPoolTick] = (0, import_react3.useState)(0);
-  (0, import_react3.useEffect)(() => splitStore.subscribe(() => {
+  const poolRef = (0, import_react.useRef)(/* @__PURE__ */ new Map());
+  const [, setPoolTick] = (0, import_react.useState)(0);
+  (0, import_react.useEffect)(() => splitStore.subscribe(() => {
     const spec = splitStore.spec;
     if (splitStore.active && spec) {
       poolRef.current.set(spec.id, {
@@ -20305,7 +19368,7 @@ function SplitWorkspace() {
     });
     setPoolTick((t) => t + 1);
   }), []);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react.useEffect)(() => {
     if (!snap.active) return;
     const onKey = (event) => {
       if (event.key === "Escape") splitStore.close();
@@ -20313,8 +19376,8 @@ function SplitWorkspace() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [snap.active]);
-  const [, setDropTick] = (0, import_react3.useState)(0);
-  (0, import_react3.useEffect)(() => {
+  const [, setDropTick] = (0, import_react.useState)(0);
+  (0, import_react.useEffect)(() => {
     const fn = () => setDropTick((t) => t + 1);
     dropTargetListeners.add(fn);
     return () => {
@@ -20324,9 +19387,9 @@ function SplitWorkspace() {
   const activeId = snap.active && snap.spec ? snap.spec.id : null;
   const entries = Array.from(poolRef.current.entries());
   if (entries.length === 0) return null;
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_jsx_runtime3.Fragment, { children: entries.map(([id, item]) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: entries.map(([id, item]) => {
     const isActive = id === activeId;
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { style: isActive ? void 0 : { visibility: "hidden" }, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: isActive ? void 0 : { visibility: "hidden" }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       WorkspaceLayer,
       {
         spec: item.spec,
@@ -20341,6 +19404,1105 @@ function SplitWorkspace() {
     ) }, id);
   }) });
 }
+
+// src/client/splitNavigation.ts
+var navigate;
+var generation = 0;
+function installSplitNavigation(callback) {
+  navigate = callback;
+  return () => {
+    if (navigate === callback) {
+      navigate = void 0;
+      generation++;
+    }
+  };
+}
+async function openStudioSplit(spec) {
+  const current = ++generation;
+  navigate?.();
+  const ready = () => [...document.querySelectorAll("[data-phase]")].some((node) => ["active", "hero", "settling"].includes(node.dataset.phase ?? "") && node.children.length > 0);
+  if (!ready()) await new Promise((resolve) => {
+    const finish = () => {
+      observer.disconnect();
+      clearTimeout(timer);
+      resolve();
+    };
+    const observer = new MutationObserver(() => {
+      if (current !== generation || ready()) finish();
+    });
+    const timer = setTimeout(finish, 3e3);
+    observer.observe(document.body, { childList: true, subtree: true });
+    if (ready()) finish();
+  });
+  return current === generation && splitStore.open(spec);
+}
+
+// src/client/StudioSection.tsx
+var import_react2 = require("react");
+var import_jsx_runtime2 = require("react/jsx-runtime");
+function StudioSection({ wide, title, expandSidebar, children, toolbar }) {
+  const [expanded, setExpanded] = (0, import_react2.useState)(false);
+  const [hasOpened, setHasOpened] = (0, import_react2.useState)(false);
+  const contentId = (0, import_react2.useId)();
+  const open = wide && expanded;
+  const toggle = () => {
+    setHasOpened(true);
+    if (!wide) {
+      expandSidebar();
+      setExpanded(true);
+      return;
+    }
+    setExpanded((value) => !value);
+  };
+  return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("section", { "data-studio-shell": true, className: "studio:shrink-0 studio:w-full studio:min-w-0 studio:text-inherit", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { "data-studio-header": true, className: "studio:flex studio:h-[34px] studio:items-center studio:gap-1", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+        "button",
+        {
+          type: "button",
+          onClick: toggle,
+          "aria-expanded": wide && expanded,
+          "aria-controls": contentId,
+          "aria-label": title,
+          title: !wide ? title : void 0,
+          className: "studio:group studio:flex studio:h-[34px] studio:min-w-0 studio:flex-1 studio:items-center studio:gap-1.5 studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-transparent studio:px-2 studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500",
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("svg", { width: "16", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.6", "aria-hidden": "true", "data-studio-icon": true, className: "studio:shrink-0 studio:text-(--dsw-alias-label-tertiary) studio:group-hover:hidden studio:group-focus-visible:hidden", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("rect", { x: "3", y: "4", width: "18", height: "16", rx: "3" }),
+              /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("path", { d: "M3 10h18M10 10v10" })
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { "aria-hidden": "true", "data-studio-chevron": true, className: "studio:hidden studio:h-5 studio:w-4 studio:shrink-0 studio:items-center studio:justify-center studio:text-(--dsw-alias-label-tertiary) studio:group-hover:inline-flex studio:group-focus-visible:inline-flex", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "currentColor", className: "studio:transition-transform studio:duration-150 studio:ease-(--ds-ease-in-out) studio:motion-reduce:transition-none " + (open ? "studio:rotate-90" : ""), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("path", { d: "M6 4.5a.5.5 0 0 1 .8-.4l4 3.5a.5.5 0 0 1 0 .8l-4 3.5a.5.5 0 0 1-.8-.4z" }) }) }),
+            wide && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "studio:min-w-0 studio:flex-1 studio:truncate studio:text-left studio:text-sm studio:leading-5", children: title })
+          ]
+        }
+      ),
+      hasOpened && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { "data-studio-toolbar": true, hidden: !open, className: "studio:flex studio:shrink-0 studio:items-center studio:gap-1 studio:[&[hidden]]:hidden", children: toolbar })
+    ] }),
+    hasOpened && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { ref: (node) => {
+      if (node) node.inert = !open;
+    }, "aria-hidden": !open, className: "studio:grid studio:transition-[grid-template-rows] studio:duration-200 studio:ease-out studio:motion-reduce:transition-none " + (open ? "studio:grid-rows-[1fr]" : "studio:grid-rows-[0fr]"), children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "studio:min-h-0 studio:overflow-hidden", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+      "div",
+      {
+        id: contentId,
+        "data-studio-content": true,
+        tabIndex: open ? 0 : -1,
+        role: "region",
+        "aria-label": title,
+        className: "studio:h-60 studio:max-h-[40vh] studio:overflow-y-auto studio:overflow-x-hidden studio:overscroll-contain studio:px-1 studio:[scrollbar-width:none] studio:[&::-webkit-scrollbar]:hidden",
+        children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "studio:transition-opacity studio:duration-100 studio:ease-out studio:motion-reduce:transition-none " + (open ? "studio:opacity-100" : "studio:opacity-0"), children })
+      }
+    ) }) })
+  ] });
+}
+
+// src/client/StudioUpdates.tsx
+var import_react3 = require("react");
+var import_react_dom = require("react-dom");
+var import_jsx_runtime3 = require("react/jsx-runtime");
+var button = "studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-transparent studio:px-3 studio:py-1.5 studio:text-inherit studio:text-sm studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:disabled:cursor-default studio:disabled:opacity-50 studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500";
+function StudioUpdates({ t, icon }) {
+  const dialog = (0, import_react3.useRef)(null);
+  const titleId = (0, import_react3.useId)();
+  const [open, setOpen] = (0, import_react3.useState)(false);
+  const [data, setData] = (0, import_react3.useState)(null);
+  const [action, setAction] = (0, import_react3.useState)("");
+  const [error2, setError] = (0, import_react3.useState)("");
+  const lifetime = (0, import_react3.useRef)(null);
+  const sequence = (0, import_react3.useRef)(0);
+  (0, import_react3.useEffect)(() => {
+    const controller = new AbortController();
+    lifetime.current = controller;
+    return () => {
+      controller.abort();
+      lifetime.current = null;
+    };
+  }, []);
+  const request = async (path = "", body) => {
+    const response = await fetch("/studio-projects/updates" + path, { ...body ? { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) } : {}, cache: "no-store", signal: lifetime.current?.signal });
+    if (!response.ok) throw new Error(response.status === 409 ? "recheck" : "connection");
+    const report = await response.json();
+    if (!Array.isArray(report.studios) || typeof report.busy !== "boolean") throw new Error("connection");
+    return report;
+  };
+  const refresh = async () => {
+    const revision = ++sequence.current;
+    try {
+      const report = await request();
+      if (lifetime.current && revision === sequence.current) {
+        setData(report);
+        setError("");
+      }
+    } catch (reason) {
+      if (lifetime.current && revision === sequence.current) setError(reason instanceof Error ? reason.message : "connection");
+    }
+  };
+  (0, import_react3.useEffect)(() => {
+    if (!open) return;
+    void refresh();
+    if (!data?.busy && !action.startsWith("install:")) return;
+    const timer = setInterval(() => {
+      void refresh();
+    }, 1e3);
+    return () => clearInterval(timer);
+  }, [open, data?.busy, action.startsWith("install:")]);
+  const run = async (kind, rows) => {
+    if (action || data?.busy) return;
+    setError("");
+    try {
+      for (const row of rows) {
+        setAction(kind + ":" + row.id);
+        const report = await request("/" + kind, { id: row.id, ...kind === "install" ? { version: row.latest } : {} });
+        sequence.current++;
+        if (!lifetime.current) return;
+        setData(report);
+      }
+    } catch (reason) {
+      if (lifetime.current) setError(reason instanceof Error ? reason.message : "connection");
+    } finally {
+      if (lifetime.current) {
+        setAction("");
+        void refresh();
+      }
+    }
+  };
+  const show = () => {
+    dialog.current?.showModal();
+    setOpen(true);
+  };
+  const close = () => {
+    dialog.current?.close();
+    setOpen(false);
+  };
+  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      "button",
+      {
+        type: "button",
+        "aria-label": t("studiosUpdates.title"),
+        title: t("studiosUpdates.title"),
+        onClick: show,
+        className: "studio:flex studio:h-7 studio:w-7 studio:items-center studio:justify-center studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-transparent studio:text-(--dsw-alias-label-secondary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:[&_svg]:size-4",
+        children: icon
+      }
+    ),
+    (0, import_react_dom.createPortal)(/* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
+      "dialog",
+      {
+        ref: dialog,
+        "data-studio-updates": true,
+        "aria-labelledby": titleId,
+        onClose: () => setOpen(false),
+        onClick: (event) => {
+          if (event.target === event.currentTarget) {
+            const rect = event.currentTarget.getBoundingClientRect();
+            if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) close();
+          }
+        },
+        className: "studio:box-border studio:m-auto studio:max-h-[calc(100dvh-2rem)] studio:w-[min(48rem,calc(100vw-2rem))] studio:max-w-none studio:overflow-y-auto studio:overscroll-contain studio:rounded-(--dsw-radius-lg) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-(--dsw-alias-bg-base) studio:p-5 studio:text-(--dsw-alias-label-primary) studio:shadow-xl studio:backdrop:bg-black/30",
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "studio:flex studio:flex-wrap studio:items-center studio:justify-between studio:gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h2", { id: titleId, className: "studio:m-0 studio:text-base studio:font-medium", children: t("studiosUpdates.title") }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", autoFocus: true, className: button, onClick: close, children: t("studiosUpdates.close") })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "studio:mb-4 studio:mt-2 studio:text-sm studio:leading-6 studio:text-(--dsw-alias-label-secondary)", children: t("studiosUpdates.description") }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "studio:mb-4 studio:flex studio:flex-wrap studio:items-center studio:justify-between studio:gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "studio:text-sm studio:text-(--dsw-alias-label-secondary)", children: data ? "dsh " + data.hostVersion : t("studiosUpdates.loading") }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: button, disabled: !data || !!action || data.busy, onClick: () => {
+              if (data) void run("check", data.studios);
+            }, children: action.startsWith("check:") ? t("studiosUpdates.checking") : t("studiosUpdates.checkAll") })
+          ] }),
+          error2 && /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("p", { role: "alert", className: "studio:mb-4 studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:p-3 studio:text-sm studio:leading-6", children: [
+            t(error2 === "recheck" ? "studiosUpdates.recheck" : "studiosUpdates.connection"),
+            " ",
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: button, onClick: () => {
+              void refresh();
+            }, children: t("studiosUpdates.retry") })
+          ] }),
+          data?.issue && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { role: "alert", className: "studio:mb-4 studio:text-sm studio:leading-6", children: t("studiosUpdates.record") }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "studio:flex studio:flex-col studio:gap-3", "aria-live": "polite", "aria-busy": !!action || data?.busy, children: [
+            data?.studios.map((row) => /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("article", { "data-studio-update": row.id, className: "studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:p-3", children: /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "studio:flex studio:flex-wrap studio:items-start studio:justify-between studio:gap-3", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "studio:min-w-0 studio:flex-1", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("h3", { className: "studio:m-0 studio:break-words studio:text-sm studio:font-medium", children: row.name }),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("p", { className: "studio:mb-0 studio:mt-1 studio:break-all studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-secondary)", children: [
+                  t("studiosUpdates.current", { version: row.version }),
+                  row.upstreamVersion ? " \xB7 " + t("studiosUpdates.upstream", { version: row.upstreamVersion }) : ""
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "studio:mb-0 studio:mt-1 studio:text-sm studio:leading-6", children: action === "check:" + row.id ? t("studiosUpdates.checking") : t(`studiosUpdates.state.${row.state}`, { version: row.latest ?? "" }) }),
+                row.operation && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { role: ["failed", "unknown"].includes(row.operation.phase) ? "alert" : "status", className: "studio:mb-0 studio:mt-1 studio:break-words studio:text-sm studio:leading-6", children: t(`studiosUpdates.phase.${row.operation.phase}`, { version: row.operation.to }) }),
+                row.repository && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("a", { href: "https://github.com/" + row.repository + "/releases", target: "_blank", rel: "noreferrer noopener", className: "studio:mt-1 studio:inline-block studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-secondary) studio:underline", children: t("studiosUpdates.releases") })
+              ] }),
+              /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "studio:flex studio:shrink-0 studio:flex-wrap studio:gap-2", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: button, disabled: !!action || data.busy || row.state === "unconfigured", onClick: () => {
+                  void run("check", [row]);
+                }, children: t("studiosUpdates.check") }),
+                row.state === "available" && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { type: "button", className: button, disabled: !!action || data.busy || !!data.issue || row.operation?.phase === "restart-required" || row.operation?.phase === "unknown", onClick: () => {
+                  void run("install", [row]);
+                }, children: t("studiosUpdates.install", { version: row.latest ?? "" }) })
+              ] })
+            ] }) }, row.id)),
+            data && !data.studios.length && /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("p", { className: "studio:text-sm", children: t("studiosUpdates.empty") })
+          ] })
+        ]
+      }
+    ), document.body)
+  ] });
+}
+
+// src/client/index.tsx
+var import_react4 = require("react");
+
+// ../../../../../../../studio-library/node_modules/xterm/css/xterm.css
+var xterm_default = `/**
+ * Copyright (c) 2014 The xterm.js authors. All rights reserved.
+ * Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
+ * https://github.com/chjj/term.js
+ * @license MIT
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * Originally forked from (with the author's permission):
+ *   Fabrice Bellard's javascript vt100 for jslinux:
+ *   http://bellard.org/jslinux/
+ *   Copyright (c) 2011 Fabrice Bellard
+ *   The original design remains. The terminal itself
+ *   has been extended to include xterm CSI codes, among
+ *   other features.
+ */
+
+/**
+ *  Default styles for xterm.js
+ */
+
+.xterm {
+    cursor: text;
+    position: relative;
+    user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+.xterm.focus,
+.xterm:focus {
+    outline: none;
+}
+
+.xterm .xterm-helpers {
+    position: absolute;
+    top: 0;
+    /**
+     * The z-index of the helpers must be higher than the canvases in order for
+     * IMEs to appear on top.
+     */
+    z-index: 5;
+}
+
+.xterm .xterm-helper-textarea {
+    padding: 0;
+    border: 0;
+    margin: 0;
+    /* Move textarea out of the screen to the far left, so that the cursor is not visible */
+    position: absolute;
+    opacity: 0;
+    left: -9999em;
+    top: 0;
+    width: 0;
+    height: 0;
+    z-index: -5;
+    /** Prevent wrapping so the IME appears against the textarea at the correct position */
+    white-space: nowrap;
+    overflow: hidden;
+    resize: none;
+}
+
+.xterm .composition-view {
+    /* TODO: Composition position got messed up somewhere */
+    background: #000;
+    color: #FFF;
+    display: none;
+    position: absolute;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.xterm .composition-view.active {
+    display: block;
+}
+
+.xterm .xterm-viewport {
+    /* On OS X this is required in order for the scroll bar to appear fully opaque */
+    background-color: #000;
+    overflow-y: scroll;
+    cursor: default;
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.xterm .xterm-screen {
+    position: relative;
+}
+
+.xterm .xterm-screen canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.xterm .xterm-scroll-area {
+    visibility: hidden;
+}
+
+.xterm-char-measure-element {
+    display: inline-block;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: -9999em;
+    line-height: normal;
+}
+
+.xterm.enable-mouse-events {
+    /* When mouse events are enabled (eg. tmux), revert to the standard pointer cursor */
+    cursor: default;
+}
+
+.xterm.xterm-cursor-pointer,
+.xterm .xterm-cursor-pointer {
+    cursor: pointer;
+}
+
+.xterm.column-select.focus {
+    /* Column selection mode */
+    cursor: crosshair;
+}
+
+.xterm .xterm-accessibility,
+.xterm .xterm-message {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 10;
+    color: transparent;
+    pointer-events: none;
+}
+
+.xterm .live-region {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.xterm-dim {
+    /* Dim should not apply to background, so the opacity of the foreground color is applied
+     * explicitly in the generated class and reset to 1 here */
+    opacity: 1 !important;
+}
+
+.xterm-underline-1 { text-decoration: underline; }
+.xterm-underline-2 { text-decoration: double underline; }
+.xterm-underline-3 { text-decoration: wavy underline; }
+.xterm-underline-4 { text-decoration: dotted underline; }
+.xterm-underline-5 { text-decoration: dashed underline; }
+
+.xterm-overline {
+    text-decoration: overline;
+}
+
+.xterm-overline.xterm-underline-1 { text-decoration: overline underline; }
+.xterm-overline.xterm-underline-2 { text-decoration: overline double underline; }
+.xterm-overline.xterm-underline-3 { text-decoration: overline wavy underline; }
+.xterm-overline.xterm-underline-4 { text-decoration: overline dotted underline; }
+.xterm-overline.xterm-underline-5 { text-decoration: overline dashed underline; }
+
+.xterm-strikethrough {
+    text-decoration: line-through;
+}
+
+.xterm-screen .xterm-decoration-container .xterm-decoration {
+	z-index: 6;
+	position: absolute;
+}
+
+.xterm-screen .xterm-decoration-container .xterm-decoration.xterm-decoration-top-layer {
+	z-index: 7;
+}
+
+.xterm-decoration-overview-ruler {
+    z-index: 8;
+    position: absolute;
+    top: 0;
+    right: 0;
+    pointer-events: none;
+}
+
+.xterm-decoration-top {
+    z-index: 2;
+    position: relative;
+}
+`;
+
+// src/client/styles.ts
+var css2 = xterm_default + "\n" + [
+  // 区块整体
+  ".dsh-wt_section{box-sizing:border-box;display:flex;flex-direction:column;gap:6px;width:100%;padding:0}",
+  ".dsh-wt_float{min-width:176px;max-width:264px;background:var(--dsw-alias-bg-base,#0b0e14);border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:10px;padding:8px;box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
+  ".dsh-wt_rail{pointer-events:none}",
+  ".dsh-wt_railBox{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;padding:5px 3px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:8px;background:var(--dsw-alias-bg-base,#0b0e14)}",
+  ".dsh-wt_railBtn{flex:none;width:22px;height:22px;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:7px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:13px;line-height:1;cursor:pointer;pointer-events:auto}",
+  ".dsh-wt_railBtn:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.08));border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);color:var(--dsw-alias-label-primary,#e6e8eb)}",
+  ".dsh-wt_railIcon{font-size:17px;line-height:22px}",
+  // 分隔线
+  ".dsh-wt_divider{flex:none;height:1px;background:var(--dsw-alias-border-l1,#262b36);margin:2px 0}",
+  // 头部
+  ".dsh-wt_header{display:flex;align-items:center;gap:6px;padding:0 2px}",
+  ".dsh-wt_handle{display:flex;align-items:center;justify-content:center;width:25px;height:25px;padding:0;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:15px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}",
+  ".dsh-wt_handle:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_handle:active{cursor:grabbing}",
+  ".dsh-wt_handle[data-float=true]{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_title{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--dsw-alias-label-secondary,#9aa4b2);cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}",
+  ".dsh-wt_actions{margin-left:auto;display:flex;align-items:center;gap:7px}",
+  ".dsh-wt_iconBtn{display:flex;align-items:center;justify-content:center;width:24px;height:22px;padding:0;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:12px;line-height:1;cursor:pointer}",
+  ".dsh-wt_iconBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  // 搜索行
+  ".dsh-wt_search{display:flex;align-items:center;gap:6px;padding:3px 6px 3px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03))}",
+  ".dsh-wt_search input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px}",
+  ".dsh-wt_search input::placeholder{color:var(--dsw-alias-label-tertiary,#6e7683)}",
+  ".dsh-wt_searchClear{display:flex;align-items:center;justify-content:center;width:18px;height:18px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:11px;cursor:pointer}",
+  ".dsh-wt_searchClear:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
+  // 菜单与提示
+  ".dsh-wt_menu{position:relative;z-index:12;display:flex;flex-direction:column;gap:1px;padding:5px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:8px;background:var(--dsw-alias-bg-base,#0b0e14);box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
+  ".dsh-wt_menuLabel{font-size:10px;letter-spacing:.05em;color:var(--dsw-alias-label-tertiary,#6e7683);padding:3px 7px 1px}",
+  ".dsh-wt_menuItem{display:flex;align-items:center;padding:5px 8px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:16px;cursor:pointer;text-align:left}",
+  ".dsh-wt_menuItem:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_menuItem[data-on=true]{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  // 菜单分隔线
+  ".dsh-wt_menuSep{height:1px;background:var(--dsw-alias-border-l1,#262b36);margin:4px 2px}",
+  // 添加面板
+  ".dsh-wt_add{max-height:500px;overflow:auto}",
+  ".dsh-wt_addText{font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary,#9aa4b2);padding:2px 8px 4px;margin:0}",
+  ".dsh-wt_addLink{color:var(--dsw-alias-state-accent-primary,#4f8ef7);text-decoration:none}",
+  ".dsh-wt_addForm{display:flex;flex-direction:column;gap:5px;padding:4px 8px 8px}",
+  ".dsh-wt_addForm input{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;padding:5px 8px;outline:none}",
+  ".dsh-wt_addForm input:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_addForm .dsh-wt_addIcon{width:64px}",
+  ".dsh-wt_addBtn{display:flex;align-items:center;justify-content:center;padding:5px 8px;border:none;border-radius:6px;background:var(--dsw-alias-state-accent-primary,#4f8ef7);color:#fff;font:inherit;font-size:12px;line-height:16px;cursor:pointer}",
+  ".dsh-wt_addBtn:hover{filter:brightness(1.08)}",
+  ".dsh-wt_addError{font-size:11px;color:var(--dsw-alias-state-danger,#e5484d);padding:0 8px 8px;margin:0}",
+  // 管理项目（编辑模式）
+  ".dsh-wt_manage{position:relative;z-index:12;display:flex;flex-direction:column;gap:4px;padding:6px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:8px;background:var(--dsw-alias-bg-base,#0b0e14)}",
+  ".dsh-wt_manageHead{display:flex;align-items:center;justify-content:space-between;padding:1px 2px 4px}",
+  ".dsh-wt_manageTitle{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--dsw-alias-label-primary,#e6e8eb)}",
+  ".dsh-wt_settingsClose{position:absolute;top:6px;right:6px;width:20px;height:20px;padding:0;display:flex;align-items:center;justify-content:center;border:none;border-radius:6px;background:transparent;color:var(--dsw-alias-label-tertiary,#7d8aa5);font-size:13px;line-height:1;cursor:pointer}",
+  ".dsh-wt_settingsClose:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06));color:var(--dsw-alias-label-primary,#dbe4f3)}",
+  ".dsh-wt_manageDone{display:flex;align-items:center;padding:2px 8px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-state-accent-primary,#4f8ef7);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
+  ".dsh-wt_manageDone:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  // 排序方式：一左一右两个选择按钮（手动 / 最近）
+  ".dsh-wt_sortRow{display:flex;gap:6px;padding:0 8px 2px}",
+  ".dsh-wt_sortBtn{flex:1;display:flex;align-items:center;justify-content:center;padding:4px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
+  ".dsh-wt_sortBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);border-color:var(--dsw-alias-border-l2,#3a4150)}",
+  ".dsh-wt_sortBtn[data-on=true]{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_manageRow{display:flex;align-items:center;gap:6px;padding:4px 6px;border:1px solid transparent;border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03))}",
+  ".dsh-wt_manageRow:hover{border-color:var(--dsw-alias-border-l2,#3a4150)}",
+  ".dsh-wt_manageRowOff{opacity:.45}",
+  ".dsh-wt_manageGrip{flex:none;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:12px;cursor:grab;user-select:none;-webkit-user-select:none}",
+  ".dsh-wt_manageIcon{flex:none;width:20px;font-size:15px;text-align:center}",
+  ".dsh-wt_manageInput{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;padding:2px 0}",
+  ".dsh-wt_manageBtn{flex:none;display:flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:11px;line-height:1;cursor:pointer}",
+  ".dsh-wt_manageBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
+  ".dsh-wt_manageScName{flex:1;min-width:0;font-size:12px;color:var(--dsw-alias-label-secondary,#9aa4b2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+  ".dsh-wt_manageReset{align-self:flex-start;margin-top:2px;padding:3px 8px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
+  ".dsh-wt_manageReset:hover{color:var(--dsw-alias-state-danger,#e5484d);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  // 快捷方式
+  ".dsh-wt_shortcuts{display:flex;flex-direction:column;gap:4px}",
+  ".dsh-wt_shortcut{display:flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-primary,#e6e8eb);text-decoration:none;font-size:12px;line-height:18px}",
+  ".dsh-wt_shortcut:hover{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_shortcutIcon{flex:none;font-size:15px}",
+  ".dsh-wt_shortcutName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_shortcutBadge{flex:none;font-size:9px;line-height:14px;padding:0 5px;border-radius:8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06));color:var(--dsw-alias-label-tertiary,#6e7683)}",
+  // 项目区
+  ".dsh-wt_projects{display:flex;flex-direction:column;gap:4px}",
+  ".dsh-wt_projects[data-managing=true]{opacity:.55;pointer-events:none}",
+  ".dsh-wt_empty{padding:8px 10px;border:1px dashed var(--dsw-alias-border-l1,#262b36);border-radius:8px;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:11px;text-align:center}",
+  // 分栏工作区（M1 通用引擎）
+  ".dsh-wt_splitBar{display:flex;align-items:center;gap:10px;height:26px;padding:0 10px;box-sizing:border-box;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-bg-base,#0b0e14)}",
+  ".dsh-wt_splitTitle{flex:1;min-width:0;font-size:12px;font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_splitClose{flex:none;display:flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:12px;cursor:pointer}",
+  ".dsh-wt_splitClose:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
+  // 窗格容器：无圆角、无描边，直角贴齐分隔细线；底色保持不透明（标题栏/标签栏是 2% 浅色底，
+  // 窗格若透明会露出宿主垫在下面的文字）
+  ".dsh-wt_pane{display:flex;flex-direction:column;box-sizing:border-box;border:none;background:var(--dsw-alias-bg-base,#0b0e14);overflow:hidden;transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease}",
+  // 文件预览：文本/MD 滚动容器 + MD 排版 + 图片居中
+  ".dsh-wt_fileView{flex:1;min-height:0;overflow:auto;padding:12px 14px;background:var(--dsw-alias-bg-base,#0b0e14);color:var(--dsw-alias-label-primary,#e6e8eb);font-size:12.5px;line-height:1.7}",
+  ".dsh-wt_txt{margin:0;font-family:var(--dsw-font-mono,Consolas,Menlo,monospace);font-size:12px;line-height:1.65;white-space:pre-wrap;word-break:break-word}",
+  // MD 编辑/预览切换工具栏
+  ".dsh-wt_mdBar{flex:none;display:flex;align-items:center;gap:6px;padding:4px 8px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02))}",
+  ".dsh-wt_mdBtn{flex:none;padding:3px 10px;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
+  ".dsh-wt_mdBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
+  ".dsh-wt_mdBtnOn{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_mdSave{margin-left:auto;padding:3px 12px;border:none;border-radius:5px;background:var(--dsw-alias-state-accent-primary,#4f8ef7);color:#fff;font:inherit;font-size:11px;cursor:pointer}",
+  ".dsh-wt_mdSave:disabled{opacity:.6;cursor:default}",
+  ".dsh-wt_mdMsg{font-size:11px;color:var(--dsw-alias-state-danger,#e5484d)}",
+  ".dsh-wt_mdEdit{flex:1;min-height:0;width:100%;box-sizing:border-box;padding:12px 14px;background:var(--dsw-alias-bg-base,#0b0e14);color:var(--dsw-alias-label-primary,#e6e8eb);border:none;outline:none;resize:none;font-family:var(--dsw-font-mono,Consolas,Menlo,monospace);font-size:12px;line-height:1.7}",
+  // 代码语法着色（GitHub Dark 风格 token 配色）
+  ".dsh-wt_code{margin:0;font-family:var(--dsw-font-mono,Consolas,Menlo,monospace);font-size:12px;line-height:1.65;white-space:pre;word-break:normal}",
+  ".dsh-wt_code .hljs-keyword,.dsh-wt_code .hljs-selector-tag,.dsh-wt_code .hljs-literal,.dsh-wt_code .hljs-doctag{color:#ff7b72}",
+  ".dsh-wt_code .hljs-string,.dsh-wt_code .hljs-attr,.dsh-wt_code .hljs-regexp{color:#a5d6ff}",
+  ".dsh-wt_code .hljs-comment,.dsh-wt_code .hljs-quote{color:#8b949e;font-style:italic}",
+  ".dsh-wt_code .hljs-number,.dsh-wt_code .hljs-symbol,.dsh-wt_code .hljs-bullet{color:#79c0ff}",
+  ".dsh-wt_code .hljs-title,.dsh-wt_code .hljs-function .hljs-title,.dsh-wt_code .hljs-section{color:#d2a8ff}",
+  ".dsh-wt_code .hljs-built_in,.dsh-wt_code .hljs-type,.dsh-wt_code .hljs-class .hljs-title{color:#ffa657}",
+  ".dsh-wt_code .hljs-variable,.dsh-wt_code .hljs-params,.dsh-wt_code .hljs-meta{color:#e6edf3}",
+  ".dsh-wt_code .hljs-property,.dsh-wt_code .hljs-attribute{color:#79c0ff}",
+  ".dsh-wt_code .hljs-tag,.dsh-wt_code .hljs-name{color:#7ee787}",
+  ".dsh-wt_code .hljs-selector-class,.dsh-wt_code .hljs-selector-id{color:#d2a8ff}",
+  ".dsh-wt_code .hljs-addition{color:#7ee787}",
+  ".dsh-wt_code .hljs-deletion{color:#ff7b72}",
+  ".dsh-wt_md h1,.dsh-wt_md h2,.dsh-wt_md h3,.dsh-wt_md h4{margin:14px 0 8px;line-height:1.3;font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb)}",
+  ".dsh-wt_md h1{font-size:20px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);padding-bottom:6px}",
+  ".dsh-wt_md h2{font-size:16.5px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);padding-bottom:5px}",
+  ".dsh-wt_md h3{font-size:14.5px}",
+  ".dsh-wt_md h4{font-size:13px}",
+  ".dsh-wt_md p{margin:6px 0}",
+  ".dsh-wt_md a{color:var(--dsw-alias-state-accent-primary,#4f8ef7);text-decoration:none}",
+  ".dsh-wt_md a:hover{text-decoration:underline}",
+  ".dsh-wt_md code{font-family:var(--dsw-font-mono,Consolas,Menlo,monospace);font-size:11.5px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06));padding:1px 5px;border-radius:4px}",
+  ".dsh-wt_md pre{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.04));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;padding:10px 12px;overflow:auto;margin:8px 0}",
+  ".dsh-wt_md pre code{background:transparent;padding:0;font-size:12px}",
+  ".dsh-wt_md blockquote{margin:8px 0;padding:2px 12px;border-left:3px solid var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));color:var(--dsw-alias-label-secondary,#9aa4b2)}",
+  ".dsh-wt_md ul,.dsh-wt_md ol{margin:6px 0;padding-left:22px}",
+  ".dsh-wt_md li{margin:2px 0}",
+  ".dsh-wt_md table{border-collapse:collapse;margin:8px 0;font-size:12px}",
+  ".dsh-wt_md th,.dsh-wt_md td{border:1px solid var(--dsw-alias-border-l1,#262b36);padding:4px 10px;text-align:left}",
+  ".dsh-wt_md th{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_md hr{border:none;border-top:1px solid var(--dsw-alias-border-l1,#262b36);margin:12px 0}",
+  ".dsh-wt_md img{max-width:100%}",
+  ".dsh-wt_imgView{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto;padding:10px;background:var(--dsw-alias-bg-base,#0b0e14)}",
+  ".dsh-wt_imgView img{max-width:100%;max-height:100%;object-fit:contain}",
+  ".dsh-wt_pane[data-drop-hover=true]{box-shadow:0 0 0 2px rgba(79,142,247,.4),var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4));transform:scale(1.012)}",
+  ".dsh-wt_paneBar{flex:none;display:flex;align-items:center;height:22px;padding:0 8px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02))}",
+  ".dsh-wt_paneBar{padding-right:26px}",
+  ".dsh-wt_paneTitle{flex:1;min-width:0;font-size:11px;font-weight:600;color:var(--dsw-alias-label-secondary,#9aa4b2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  // 窗格折叠按钮：常态只是一个折角小标签（无底色无描边），hover 才显示按钮范围（底+描边）
+  ".dsh-wt_collapseBtn{position:absolute;top:2px;right:14px;z-index:2;width:18px;height:18px;margin:0;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);cursor:pointer}",
+  ".dsh-wt_collapseBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l2,rgba(255,255,255,.09));border-color:var(--dsw-alias-border-l1,#262b36)}",
+  ".dsh-wt_collapseBtn svg{width:12px;height:12px;display:block}",
+  ".dsh-wt_annotBtn{position:absolute;top:2px;right:36px;z-index:2;width:18px;height:18px;margin:0;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);cursor:pointer}",
+  ".dsh-wt_annotBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l2,rgba(255,255,255,.09));border-color:var(--dsw-alias-border-l1,#262b36)}",
+  ".dsh-wt_annotBtn svg{width:12px;height:12px;display:block}",
+  ".dsh-wt-annotating,.dsh-wt-annotating *{cursor:none!important}",
+  ".dsh-wt-annotating iframe{pointer-events:none!important}",
+  ".dsh-wt_annotBubble{position:fixed;z-index:5000;left:0;top:0;transform:translate(-50%,-100%) translateY(-4px);pointer-events:none;width:30px;height:22px;border-radius:9px;background:#4f8ef7;box-shadow:0 2px 10px rgba(79,142,247,.5);display:flex;align-items:center;justify-content:center}",
+  '.dsh-wt_annotBubble::after{content:"";position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);border:6px solid #4f8ef7;border-top-width:5px;border-bottom-width:0;border-left-color:transparent;border-right-color:transparent}',
+  ".dsh-wt_annotSel{position:fixed;z-index:4999;border:1.5px solid #4f8ef7;background:rgba(79,142,247,.16);box-shadow:0 0 0 1px rgba(79,142,247,.25);pointer-events:none}",
+  ".dsh-wt_annotHint{position:fixed;right:18px;bottom:56px;z-index:5002;max-width:320px;padding:9px 12px;border-radius:10px;background:rgba(16,20,28,.96);border:1px solid rgba(122,92,255,.45);box-shadow:0 8px 24px rgba(0,0,0,.5);color:#e6e8eb;font-size:12px;line-height:18px;pointer-events:none;animation:annotHintIn .25s ease-out}",
+  "@keyframes annotHintIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}",
+  ".dsh-wt_annotEditor{position:fixed;z-index:5001;width:280px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:10px;background:rgba(16,20,28,.96);border:1px solid rgba(255,255,255,.2);box-shadow:0 10px 30px rgba(0,0,0,.5)}",
+  ".dsh-wt_annotInput{width:100%;box-sizing:border-box;height:56px;padding:6px 8px;border:1px solid rgba(255,255,255,.18);border-radius:7px;background:rgba(255,255,255,.05);color:#e6e8eb;font:inherit;font-size:12px;line-height:17px;resize:none;outline:none;cursor:text}",
+  ".dsh-wt_annotInput:focus{border-color:#4f8ef7}",
+  ".dsh-wt_annotBtns{display:flex;justify-content:flex-end;gap:6px}",
+  ".dsh-wt_annotOk,.dsh-wt_annotNo{flex:none;width:26px;height:22px;padding:0;border:none;border-radius:6px;background:rgba(255,255,255,.08);color:var(--dsw-alias-label-primary,#e6e8eb);font-size:12px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}",
+  ".dsh-wt_annotOk:hover{background:#1d9a55;color:#fff}",
+  ".dsh-wt_annotNo:hover{background:#c0392b;color:#fff}",
+  ".dsh-wt_collapseBtnCollapsed{color:var(--dsw-alias-label-secondary,#9aa4b2)}",
+  ".dsh-wt_paneFrame{flex:1;width:100%;border:0;background:#010409;min-height:0}",
+  // iframe 内容标签：容器 + 右上角常驻刷新按钮
+  ".dsh-wt_tabRefresh{flex:none;width:14px;height:14px;padding:0;border:none;border-radius:3px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:10px;line-height:1;cursor:pointer}",
+  ".dsh-wt_tabRefresh:hover{color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.08))}",
+  // 分隔条：热区保持 4px 宽（好拖），视觉上只在中间画 1px 细实线；hover 时细线变主题蓝高亮 + 微光
+  ".dsh-wt_splitDivider{background:linear-gradient(to right,transparent 2px,var(--dsw-alias-border-l2,#3a4150) 2px,var(--dsw-alias-border-l2,#3a4150) 3px,transparent 3px);cursor:col-resize;touch-action:none;box-sizing:border-box}",
+  ".dsh-wt_splitDividerH{cursor:row-resize;background:linear-gradient(to bottom,transparent 2px,var(--dsw-alias-border-l2,#3a4150) 2px,var(--dsw-alias-border-l2,#3a4150) 3px,transparent 3px)}",
+  ".dsh-wt_splitDivider:hover{background:linear-gradient(to right,transparent 2px,var(--dsw-alias-state-accent-primary,#4f8ef7) 2px,var(--dsw-alias-state-accent-primary,#4f8ef7) 3px,transparent 3px);box-shadow:0 0 6px rgba(79,142,247,.55)}",
+  ".dsh-wt_splitDividerH:hover{background:linear-gradient(to bottom,transparent 2px,var(--dsw-alias-state-accent-primary,#4f8ef7) 2px,var(--dsw-alias-state-accent-primary,#4f8ef7) 3px,transparent 3px);box-shadow:0 0 6px rgba(79,142,247,.55)}",
+  // 新建工作区（拓扑预设）
+  ".dsh-wt_presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:2px 8px 6px}",
+  ".dsh-wt_preset{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:10px;line-height:13px;cursor:pointer}",
+  ".dsh-wt_preset:hover{border-color:var(--dsw-alias-border-l2,#3a4150)}",
+  ".dsh-wt_preset[data-on=true]{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_thumb{display:flex;flex-direction:column;width:54px;height:36px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:3px;overflow:hidden;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03))}",
+  ".dsh-wt_thumbRow{flex:1;display:flex;min-height:0}",
+  ".dsh-wt_thumbCols{flex-direction:row}",
+  ".dsh-wt_thumbCol{flex:1;min-width:0;display:flex;flex-direction:column}",
+  ".dsh-wt_thumbRow:last-child .dsh-wt_thumbCell{border-bottom:none}",
+  ".dsh-wt_thumbCell{flex:1;min-width:0;border-right:1px solid var(--dsw-alias-border-l1,#262b36);border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);display:flex;align-items:center;justify-content:center;font-size:8px;line-height:1}",
+  ".dsh-wt_thumbRow .dsh-wt_thumbCell:last-child{border-right:none}",
+  ".dsh-wt_thumbChat{background:var(--dsw-alias-state-accent-primary,#4f8ef7);color:#fff}",
+  // 预设网格末尾的 ＋ 自定义磁贴
+  ".dsh-wt_presetAdd{border-style:dashed;color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_presetAddIcon{font-size:18px;line-height:20px}",
+  ".dsh-wt_presetAddText{font-size:10px;line-height:13px}",
+  // 项目卡片上的对话绑定按钮（○○ 空心 = 未绑定 / ●● 实心 = 已绑定；CSS 双圆绘制，黑白单色克制：
+  // 未绑定次级灰空心、已绑定主色实心，不用强调色；hover 区域 = 22×22 圆角矩形按钮底，
+  // 气泡为 body 级元素向右伸出（跨层显示），垂直居中于按钮）
+  // 任务完成提醒镜像：绿色发光 / 待决提醒：黄色发光（点击项目即 ack 恢复常态实心）；
+  // 工作中：蓝色发光 + 两圆交替亮灭（对应 DSH 对话的转圈标记，无需 ack，running 变 false 自动停）
+  "@keyframes dsh-wt-busyA{0%,44%{opacity:1}50%,94%{opacity:.12}100%{opacity:1}}",
+  "@keyframes dsh-wt-busyB{0%,44%{opacity:.12}50%,94%{opacity:1}100%{opacity:.12}}",
+  // 气泡为 body 级独立元素（.dsh-wt_bindTip），此处只保留按钮本体样式
+  // 布局条目卡片
+  ".dsh-wt_layout{display:flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;cursor:pointer;text-align:left}",
+  ".dsh-wt_layout:hover{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_layout[data-on=true]{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_layout[data-on=true] .dsh-wt_layoutName{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_layoutIcon{flex:none;font-size:15px}",
+  ".dsh-wt_layoutText{flex:1;min-width:0;display:flex;flex-direction:column;gap:0}",
+  ".dsh-wt_layoutName{font-size:12px;font-weight:400;line-height:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  // 箭头与项目名同一行高 + 字面中心对齐；› 墨迹在字面框内偏下，整体上移 1px 使视觉居中
+  ".dsh-wt_layoutArrow{flex:none;display:inline-flex;align-items:center;height:18px;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:14px;line-height:18px;transform:translateY(-1.5px)}",
+  // 入驻项目卡自带箭头（桥注入 .dsh-wt_resArrow）：与布局卡同款视觉居中
+  "button[data-wt-id] > .dsh-wt_resArrow{display:inline-flex;align-items:center;height:18px;line-height:18px;transform:translateY(-1.5px)}",
+  // 项目卡片统一：所有入驻项目卡片（data-wt-id 通用标记）与布局卡片同款常显框
+  ".dsh-wt_projects [data-wt-id]{border-color:var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02))}",
+  ".dsh-wt_projects [data-wt-id]:hover{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_projects [data-wt-id][data-on=true]{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  // 标签精简：项目卡片只留名称一行，小字描述行去掉
+  ".dsh-wt_projects [data-wt-id] > :nth-child(2) > :nth-child(2){display:none}",
+  // 图标选择弹窗（固定定位，点击项目/布局/快捷方式的图标唤出）
+  ".dsh-wt_iconPop{position:fixed;z-index:81;width:256px;padding:8px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:10px;background:var(--dsw-alias-bg-base,#0b0e14);box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
+  ".dsh-wt_iconPopTitle{font-size:10px;letter-spacing:.05em;color:var(--dsw-alias-label-tertiary,#6e7683);padding:1px 4px 6px}",
+  ".dsh-wt_iconGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}",
+  ".dsh-wt_iconCell{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border:1px solid transparent;border-radius:6px;background:transparent;font-size:17px;line-height:1;cursor:pointer;padding:0}",
+  ".dsh-wt_iconCell:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05));border-color:var(--dsw-alias-border-l2,#3a4150)}",
+  ".dsh-wt_iconCell[data-on=true]{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.08));border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  // 可点图标（布局卡 / 管理行 / 快捷方式上的图标，点击换 emoji）
+  ".dsh-wt_iconPick{flex:none;display:inline-flex;align-items:center;justify-content:center;padding:1px;border:none;background:transparent;cursor:pointer;border-radius:4px}",
+  ".dsh-wt_iconPick:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.08))}",
+  // 四类项目卡片统一竖向高度（常驻×2 / 布局 / 快捷方式；新建条目自动继承）
+  ".dsh-wt_projects [data-wt-id],.dsh-wt_layout,.dsh-wt_shortcut{height:34px;box-sizing:border-box}",
+  // 入驻项目卡片图标覆盖：data-wt-icon 存在时用 attr() 替换显示（原字符字号压到 0）
+  ".dsh-wt_projects [data-wt-id] > :first-child[data-wt-icon]{font-size:0;line-height:20px}",
+  ".dsh-wt_projects [data-wt-id] > :first-child[data-wt-icon]::before{content:attr(data-wt-icon);font-size:15px;line-height:20px}",
+  // 常驻项目卡片与新建项目统一：emoji 字号 15px、名称不加粗
+  ".dsh-wt_projects [data-wt-id] > :first-child{font-size:15px;line-height:20px}",
+  ".dsh-wt_projects [data-wt-id] > :nth-child(2) > :first-child{font-weight:400}",
+  // 头部按钮内的官方 SVG 图标
+  ".dsh-wt_iconBtn svg{display:block}",
+  // 窗内容：选择器 / 自定义 / 浏览器 / 占位
+  ".dsh-wt_panePicker{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;overflow:auto}",
+  ".dsh-wt_panePicker-row{flex-direction:row;flex-wrap:wrap}",
+  ".dsh-wt_panePicker-grid{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;gap:10px;place-content:center}",
+  ".dsh-wt_panePicker-col{flex-direction:column}",
+  // 自定义窗口对话框（居中卡片）
+  ".dsh-wt_customBox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}",
+  ".dsh-wt_customCard{display:flex;flex-direction:column;gap:10px;width:100%;max-width:360px;padding:14px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:10px;background:var(--dsw-alias-bg-base,#0b0e14);box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
+  ".dsh-wt_customTitle{font-size:13px;font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb)}",
+  ".dsh-wt_customHint{font-size:11.5px;line-height:17px;color:var(--dsw-alias-label-secondary,#9aa4b2);margin:0}",
+  // 自定义对话框：模式切换（新建对话 / 发送到会话）
+  ".dsh-wt_customModes{display:flex;gap:6px}",
+  ".dsh-wt_customModeBtn{flex:1;display:flex;align-items:center;justify-content:center;padding:4px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
+  ".dsh-wt_customModeBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);border-color:var(--dsw-alias-border-l2,#3a4150)}",
+  ".dsh-wt_customModeBtnOn{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_customInput{width:100%;box-sizing:border-box;min-height:96px;padding:8px 10px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;outline:none;resize:vertical}",
+  ".dsh-wt_customInput:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  // 新建分组：父目录 / 名称单行输入
+  ".dsh-wt_customPathInput{flex:1;min-width:0;box-sizing:border-box;padding:5px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;outline:none}",
+  ".dsh-wt_customPathInput:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  // 新建项目强制文件夹：两行（父目录/名称）
+  ".dsh-wt_addFolderRow{display:flex;align-items:center;gap:8px;margin-top:6px;padding:0 2px}",
+  ".dsh-wt_addFolderPath{flex:1;min-width:0;padding:4px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));font-size:11.5px;line-height:17px;color:var(--dsw-alias-label-primary,#e6e8eb);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_addFolderPathNone{color:var(--dsw-alias-label-tertiary,#6b7280);border-style:dashed}",
+  ".dsh-wt_addFolderRow .dsh-wt_customLabel{flex:none;width:auto;text-align:left}",
+  ".dsh-wt_manualPathInput{flex:1;min-width:0;padding:4px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));font-size:11.5px;line-height:17px;color:var(--dsw-alias-label-primary,#e6e8eb)}",
+  ".dsh-wt_addFolderRow .dsh-wt_bindFolderChange:disabled{opacity:.5;cursor:default}",
+  ".dsh-wt_folderPickHint{margin-top:6px;margin-bottom:0;font-size:11.5px;line-height:17px;color:var(--dsw-alias-state-warning,#e0a33c)}",
+  ".dsh-wt_bindFolderBox .dsh-wt_addError{margin-top:6px;margin-bottom:0}",
+  // 绑定弹窗内的项目文件夹区
+  ".dsh-wt_bindFolderBox{margin-top:8px;padding:6px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px}",
+  ".dsh-wt_bindFolderRow{display:flex;align-items:center;gap:6px}",
+  ".dsh-wt_bindFolderLabel{font-size:12px;line-height:18px;color:var(--dsw-alias-label-primary,#e6e8eb);margin-right:auto}",
+  ".dsh-wt_bindFolderChange{flex:none;padding:2px 10px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
+  ".dsh-wt_bindFolderChange:hover{color:var(--dsw-alias-label-primary,#e6e8eb);border-color:var(--dsw-alias-border-l2,#3a4150)}",
+  ".dsh-wt_bindFolderPath{margin-top:4px;font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary,#9aa4b2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_bindFolderPathNone{color:var(--dsw-alias-label-tertiary,#6b7280)}",
+  ".dsh-wt_bindFolderForm{display:flex;flex-direction:column;gap:6px;margin-top:6px}",
+  // 自定义布局弹窗（＋磁贴）：描述输入 + 复制提示词 + Toast
+  ".dsh-wt_customLayoutInput{width:100%;box-sizing:border-box;min-height:110px;margin-top:8px;padding:8px 10px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;outline:none;resize:vertical}",
+  ".dsh-wt_customLayoutInput:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_customLayoutBtn{width:100%;margin-top:8px;padding:7px 10px;border:1px solid var(--dsw-alias-state-accent-primary,#4f8ef7);border-radius:8px;background:transparent;color:var(--dsw-alias-state-accent-primary,#4f8ef7);font:inherit;font-size:12px;line-height:18px;cursor:pointer}",
+  ".dsh-wt_customLayoutBtn:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_customLayoutToast{margin:8px 0 0;font-size:11.5px;line-height:17px;color:var(--dsw-alias-state-success,#3fb950)}",
+  ".dsh-wt_customLayoutToastFail{color:var(--dsw-alias-state-danger,#f85149)}",
+  // 对话绑定弹窗：绑定对话框内的对话行（点击右侧弹列表）
+  ".dsh-wt_bindNoneText{font-size:12px;line-height:18px}",
+  ".dsh-wt_bindFolder{flex:none;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary,#9aa4b2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:40%}",
+  ".dsh-wt_bindSep{flex:none;color:var(--dsw-alias-border-l2,#3a4150);font-size:11px}",
+  ".dsh-wt_bindConvRow{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;margin-top:4px;padding:3px 4px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;cursor:pointer;text-align:left}",
+  ".dsh-wt_bindConvRow:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05));border-color:var(--dsw-alias-border-l2,#3a4150)}",
+  ".dsh-wt_bindConvRowNone{color:var(--dsw-alias-label-secondary,#9aa4b2)}",
+  ".dsh-wt_bindConvName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_bindConvChevron{flex:none;color:var(--dsw-alias-label-tertiary,#6b7280);font-size:9px;line-height:1}",
+  ".dsh-wt_bindHint{margin:6px 0 2px;font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary,#9aa4b2)}",
+  // 自定义窗完成页：自动绑定提示
+  ".dsh-wt_customDoneBind{margin:6px 0 0;font-size:11px;line-height:16px;color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_bindUnbind{flex:none;display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
+  ".dsh-wt_bindUnbind:hover{color:var(--dsw-alias-state-danger,#f85149);border-color:var(--dsw-alias-state-danger,#f85149)}",
+  ".dsh-wt_bindList{max-height:280px;overflow:auto;position:static}",
+  ".dsh-wt_bindListPop{display:flex;flex-direction:column;padding:6px}",
+  ".dsh-wt_bindListPop .dsh-wt_bindList{max-height:320px}",
+  ".dsh-wt_customRow{display:flex;align-items:center;gap:8px}",
+  ".dsh-wt_customLabel{flex:none;font-size:11.5px;color:var(--dsw-alias-label-secondary,#9aa4b2)}",
+  ".dsh-wt_customSelect{flex:1;min-width:0;padding:5px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;outline:none}",
+  ".dsh-wt_customSelect option{background-color:var(--dsw-alias-bg-base,#0b0e14);color:var(--dsw-alias-label-primary,#e6e8eb)}",
+  // 自制下拉（文件夹分组 + 细分隔线）
+  ".dsh-wt_select{position:relative;flex:1;min-width:0}",
+  ".dsh-wt_selectBtn{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;padding:5px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;cursor:pointer}",
+  ".dsh-wt_selectBtn:hover{border-color:var(--dsw-alias-border-l2,#3a4150)}",
+  ".dsh-wt_selectVal{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_selectPh{color:var(--dsw-alias-label-tertiary,#6e7683)}",
+  ".dsh-wt_selectCaret{flex:none;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:10px;line-height:1}",
+  ".dsh-wt_selectList{margin-top:4px;max-height:180px;overflow:auto;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:8px;background:var(--dsw-alias-bg-base,#0b0e14);padding:4px;box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
+  ".dsh-wt_selectItem{display:flex;align-items:center;gap:6px;width:100%;padding:6px 8px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:17px;cursor:pointer;text-align:left}",
+  ".dsh-wt_selectItem:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_selectItemOn{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06));color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_selectItemTitle{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_selectCurrent{flex:none;font-size:10px;color:var(--dsw-alias-label-tertiary,#6e7683)}",
+  ".dsh-wt_selectDivider{height:1px;background:var(--dsw-alias-border-l1,#262b36);margin:6px 2px}",
+  // 文件夹分组标题：与选项同字号、加粗、左侧蓝色竖条 + 微底色，明显区别于下方对话
+  ".dsh-wt_selectGroup{display:flex;align-items:center;gap:6px;margin:2px 0 2px;padding:6px 8px;border-left:2px solid var(--dsw-alias-state-accent-primary,#4f8ef7);border-radius:4px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.04));font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--dsw-alias-label-secondary,#9aa4b2);user-select:none}",
+  ".dsh-wt_customSend{align-self:flex-end;padding:6px 14px;border:none;border-radius:6px;background:var(--dsw-alias-state-accent-primary,#4f8ef7);color:#fff;font:inherit;font-size:12px;cursor:pointer}",
+  ".dsh-wt_customSend:disabled{opacity:.55;cursor:default}",
+  ".dsh-wt_customFail{font-size:11px;color:var(--dsw-alias-state-danger,#e5484d);margin:0}",
+  ".dsh-wt_customDone{font-size:26px;line-height:32px}",
+  ".dsh-wt_customDoneText{font-size:13px;font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb);margin:4px 0 0}",
+  ".dsh-wt_customDoneHint{font-size:11.5px;color:var(--dsw-alias-label-secondary,#9aa4b2);margin:0}",
+  ".dsh-wt_customDone{display:block}",
+  ".dsh-wt_customBox:has(.dsh-wt_customDone){flex-direction:column;gap:4px;text-align:center}",
+  ".dsh-wt_panePick{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:92px;height:78px;padding:8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:10px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:11px;line-height:15px;cursor:pointer;transition:border-color .15s,background .15s,transform .15s}",
+  ".dsh-wt_panePick:hover{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05));transform:translateY(-1px)}",
+  ".dsh-wt_panePick span{font-size:22px;line-height:24px}",
+  ".dsh-wt_paneCustom{flex:none;width:100%;max-width:320px;display:flex;align-items:center;gap:6px;padding:4px}",
+  ".dsh-wt_paneCustom input{flex:1;min-width:0;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;padding:5px 8px;outline:none}",
+  ".dsh-wt_paneCustom input:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_paneCustomGo{flex:none;padding:5px 10px;border:none;border-radius:6px;background:var(--dsw-alias-state-accent-primary,#4f8ef7);color:#fff;font:inherit;font-size:12px;cursor:pointer}",
+  ".dsh-wt_browserBar{flex:none;display:flex;align-items:center;gap:5px;padding:4px 6px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02))}",
+  ".dsh-wt_browserInput{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:11px;line-height:16px}",
+  ".dsh-wt_browserGo{flex:none;width:20px;height:20px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:12px;cursor:pointer}",
+  ".dsh-wt_browserGo:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
+  ".dsh-wt_paneWip{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--dsw-alias-label-tertiary,#6e7683)}",
+  ".dsh-wt_paneWipIcon{font-size:26px;line-height:30px}",
+  ".dsh-wt_paneWipText{font-size:11px}",
+  ".dsh-wt_splitFlip{flex:none;display:flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:13px;cursor:pointer}",
+  ".dsh-wt_splitFlip:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
+  // + 右侧弹出面板
+  ".dsh-wt_popBackdrop{position:fixed;left:0;top:0;right:0;bottom:0;z-index:79;background:transparent}",
+  // 删除二次确认（fixed 居中模态，压在弹窗之上）
+  ".dsh-wt_confirmBackdrop{position:fixed;left:0;top:0;right:0;bottom:0;z-index:81;background:rgba(0,0,0,.35)}",
+  ".dsh-wt_confirm{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:82;width:292px;display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:10px;background:var(--dsw-alias-bg-base,#0b0e14);box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
+  ".dsh-wt_confirmTitle{font-size:13px;font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb)}",
+  ".dsh-wt_confirmBody{font-size:11.5px;line-height:17px;color:var(--dsw-alias-label-secondary,#9aa4b2)}",
+  ".dsh-wt_confirmActions{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}",
+  ".dsh-wt_confirmCancel{padding:5px 12px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:12px;cursor:pointer}",
+  ".dsh-wt_confirmCancel:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_confirmDelete{padding:5px 12px;border:none;border-radius:6px;background:var(--dsw-alias-state-danger,#e5484d);color:#fff;font:inherit;font-size:12px;cursor:pointer}",
+  ".dsh-wt_confirmDelete:hover{filter:brightness(1.1)}",
+  ".dsh-wt_pop{max-height:min(540px,calc(100vh - 32px));overflow:auto;box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}",
+  // 功能窗（资源管理器/SCM/任务/终端）
+  ".dsh-wt_subBar{flex:none;display:flex;align-items:center;gap:4px;padding:3px 6px;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02))}",
+  ".dsh-wt_subBtn{flex:none;display:flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:11px;cursor:pointer}",
+  ".dsh-wt_subBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
+  ".dsh-wt_subPath{flex:1;min-width:0;font-size:10.5px;color:var(--dsw-alias-label-tertiary,#6e7683);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_subList{flex:1;min-height:0;overflow:auto;padding:3px}",
+  ".dsh-wt_subRow{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;padding:3px 6px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:11px;line-height:16px;cursor:pointer;text-align:left}",
+  ".dsh-wt_subRow:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_subRowStatic{cursor:default}",
+  ".dsh-wt_subRowStatic:hover{background:transparent}",
+  ".dsh-wt_subIcon{flex:none;font-size:11px}",
+  ".dsh-wt_subName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_subEmpty{padding:14px 10px;font-size:11px;color:var(--dsw-alias-label-tertiary,#6e7683);text-align:center}",
+  ".dsh-wt_subTag{flex:none;font-size:9px;color:var(--dsw-alias-label-tertiary,#6e7683);padding:0 5px;border-radius:8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
+  ".dsh-wt_gitXY{flex:none;width:20px;font-size:9px;text-align:center;border-radius:4px;padding:1px 0}",
+  ".dsh-wt_gitXYMod{color:#e5b567;background:rgba(229,181,103,.12)}",
+  ".dsh-wt_gitXYNew{color:#7fd88f;background:rgba(127,216,143,.12)}",
+  ".dsh-wt_jobDot{flex:none;font-size:8px;line-height:16px}",
+  ".dsh-wt_jobDot-running{color:#e5b567}",
+  ".dsh-wt_jobDot-completed{color:#7fd88f}",
+  ".dsh-wt_jobDot-failed{color:#e5484d}",
+  ".dsh-wt_jobDot-killed{color:#6e7683}",
+  ".dsh-wt_jobDot-stopping{color:#9aa4b2}",
+  ".dsh-wt_termHost{flex:1;min-height:0;padding:6px 2px 2px 8px;background:#010409;overflow:hidden}",
+  ".dsh-wt_termHost .xterm{height:100%}",
+  // 窗内标签页
+  ".dsh-wt_tabBar{flex:none;display:flex;align-items:center;gap:3px;padding:3px 5px 0;border-bottom:1px solid var(--dsw-alias-border-l1,#262b36);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));overflow-x:auto}",
+  ".dsh-wt_tab{flex:none;display:flex;align-items:center;gap:5px;max-width:150px;padding:3px 8px;border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:10.5px;line-height:16px;cursor:grab;user-select:none;-webkit-user-select:none}",
+  ".dsh-wt_tab:active{cursor:grabbing}",
+  ".dsh-wt_tab:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.04))}",
+  ".dsh-wt_tabOn{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-bg-base,#0b0e14);border-color:var(--dsw-alias-border-l1,#262b36)}",
+  ".dsh-wt_tabTitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_tabClose{flex:none;width:14px;height:14px;padding:0;border:none;border-radius:3px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:9px;line-height:1;cursor:pointer}",
+  ".dsh-wt_tabClose:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.08))}",
+  // 树形资源管理器
+  ".dsh-wt_treeRow{display:flex;align-items:center;gap:5px;width:100%;box-sizing:border-box;padding:3px 6px;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:11px;line-height:16px;cursor:pointer;text-align:left}",
+  ".dsh-wt_treeRow:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_treeArrow{flex:none;width:10px;font-size:8px;color:var(--dsw-alias-label-tertiary,#6e7683);transition:transform .12s ease}",
+  ".dsh-wt_treeArrowOpen{transform:rotate(90deg)}",
+  ".dsh-wt_treeIcon{flex:none}",
+  ".dsh-wt_treeName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+  ".dsh-wt_subSection{flex:none;padding:6px 8px 2px;font-size:10px;font-weight:600;letter-spacing:.05em;color:var(--dsw-alias-label-tertiary,#6e7683)}",
+  // 控制室面板：项目卡片网格（每行 3 张、超出换行；DSH 简洁 + 苹果式卡片）。
+  // 主题变量自带作用域：dark 缺省；data-wt-theme=light 换浅色；system 由面板读宿主 color-scheme 落成 dark/light。
+  ".dsh-wt_console{--wt-bg:#0a0d13;--wt-card:#171c25;--wt-cardHover:#1d232e;--wt-border:#2a3140;--wt-borderHover:#39445a;--wt-text:#e6e8eb;--wt-text2:#9aa4b2;--wt-text3:#6e7683;--wt-chip:rgba(255,255,255,.06);--wt-grid:rgba(255,255,255,.045);--wt-shadow:0 6px 20px rgba(0,0,0,.35);position:relative;flex:1;min-height:0;overflow:hidden;padding:22px;display:flex;flex-direction:column;background-color:var(--wt-bg)}",
+  // 流光玻璃背景：30px 网格不变；网格下层是缓慢漂移的模糊彩光光晕
+  ".dsh-wt_consoleBg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}",
+  '.dsh-wt_consoleBg::after{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--wt-grid) 1px,transparent 1px),linear-gradient(90deg,var(--wt-grid) 1px,transparent 1px);background-size:30px 30px}',
+  ".dsh-wt_blob{position:absolute;width:56vmax;height:56vmax;border-radius:50%;filter:blur(64px);opacity:.45;mix-blend-mode:screen}",
+  ".dsh-wt_blob1{background:radial-gradient(circle,#ff5f9e,transparent 66%);top:-18%;left:-14%;animation:wtBlob1 calc(13s * var(--wt-glowScale,1)) ease-in-out infinite alternate}",
+  ".dsh-wt_blob2{background:radial-gradient(circle,#7a5cff,transparent 66%);top:4%;right:-20%;animation:wtBlob2 calc(17s * var(--wt-glowScale,1)) ease-in-out infinite alternate}",
+  ".dsh-wt_blob3{background:radial-gradient(circle,#00c2ff,transparent 66%);bottom:-22%;left:14%;animation:wtBlob3 calc(11s * var(--wt-glowScale,1)) ease-in-out infinite alternate}",
+  ".dsh-wt_blob4{background:radial-gradient(circle,#ff9a3d,transparent 66%);bottom:-8%;right:4%;animation:wtBlob4 calc(15s * var(--wt-glowScale,1)) ease-in-out infinite alternate}",
+  "@keyframes wtBlob1{from{transform:translate(0,0) scale(1)}to{transform:translate(14vw,10vh) scale(1.12)}}",
+  "@keyframes wtBlob2{from{transform:translate(0,0) scale(1)}to{transform:translate(-13vw,11vh) scale(1.1)}}",
+  "@keyframes wtBlob3{from{transform:translate(0,0) scale(1)}to{transform:translate(12vw,-8vh) scale(1.15)}}",
+  "@keyframes wtBlob4{from{transform:translate(0,0) scale(1)}to{transform:translate(-10vw,-10vh) scale(1.12)}}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_blob{opacity:.28}",
+  ".dsh-wt_consoleGrid{position:relative;z-index:1}",
+  // 底部中央玻璃 dock：4 个 ghost 按钮（图标常显，hover 才浮现圆角矩形）+ 统一下拉面板（宽度 = dock 宽 150px）
+  ".dsh-wt_consoleScroll{flex:1;min-height:0;overflow:auto;padding-bottom:10px}",
+  ".dsh-wt_announceCtr{display:flex;min-height:100%;align-items:center;justify-content:center;box-sizing:border-box}",
+  ".dsh-wt_announceCtr .dsh-wt_announce{margin:auto}",
+  ".dsh-wt_announce{width:100%;max-width:856px;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding:26px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.07) 30%,rgba(255,255,255,.01) 60%,rgba(0,0,0,.07) 100%),rgba(18,23,32,.24);border:1px solid transparent;box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.13);box-sizing:border-box;backdrop-filter:blur(8px) saturate(1.15);animation:wtAnnounceIn .28s cubic-bezier(.25,.6,.3,1)}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_announce{background:linear-gradient(135deg,rgba(255,255,255,1) 0%,rgba(255,255,255,.65) 30%,rgba(255,255,255,.12) 60%,rgba(31,41,55,.06) 100%),rgba(255,255,255,.34);box-shadow:0 10px 28px rgba(31,41,55,.18),inset 0 1px 0 rgba(255,255,255,1)}",
+  ".dsh-wt_announceHead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--wt-border)}",
+  ".dsh-wt_announceVer{font-size:15px;font-weight:700;color:var(--wt-text)}",
+  ".dsh-wt_announceBtn{flex:none;padding:4px 12px;border:none;border-radius:7px;background:var(--wt-chip);color:var(--wt-text2);font:inherit;font-size:12px;line-height:17px;cursor:pointer;transition:background .15s ease,color .15s ease}",
+  ".dsh-wt_announceBtn:hover{background:rgba(79,142,247,.22);color:var(--wt-text)}",
+  ".dsh-wt_announceBtn:disabled{opacity:.6;cursor:default}",
+  ".dsh-wt_announceAuto{flex:none;font-size:12px;line-height:17px;color:var(--wt-text2);margin-left:auto}",
+  ".dsh-wt_announceUpdate{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border-radius:8px;background:rgba(79,142,247,.12)}",
+  ".dsh-wt_announceNewVer{font-size:12px;line-height:17px;color:#7eb3ff;font-weight:600}",
+  ".dsh-wt_announceUpg{flex:none;padding:3px 10px;border:none;border-radius:6px;background:rgba(79,142,247,.16);color:#7eb3ff;font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
+  ".dsh-wt_announceUpg:hover{background:rgba(79,142,247,.3);color:#bcd6ff}",
+  ".dsh-wt_announceUpgOk{background:rgba(29,154,85,.2);color:#4ade80}",
+  ".dsh-wt_announceUpgOk:hover{background:rgba(29,154,85,.3);color:#86efac}",
+  ".dsh-wt_announceHow{flex:none;width:100%;font-size:11px;line-height:16px;color:var(--wt-text);padding-top:2px}",
+  ".dsh-wt_announceSkip.dsh-wt_announceSkipGo:hover{background:rgba(79,142,247,.16);color:#7eb3ff}",
+  ".dsh-wt_announceSkip{flex:none;padding:3px 10px;border:none;border-radius:6px;background:transparent;color:var(--wt-text3);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
+  ".dsh-wt_announceSkip:hover{background:rgba(244,63,94,.14);color:#f87171}",
+  ".dsh-wt_announceStatus{font-size:11px;line-height:16px;color:var(--wt-text3)}",
+  ".dsh-wt_announceBody{white-space:pre-wrap;font-size:13px;line-height:1.75;color:var(--wt-text2);user-select:text}",
+  ".dsh-wt_consoleDockWrap{position:relative;z-index:12;flex:none;display:flex;justify-content:center;padding-top:12px}",
+  ".dsh-wt_consoleDock{display:flex;align-items:center;gap:4px;padding:5px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);box-shadow:0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(14px) saturate(1.3)}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleDock{background:rgba(255,255,255,.62);border-color:rgba(27,31,36,.12);box-shadow:0 8px 24px rgba(31,41,55,.12)}",
+  ".dsh-wt_dockBtn{position:relative;width:32px;height:32px;padding:0;border:none;border-radius:9px;background:transparent;color:var(--wt-text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease}",
+  ".dsh-wt_dockBadge{position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#f5a623;box-shadow:0 0 6px rgba(245,166,35,.95);animation:wtAnnPulse 1.6s ease-in-out infinite}",
+  "@keyframes wtAnnPulse{0%,100%{opacity:1}50%{opacity:.3}}",
+  "@keyframes wtAnnounceIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}",
+  ".dsh-wt_dockBtn svg{transition:transform .15s ease}",
+  ".dsh-wt_dockBtn:hover svg{transform:scale(1.12)}",
+  ".dsh-wt_dockBtn:hover{background:rgba(255,255,255,.14)}",
+  ".dsh-wt_dockBtnOn{background:rgba(255,255,255,.22)}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_dockBtn:hover{background:rgba(27,31,36,.10)}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_dockBtnOn{background:rgba(27,31,36,.14)}",
+  ".dsh-wt_dropMask{position:fixed;inset:0;z-index:9;background:transparent;border:none}",
+  ".dsh-wt_drop{position:absolute;bottom:calc(100% - 4px);left:50%;transform:translateX(-50%);width:186px;box-sizing:border-box;padding:5px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);box-shadow:0 8px 24px rgba(0,0,0,.4);backdrop-filter:blur(14px) saturate(1.3);z-index:11;display:flex;flex-direction:column;gap:2px}",
+  ".dsh-wt_dropItem{width:100%;padding:6px 9px;border:none;border-radius:7px;background:transparent;color:var(--wt-text2);font:inherit;font-size:12px;line-height:17px;cursor:pointer;display:flex;align-items:center;gap:7px;text-align:left}",
+  ".dsh-wt_dropItem:hover{background:var(--wt-chip);color:var(--wt-text)}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_drop{background:rgba(255,255,255,.62);border-color:rgba(27,31,36,.12)}",
+  ".dsh-wt_dropRow{display:flex;align-items:center;width:100%}",
+  ".dsh-wt_dropRow .dsh-wt_dropItem{flex:1;min-width:0}",
+  ".dsh-wt_dropGear{flex:none;width:24px;height:24px;margin-right:2px;padding:0;border:none;border-radius:6px;background:transparent;color:var(--wt-text2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease,color .15s ease}",
+  ".dsh-wt_dropGear:hover{background:var(--wt-chip);color:var(--wt-text)}",
+  ".dsh-wt_dropWide{width:264px}",
+  ".dsh-wt_dropTrash{flex:none;width:22px;height:22px;margin-right:2px;padding:0;border:none;border-radius:6px;background:transparent;color:var(--wt-text3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease,color .15s ease}",
+  ".dsh-wt_dragHandle{flex:none;width:18px;height:22px;padding:0;border:none;border-radius:6px;background:transparent;color:var(--wt-text3);cursor:grab;display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease,color .15s ease;touch-action:none}",
+  ".dsh-wt_dragHandle:hover{background:var(--wt-chip);color:var(--wt-text2)}",
+  ".dsh-wt_dragHandleOn{background:var(--wt-chip);color:var(--wt-text);cursor:grabbing}",
+  ".dsh-wt_dropTrash:hover{background:rgba(244,63,94,.16);color:#f87171}",
+  ".dsh-wt_gridLabel{flex:none;white-space:nowrap;font-size:12px;line-height:17px;color:var(--wt-text2);padding:2px 2px 2px 4px}",
+  ".dsh-wt_gridHalf .dsh-wt_switch{margin-right:2px}",
+  ".dsh-wt_switch{flex:none;position:relative;width:30px;height:17px;margin-right:4px;padding:0;border:none;border-radius:999px;background:rgba(255,255,255,.14);cursor:pointer;transition:background .15s ease}",
+  ".dsh-wt_switchOn{background:#4f8ef7}",
+  ".dsh-wt_switchKnob{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.4);transition:left .18s cubic-bezier(.22,.61,.36,1)}",
+  ".dsh-wt_switchOn .dsh-wt_switchKnob{left:15px}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_switch{background:rgba(27,31,36,.15)}",
+  ".dsh-wt_console[data-wt-bg=plain][data-wt-grid=on] .dsh-wt_consoleBg::after{background-image:linear-gradient(var(--wt-gridPlain,rgba(255,255,255,.045)) 1px,transparent 1px),linear-gradient(90deg,var(--wt-gridPlain,rgba(255,255,255,.045)) 1px,transparent 1px);background-size:30px 30px}",
+  ".dsh-wt_console[data-wt-bg=glow][data-wt-grid=on] .dsh-wt_consoleBg::after{background-image:linear-gradient(var(--wt-gridGlow,rgba(255,255,255,.045)) 1px,transparent 1px),linear-gradient(90deg,var(--wt-gridGlow,rgba(255,255,255,.045)) 1px,transparent 1px);background-size:30px 30px}",
+  ".dsh-wt_console[data-wt-bg=photo][data-wt-grid=on] .dsh-wt_consoleBg::after{background-image:linear-gradient(var(--wt-gridPhoto,rgba(255,255,255,.08)) 1px,transparent 1px),linear-gradient(90deg,var(--wt-gridPhoto,rgba(255,255,255,.08)) 1px,transparent 1px);background-size:30px 30px}",
+  ".dsh-wt_console[data-wt-theme=light][data-wt-bg=plain][data-wt-grid=on] .dsh-wt_consoleBg::after{background-image:linear-gradient(var(--wt-gridPlainLight,rgba(27,31,36,.14)) 1px,transparent 1px),linear-gradient(90deg,var(--wt-gridPlainLight,rgba(27,31,36,.14)) 1px,transparent 1px);background-size:30px 30px}",
+  ".dsh-wt_console[data-wt-theme=light][data-wt-bg=glow][data-wt-grid=on] .dsh-wt_consoleBg::after{background-image:linear-gradient(var(--wt-gridGlowLight,rgba(27,31,36,.14)) 1px,transparent 1px),linear-gradient(90deg,var(--wt-gridGlowLight,rgba(27,31,36,.14)) 1px,transparent 1px);background-size:30px 30px}",
+  ".dsh-wt_console[data-wt-bg=photo][data-wt-grid=off] .dsh-wt_consoleBg::after{display:none}",
+  ".dsh-wt_hslHead{display:flex;align-items:center;gap:4px;padding:2px 4px 4px}",
+  ".dsh-wt_hslBack{flex:none;width:20px;height:20px;padding:0;border:none;border-radius:6px;background:transparent;color:var(--wt-text3);cursor:pointer;font-size:14px;line-height:1;display:inline-flex;align-items:center;justify-content:center}",
+  ".dsh-wt_hslBack:hover{background:var(--wt-chip);color:var(--wt-text)}",
+  ".dsh-wt_hslTitle{flex:1;min-width:0;font-size:12px;line-height:17px;color:var(--wt-text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+  ".dsh-wt_hslRow{position:relative;display:flex;align-items:center;gap:4px;padding:2px 3px;width:100%;box-sizing:border-box}",
+  ".dsh-wt_hslRow::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% - 2px);transform:translateX(-50%);padding:3px 8px;border-radius:6px;background:rgba(10,13,19,.94);border:1px solid rgba(255,255,255,.22);color:#e6e8eb;font-size:11px;line-height:16px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s ease;z-index:30}",
+  ".dsh-wt_hslRow:hover::after{opacity:1}",
+  ".dsh-wt_hslLabel{flex:none;width:10px;font-size:9px;font-weight:600;color:var(--wt-text3);text-align:center}",
+  ".dsh-wt_hslSlider{flex:1;min-width:0;height:14px;accent-color:#4f8ef7;cursor:pointer}",
+  ".dsh-wt_hslInput{flex:none;width:42px;height:20px;padding:0 4px;border:1px solid var(--wt-border);border-radius:6px;background:var(--wt-chip);color:var(--wt-text2);font:inherit;font-size:10px;text-align:center;outline:none;box-sizing:border-box;font-variant-numeric:tabular-nums;-moz-appearance:textfield;appearance:textfield}",
+  ".dsh-wt_hslInput::-webkit-outer-spin-button,.dsh-wt_hslInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}",
+  ".dsh-wt_hslInput:focus{border-color:#4f8ef7;color:var(--wt-text)}",
+  ".dsh-wt_hslReset{margin:4px 4px 2px;padding:5px 9px;border:none;border-radius:7px;background:var(--wt-chip);color:var(--wt-text2);font:inherit;font-size:12px;line-height:17px;cursor:pointer;text-align:center}",
+  ".dsh-wt_hslReset:hover{background:rgba(79,142,247,.22);color:var(--wt-text)}",
+  ".dsh-wt_photoRow{cursor:pointer;padding:3px 4px;border-radius:7px;box-sizing:border-box}",
+  ".dsh-wt_photoRow:hover{background:var(--wt-chip)}",
+  ".dsh-wt_photoRowOn{background:var(--wt-chip)}",
+  ".dsh-wt_photoThumb{flex:none;width:30px;height:30px;border-radius:7px;object-fit:cover;border:1px solid var(--wt-border);background:var(--wt-chip);box-sizing:border-box}",
+  ".dsh-wt_photoName{flex:1;min-width:0;font-size:11px;line-height:16px;color:var(--wt-text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+  ".dsh-wt_photoEmpty{padding:4px 4px 2px;font-size:11px;line-height:16px;color:var(--wt-text3)}",
+  ".dsh-wt_hslDivider{height:1px;margin:5px 4px;background:var(--wt-border);opacity:.5}",
+  ".dsh-wt_consoleMedia{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}",
+  ".dsh-wt_gridHalf{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 2px;box-sizing:border-box}",
+  ".dsh-wt_thumbWrap{position:relative;flex:none;width:30px;height:30px}",
+  ".dsh-wt_thumbWrap .dsh-wt_photoThumb{position:absolute;inset:0}",
+  ".dsh-wt_thumbBadge{position:absolute;right:-3px;bottom:-3px;width:14px;height:14px;border-radius:50%;background:rgba(10,13,19,.88);border:1px solid rgba(255,255,255,.4);color:#e6e8eb;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2}",
+  ".dsh-wt_photoThumb video,.dsh-wt_photoThumb{display:block}",
+  ".dsh-wt_dropItemOn{background:var(--wt-chip);color:var(--wt-text);font-weight:600}",
+  ".dsh-wt_hbar{position:relative;width:130px;height:26px;margin:4px auto;border-radius:999px;background:rgba(255,255,255,.08)}",
+  ".dsh-wt_hbarFill{position:absolute;top:3px;bottom:3px;left:0;border-radius:999px;background:linear-gradient(90deg,#4f8ef7,#3b82f6);pointer-events:none;transition:width .25s cubic-bezier(.22,.61,.36,1)}",
+  ".dsh-wt_hbarLine{position:absolute;top:0;bottom:0;transform:translateX(-50%);width:20%;padding:0;border:none;background:transparent;cursor:pointer;z-index:2}",
+  '.dsh-wt_hbarLine::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:2px;height:9px;border-radius:2px;background:rgba(255,255,255,.9);transition:height .12s ease,background .12s ease}',
+  ".dsh-wt_hbarLine:hover::before{height:14px;background:#fff}",
+  ".dsh-wt_hbarKnob{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid rgba(79,142,247,.8);box-shadow:0 1px 4px rgba(0,0,0,.4);z-index:3;pointer-events:none;transition:left .25s cubic-bezier(.22,.61,.36,1)}",
+  // 工作中的卡片流光：光带加长羽化 + 光层超出卡片（移动时不露整齐边缘），每 ~3.2s 从左上斜扫到右下
+  ".dsh-wt_consoleSweep{position:absolute;inset:-30%;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.01) 0%,rgba(255,255,255,.045) 30%,rgba(255,255,255,.13) 50%,rgba(255,255,255,.045) 70%,rgba(255,255,255,.01) 100%);opacity:0;animation:consoleSweep 3.2s ease-in-out infinite}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleSweep{background:linear-gradient(115deg,rgba(255,255,255,.1) 0%,rgba(255,255,255,.3) 30%,rgba(255,255,255,.55) 50%,rgba(255,255,255,.3) 70%,rgba(255,255,255,.1) 100%)}",
+  "@keyframes consoleSweep{0%{opacity:0;transform:translate(-12%,-12%)}35%{opacity:1}55%{opacity:1}92%,100%{opacity:0;transform:translate(12%,12%)}}",
+  ".dsh-wt_console[data-wt-theme=light]{--wt-bg:#eef1f5;--wt-card:#ffffff;--wt-cardHover:#f7f9fb;--wt-border:#d8dee6;--wt-borderHover:#b9c4d2;--wt-grid:rgba(27,31,36,.07);--wt-text:#1c2128;--wt-text2:#57606a;--wt-text3:#8b949e;--wt-chip:rgba(27,31,36,.07);--wt-shadow:0 6px 20px rgba(31,41,55,.10)}",
+  ".dsh-wt_consoleHead{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:12px}",
+  ".dsh-wt_consoleTitle{font-size:14px;font-weight:700;line-height:20px;color:var(--wt-text)}",
+  ".dsh-wt_consoleTheme{display:inline-flex;align-items:center;padding:2px;border:1px solid var(--wt-border);border-radius:999px;background:var(--wt-card)}",
+  ".dsh-wt_consoleThemeBtn{flex:none;padding:3px 9px;border:none;border-radius:999px;background:transparent;color:var(--wt-text3);font:inherit;font-size:12px;line-height:18px;cursor:pointer;opacity:.85}",
+  ".dsh-wt_consoleThemeBtn:hover{opacity:1;background:var(--wt-chip)}",
+  ".dsh-wt_consoleThemeBtnOn{background:var(--wt-chip);color:var(--wt-text);opacity:1}",
+  ".dsh-wt_consoleShape{display:inline-flex;align-items:center;padding:2px;border:1px solid var(--wt-border);border-radius:999px;background:var(--wt-card)}",
+  ".dsh-wt_consoleShapeBtn{flex:none;width:26px;height:26px;padding:0;border:none;border-radius:999px;background:transparent;color:var(--wt-text3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;opacity:.85}",
+  ".dsh-wt_consoleShapeBtn:hover{opacity:1;background:var(--wt-chip)}",
+  ".dsh-wt_consoleShapeBtnOn{background:var(--wt-chip);color:var(--wt-text);opacity:1}",
+  ".dsh-wt_consoleBgBtns{display:inline-flex;align-items:center;padding:2px;border:1px solid var(--wt-border);border-radius:999px;background:var(--wt-card)}",
+  ".dsh-wt_consoleBgBtn{flex:none;width:26px;height:26px;padding:0;border:none;border-radius:999px;background:transparent;color:var(--wt-text3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;opacity:.85}",
+  ".dsh-wt_consoleBgBtn:hover{opacity:1;background:var(--wt-chip)}",
+  ".dsh-wt_consoleBgBtnOn{background:var(--wt-chip);color:var(--wt-text);opacity:1}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleGrid{max-width:calc(var(--wt-cols,3)*268px + (var(--wt-cols,3) - 1)*64px)}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleCard{border-radius:50%;justify-content:center;align-items:center;padding:24px 24px 38px;gap:9px}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleCardHead{width:100%;flex-direction:column;justify-content:center;gap:5px;text-align:center}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleIcon{font-size:27px;line-height:1}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleName{flex:none;max-width:88%;font-size:19px;font-weight:700;line-height:26px;text-align:center}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleDivider{width:56%;margin:2px auto}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleStatusRow{justify-content:center;gap:8px}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleStatus{font-size:17px;line-height:24px}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleRuntime{font-size:15px;line-height:21px}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consolePreview{text-align:center;max-width:82%;margin:0 auto;-webkit-line-clamp:2;font-size:9px;line-height:13px}",
+  ".dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleCard-busy::before{border-radius:50%}",
+  ".dsh-wt_consoleGrid{display:flex;flex-wrap:wrap;justify-content:center;gap:64px;align-content:start;margin-top:clamp(32px,9vh,110px);width:100%;max-width:calc(var(--wt-cols,3)*242px + (var(--wt-cols,3) - 1)*64px);margin-left:auto;margin-right:auto}",
+  ".dsh-wt_consoleCols{display:inline-flex;align-items:center;gap:8px;padding:2px 8px;border:1px solid var(--wt-border);border-radius:999px;background:var(--wt-card);color:var(--wt-text3);font-size:11px}",
+  ".dsh-wt_consoleCard{position:relative;box-sizing:border-box;flex:none;width:calc((100% - (var(--wt-cols,3) - 1)*64px)/var(--wt-cols,3));display:flex;flex-direction:column;gap:14px;aspect-ratio:1/1;min-height:192px;padding:21px;background:linear-gradient(135deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.07) 30%,rgba(255,255,255,.01) 60%,rgba(0,0,0,.07) 100%),rgba(18,23,32,.24);border:1px solid transparent;border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.13);cursor:pointer;transition:transform .14s ease,box-shadow .14s ease;overflow:hidden;backdrop-filter:blur(var(--wt-cardBlur,0px)) saturate(1.15)}",
+  // 玻璃边缘：四角黑白渐变描边（左上/右下=白，右上/左下=黑），1px 环挖空实现
+  '.dsh-wt_consoleCard::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:conic-gradient(from 45deg,rgba(0,0,0,.4) 0deg,rgba(255,255,255,.55) 90deg,rgba(0,0,0,.4) 180deg,rgba(255,255,255,.55) 270deg,rgba(0,0,0,.4) 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none;opacity:.5}',
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleCard{background:linear-gradient(135deg,rgba(255,255,255,1) 0%,rgba(255,255,255,.65) 30%,rgba(255,255,255,.12) 60%,rgba(31,41,55,.06) 100%),rgba(255,255,255,.34);box-shadow:0 10px 28px rgba(31,41,55,.18),inset 0 1px 0 rgba(255,255,255,1);backdrop-filter:blur(var(--wt-cardBlur,0px)) saturate(1.15)}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleCard::after{background:conic-gradient(from 45deg,rgba(27,31,36,.4) 0deg,rgba(255,255,255,1) 90deg,rgba(27,31,36,.4) 180deg,rgba(255,255,255,1) 270deg,rgba(27,31,36,.4) 360deg);opacity:.9}",
+  // 状态光效卡片：玻璃边缘让位给霓虹描边/旋转光环
+  ".dsh-wt_consoleCard-glowDone::after,.dsh-wt_consoleCard-glowNeed::after{opacity:0}",
+  ".dsh-wt_consoleCard:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.09)}",
+  ".dsh-wt_consoleCardSelf{cursor:default;opacity:.97}",
+  ".dsh-wt_consoleCardHead{display:flex;align-items:center;gap:13px;min-width:0}",
+  ".dsh-wt_consoleIcon{flex:none;font-size:31px;line-height:1}",
+  ".dsh-wt_consoleName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:20px;font-weight:700;line-height:28px;color:var(--wt-text)}",
+  ".dsh-wt_consoleDivider{flex:none;height:1px;background:var(--wt-border)}",
+  ".dsh-wt_consoleStatusRow{display:flex;align-items:baseline;justify-content:space-between;gap:9px;min-width:0}",
+  ".dsh-wt_consoleStatus{flex:none;font-size:22px;font-weight:700;line-height:30px;color:var(--wt-text2)}",
+  ".dsh-wt_consoleStatus-busy{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_consoleStatus-need{color:var(--dsw-alias-state-warning,#d29922)}",
+  ".dsh-wt_consoleStatus-done{color:var(--dsw-alias-state-success,#3fb950)}",
+  ".dsh-wt_consoleRuntime{flex:none;font-size:17px;font-weight:600;line-height:24px;color:var(--wt-text2);font-variant-numeric:tabular-nums}",
+  ".dsh-wt_consolePreview{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;font-size:8.5px;line-height:13px;color:var(--wt-text2);word-break:break-word}",
+  ".dsh-wt_consolePreviewNone{color:var(--wt-text3);font-style:italic;-webkit-line-clamp:1}",
+  // 三色光效：整卡霓虹描边光晕（像侧栏双圆点的发光质感）——完成=绿、待决=黄；工作=蓝色描边顺时针旋转
+  ".dsh-wt_consoleCard-glowDone{border-color:rgba(63,185,80,.9);box-shadow:0 0 8px rgba(63,185,80,.5),0 0 26px rgba(63,185,80,.3),inset 0 0 16px rgba(63,185,80,.07)}",
+  ".dsh-wt_consoleCard-glowNeed{border-color:rgba(210,153,34,.95);box-shadow:0 0 8px rgba(210,153,34,.5),0 0 26px rgba(210,153,34,.3),inset 0 0 16px rgba(210,153,34,.08)}",
+  '@property --consoleAngle{syntax:"<angle>";initial-value:0deg;inherits:false}',
+  ".dsh-wt_consoleCard-busy{box-shadow:0 0 10px rgba(94,160,255,.55),0 0 34px rgba(79,142,247,.4)}",
+  '.dsh-wt_consoleCard-busy::before{content:"";position:absolute;inset:-4px;border-radius:19px;padding:4px;background:conic-gradient(from var(--consoleAngle),transparent 0deg,rgba(94,160,255,0) 25deg,#dcebff 55deg,#9cc6ff 85deg,rgba(94,160,255,0) 125deg,transparent 200deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;animation:consoleAngleSpin 1.4s linear infinite;filter:drop-shadow(0 0 8px rgba(140,190,255,.85));pointer-events:none}',
+  "@keyframes consoleAngleSpin{to{--consoleAngle:360deg}}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleCard-busy{box-shadow:0 0 10px rgba(37,99,235,.5),0 0 34px rgba(37,99,235,.32)}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleCard-busy::before{background:conic-gradient(from var(--consoleAngle),transparent 0deg,rgba(37,99,235,0) 25deg,#2563eb 55deg,#38bdf8 85deg,rgba(37,99,235,0) 125deg,transparent 200deg);filter:drop-shadow(0 0 8px rgba(37,99,235,.8))}",
+  ".dsh-wt_consoleEmpty{padding:40px 0;text-align:center;font-size:12px;color:var(--wt-text3)}",
+  // 创建卡片：虚线 + 居中加号，永远最后一位
+  // 创建卡片：玻璃底 + 虚线边，永远最后一位
+  ".dsh-wt_consoleAdd{justify-content:center;align-items:center;gap:10px;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.09),rgba(255,255,255,0) 65%),rgba(18,23,32,.34);border:1.5px dashed var(--wt-borderHover)}",
+  ".dsh-wt_consoleAdd::after{display:none}",
+  ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleAdd{background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.95),rgba(255,255,255,0) 65%),rgba(255,255,255,.55)}",
+  ".dsh-wt_consoleAdd:hover{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:rgba(23,28,37,.45)}",
+  ".dsh-wt_consoleAddPlus{font-size:34px;line-height:1;color:var(--wt-text2);font-weight:400}",
+  ".dsh-wt_consoleAdd:hover .dsh-wt_consoleAddPlus{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_consoleAddLabel{font-size:17px;font-weight:600;color:var(--wt-text2)}",
+  ".dsh-wt_consoleAdd:hover .dsh-wt_consoleAddLabel{color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  // 控制室入口卡：统筹主程序的差异化（渐变底 + 微光；无描边，颜色更亮更饱和）
+  ".dsh-wt_projects .dsh-wt_consoleEntry{background:linear-gradient(135deg,rgba(109,164,255,.30),rgba(167,130,255,.22));border-color:transparent;box-shadow:0 0 14px rgba(96,150,255,.22)}",
+  ".dsh-wt_projects .dsh-wt_consoleEntry:hover{background:linear-gradient(135deg,rgba(109,164,255,.42),rgba(167,130,255,.32));box-shadow:0 0 18px rgba(96,150,255,.32)}",
+  ".dsh-wt_projects .dsh-wt_consoleEntry[data-on=true]{background:linear-gradient(135deg,rgba(109,164,255,.38),rgba(167,130,255,.28));box-shadow:0 0 18px rgba(96,150,255,.34)}",
+  ".dsh-wt_projects .dsh-wt_consoleEntry .dsh-wt_layoutIcon{font-size:15px}",
+  ".dsh-wt_projects .dsh-wt_consoleEntry .dsh-wt_layoutName{font-weight:600;color:var(--dsw-alias-label-primary,#e6e8eb)}",
+  // 控制室强制绑定弹窗：左加入现有 / 右新建对话
+  ".dsh-wt_consoleBindCols{display:flex;gap:12px}",
+  ".dsh-wt_consoleBindCol{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}",
+  ".dsh-wt_consoleBindColNew{border-left:1px solid var(--dsw-alias-border-l1,#262b36);padding-left:12px}",
+  ".dsh-wt_consoleBindLabel{font-size:12px;font-weight:600;line-height:18px;color:var(--dsw-alias-label-primary,#e6e8eb)}",
+  ".dsh-wt_consoleBindList{max-height:300px;overflow:auto;position:static}",
+  ".dsh-wt_consoleBindEmpty{padding:20px 0;text-align:center;font-size:11px;color:var(--dsw-alias-label-tertiary,#6e7683)}",
+  ".dsh-wt_consoleSelect,.dsh-wt_consoleInput{width:100%;box-sizing:border-box;padding:6px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:11.5px;line-height:16px;outline:none}",
+  ".dsh-wt_consoleSelect:focus,.dsh-wt_consoleInput:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
+  ".dsh-wt_consoleErr{margin:0;font-size:11px;line-height:16px;color:var(--dsw-alias-state-danger,#f85149)}",
+  ".dsh-wt_consoleHint{margin:0;font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary,#aab6cd)}",
+  ".dsh-wt_consoleCreateBtn{margin-top:2px;padding:7px 10px;border:1px solid var(--dsw-alias-state-accent-primary,#4f8ef7);border-radius:8px;background:transparent;color:var(--dsw-alias-state-accent-primary,#4f8ef7);font:inherit;font-size:12px;line-height:18px;cursor:pointer}",
+  ".dsh-wt_consoleCreateBtn:hover:not(:disabled){background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
+  ".dsh-wt_consoleCreateBtn:disabled{opacity:.55;cursor:default}",
+  ".dsh-wt_statusDrop{left:auto;right:8px;transform:none;bottom:48px;z-index:90;width:300px;max-width:calc(100vw - 24px);padding:10px;display:flex;flex-direction:column;gap:7px}",
+  ".dsh-wt_statusDrop .dsh-wt_dropRow{justify-content:space-between;align-items:center}",
+  ".dsh-wt_statusSection{font-size:10px;letter-spacing:.04em;color:var(--dsw-alias-label-tertiary,#6e7683)}",
+  ".dsh-wt_statusItem{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;line-height:18px}",
+  ".dsh-wt_statusReady{color:#42d392}",
+  ".dsh-wt_statusOffline{color:#f3b562}",
+  ".dsh-wt_statusWorkspace{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:var(--dsw-alias-label-secondary,#9aa4b2)}",
+  // ── 更新提示：侧栏标题旁徽标（仅图标 + 琥珀呼吸光）与设置面板更新卡 / 版本行 ──
+  ".dsh-wt_updateBadge{flex:none;display:flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:3px;padding:0;border:none;border-radius:50%;background:rgba(245,185,66,.16);color:#f7d488;font-size:11px;line-height:1;cursor:pointer;position:relative}",
+  '.dsh-wt_updateBadge::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(245,185,66,.55);animation:dsh-wt_updatePulse 1.8s ease-out infinite}',
+  "@keyframes dsh-wt_updatePulse{0%{opacity:.9;box-shadow:0 0 0 0 rgba(245,185,66,.5)}70%{opacity:.35;box-shadow:0 0 0 6px rgba(245,185,66,0)}100%{opacity:.9;box-shadow:0 0 0 0 rgba(245,185,66,0)}}",
+  ".dsh-wt_updateCard{margin:0 0 10px;padding:10px;border:1px solid rgba(245,185,66,.45);border-radius:10px;background:rgba(245,185,66,.08);display:flex;flex-direction:column;gap:6px}",
+  ".dsh-wt_updateHead{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:#f7d488}",
+  ".dsh-wt_updateDot{width:7px;height:7px;border-radius:50%;background:#f5b942;animation:dsh-wt_updatePulse 1.8s ease-out infinite}",
+  ".dsh-wt_updateVers{font-size:11.5px;color:var(--dsw-alias-label-tertiary,#7d8aa5)}",
+  ".dsh-wt_updateNotes{max-height:96px;overflow:auto;font-size:11px;line-height:1.6;color:var(--dsw-alias-label-tertiary,#7d8aa5);white-space:pre-wrap;word-break:break-all}",
+  ".dsh-wt_updateCmd{margin:2px 0;padding:7px 8px;background:var(--dsw-alias-bg-base,#0b0e14);border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;font-family:Consolas,monospace;font-size:10.5px;line-height:1.5;color:#9cc6ff;word-break:break-all}",
+  ".dsh-wt_updateBtns{display:flex;gap:6px;flex-wrap:wrap}",
+  ".dsh-wt_updateBtn{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:7px;border:1px solid var(--dsw-alias-border-l1,#262b36);background:transparent;color:var(--dsw-alias-label-secondary,#aab6cd);font-size:11px;cursor:pointer}",
+  ".dsh-wt_updateBtn svg{width:12px;height:12px;flex:none}",
+  ".dsh-wt_updateBadge svg{width:12px;height:12px;flex:none}",
+  ".dsh-wt_updateBtn:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}",
+  ".dsh-wt_updateBtnCopy{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7);background:rgba(79,142,247,.18);color:#cfe0ff}",
+  ".dsh-wt_updateHint{font-size:10.5px;color:var(--dsw-alias-label-tertiary,#7d8aa5)}",
+  ".dsh-wt_versionRow{margin-top:8px;padding-top:8px;border-top:1px solid var(--dsw-alias-border-l1,#262b36);display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--dsw-alias-label-tertiary,#7d8aa5)}",
+  ".dsh-wt_updateToggle{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none}",
+  ".dsh-wt_versionActions{display:flex;align-items:center;gap:8px}",
+  ".dsh-wt_updateSwitch{position:relative;width:26px;height:14px;border-radius:999px;background:var(--dsw-alias-state-accent-primary,#4f8ef7);cursor:pointer}",
+  '.dsh-wt_updateSwitch::after{content:"";position:absolute;top:2px;right:2px;width:10px;height:10px;border-radius:50%;background:#fff;transition:right .15s}',
+  ".dsh-wt_updateSwitch[data-off=true]{background:var(--dsw-alias-border-l1,#333a48)}",
+  ".dsh-wt_updateSwitch[data-off=true]::after{right:14px}"
+].join("\n");
+
+// src/client/studio.generated.css
+var studio_generated_default = '/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer properties;\n@layer theme, utilities;\n@layer theme {\n  :root, :host {\n    --studio-color-blue-500: oklch(62.3% 0.214 259.815);\n    --studio-color-black: #000;\n    --studio-spacing: 0.25rem;\n    --studio-text-xs: 0.75rem;\n    --studio-text-xs--line-height: calc(1 / 0.75);\n    --studio-text-sm: 0.875rem;\n    --studio-text-sm--line-height: calc(1.25 / 0.875);\n    --studio-text-base: 1rem;\n    --studio-text-base--line-height: calc(1.5 / 1);\n    --studio-font-weight-medium: 500;\n    --studio-ease-out: cubic-bezier(0, 0, 0.2, 1);\n    --studio-default-transition-duration: 150ms;\n    --studio-default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  }\n}\n@layer utilities {\n  .studio\\:absolute {\n    position: absolute;\n  }\n  .studio\\:top-1\\/2 {\n    top: calc(1 / 2 * 100%);\n  }\n  .studio\\:right-\\[26px\\] {\n    right: 26px;\n  }\n  .studio\\:m-0 {\n    margin: 0px;\n  }\n  .studio\\:m-auto {\n    margin: auto;\n  }\n  .studio\\:mt-1 {\n    margin-top: var(--studio-spacing);\n  }\n  .studio\\:mt-2 {\n    margin-top: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:mb-0 {\n    margin-bottom: 0px;\n  }\n  .studio\\:mb-4 {\n    margin-bottom: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:ml-auto {\n    margin-left: auto;\n  }\n  .studio\\:box-border {\n    box-sizing: border-box;\n  }\n  .studio\\:flex {\n    display: flex;\n  }\n  .studio\\:grid {\n    display: grid;\n  }\n  .studio\\:hidden {\n    display: none;\n  }\n  .studio\\:inline-block {\n    display: inline-block;\n  }\n  .studio\\:size-\\[22px\\] {\n    width: 22px;\n    height: 22px;\n  }\n  .studio\\:h-5 {\n    height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:h-7 {\n    height: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:h-60 {\n    height: calc(var(--studio-spacing) * 60);\n  }\n  .studio\\:h-\\[34px\\] {\n    height: 34px;\n  }\n  .studio\\:max-h-\\[40vh\\] {\n    max-height: 40vh;\n  }\n  .studio\\:max-h-\\[calc\\(100dvh-2rem\\)\\] {\n    max-height: calc(100dvh - 2rem);\n  }\n  .studio\\:min-h-0 {\n    min-height: 0px;\n  }\n  .studio\\:w-4 {\n    width: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:w-7 {\n    width: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:w-\\[min\\(48rem\\,calc\\(100vw-2rem\\)\\)\\] {\n    width: min(48rem, calc(100vw - 2rem));\n  }\n  .studio\\:w-full {\n    width: 100%;\n  }\n  .studio\\:max-w-none {\n    max-width: none;\n  }\n  .studio\\:min-w-0 {\n    min-width: 0px;\n  }\n  .studio\\:flex-1 {\n    flex: 1;\n  }\n  .studio\\:shrink-0 {\n    flex-shrink: 0;\n  }\n  .studio\\:-translate-y-1\\/2 {\n    --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);\n    translate: var(--tw-translate-x) var(--tw-translate-y);\n  }\n  .studio\\:rotate-90 {\n    rotate: 90deg;\n  }\n  .studio\\:cursor-pointer {\n    cursor: pointer;\n  }\n  .studio\\:\\[scrollbar-width\\:none\\] {\n    scrollbar-width: none;\n  }\n  .studio\\:grid-rows-\\[0fr\\] {\n    grid-template-rows: 0fr;\n  }\n  .studio\\:grid-rows-\\[1fr\\] {\n    grid-template-rows: 1fr;\n  }\n  .studio\\:flex-col {\n    flex-direction: column;\n  }\n  .studio\\:flex-wrap {\n    flex-wrap: wrap;\n  }\n  .studio\\:items-center {\n    align-items: center;\n  }\n  .studio\\:items-start {\n    align-items: flex-start;\n  }\n  .studio\\:justify-between {\n    justify-content: space-between;\n  }\n  .studio\\:justify-center {\n    justify-content: center;\n  }\n  .studio\\:gap-1 {\n    gap: var(--studio-spacing);\n  }\n  .studio\\:gap-1\\.5 {\n    gap: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:gap-2 {\n    gap: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:gap-3 {\n    gap: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:truncate {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .studio\\:overflow-hidden {\n    overflow: hidden;\n  }\n  .studio\\:overflow-x-hidden {\n    overflow-x: hidden;\n  }\n  .studio\\:overflow-y-auto {\n    overflow-y: auto;\n  }\n  .studio\\:overscroll-contain {\n    overscroll-behavior: contain;\n  }\n  .studio\\:rounded {\n    border-radius: 0.25rem;\n  }\n  .studio\\:rounded-\\(--dsw-radius-lg\\) {\n    border-radius: var(--dsw-radius-lg);\n  }\n  .studio\\:rounded-\\(--dsw-radius-md\\) {\n    border-radius: var(--dsw-radius-md);\n  }\n  .studio\\:rounded-\\(--dsw-radius-sm\\) {\n    border-radius: var(--dsw-radius-sm);\n  }\n  .studio\\:border {\n    border-style: var(--tw-border-style);\n    border-width: 1px;\n  }\n  .studio\\:border-0 {\n    border-style: var(--tw-border-style);\n    border-width: 0px;\n  }\n  .studio\\:border-\\(--dsw-alias-border-l1\\) {\n    border-color: var(--dsw-alias-border-l1);\n  }\n  .studio\\:bg-\\(--dsw-alias-bg-base\\) {\n    background-color: var(--dsw-alias-bg-base);\n  }\n  .studio\\:bg-transparent {\n    background-color: transparent;\n  }\n  .studio\\:p-3 {\n    padding: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:p-5 {\n    padding: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:px-1 {\n    padding-inline: var(--studio-spacing);\n  }\n  .studio\\:px-2 {\n    padding-inline: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:px-3 {\n    padding-inline: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:py-0\\.5 {\n    padding-block: calc(var(--studio-spacing) * 0.5);\n  }\n  .studio\\:py-1\\.5 {\n    padding-block: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:text-left {\n    text-align: left;\n  }\n  .studio\\:text-base {\n    font-size: var(--studio-text-base);\n    line-height: var(--tw-leading, var(--studio-text-base--line-height));\n  }\n  .studio\\:text-sm {\n    font-size: var(--studio-text-sm);\n    line-height: var(--tw-leading, var(--studio-text-sm--line-height));\n  }\n  .studio\\:text-xs {\n    font-size: var(--studio-text-xs);\n    line-height: var(--tw-leading, var(--studio-text-xs--line-height));\n  }\n  .studio\\:leading-5 {\n    --tw-leading: calc(var(--studio-spacing) * 5);\n    line-height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:leading-6 {\n    --tw-leading: calc(var(--studio-spacing) * 6);\n    line-height: calc(var(--studio-spacing) * 6);\n  }\n  .studio\\:font-medium {\n    --tw-font-weight: var(--studio-font-weight-medium);\n    font-weight: var(--studio-font-weight-medium);\n  }\n  .studio\\:break-words {\n    overflow-wrap: break-word;\n  }\n  .studio\\:break-all {\n    word-break: break-all;\n  }\n  .studio\\:text-\\(--dsw-alias-label-primary\\) {\n    color: var(--dsw-alias-label-primary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-secondary\\) {\n    color: var(--dsw-alias-label-secondary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-tertiary\\) {\n    color: var(--dsw-alias-label-tertiary);\n  }\n  .studio\\:text-inherit {\n    color: inherit;\n  }\n  .studio\\:underline {\n    text-decoration-line: underline;\n  }\n  .studio\\:opacity-0 {\n    opacity: 0%;\n  }\n  .studio\\:opacity-100 {\n    opacity: 100%;\n  }\n  .studio\\:shadow-xl {\n    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);\n  }\n  .studio\\:transition-\\[grid-template-rows\\] {\n    transition-property: grid-template-rows;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-opacity {\n    transition-property: opacity;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-transform {\n    transition-property: transform, translate, scale, rotate;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:duration-100 {\n    --tw-duration: 100ms;\n    transition-duration: 100ms;\n  }\n  .studio\\:duration-150 {\n    --tw-duration: 150ms;\n    transition-duration: 150ms;\n  }\n  .studio\\:duration-200 {\n    --tw-duration: 200ms;\n    transition-duration: 200ms;\n  }\n  .studio\\:ease-\\(--ds-ease-in-out\\) {\n    --tw-ease: var(--ds-ease-in-out);\n    transition-timing-function: var(--ds-ease-in-out);\n  }\n  .studio\\:ease-out {\n    --tw-ease: var(--studio-ease-out);\n    transition-timing-function: var(--studio-ease-out);\n  }\n  @media (hover: hover) {\n    .studio\\:group-hover\\:hidden:is(:where(.studio\\:group):hover *) {\n      display: none;\n    }\n    .studio\\:group-hover\\:inline-flex:is(:where(.studio\\:group):hover *) {\n      display: inline-flex;\n    }\n  }\n  .studio\\:group-focus-visible\\:hidden:is(:where(.studio\\:group):focus-visible *) {\n    display: none;\n  }\n  .studio\\:group-focus-visible\\:inline-flex:is(:where(.studio\\:group):focus-visible *) {\n    display: inline-flex;\n  }\n  .studio\\:backdrop\\:bg-black\\/30::backdrop {\n    background-color: var(--studio-color-black);\n    @supports (color: color-mix(in lab, red, red)) {\n      background-color: color-mix(in oklab, var(--studio-color-black) 30%, transparent);\n    }\n  }\n  @media (hover: hover) {\n    .studio\\:hover\\:bg-\\(--dsw-alias-interactive-bg-hover\\):hover {\n      background-color: var(--dsw-alias-interactive-bg-hover);\n    }\n    .studio\\:hover\\:bg-black\\/5:hover {\n      background-color: var(--studio-color-black);\n    }\n    @supports (color: color-mix(in lab, red, red)) {\n      .studio\\:hover\\:bg-black\\/5:hover {\n        background-color: color-mix(in oklab, var(--studio-color-black) 5%, transparent);\n      }\n    }\n  }\n  .studio\\:focus-visible\\:outline-2:focus-visible {\n    outline-style: var(--tw-outline-style);\n    outline-width: 2px;\n  }\n  .studio\\:focus-visible\\:outline-blue-500:focus-visible {\n    outline-color: var(--studio-color-blue-500);\n  }\n  .studio\\:disabled\\:cursor-default:disabled {\n    cursor: default;\n  }\n  .studio\\:disabled\\:opacity-50:disabled {\n    opacity: 50%;\n  }\n  @media (prefers-reduced-motion: reduce) {\n    .studio\\:motion-reduce\\:transition-none {\n      transition-property: none;\n    }\n  }\n  .studio\\:\\[\\&_svg\\]\\:size-4 svg {\n    width: calc(var(--studio-spacing) * 4);\n    height: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:\\[\\&\\:\\:-webkit-scrollbar\\]\\:hidden::-webkit-scrollbar {\n    display: none;\n  }\n  .studio\\:\\[\\&\\[hidden\\]\\]\\:hidden[hidden] {\n    display: none;\n  }\n}\n@property --tw-translate-x {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0;\n}\n@property --tw-translate-y {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0;\n}\n@property --tw-translate-z {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0;\n}\n@property --tw-border-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@property --tw-leading {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-font-weight {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-inset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-ring-inset {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-offset-width {\n  syntax: "<length>";\n  inherits: false;\n  initial-value: 0px;\n}\n@property --tw-ring-offset-color {\n  syntax: "*";\n  inherits: false;\n  initial-value: #fff;\n}\n@property --tw-ring-offset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-duration {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ease {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-outline-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@layer properties {\n  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {\n    *, ::before, ::after, ::backdrop {\n      --tw-translate-x: 0;\n      --tw-translate-y: 0;\n      --tw-translate-z: 0;\n      --tw-border-style: solid;\n      --tw-leading: initial;\n      --tw-font-weight: initial;\n      --tw-shadow: 0 0 #0000;\n      --tw-shadow-color: initial;\n      --tw-shadow-alpha: 100%;\n      --tw-inset-shadow: 0 0 #0000;\n      --tw-inset-shadow-color: initial;\n      --tw-inset-shadow-alpha: 100%;\n      --tw-ring-color: initial;\n      --tw-ring-shadow: 0 0 #0000;\n      --tw-inset-ring-color: initial;\n      --tw-inset-ring-shadow: 0 0 #0000;\n      --tw-ring-inset: initial;\n      --tw-ring-offset-width: 0px;\n      --tw-ring-offset-color: #fff;\n      --tw-ring-offset-shadow: 0 0 #0000;\n      --tw-duration: initial;\n      --tw-ease: initial;\n      --tw-outline-style: solid;\n    }\n  }\n}\n';
 
 // src/client/sessionCompat.ts
 function currentSessionOf(snapshot) {
@@ -20602,8 +20764,8 @@ function installStudioSession(actions) {
       currentChannel = data.channelId;
       channelDirectory = data.directory;
     }
-    const generation = lifetime;
-    const active = () => generation === lifetime && data.channelId === currentChannel && actions.isActive() && document.contains(frame);
+    const generation2 = lifetime;
+    const active = () => generation2 === lifetime && data.channelId === currentChannel && actions.isActive() && document.contains(frame);
     let result = requests.get(data.requestId);
     if (!result) {
       const operation = async () => {
@@ -20754,7 +20916,7 @@ function installStudioControl() {
     if (!project) throw new Error("\u5DE5\u4F5C\u5BA4\u5DF2\u505C\u7528");
     const id = "studio-" + project.id;
     if (!splitStore.active || splitStore.spec?.id !== id) {
-      if (!splitStore.open({ id, title: project.name, icon: project.icon, top: null, main: [{ id: id + "-main", title: project.name, min: 300, content: { kind: "iframe", url: "/studio-projects/" + project.id, title: project.name } }], chatWidth: { default: 340, min: 260, max: 640 } })) throw new Error("\u5F53\u524D\u9875\u9762\u65E0\u6CD5\u6253\u5F00\u5DE5\u4F5C\u5BA4\uFF0C\u8BF7\u5148\u8FDB\u5165\u4E3B\u7A97\u53E3\u4F1A\u8BDD");
+      if (!await openStudioSplit({ id, title: project.name, icon: project.icon, top: null, main: [{ id: id + "-main", title: project.name, min: 300, content: { kind: "iframe", url: "/studio-projects/" + project.id, title: project.name } }], chatWidth: { default: 340, min: 260, max: 640 } })) throw new Error("\u5F53\u524D\u9875\u9762\u65E0\u6CD5\u6253\u5F00\u5DE5\u4F5C\u5BA4\uFF0C\u8BF7\u5148\u8FDB\u5165\u4E3B\u7A97\u53E3\u4F1A\u8BDD");
     }
     splitStore.setChatVisible(true);
     const path = "/studio-projects/" + project.id;
@@ -20955,6 +21117,8 @@ var StudioModels = class {
     this.remote = remote;
     this.storage = storage;
   }
+  remote;
+  storage;
   listeners = /* @__PURE__ */ new Set();
   /** 读取当前项目保存的跟随方式。 */
   mode(id) {
@@ -21029,6 +21193,8 @@ var WidgetMountRegistry = class {
     } catch {
     }
   }
+  storage;
+  makeId;
   records = /* @__PURE__ */ Object.create(null);
   listeners = /* @__PURE__ */ new Set();
   persist() {
@@ -21327,7 +21493,7 @@ var WAVE_BG_B64 = "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQUFBAYFBQUHBgYHCQ8KCQgIC
 
 // src/client/index.tsx
 var import_jsx_runtime4 = require("react/jsx-runtime");
-var LOCAL_VERSION2 = false ? "dev" : "0.6.1";
+var LOCAL_VERSION2 = false ? "dev" : "0.6.2";
 var UPDATE_REPO2 = "1997liuyh-boop/deepseek-harness";
 var { command: UPGRADE_CMD, prompt: UPGRADE_AI2, desktop: DESKTOP_HOST } = worktableUpgrade();
 var ICON_SYNC = /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("svg", { viewBox: "0 0 16 16", "aria-hidden": true, children: [
@@ -21768,11 +21934,25 @@ function listWorkspaces() {
     return items.map((w) => ({
       id: w.workspaceId ?? w.id,
       title: w.title ?? "",
-      path: w.path ?? ""
+      path: w.path ?? "",
+      sessionIds: Array.isArray(w.sessionIds) ? w.sessionIds : []
     }));
   } catch {
     return [];
   }
+}
+async function getStudioStatus() {
+  const response = await fetch("/studio-projects/control/status", { cache: "no-store" });
+  if (!response.ok) throw new Error("HTTP " + response.status);
+  const report = await response.json();
+  const current = currentSessionOf(sessionBridge?.list?.getSnapshot?.());
+  const workspace = listWorkspaces().find((item) => item.id === current || item.sessionIds.includes(current));
+  return {
+    studios: Array.isArray(report.studios) ? report.studios : [],
+    integrations: Array.isArray(report.integrations) ? report.integrations : [],
+    serviceFailures: Array.isArray(report.serviceFailures) ? report.serviceFailures : [],
+    workspace: workspace ? { title: workspace.title, path: workspace.path } : { title: "\u5F53\u524D\u4F1A\u8BDD", path: sessionScopeStore.snapshot?.cwd ?? "" }
+  };
 }
 var previewCache = /* @__PURE__ */ new Map();
 var previewFetching = /* @__PURE__ */ new Set();
@@ -22534,6 +22714,7 @@ function WorktableSection(props) {
           sweepPreviews();
         },
         onAdd: () => openAddPanel(),
+        getStudioStatus,
         onOpen: (id) => {
           if (id === CONSOLE_ID) return;
           const pr = projectsRef.current.projects;
@@ -22830,9 +23011,9 @@ function WorktableSection(props) {
       req
     ].join("\n");
   }
-  const openSplit = (0, import_react4.useCallback)((spec) => {
+  const openSplit = (0, import_react4.useCallback)(async (spec) => {
     engineIdsRef.current.add(spec.id);
-    splitStore.open(projects.views[spec.id] ?? spec);
+    await openStudioSplit(projects.views[spec.id] ?? spec);
     if (splitStore.active && splitStore.spec?.id === spec.id) {
       let prev = null;
       try {
@@ -22855,13 +23036,13 @@ function WorktableSection(props) {
       }
     }
   }, [projects.views]);
-  const openConsole = (0, import_react4.useCallback)((explicitBound) => {
+  const openConsole = (0, import_react4.useCallback)(async (explicitBound) => {
     const saved = projects.views[CONSOLE_ID];
     const broken = !specHasConsoleTab(saved);
     const spec = broken ? buildConsoleSpec((k) => t(k)) : saved;
     if (broken) persistProjects((prev) => ({ ...prev, views: { ...prev.views, [CONSOLE_ID]: spec } }));
     engineIdsRef.current.add(CONSOLE_ID);
-    splitStore.open(spec);
+    await openStudioSplit(spec);
     if (splitStore.active && splitStore.spec?.id === CONSOLE_ID) {
       let prev = null;
       try {
@@ -22895,8 +23076,9 @@ function WorktableSection(props) {
     }
     const r = anchor.getBoundingClientRect();
     setConsoleBind({
-      x: clamp2(Math.round(r.right + 8), 8, window.innerWidth - 640),
-      y: clamp2(Math.round(r.top), 8, window.innerHeight - 460)
+      // 弹窗以设置面板同样的视口坐标定位，底部空间不足时向上钳制。
+      x: clamp2(Math.round(r.right + 8), 16, Math.max(16, window.innerWidth - 576)),
+      y: clamp2(Math.round(r.top), 16, Math.max(16, window.innerHeight - 560))
     });
     setConsoleGroups([]);
     fetchSessionGroups().then((res) => setConsoleGroups(res.groups)).catch(() => setConsoleGroups([]));
@@ -23669,7 +23851,7 @@ function WorktableSection(props) {
       }
     }
   };
-  if (!wide) {
+  if (!wide && !props.studioShell) {
     const railItems = [
       { icon: CONSOLE_ICON, name: t("console.name"), onClick: (e) => clickConsoleCard(e.currentTarget) },
       ...aliveRegisteredIds.map((id) => ({
@@ -23699,97 +23881,68 @@ function WorktableSection(props) {
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_railBox", children: railItems.length > 0 ? railItems.map((it, i) => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_railBtn", title: it.name, "aria-label": it.name, onClick: it.onClick, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { "aria-hidden": true, children: it.icon }) }, i)) : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_railIcon", children: "\u2261" }) })
     ] });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { ref: rootRef, className: "dsh-wt_section" + (isFloat ? " dsh-wt_float" : ""), style: { marginBottom: 0 }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_divider" }),
-    /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_header", children: [
+  const toolbar = /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_jsx_runtime4.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(StudioUpdates, { t, icon: ICON_SYNC }),
+    updateInfo && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+      "button",
+      {
+        type: "button",
+        className: "dsh-wt_updateBadge",
+        title: t("update.badgeTitle") + " \xB7 v" + updateInfo.latest,
+        "aria-label": t("update.badgeTitle"),
+        onClick: () => setViewOptionsOpen(true),
+        children: ICON_SYNC
+      }
+    ),
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_actions", children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         "button",
         {
           type: "button",
-          className: "dsh-wt_handle",
-          "data-float": isFloat ? "true" : "false",
-          title: t("handle.title"),
-          "aria-label": t("handle.aria"),
-          onPointerDown: onHandlePointerDown,
-          onPointerMove: onHandlePointerMove,
-          onPointerUp: onHandlePointerUp,
-          onPointerCancel: onHandlePointerUp,
-          onDoubleClick: resetDock,
-          children: "\u2261"
+          className: "dsh-wt_iconBtn",
+          "aria-label": t("menu.search"),
+          title: t("menu.search"),
+          onClick: () => persistView({ searchOpen: !view.searchOpen, query: view.searchOpen ? "" : view.query }),
+          children: ICON_SEARCH
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-        "span",
-        {
-          className: "dsh-wt_title",
-          title: t("handle.title"),
-          onPointerDown: onHandlePointerDown,
-          onPointerMove: onHandlePointerMove,
-          onPointerUp: onHandlePointerUp,
-          onPointerCancel: onHandlePointerUp,
-          onDoubleClick: resetDock,
-          children: t("title")
-        }
-      ),
-      updateInfo && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         "button",
         {
           type: "button",
-          className: "dsh-wt_updateBadge",
-          title: t("update.badgeTitle") + " \xB7 v" + updateInfo.latest,
-          "aria-label": t("update.badgeTitle"),
-          onClick: () => setViewOptionsOpen(true),
-          children: ICON_SYNC
+          className: "dsh-wt_iconBtn",
+          "aria-label": t("menu.viewOptions"),
+          title: t("menu.viewOptions"),
+          onClick: () => {
+            invalidatePickState();
+            setViewOptionsOpen((v) => !v);
+            setAddOpen(false);
+          },
+          children: ICON_VIEW_OPTIONS
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_actions", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          "button",
-          {
-            type: "button",
-            className: "dsh-wt_iconBtn",
-            "aria-label": t("menu.search"),
-            title: t("menu.search"),
-            onClick: () => persistView({ searchOpen: !view.searchOpen, query: view.searchOpen ? "" : view.query }),
-            children: ICON_SEARCH
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          "button",
-          {
-            type: "button",
-            className: "dsh-wt_iconBtn",
-            "aria-label": t("menu.viewOptions"),
-            title: t("menu.viewOptions"),
-            onClick: () => {
-              invalidatePickState();
-              setViewOptionsOpen((v) => !v);
-              setAddOpen(false);
-            },
-            children: ICON_VIEW_OPTIONS
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          "button",
-          {
-            type: "button",
-            className: "dsh-wt_iconBtn",
-            "aria-label": t("menu.add"),
-            title: t("menu.add"),
-            onClick: () => {
-              invalidatePickState();
-              setAddOpen((v) => !v);
-              setViewOptionsOpen(false);
-              if (!wsFolderParent) {
-                const cwd = sessionScopeStore.snapshot?.cwd ?? "";
-                if (cwd) setWsFolderParent(cwd);
-              }
-            },
-            children: ICON_ADD
-          }
-        )
-      ] })
-    ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+        "button",
+        {
+          type: "button",
+          className: "dsh-wt_iconBtn",
+          "aria-label": t("menu.add"),
+          title: t("menu.add"),
+          onClick: () => {
+            invalidatePickState();
+            setAddOpen((v) => !v);
+            setViewOptionsOpen(false);
+            if (!wsFolderParent) {
+              const cwd = sessionScopeStore.snapshot?.cwd ?? "";
+              if (cwd) setWsFolderParent(cwd);
+            }
+          },
+          children: ICON_ADD
+        }
+      )
+    ] })
+  ] });
+  return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(StudioSection, { wide, title: t("title"), expandSidebar: props.expandSidebar, toolbar, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { ref: rootRef, className: "dsh-wt_section" + (isFloat ? " dsh-wt_float" : ""), style: { marginBottom: 0 }, children: [
     view.searchOpen && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_search", children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
         "input",
@@ -23853,6 +24006,11 @@ function WorktableSection(props) {
         )
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_addForm", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_addBtn", onClick: () => {
+          appendHostInput(sessionBridge, "\u8BF7\u65B0\u589E\u4E00\u4E2A\u5DE5\u4F5C\u5BA4\u3002\u5148\u8BE2\u95EE\u6211\u4FDD\u5B58\u5230\u672C\u5730\u8FD8\u662F GitHub\uFF1B\u6765\u6E90\u786E\u5B9A\u540E\uFF0C\u518D\u8BE2\u95EE\u6211\u662F\u5426\u7ACB\u523B\u5BFC\u5165\u5E76\u542F\u7528\u3002");
+          setAddOpen(false);
+        }, children: t("add.studio") }),
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_folderPickHint", children: t("add.studioHint") }),
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
           "input",
           {
@@ -24200,7 +24358,7 @@ function WorktableSection(props) {
       pickErr.bind && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_addError", children: pickErr.bind })
     ] }) }),
     consoleBind && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_popBackdrop", style: { zIndex: 85 }, onClick: () => setConsoleBind(null) }),
-    consoleBind && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_menu dsh-wt_pop dsh-wt_consoleBindPop", style: { position: "fixed", left: consoleBind.x, top: consoleBind.y, width: 560, zIndex: 86 }, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_consoleBindCols", children: [
+    consoleBind && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_menu dsh-wt_pop dsh-wt_consoleBindPop", style: { position: "fixed", left: consoleBind.x, top: consoleBind.y, width: 560, maxHeight: "calc(100vh - 32px)", zIndex: 86 }, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_consoleBindCols", children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_consoleBindCol", children: [
         /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_consoleBindLabel", children: [
           "\u2795 ",
@@ -24412,13 +24570,14 @@ function WorktableSection(props) {
       },
       s.id
     )) })
-  ] });
+  ] }) });
 }
 function StudioFooter(props) {
-  return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(StudioSection, { wide: props.wide, title: props.t?.("title") ?? zh.title, expandSidebar: props.expandSidebar, toolbar: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(StudioUpdates, { t: props.t ?? ((key) => zh[key]), icon: ICON_SYNC }), children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(WorktableSection, { ...props }) });
+  return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(WorktableSection, { ...props, studioShell: true });
 }
 var inject = ["slots", "locale", "sessions", "conversation", "workspaces", "layout", "remote", "remote.session"];
 function apply(ctx) {
+  ctx.effect(() => installSplitNavigation(() => ctx.layout.selectPanel(null)), "\u5DE5\u4F5C\u5BA4\uFF1A\u4E3B\u9875\u9762\u5BFC\u822A");
   installStudioMentions(ctx, (key) => ctx.locale.bind(NS)(key));
   ctx.effect(() => installStudioControl(), "\u5DE5\u4F5C\u5BA4\uFF1A\u65B0\u4F1A\u8BDD\u9875\u9762\u63A7\u5236");
   ctx.effect(() => installSplitClaims(), "\u5DE5\u4F5C\u5BA4\uFF1A\u5206\u5C4F\u4E92\u65A5\u76D1\u542C");
@@ -24456,7 +24615,7 @@ function apply(ctx) {
   ctx.effect(() => {
     const style = document.createElement("style");
     style.setAttribute("data-dsh-plugin", "dsh-worktable");
-    style.textContent = css + "\n" + studio_generated_default;
+    style.textContent = css2 + "\n" + studio_generated_default;
     document.head.appendChild(style);
     return () => {
       style.remove();
@@ -24526,6 +24685,6 @@ function apply(ctx) {
 /*! Bundled license information:
 
 markdown-it/dist/markdown-it.mjs:
-  (*! markdown-it 15.0.0 https://github.com/markdown-it/markdown-it @license MIT *)
+  (*! markdown-it 15.0.3 https://github.com/markdown-it/markdown-it @license MIT *)
 */
 return module.exports; } });

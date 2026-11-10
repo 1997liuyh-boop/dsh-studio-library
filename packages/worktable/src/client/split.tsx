@@ -233,6 +233,26 @@ export type ConsoleCardData = {
   glow: boolean
 }
 
+/** 控制室显示的工作室服务状态。 */
+export type ConsoleStudioStatus = {
+  id: string
+  title?: string
+  name?: string
+  icon?: string
+  ready?: boolean
+  startupError?: string
+  entryUrl?: string
+  source?: string
+}
+
+/** 控制室状态弹窗的数据。 */
+export type ConsoleStatusSnapshot = {
+  studios: ConsoleStudioStatus[]
+  integrations: ConsoleStudioStatus[]
+  serviceFailures: { studioIds: string[]; message: string }[]
+  workspace?: { title: string; path: string }
+}
+
 type SplitEnv = {
   fillHostInput: (text: string) => boolean
   getScope: () => SplitScope | null
@@ -258,6 +278,8 @@ type SplitEnv = {
     refreshPreviews: () => void
     /** 创建卡片：打开「添加项目」流程（同侧栏 ＋） */
     onAdd: () => void
+    /** 读取已安装工作室、服务启动状态和当前会话工作区。 */
+    getStudioStatus: () => Promise<ConsoleStatusSnapshot>
     getTheme: () => 'dark' | 'light' | 'system'
     setTheme: (th: 'dark' | 'light' | 'system') => void
     getCols: () => number
@@ -1649,6 +1671,10 @@ function ConsolePane() {
   const [updStatus, setUpdStatus] = useState<UpdateStatus>(() => readCache().status)
   const [updInfo, setUpdInfo] = useState<UpdateInfo | null>(() => readCache().info)
   const [autoCheckOn, setAutoCheckOn] = useState<boolean>(() => getAutoCheck())
+  const [statusOpen, setStatusOpen] = useState(false)
+  const [studioStatus, setStudioStatus] = useState<ConsoleStatusSnapshot | null>(null)
+  const [studioStatusLoading, setStudioStatusLoading] = useState(false)
+  const [studioStatusError, setStudioStatusError] = useState('')
   const updBusyRef = useRef(false)
   const photoUrlRef = useRef<string>('')
   const [openMenu, setOpenMenu] = useState<string | null>(null)
@@ -1790,6 +1816,19 @@ function ConsolePane() {
     setAutoCheckOn(next)
     storeAutoCheck(next)
     if (next) void runUpdateCheck(false)
+  }
+  const refreshStudioStatus = async () => {
+    const loader = splitEnv?.console?.getStudioStatus
+    if (!loader || studioStatusLoading) return
+    setStudioStatusLoading(true)
+    setStudioStatusError('')
+    try {
+      setStudioStatus(await loader())
+    } catch (error) {
+      setStudioStatusError(error instanceof Error ? error.message : T('console.statusFail'))
+    } finally {
+      setStudioStatusLoading(false)
+    }
   }
   /** 抓手拖拽排序：按住抓手上下移动 → 行实时重排，松手持久化 */
   const dragRowRef = useRef<string | null>(null)
@@ -1959,6 +1998,9 @@ function ConsolePane() {
   useEffect(() => {
     splitEnv?.console?.refreshPreviews?.()
   }, [])
+  useEffect(() => {
+    if (statusOpen) void refreshStudioStatus()
+  }, [statusOpen])
   // 自动检查更新（节流一天；手动按钮始终 force）
   useEffect(() => { if (getAutoCheck()) void runUpdateCheck(false) }, [])
   // 背景照片库：IndexedDB 异步加载记录 → 对象 URL；无记录则空
@@ -2114,12 +2156,49 @@ function ConsolePane() {
       </div>
       <div className="dsh-wt_consoleDockWrap">
         <div className="dsh-wt_consoleDock">
+          <button type="button" className={'dsh-wt_dockBtn' + (statusOpen ? ' dsh-wt_dockBtnOn' : '')} title={T('console.statusLabel')} aria-label={T('console.statusLabel')} onClick={() => { setOpenMenu(null); setStatusOpen((value) => !value) }}>
+            <span aria-hidden>◉</span>
+          </button>
           <button type="button" className={'dsh-wt_dockBtn' + (openMenu === 'theme' ? ' dsh-wt_dockBtnOn' : '')} title={T('console.themeLabel')} aria-label={T('console.themeLabel')} onClick={() => setOpenMenu(openMenu === 'theme' ? null : 'theme')}><ThemeIcon mode={themeMode} /></button>
           <button type="button" className={'dsh-wt_dockBtn' + (openMenu === 'shape' ? ' dsh-wt_dockBtnOn' : '')} title={T('console.shapeLabel')} aria-label={T('console.shapeLabel')} onClick={() => setOpenMenu(openMenu === 'shape' ? null : 'shape')}><svg width="20" height="20" viewBox="0 0 16 16" aria-hidden><rect x="2.2" y="2.2" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="0.9" /><circle cx="10.6" cy="10.6" r="3.8" fill="none" stroke="currentColor" strokeWidth="0.9" /></svg></button>
           <button type="button" className={'dsh-wt_dockBtn' + (openMenu === 'bg' ? ' dsh-wt_dockBtnOn' : '')} title={T('console.bgLabel')} aria-label={T('console.bgLabel')} onClick={() => { setOpenMenu(openMenu === 'bg' ? null : 'bg'); setBgEdit(null) }}><svg width="18" height="18" viewBox="0 0 16 16" aria-hidden><rect x="2.2" y="3.2" width="11.6" height="9.6" rx="1.6" fill="none" stroke="currentColor" strokeWidth="0.9" /><circle cx="5.9" cy="6.7" r="1.05" fill="none" stroke="currentColor" strokeWidth="0.8" /><path d="M3.4 11.4l3-3 2.3 2.3 1.9-1.9 3 2.6" fill="none" stroke="currentColor" strokeWidth="0.9" /></svg></button>
           <button type="button" className={'dsh-wt_dockBtn' + (openMenu === 'cols' ? ' dsh-wt_dockBtnOn' : '')} title={T('console.colsLabel')} aria-label={T('console.colsLabel')} onClick={() => setOpenMenu(openMenu === 'cols' ? null : 'cols')}><svg width="20" height="20" viewBox="0 0 16 16" aria-hidden><rect x="2.2" y="3.4" width="2.7" height="9.2" rx="0.9" fill="none" stroke="currentColor" strokeWidth="0.9" /><rect x="6.65" y="3.4" width="2.7" height="9.2" rx="0.9" fill="none" stroke="currentColor" strokeWidth="0.9" /><rect x="11.1" y="3.4" width="2.7" height="9.2" rx="0.9" fill="none" stroke="currentColor" strokeWidth="0.9" /></svg></button>
           <button type="button" className={'dsh-wt_dockBtn' + (annOpen ? ' dsh-wt_dockBtnOn' : '')} title={T('annot.updateTitle')} aria-label={T('annot.updateTitle')} onClick={() => { setOpenMenu(null); setAnnOpen((v) => !v) }}><svg width="18" height="18" viewBox="0 0 16 16" aria-hidden><path d="M2.6 7c0-2.9 2.4-4.9 5.4-4.9s5.4 2 5.4 4.9v2.9l1.2 1.7H1.4l1.2-1.7z" fill="none" stroke="currentColor" strokeWidth="0.9" strokeLinejoin="round" /><path d="M6.2 12.9c.3.7 1 1.2 1.8 1.2s1.5-.5 1.8-1.2" fill="none" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" /></svg>{updInfo && <span className="dsh-wt_dockBadge" aria-hidden />}</button>
         </div>
+        {statusOpen && (
+          <div className="dsh-wt_drop dsh-wt_statusDrop" role="status" aria-live="polite">
+            <div className="dsh-wt_dropRow">
+              <strong>{T('console.statusTitle')}</strong>
+              <button type="button" className="dsh-wt_updateBtn" onClick={() => void refreshStudioStatus()} disabled={studioStatusLoading}>
+                {studioStatusLoading ? T('console.statusLoading') : T('console.statusRefresh')}
+              </button>
+            </div>
+            {studioStatusError && <div className="dsh-wt_consoleErr">{studioStatusError}</div>}
+            {studioStatus?.workspace && (
+              <div className="dsh-wt_statusWorkspace" title={studioStatus.workspace.path}>
+                {T('console.workspacePath')}：{studioStatus.workspace.path || T('console.workspaceUnknown')}
+              </div>
+            )}
+            <div className="dsh-wt_statusSection">{T('console.installedStudios')}</div>
+            {(studioStatus?.studios ?? []).length === 0
+              ? <div className="dsh-wt_statusEmpty">{T('console.noStudios')}</div>
+              : studioStatus?.studios.map((studio) => {
+                const integration = studioStatus.integrations.find((item) => item.id === studio.id)
+                const ready = integration?.ready ?? true
+                return <div className="dsh-wt_statusItem" key={studio.id}>
+                  <span>{studio.icon ?? '◫'} {studio.name ?? studio.title ?? studio.id}</span>
+                  <span className={ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'}>{ready ? T('console.statusReady') : T('console.statusOffline')}</span>
+                </div>
+              })}
+            {(studioStatus?.integrations ?? []).filter((item) => !(studioStatus?.studios ?? []).some((studio) => studio.id === item.id)).map((integration) => (
+              <div className="dsh-wt_statusItem" key={integration.id}>
+                <span>{integration.title ?? integration.name ?? integration.id}</span>
+                <span className={integration.ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'}>{integration.ready ? T('console.statusReady') : T('console.statusOffline')}</span>
+              </div>
+            ))}
+            {studioStatus?.serviceFailures.map((failure, index) => <div className="dsh-wt_consoleErr" key={index}>{failure.message}</div>)}
+          </div>
+        )}
         {openMenu === 'theme' && (
           <div className="dsh-wt_drop">
             {themeOpts.map((o) => (

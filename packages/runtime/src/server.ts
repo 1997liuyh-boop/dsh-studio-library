@@ -9,6 +9,7 @@ import { createIntegrations, type IntegrationConfig } from './integrations'
 import { createToonflowSessions } from './toonflowSessions'
 import { readFile } from 'node:fs/promises'
 import { installStudioControl } from './studioControl'
+import { installStudioTasks } from './studioTasks'
 import { resolveServiceStartup, startStudioServices } from './serviceStartup'
 
 interface HostContext {
@@ -37,7 +38,8 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
     return async () => { startupAbort.abort(); await startup }
   }, '工作室：本机服务自动启动')
   const toonflow = await createToonflowSessions(ctx, config)
-  const control = installStudioControl(ctx, registry)
+  const control = installStudioControl(ctx, registry, ctx.pluginManager)
+  installStudioTasks(ctx, registry)
   ctx.effect(() => ctx.webServer.register({kind:'prefix',path:'/studio-projects',async handler(req,res) {
     const admission = ctx.connection.admit(req)
     if ('rejection' in admission || admission.peer.principal.kind !== 'owner') { res.writeHead('rejection' in admission ? admission.rejection : 403); res.end(); return }
@@ -45,6 +47,17 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
     try {
       if (req.method === 'GET' && url.pathname === '/studio-projects/control/catalog') {
         res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify(registry.list())); return
+      }
+      if (req.method === 'GET' && url.pathname === '/studio-projects/control/status') {
+        const failures = await startup
+        const integrations = await statuses()
+        res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' })
+        res.end(JSON.stringify({
+          studios: registry.list(),
+          integrations: integrations.map(status => ({ ...status, startupError: status.ready ? undefined : failures.find(failure => failure.studioIds.includes(status.id))?.message })),
+          serviceFailures: failures,
+        }))
+        return
       }
       if (req.method === 'GET' && url.pathname === '/studio-projects/control/bridge.js') {
         res.writeHead(200, { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' }); res.end(await readFile(new URL('../static/controlBridge.js', import.meta.url))); return

@@ -200,7 +200,6 @@ export const css = xtermCss + '\n' + [
   '@keyframes dsh-wt-busyA{0%,44%{opacity:1}50%,94%{opacity:.12}100%{opacity:1}}',
   '@keyframes dsh-wt-busyB{0%,44%{opacity:.12}50%,94%{opacity:1}100%{opacity:.12}}',
   // 气泡为 body 级独立元素（.dsh-wt_bindTip），此处只保留按钮本体样式
-  '.dsh-wt_bindTip{position:fixed;transform:translateY(-50%);padding:5px 9px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:6px;background:var(--dsw-alias-fill-l2,#171b22);color:var(--dsw-alias-label-primary,#e6e8eb);font-size:11px;line-height:15px;white-space:nowrap;pointer-events:none;z-index:1200;box-shadow:0 4px 12px rgba(0,0,0,.35);display:none}',
 
   // 布局条目卡片
   '.dsh-wt_layout{display:flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.02));color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;cursor:pointer;text-align:left}',
@@ -611,6 +610,13 @@ export const css = xtermCss + '\n' + [
   '.dsh-wt_consoleCreateBtn{margin-top:2px;padding:7px 10px;border:1px solid var(--dsw-alias-state-accent-primary,#4f8ef7);border-radius:8px;background:transparent;color:var(--dsw-alias-state-accent-primary,#4f8ef7);font:inherit;font-size:12px;line-height:18px;cursor:pointer}',
   '.dsh-wt_consoleCreateBtn:hover:not(:disabled){background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}',
   '.dsh-wt_consoleCreateBtn:disabled{opacity:.55;cursor:default}',
+  '.dsh-wt_statusDrop{left:auto;right:8px;transform:none;bottom:48px;z-index:90;width:300px;max-width:calc(100vw - 24px);padding:10px;display:flex;flex-direction:column;gap:7px}',
+  '.dsh-wt_statusDrop .dsh-wt_dropRow{justify-content:space-between;align-items:center}',
+  '.dsh-wt_statusSection{font-size:10px;letter-spacing:.04em;color:var(--dsw-alias-label-tertiary,#6e7683)}',
+  '.dsh-wt_statusItem{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;line-height:18px}',
+  '.dsh-wt_statusReady{color:#42d392}',
+  '.dsh-wt_statusOffline{color:#f3b562}',
+  '.dsh-wt_statusWorkspace{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:var(--dsw-alias-label-secondary,#9aa4b2)}',
   // ── 更新提示：侧栏标题旁徽标（仅图标 + 琥珀呼吸光）与设置面板更新卡 / 版本行 ──
   '.dsh-wt_updateBadge{flex:none;display:flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:3px;padding:0;border:none;border-radius:50%;background:rgba(245,185,66,.16);color:#f7d488;font-size:11px;line-height:1;cursor:pointer;position:relative}',
   '.dsh-wt_updateBadge::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(245,185,66,.55);animation:dsh-wt_updatePulse 1.8s ease-out infinite}',

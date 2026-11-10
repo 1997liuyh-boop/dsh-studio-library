@@ -1,6 +1,6 @@
 {
   "name": "dsh-studio-projects",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "工作室共享运行时：页面资源、本机应用连接与共享会话",
   "type": "module",
   "license": "MIT",
