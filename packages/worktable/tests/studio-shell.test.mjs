@@ -100,3 +100,10 @@ test('分屏与工作室通过当前宿主插槽挂载', () => {
   assert.match(source, /slots\.inject\('shell.overlay'/)
   assert.match(source, /entriesOfSlot\('sidebar.worktable.project'/)
 })
+
+test('新增工作室入口只保留 AI 询问流程，不再展示布局或项目文件夹设置', () => {
+  const source = readFileSync(new URL('../src/client/index.tsx', import.meta.url), 'utf8')
+  assert.match(source, /appendHostInput\(sessionBridge, '请新增一个工作室。先询问我保存到本地还是 GitHub；来源确定后，再询问我是否立刻导入并启用。'/)
+  assert.match(source, /className="dsh-wt_addHint"/)
+  assert.doesNotMatch(source, /add\.chooseLayout|openFolderPick|customLayout|dsh-wt_folderBtn/)
+})

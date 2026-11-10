@@ -1,5 +1,4 @@
 window.__ModuleLoader__.load({ id: 'dsh-worktable', factory: (require) => { var module = { exports: {} }; var exports = module.exports;
-"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -7,11 +6,7 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __commonJS = (cb, mod) => function __require() {
-  try {
-    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-  } catch (e) {
-    throw mod = 0, e;
-  }
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
 var __export = (target, all) => {
   for (var name in all)
@@ -35,9 +30,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// ../../../../../../../studio-library/node_modules/xterm/lib/xterm.js
+// ../../node_modules/xterm/lib/xterm.js
 var require_xterm = __commonJS({
-  "../../../../../../../studio-library/node_modules/xterm/lib/xterm.js"(exports, module2) {
+  "../../node_modules/xterm/lib/xterm.js"(exports, module2) {
     !(function(e, t) {
       if ("object" == typeof exports && "object" == typeof module2) module2.exports = t();
       else if ("function" == typeof define && define.amd) define([], t);
@@ -5983,9 +5978,9 @@ WARNING: This link could potentially be dangerous`)) {
   }
 });
 
-// ../../../../../../../studio-library/node_modules/highlight.js/lib/core.js
+// ../../node_modules/highlight.js/lib/core.js
 var require_core = __commonJS({
-  "../../../../../../../studio-library/node_modules/highlight.js/lib/core.js"(exports, module2) {
+  "../../node_modules/highlight.js/lib/core.js"(exports, module2) {
     function deepFreeze(obj) {
       if (obj instanceof Map) {
         obj.clear = obj.delete = obj.set = function() {
@@ -6894,7 +6889,7 @@ var require_core = __commonJS({
     };
     var escape2 = escapeHTML;
     var inherit = inherit$1;
-    var NO_MATCH = /* @__PURE__ */ Symbol("nomatch");
+    var NO_MATCH = Symbol("nomatch");
     var MAX_KEYWORD_HITS = 7;
     var HLJS = function(hljs) {
       const languages = /* @__PURE__ */ Object.create(null);
@@ -7823,30 +7818,10 @@ var zh = {
   "manage.readd": "\u91CD\u65B0\u6DFB\u52A0",
   "manage.deleteShortcut": "\u5220\u9664\u5FEB\u6377\u65B9\u5F0F",
   "shortcut.badge": "\u672C\u5730",
-  "add.chooseLayout": "\u9009\u62E9\u5E03\u5C40\u6A21\u5F0F",
-  "add.layoutNamePh": "\u5E03\u5C40\u540D\u79F0",
-  "add.folderParent": "\u9879\u76EE\u6587\u4EF6\u5939",
-  "add.folderPick": "\u9009\u62E9\u4F4D\u7F6E\u2026",
-  "add.folderNone": "\u672A\u9009\u62E9\uFF08\u70B9\u53F3\u4FA7\u300C\u9009\u62E9\u4F4D\u7F6E\u2026\u300D\u5728\u8D44\u6E90\u7BA1\u7406\u5668\u7A97\u53E3\u91CC\u6311\u4E00\u4E2A\u6587\u4EF6\u5939\uFF09",
-  "add.folderRequired": "\u8BF7\u5148\u9009\u62E9\u9879\u76EE\u6587\u4EF6\u5939\u7684\u4F4D\u7F6E",
-  "add.folderPicking": "\u7B49\u5F85\u9009\u62E9\u2026",
-  "add.folderPickerHint": "\u6B63\u5728\u7B49\u5F85\u6587\u4EF6\u5939\u9009\u62E9\uFF1B\u82E5\u672A\u770B\u5230\u9009\u62E9\u7A97\u53E3\uFF0C\u53EF\u68C0\u67E5\u4EFB\u52A1\u680F\uFF0C\u6216\u4F7F\u7528\u300C\u624B\u52A8\u8F93\u5165\u300D\u3002",
-  "add.folderPickFail": "\u76EE\u5F55\u9009\u62E9\u5931\u8D25\uFF1A{msg}",
-  "add.folderPickerUnavailable": "\u7CFB\u7EDF\u76EE\u5F55\u9009\u62E9\u5668\u4E0D\u53EF\u7528\uFF0C\u8BF7\u7528\u300C\u624B\u52A8\u8F93\u5165\u300D\u7C98\u8D34\u8DEF\u5F84",
-  "add.folderManual": "\u624B\u52A8\u8F93\u5165",
-  "add.folderManualPh": "\u7C98\u8D34\u6587\u4EF6\u5939\u7EDD\u5BF9\u8DEF\u5F84\uFF0C\u56DE\u8F66\u786E\u8BA4",
-  "add.folderManualOk": "\u4F7F\u7528\u6B64\u8DEF\u5F84",
-  "add.folderManualEmpty": "\u8BF7\u8F93\u5165\u6587\u4EF6\u5939\u7EDD\u5BF9\u8DEF\u5F84",
-  "add.folderManualAbs": "\u8BF7\u8F93\u5165\u7EDD\u5BF9\u8DEF\u5F84\uFF08\u5982 C:\\Users\\me\\Projects \u6216 /home/me/projects\uFF09",
-  "add.folderCreateFail": "\u9879\u76EE\u6587\u4EF6\u5939\u521B\u5EFA\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u8DEF\u5F84\u540E\u91CD\u8BD5",
-  "add.layoutSave": "\u8FDB\u5165\u5DE5\u4F5C\u533A",
   "add.studio": "\u65B0\u589E\u5DE5\u4F5C\u5BA4",
   "add.studioHint": "\u8BA9 AI \u8BE2\u95EE\u4FDD\u5B58\u5230\u672C\u5730\u6216 GitHub\uFF0C\u5E76\u5728\u521B\u5EFA\u540E\u8BE2\u95EE\u662F\u5426\u7ACB\u5373\u5BFC\u5165\u3002",
-  "add.layoutInvalid": "\u8BF7\u586B\u5199\u5E03\u5C40\u540D\u79F0",
   "manage.deleteLayout": "\u5220\u9664\u5E03\u5C40",
   "manage.deleteProject": "\u5220\u9664\u9879\u76EE",
-  "manage.changeView": "\u53D8\u66F4\u89C6\u56FE",
-  "viewPick.title": "\u9009\u62E9\u65B0\u89C6\u56FE\uFF08\u5185\u5BB9\u7A97\u81EA\u52A8\u8FC1\u5165\uFF09",
   "confirm.title": "\u5220\u9664\u9879\u76EE",
   "confirm.cancel": "\u53D6\u6D88",
   "confirm.delete": "\u5220\u9664",
@@ -7886,16 +7861,6 @@ var zh = {
   "custom.groupNewParentPh": "\u4F8B\u5982 E:\\AI_Workspace\\DeepseekHarness",
   "custom.groupNewNamePh": "\u4F8B\u5982 MyProject\uFF08\u5C06\u65B0\u5EFA\u6B64\u6587\u4EF6\u5939\u5E76\u6CE8\u518C\u4E3A\u5206\u7EC4\uFF09",
   "custom.groupNeedPath": "\u8BF7\u586B\u5199\u5206\u7EC4\u7236\u76EE\u5F55\u548C\u65B0\u5206\u7EC4\u540D",
-  "bind.folder": "\u9879\u76EE\u6587\u4EF6\u5939",
-  "bind.folderChange": "\u66F4\u6539",
-  "bind.folderNone": "\u672A\u8BBE\u7F6E\uFF08\u5EFA\u8BAE\u8BBE\u7F6E\uFF1A\u9879\u76EE\u4EA7\u51FA\u6587\u4EF6\u90FD\u4F1A\u653E\u8FDB\u8FD9\u91CC\uFF09",
-  "customLayout.add": "\u81EA\u5B9A\u4E49",
-  "customLayout.addTitle": "\u81EA\u5B9A\u4E49\u4E00\u4E2A\u5E03\u5C40\uFF08\u751F\u6210\u63D0\u793A\u8BCD\uFF09",
-  "customLayout.title": "\u81EA\u5B9A\u4E49\u5E03\u5C40",
-  "customLayout.placeholder": "\u63CF\u8FF0\u4F60\u60F3\u8981\u7684\u5E03\u5C40\uFF0C\u4F8B\u5982\uFF1A\u53F3\u4FA7\u7AD6\u957F\u5BF9\u8BDD\u7A97\uFF0C\u5DE6\u4FA7\u4E0A\u4E0B\u4E24\u4E2A\u4E00\u6837\u5927\u7684\u7A97\u2026",
-  "customLayout.copy": "\u590D\u5236\u63D0\u793A\u8BCD\u5230\u526A\u8D34\u677F",
-  "customLayout.copied": "\u63D0\u793A\u8BCD\u5DF2\u590D\u5236\u5230\u526A\u8D34\u677F\u3002\u53BB\u4EFB\u610F\u4E00\u4E2A DSH \u5BF9\u8BDD\u91CC\u7C98\u8D34\u53D1\u9001\uFF0C\u5BF9\u65B9\u7684 dsh \u5C31\u77E5\u9053\u8981\u505A\u4EC0\u4E48\u4E86\u3002",
-  "customLayout.copyFail": "\u590D\u5236\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u5168\u9009\u8F93\u5165\u6846\u5185\u5BB9\u590D\u5236\u3002",
   "custom.autoBound": "\u5DF2\u4E3A\u8BE5\u9879\u76EE\u5173\u8054\u5F53\u524D\u5BF9\u8BDD\u3002",
   "custom.keptBinding": "\u8BE5\u9879\u76EE\u5DF2\u6709\u7ED1\u5B9A\u7684\u5BF9\u8BDD\uFF0C\u6309\u89C4\u5219\u672A\u81EA\u52A8\u66F4\u6539\u3002",
   "console.name": "\u63A7\u5236\u5BA4",
@@ -7962,7 +7927,7 @@ var zh = {
   "console.installedStudios": "\u5DF2\u5B89\u88C5\u5DE5\u4F5C\u5BA4",
   "console.noStudios": "\u5F53\u524D\u6CA1\u6709\u5B89\u88C5\u5B50\u5DE5\u4F5C\u5BA4",
   "console.statusReady": "\u670D\u52A1\u5DF2\u542F\u52A8",
-  "console.statusOffline": "\u5DE5\u4F5C\u53F0\u6682\u672A\u8FDE\u63A5",
+  "console.statusOffline": "\u5DE5\u4F5C\u53F0\u6682\u672A\u8FDE\u63A5\uFF1A\u8BF7\u786E\u8BA4\u672C\u673A\u5DE5\u4F5C\u5BA4\u670D\u52A1\u5DF2\u7ECF\u542F\u52A8\uFF0C\u518D\u91CD\u65B0\u8FDE\u63A5\u3002",
   "console.workspacePath": "\u5DE5\u4F5C\u533A",
   "console.workspaceUnknown": "\u8DDF\u968F\u5F53\u524D\u4F1A\u8BDD",
   "pane.wip": "\u5F00\u53D1\u4E2D\uFF08\u540E\u7EED\u7248\u672C\u63A5\u5165\uFF09",
@@ -8092,30 +8057,10 @@ var en = {
   "manage.readd": "Re-add",
   "manage.deleteShortcut": "Delete shortcut",
   "shortcut.badge": "Local",
-  "add.chooseLayout": "Choose a layout",
-  "add.layoutNamePh": "Layout name",
-  "add.folderParent": "Project folder",
-  "add.folderPick": "Choose\u2026",
-  "add.folderNone": "Not chosen (click Choose\u2026 to pick a folder in the explorer window)",
-  "add.folderRequired": "Pick the project folder location first",
-  "add.folderPicking": "Waiting for picker\u2026",
-  "add.folderPickerHint": "Waiting for the folder picker. If no window appears, check the taskbar or use \u201CManual\u201D.",
-  "add.folderPickFail": "Folder pick failed: {msg}",
-  "add.folderPickerUnavailable": "System folder picker unavailable \u2014 paste the path via \u201CManual\u201D",
-  "add.folderManual": "Manual",
-  "add.folderManualPh": "Paste an absolute folder path, Enter to confirm",
-  "add.folderManualOk": "Use this path",
-  "add.folderManualEmpty": "Enter an absolute folder path first",
-  "add.folderManualAbs": "Absolute path required (e.g. C:\\Users\\me\\Projects or /home/me/projects)",
-  "add.folderCreateFail": "Failed to create the project folder \u2014 check the path and retry",
-  "add.layoutSave": "Enter workspace",
   "add.studio": "Add studio",
   "add.studioHint": "Ask AI to choose local or GitHub, then ask whether to import it now.",
-  "add.layoutInvalid": "Enter a layout name",
   "manage.deleteLayout": "Delete layout",
   "manage.deleteProject": "Delete project",
-  "manage.changeView": "Change layout",
-  "viewPick.title": "Pick a new layout (panes migrate automatically)",
   "confirm.title": "Delete project",
   "confirm.cancel": "Cancel",
   "confirm.delete": "Delete",
@@ -8155,16 +8100,6 @@ var en = {
   "custom.groupNewParentPh": "e.g. E:\\AI_Workspace\\DeepseekHarness",
   "custom.groupNewNamePh": "e.g. MyProject (folder will be created and registered)",
   "custom.groupNeedPath": "Fill in the parent folder and new group name",
-  "bind.folder": "Project folder",
-  "bind.folderChange": "Change",
-  "bind.folderNone": "Not set (recommended: project outputs go here)",
-  "customLayout.add": "Custom",
-  "customLayout.addTitle": "Customize a layout (generate a prompt)",
-  "customLayout.title": "Custom layout",
-  "customLayout.placeholder": "Describe the layout you want, e.g. a tall chat column on the right and two equal panes stacked on the left\u2026",
-  "customLayout.copy": "Copy prompt to clipboard",
-  "customLayout.copied": "Prompt copied to clipboard. Paste it into any DSH conversation and send \u2014 that dsh will know what to do.",
-  "customLayout.copyFail": "Copy failed \u2014 select the text above and copy it manually.",
   "custom.autoBound": "The project is linked to this chat.",
   "custom.keptBinding": "This project already has a bound conversation, so it was not auto-changed.",
   "console.name": "Console",
@@ -8231,7 +8166,7 @@ var en = {
   "console.installedStudios": "Installed studios",
   "console.noStudios": "No child studios are installed",
   "console.statusReady": "Service running",
-  "console.statusOffline": "Workbench not connected",
+  "console.statusOffline": "Workbench not connected: confirm the local studio service is running, then reconnect.",
   "console.workspacePath": "Workspace",
   "console.workspaceUnknown": "Uses the current session",
   "pane.wip": "Coming in a later version",
@@ -8299,7 +8234,7 @@ var en = {
 var NS = "worktable";
 
 // src/client/updateCheck.ts
-var LOCAL_VERSION = false ? "dev" : "0.6.2";
+var LOCAL_VERSION = false ? "dev" : "0.6.3";
 var UPDATE_REPO = "Aisland-SJL/dsh-worktable";
 var K_UPDATE_CHECK = "dsh.worktable.updateCheck.v1";
 var K_LAST_CHECK = "dsh.worktable.lastUpdateCheck.v1";
@@ -8400,7 +8335,7 @@ async function checkUpdate(force = false) {
 // src/client/split.tsx
 var import_xterm = __toESM(require_xterm(), 1);
 
-// ../../../../../../../studio-library/node_modules/mdurl/index.mjs
+// ../../node_modules/mdurl/index.mjs
 var mdurl_exports = {};
 __export(mdurl_exports, {
   decode: () => decode_default,
@@ -8409,7 +8344,7 @@ __export(mdurl_exports, {
   parse: () => parse_default
 });
 
-// ../../../../../../../studio-library/node_modules/mdurl/lib/decode.mjs
+// ../../node_modules/mdurl/lib/decode.mjs
 var decodeCache = {};
 function getDecodeCache(exclude) {
   let cache = decodeCache[exclude];
@@ -8492,7 +8427,7 @@ decode.defaultChars = ";/?:@&=+$,#";
 decode.componentChars = "";
 var decode_default = decode;
 
-// ../../../../../../../studio-library/node_modules/mdurl/lib/encode.mjs
+// ../../node_modules/mdurl/lib/encode.mjs
 var encodeCache = {};
 function getEncodeCache(exclude) {
   let cache = encodeCache[exclude];
@@ -8556,7 +8491,7 @@ encode.defaultChars = ";/?:@&=+$,-_.!~*'()#";
 encode.componentChars = "-_.!~*'()";
 var encode_default = encode;
 
-// ../../../../../../../studio-library/node_modules/mdurl/lib/format.mjs
+// ../../node_modules/mdurl/lib/format.mjs
 function format(url) {
   let result = "";
   result += url.protocol || "";
@@ -8574,7 +8509,7 @@ function format(url) {
   return result;
 }
 
-// ../../../../../../../studio-library/node_modules/mdurl/lib/parse.mjs
+// ../../node_modules/mdurl/lib/parse.mjs
 function Url() {
   this.protocol = null;
   this.slashes = null;
@@ -8756,7 +8691,7 @@ Url.prototype.parseHost = function(host) {
 };
 var parse_default = urlParse;
 
-// ../../../../../../../studio-library/node_modules/uc.micro/build/index.mjs
+// ../../node_modules/uc.micro/build/index.mjs
 var build_exports = {};
 __export(build_exports, {
   Any: () => Any,
@@ -8773,7 +8708,7 @@ var P = /[!-#%-\*,-\/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u05
 var S = /[\$\+<->\^`\|~\xA2-\xA6\xA8\xA9\xAC\xAE-\xB1\xB4\xB8\xD7\xF7\u02C2-\u02C5\u02D2-\u02DF\u02E5-\u02EB\u02ED\u02EF-\u02FF\u0375\u0384\u0385\u03F6\u0482\u058D-\u058F\u0606-\u0608\u060B\u060E\u060F\u06DE\u06E9\u06FD\u06FE\u07F6\u07FE\u07FF\u0888\u09F2\u09F3\u09FA\u09FB\u0AF1\u0B70\u0BF3-\u0BFA\u0C7F\u0D4F\u0D79\u0E3F\u0F01-\u0F03\u0F13\u0F15-\u0F17\u0F1A-\u0F1F\u0F34\u0F36\u0F38\u0FBE-\u0FC5\u0FC7-\u0FCC\u0FCE\u0FCF\u0FD5-\u0FD8\u109E\u109F\u1390-\u1399\u166D\u17DB\u1940\u19DE-\u19FF\u1B61-\u1B6A\u1B74-\u1B7C\u1FBD\u1FBF-\u1FC1\u1FCD-\u1FCF\u1FDD-\u1FDF\u1FED-\u1FEF\u1FFD\u1FFE\u2044\u2052\u207A-\u207C\u208A-\u208C\u20A0-\u20C1\u2100\u2101\u2103-\u2106\u2108\u2109\u2114\u2116-\u2118\u211E-\u2123\u2125\u2127\u2129\u212E\u213A\u213B\u2140-\u2144\u214A-\u214D\u214F\u218A\u218B\u2190-\u2307\u230C-\u2328\u232B-\u2429\u2440-\u244A\u249C-\u24E9\u2500-\u2767\u2794-\u27C4\u27C7-\u27E5\u27F0-\u2982\u2999-\u29D7\u29DC-\u29FB\u29FE-\u2B73\u2B76-\u2BFF\u2CE5-\u2CEA\u2E50\u2E51\u2E80-\u2E99\u2E9B-\u2EF3\u2F00-\u2FD5\u2FF0-\u2FFF\u3004\u3012\u3013\u3020\u3036\u3037\u303E\u303F\u309B\u309C\u3190\u3191\u3196-\u319F\u31C0-\u31E5\u31EF\u3200-\u321E\u322A-\u3247\u3250\u3260-\u327F\u328A-\u32B0\u32C0-\u33FF\u4DC0-\u4DFF\uA490-\uA4C6\uA700-\uA716\uA720\uA721\uA789\uA78A\uA828-\uA82B\uA836-\uA839\uAA77-\uAA79\uAB5B\uAB6A\uAB6B\uFB29\uFBB2-\uFBD2\uFD40-\uFD4F\uFD90\uFD91\uFDC8-\uFDCF\uFDFC-\uFDFF\uFE62\uFE64-\uFE66\uFE69\uFF04\uFF0B\uFF1C-\uFF1E\uFF3E\uFF40\uFF5C\uFF5E\uFFE0-\uFFE6\uFFE8-\uFFEE\uFFFC\uFFFD]|\uD800[\uDD37-\uDD3F\uDD79-\uDD89\uDD8C-\uDD8E\uDD90-\uDD9C\uDDA0\uDDD0-\uDDFC]|\uD802[\uDC77\uDC78\uDEC8]|\uD803[\uDD8E\uDD8F\uDED1-\uDED8]|\uD805\uDF3F|\uD807[\uDFD5-\uDFF1]|\uD81A[\uDF3C-\uDF3F\uDF45]|\uD82F\uDC9C|\uD833[\uDC00-\uDCEF\uDCFA-\uDCFC\uDD00-\uDEB3\uDEBA-\uDED0\uDEE0-\uDEF0\uDF50-\uDFC3]|\uD834[\uDC00-\uDCF5\uDD00-\uDD26\uDD29-\uDD64\uDD6A-\uDD6C\uDD83\uDD84\uDD8C-\uDDA9\uDDAE-\uDDEA\uDE00-\uDE41\uDE45\uDF00-\uDF56]|\uD835[\uDEC1\uDEDB\uDEFB\uDF15\uDF35\uDF4F\uDF6F\uDF89\uDFA9\uDFC3]|\uD836[\uDC00-\uDDFF\uDE37-\uDE3A\uDE6D-\uDE74\uDE76-\uDE83\uDE85\uDE86]|\uD838[\uDD4F\uDEFF]|\uD83B[\uDCAC\uDCB0\uDD2E\uDEF0\uDEF1]|\uD83C[\uDC00-\uDC2B\uDC30-\uDC93\uDCA0-\uDCAE\uDCB1-\uDCBF\uDCC1-\uDCCF\uDCD1-\uDCF5\uDD0D-\uDDAD\uDDE6-\uDE02\uDE10-\uDE3B\uDE40-\uDE48\uDE50\uDE51\uDE60-\uDE65\uDF00-\uDFFF]|\uD83D[\uDC00-\uDED8\uDEDC-\uDEEC\uDEF0-\uDEFC\uDF00-\uDFD9\uDFE0-\uDFEB\uDFF0]|\uD83E[\uDC00-\uDC0B\uDC10-\uDC47\uDC50-\uDC59\uDC60-\uDC87\uDC90-\uDCAD\uDCB0-\uDCBB\uDCC0\uDCC1\uDCD0-\uDCD8\uDD00-\uDE57\uDE60-\uDE6D\uDE70-\uDE7C\uDE80-\uDE8A\uDE8E-\uDEC6\uDEC8\uDECD-\uDEDC\uDEDF-\uDEEA\uDEEF-\uDEF8\uDF00-\uDF92\uDF94-\uDFEF\uDFFA]/;
 var Z = /[ \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]/;
 
-// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/decode-codepoint.js
+// ../../node_modules/entities/dist/decode-codepoint.js
 var c1 = [
   8364,
   0,
@@ -8824,7 +8759,7 @@ function codePointToString(codePoint) {
   return codePoint - 1 >>> 0 < 127 || codePoint - 160 >>> 0 < 55136 ? String.fromCharCode(codePoint) : String.fromCodePoint(replaceCodePoint(codePoint));
 }
 
-// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/internal/decode-shared.js
+// ../../node_modules/entities/dist/internal/decode-shared.js
 var BASE91_INVERSE = /* @__PURE__ */ (() => {
   const table2 = new Uint8Array(127);
   let code2 = 0;
@@ -8929,10 +8864,10 @@ function decodeTrieDict(input, resultLength, atomCount, dict1AtomCount, ngramCou
   return out;
 }
 
-// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/generated/decode-data-html.js
+// ../../node_modules/entities/dist/generated/decode-data-html.js
 var htmlDecodeTree = /* @__PURE__ */ decodeTrieDict("!}.&u%}'&}*'~!6*)%&,~!J~!J~%L~y<~!R,~~%Lu~~#GD~~#|)1#%}^%}2%+#.##%##%}&%##%'#%##&%#%#'%#&#%#&#'#%%#&#%##%#)%''%&%#%#'%#%%#%%}%%%#%#&(23#%%#&-%0%('1#(##%#'##+%'*.:1}#%#6-+(%'%%#%%%}#L'2351&('%}&/N'(0(/*-%(%%}#'+&T%7.2}#&%&#%#36/5##%&%%#&#%%#))2%%##%&&'0~!#*+&'%1~!%).'3q?&%'1~!.##%6(~!+%%%(Gw'rT~!E#<nA%#jZ~!H%(~!42##~!*31&~!G%U~#)5~#`3~!J~!Z~%]~%Y~%C~!q~!u~#kz~%#~!6'~!D~!U~!?~#T~!c%~!G#'~%7|~!G~!J~!G&~#pb~(Df}#%}*&}#%##%##%##&#-}&'#'&%#.++}%mI,#,@&(}*%}*'%&##&#%##%}&0}#.},U},%}+%}&%}#%##&}B%(}(%}+%)})%##%#&}&%##%&}<%}>%#%&}*%}(%}9%}/%})%}*%}*%}?&}&%}3%}&*#%})%#%#)}#&#-#+*%E%%'%'#%}#*V##&##I}#&&##%&%#&&Qf%%))w/0+&%#(#.%-''''++++7}>%4'',##1,#%#&%##&#'##&#*#9)%&%}#*}%,#+P(%A&%#'&##wSD',9E00#y#@}(+}&%&>~!#~!X}#*}(&&}(&}(,%}%&#+&}#&}I%#%}%)#(},'%#*}4%%#%}(''}#/##(##),%-##%%)#&}(.}&%#&}%%}*&#%},&&}&%}#%*'#%})%}D&}&%}-&}6&#&}-,%}#%})-(~+`~,=?~I9'9%~!,#%})%})%}@%}?%}(~!?~#<~#pP~#BG~#=1#%K+~#?#~%;)~#A~#mF1~#A'~'X%'~#lR~#N~'N~#r~#m#-~#i'?%#'%~#B%##%,%#~#_%#0%~#]732~,w~2+#:&#%&'0%&>%}#>##F+)#%&&#(+_}4&}-%}(&}@&}O7Fdf0@+/v4}&WU##&/0#&'('B#%}.%}'+#%}#%%&#&%#%##+#&#)#6#'#.},%}c%},%#%##%&#&%#&~#>'*-.%##%##%}#%%}%'~#)D1}#%*&~#_%%'(~#S2%'.}#~#=##*'*-%}&'%'##&&~'E%.#&~#M4}%%##&'%#~#O1##%&#'+~#<B%##%%'%+~#;#@%}#&%#&&%#(~#H1}'%'##&&~#?A}&'~#D#%32}'&&&&~#[}'(#%}'~#;C})&}%%#%~#=&%,3}%'(#%%~#^'#&&)#%'~#Y%-~#d-%'~#^%%&#&&&}#~#b~2t*&'~&(~&@~0%~e~3}%*''0})&}+~!9##-}#%-hD*)1fC#%/&/fB#40~!+#)*4~!+~!K'&:~!/*7~!.#~!H~!L':~%x&~!H#~!*~%1~!I#~!+A~#p'~!F~~#-#~,,(~.Z~!V~%;'B'mq-W~!N~%I%#&&#&}#%},%%}'%}+X#%}#&}(%}'%}<%}#%}%%'}'%}:~![)9@~%>~#UA%-%##&~!C%~!-.9:~!1~!-^2/:a~!y,D*J#-5)/4~%23,~#G~!L1~!0X3`~!2+~!!0-~&E~!W~!o,>Y&]~%cZx_&~#O*9#A#'#+I'%#)~!0B*-5A+-((F&*M#)(-7-5+'-3a5Vi~!Y~!?+[)%3),ERHm~!+:D,VG.+)?fB%%*(%)'(#&80%1'8`K8?`+'Z#&O&'H5#*9)A%%5&3))0%39+.*7#()&&*=4@**L)<'_&*+..;(#*+)./&0#3)%')-8(4ixD(&.}%,('aI:,)%,k2231T)I'#/-W7,/'Q#.'Y24+h')37</31&83##&0#),H(?'&?/1##%#&&#%''-%&&&#(&''&#.-'%#%%(,')*'&#&#'##%(%(#%('#&##%%%%('%#%#%%#%#&%##h>w+v<ayvyvcg.uuhKr}g/v|g>u9i[~>g5uI~=RvdwEg;v/g;uk!!TTSx]@RT!U!#!@VBRUU!'UTe-d0c`e&gSdicedFcrdTaqb.kYcAohdYd@a3e+d}dMdtd.aJ#bqcK`dle/e.e'dwdPdodddjbEb}ogd^ofdpduc6j?l%d{drdqc)d7bacOdQ%T#Y)X.sR[yH>6Vyv3[xwLu>vo'!*.[yBacahoj>6Rew3[xqdZa#!a&#^(X-[yG>6Vyu3[xvg3sEr|g.u/Ri9db0T#^(Xa)!-[y;>6Vylg4wKs{JwNZt3@3r=c4Z([xlg;wKt!cpq's@v7A'*a(a+!-a#[y<3Dt?3Dt'>6Vym3[xmg9rxsNJwLZt4~?r?db1T#`-!(Xa,!0[yS>6Vz%NuQs.g4wKtnJwNZtS@3r>c4Z([y%g;wKtrdga8!a(!#&T*Y-Xa#!a0<or[yc3Dtq>6Vz43[y3JwNZtf@3s!Ju}!%Dti:pm3c_%X#tjB5pkd6q!r]u?voC'*-a.a2!0a&a+[yI3DtI3Ds~3DtH>6Vyw3[xx;:s#~<5pKJwNZtE@3r~d`a)!a2T#a.(!+U.X1[yT3Dt`3Dtv>6Vz&3[y&g9rxwzcxstPu.<rAJwLZtT~?r@dZa%!a.&^*Za(/Reu[ya>6Vz23[y1g3sEr}wkg{NuQRg{ci(U#5@b`~,cg#U(2WnH5wugcRh7dX#T(Y,a'Ta!!a,[yZ<]mj>6Vz,3[y+Pv#5ReZKu+=,%!H}7ABwkaS?Rh:BcW(X#<]mrj:ubv/ARekdg%!(!a.*Ta(Y.X1!#sP>Rl*Dt6[y>>6Vyo3Wf*jOvuumvuRgRJuq*!:9<B@bX~3jVv&v@s@5Re[d/rQt{uAvo&a&a*)a2!,0Wf!3Dt0=Bs'>6Re}3[xy~<5s%JwJZt1~Gs)c;&!#2sJkNuXvzq7rxu,Re8dka4!a8(aEZ+a@Y.X1Xa)[yd=Bs(3DtP>6Vz53[y4cX#X&Re:avRe9~<5s&JwJZtQ~Gs*i^rzvdRg+Jv{%!2sbB@bX}kdga,!Za?&^*T1/!a'Dt+[y6>6Vyf3Wf%g/u;s4hGu6?Rh-JvZ,!c%#&RoX54Rivj7uyvf8RgTKvZB%*!2sGh<vu5Rgq<=C::9bb~#dZ#T&Ta6Y.X*Dt>[y93Wf)coZ(T,6VyifluvRgC@95@B@bX~/hFu34cC#T,k/unq8w8Q5RkUklwQuzunq8w8Q5Rk8d/rJu?v8w9)-&!a0a;a&aIWejg3sEr/h1s<DtDJvyZqY5aws3Jvy!&Wei~Hr1:au5@Bag>23E~5c:Z&bX};kKv?w&unuVu5Rjc;>bs)#~@:Rh.=ay<a]C;b`}Vd6s/t{uAvoaxa()!a,a7%-a#a2Dt,[yF2Wo[>6Vyt3[xuNuPRi&NuPwpi#RoWh?vf8Ri%Jv]!%Ri:KvxD!.'2WeAjZu`q9rxu,Re7woeAg-unLq(qA_/*2Wg_g3u5q^9:4E}/jTrxrzv=Wkkd~0UX#^^Xa-a1a5T&a=U1a'*aEa]!a*aPaA-adok[y54Rn>;:p3~Dp5g9rpsFNvZqjg3uJp4~<5p0Pw;5qlJwNZt*@3p1Pw:5p/Ou!5p2JvG'!6Vye=<qnJvh_[xhg3v,Rh3kOwOw-sDuev/Re^dha[a%!%!a+#Ta7)-5TaCaO!aka!a)sf[yb2>Rl!9ARiq5E}Qg=ucRkBE|oJrJ_@Wk~@Wk{JrJ_@Wk|@WkyJrJ_@Wk}@WkzJvO_[y2g-vMRmiKuYC!)&>Ri;>Ri<@3RkNc](X#@9Rk=g5vuRmhKvDB!+'=]meg3u4Rmgd)#Y'Vz3CARmfd`a+!%T'!+#Ta1Ta6TaM-sTDt9[yA9sYd'%Y#s[[xpj:ueunaXRgEjRq,v-vuqdd2'`#6Rev<32@5>:2<E}5xIo9a*X#Y(;5RePJvD_g>vyRgNj8w)v8<wggs:RgXiZt|vjx,hSq3ah!-(~@:Ro/Ou!5RhWj^v(pyw8unRhUdx-UY#^Ua.a3a70!)%UX1TaDa)'omRiRRhE[y:3Dsz=Br,>6Vyj3[xkg6ruwjcqsrPw;5r*Ku]D'Zt-@3r(~?r.i[vwv]dU1a--U#`a4(g/vsRhPOu!5RhLj:rmu9Wo!~@:wdh@g/vsRiTjXuvvNr}:RhBj^v(pyw8unRn]dz1UYa'a+^Y(!aETZalaRY.Ta?a4[yDJw1!#qLsW>6Vyrfzq-pLflpwRe|Js>%!Dt@3Dt&Jvy_[xs~HrnjMuwpsw'RecKu+D#'!t<~Grl~?rjg5u-x,gwp{ah!-(~@:Rg~Ou!5Rh'jXuvvNr}:Rh#cW#X/c;&!#2sLi[v7u7RgpJv)(!iLrxu,Re6j7v@s@5Se[e7d`aW!Za(a`T.a#!a3!&aDa-!9)Dt_=6s+3[x~~DR|h~DS6avhGun5RkZj3w)v-]mkKunB!&*]kb97R|i<ARk<c:Z(6Vy}Juh'!wziMRoS:F|vkLuauJv5vtvQRh1d='T+Y#VyO~DR|jcF#T'7R|g97R|kJv3'!ay<Rj,Jvh&!:ReXcsa6*a+#a#_aIRf9aLRf?c,Z&Rf5Rf7c.Z&Rf;Rf>cQ#%T'p-Rf8Rf=ct#%'(*!,p,Rf4p+Rf6Rf:Rf<d~'Ua%U*^UYa(!a,-!#a4YaTalaEX0a8a<Weo3Dt/3Dsx=Br93Wen~Dr;~<5p<JwNZt2@3p=Pw:5p;Ou!5r3c7&!#:p>3Ds}KvGB)_6Vyk2sM=<r7x'eovA(!hFu1ARf}cV#X&@r5j6rvwQa^Rf3c=Za'wkghJv__g;unRggA53B9=b^}%j6uduo5Jq;!(hIv%2Re`Ou4ARe_e%a#^^^Xa&!a*a2!&a6YaP!*ad!#a:aE/5Rn?[y@>6Vyp;:pE~DrY~<5pBJwNZt8@3pCh=rt3rWPw:5pAJup_[xoNuPpF9c!#'45pD5ARn)d8#X'X*3@rU72s]h>v<<sSjJpqvewOJq/(!hNw'5ReBk0s2u3w/w'5ReE5@Jq.!a+JQ!&WeU23d(#Y&RjG5]jBk!u7w&u0udARjEe#+^^^Ub#!a2/a`Z(agT1!a-a;|@TaG!aS[yV=Re~fow'RguNuPRe?bz#'>RoUWeL>:Cbb|?JwPZtVg6ruRmzJvD'!6Vz(g/vmRh~Jvy_[y(g9voRgyx*cy(#2>Ri2B9b]~9kIw9u7rluJu3Rg]dI#a%UY'@=p%CAx.gQZ&RhwwygtRm{x5g_Z'+ABqR9Woa=Bp&dV#^*Xa'!&@o{g4v]Rk;Jv{!%Rk[wkkiA5RkiwwfUB=x,fUuqC&*!>RfTg8v0RfV~ARfSd;rJsAuAv9wR'ae+/aO!a@aza/a#[yQ@Wg!2Wemg3sEr0JvB_g>uvReWg2v+Re=KupB_+[y!2AbY~-~Hr2AJwD!(h<~El>h<~El?Kun@+_:9b`}Kg-v/Ri3g;vtwyk_9]k_d=&T#*U.6qh@Ab`|K9:H|CJv[!&3Dtex'fDwC%!Rf[9WlMd[(^X,!a%Z06Vz!@WgBg=v~Rgvg,QRe@awd,#Y+jTv|Q~EfWj]uNr|~FRfXdy#Y&^Ua%!aO.!(a)Ua;=!a@aKap!a-,a!Ta]a[rSa]p?[y82sK=Bq~;:p:~<5p8Pw:5p7d'#Y'Wf(;RnRi[u4w&RgJJvG'!6Vyh=<r#ijuuv/sIKuYD'ZtG@3p9~Gr&d2#`(g<vtRgFj`u5w&rqpxRf2CJuY!+:wfnTOu!5Rg}jNs1ucv&RfwJvA!&3@q|BDcC#T,k/unq8w8Q5RkTklwQuzunq8w8Q5Rk9dga#!a'!a=#a0!:+Tb*b@aO.a4!aba8aFJv^}?!VyR~Dr<g;u%Rn.~<5p[x'e`wNZtR@3p]Pw:5pZhNvjBp.woe_g5u-r4JwF!%DtO3:ooc7&!#:p^3DtpLuGw(!+%)Dtk6Vz#2sd=<r8d'#Y([y#<x3gJt`w@!)%}MRiowzikRij=]ilxAf3,U(#B2Rf#g0v-Rm[ck{`U#]giKv3>)!&6Ri154s,KuGB_%@r68r:dJ|t`#X(9<E|u2@H|rx3gJu?w'!+'1Nu7Reg4=H~+9<wxgY95Rm]xLggZ-`(X}U2:Ri4h<uOawRmsJv__5@bb{jbV~3dka#a'a]!,#a+U=a>b6a3b%!/aKa/)!arwve^VyJ;:pR~DpTg3uJpS~<5pOPw;5qmPw:5pNOu!5pQJvG'!6Vyx=<qoJvA!{~Jup!%@qk7Rn/KvyD!}''[xz;>wkh'?Rh,x8gyt`w5D!&),(SgyccRgztJ@3pPB5p#d'(Y#<]mmifubw&RgoJvE&!82s^JvF&!8Rf,ADb]~;x=h'rNu]vK!,%'*0RnORh)4Rh*AqQg-vaRnNg;wHwkh'ba~4cE#Ta*x3gctyw@'!+%RnFRnD<4Rn@hFvK5RnCxWg[#`&a0Ua()`1Rm75Rg[c]%X#qi8Rg^NvdRj>BwzgZauwji7Rm6A4wgg]d1#&(*,.0a#Rm;Rm<Rm=Rm>Rm?Rm@RmARmBe%#^^^Xaea?aC/b+(,!a+a#!a/!>a&Ta<aKbD!2wphBRnk[yPw}hE|.=Br-3Dtm>6Vy~g6urRf.x,hPrNav!%'RnqRo%Ro#Nu;q[Pw;5r+JwNZtM@3r)d'#Y'Weh;xChL#`&RnmRnoKu}>%(!Rne~Bs-;2wjcussJv+'!aYSO}6@B<5?ba~8LrNvj!.%*ROwungw~ng~:9;Ri^>wtnig;wHRnixDh@|(UZ.x1h@|)!#:2<H|*xHn]#-UX'3Ro)z=iT}6ARns=Bwsn_wpnaRncw]aR(#UXa&Ua*a/=]iPd'#Y&Ro'WnXf{QRm2hNvj]nZd`'T~&1`{|`#9b]{}c:'!#Wl{>@=be}]?cl{{U#:5Abb}Jds#^YaF!a*b4a#a3aPa>&Tb!bH!*a_!Eau?/a&RjY<]gj>6Vz*;:pe~DrZg,QRj1JwNZtX@wihspcJvZ&!VyX9WmOJu|!|N2WmHJvh&!]ht~Bpbcn&T(!#RmQ<s7Nu;padH#X'`+WmJ@>RmKCARhnKup=!)&Wf+:RhqNuPpf9c!#'45pd5AwghpARn(Ls@w!%,)!RmP@Wfe<E|IJva!&WmNg8vsRmLd`*.`#Y'Xa!axRn*]hrA8Rhug5s@rXg8u!RmMd8#X'X*3@rV72smdI*#UY&RmICARho~GsgxVgd)Ta'U-Y&Xa!T#RnEWnA@Wffg1uDRi0hFvK5RnBxGnG&#`%owp)@wsf+bX}Ze-*1!a*^^^Ua|!#a.aq&Ya2!a>.a6!a:aO`aJDtL[y`@Wg#>6Vz12@wzoYRoZNuPRi!NuPRhzg=ucRi,@=b`{Yg=ucRi-ACJvB!&Sh[ebSh]ebi`wUuFRm4Jw2_[y0JvB!.<Ju(!&SoG}6Shd}6<Ju(!&SoH}6She}6Kur@._g5vHRieJvx!{L2G{Kx6gd'T#?Rh82Wi5cZ#X(g1w)Rm5dW-Y(Ta#!a)!#aYa=wnfE=su2>>bU{0j9udv:<svj8uQv-7RgHdE%#^'sq9sp=>Bb_{TJv`!&g/r|snj6v(us5d,#Y(56H}[978H}]Jw5!&g1rushJvB!+j;v{u5?zDhd}6}bj;v{u5?zDhe}6}ce*#`(^^^a[aea!=!a6a*aoXb1a.!aAbL!b>,b'aL!aV@Wf|2Wlg3[y/JwNZt^@3piPw:5pgJunZou3@rsJva&!Vy_g<v~Rm#JvG'!6Vz0=<r{Ju{%!:pj@WfsiXuJu3Rm:JvZ&!WfA~Bph@c4Z&Dtwax5rubx(#:awRk1@d,#Y&RfjRfid1#,Y(@Wfp2Wlrg5s@ryKu[@!,'=]ig9wlk?Rk>g5u-rqJvy'!@9RkQcH(T#=>Ri~@<wkj(Wj(KuZB*!&<7rw@9RkRcH(T#=>Ri}@<wkj)Wj)dg(Ta2Xa9X#`-!a*CARhg@@=I}d9x;c~#X%so=<sj>2@@=aybb}XjWv0Q~EfEj3vLv;<d,#Y(56H}`978H}_dgaPaFa'a/!#a3Y0a_a;a|!1(a7-[yE3[xt;:pJNvZrrg3uJrvJwNZt=@3pIh=rt3rxPw:5pGOu!5rpJvG'!6Vys=<rz@c4Z&Dt(ax5rtJvZ!&~BpH@wsfNg-vaRlNci*U#=<wei<F}a5@Jq.!a*JQ!%@qZ23d(#Y&RjH5]jCk!u7w&u0udARjFd/prq=tyvpaEa(a:.!a1aZ(@@=I}:9wpd%=<sX55w_h}@@=I{t=ay<aU@@=I}T=ay<2@@=I})?C9:9au@9Cb]}DP~=x-fAZ(2Wl1=ay<aU@@=I}>5@d##Y+jTv|vV~EfFj]uNpn~FRfGdgaK!Z2&!a8a-Tb({E!acTbM*!a(DtY[yYd'%Y#sl[y*hHvh>Re5x2c{Z}.j4uCvcawRiMd+#X+_x&d!},<5RkX;2Hzw@x,gavfB-!{CcF&T#Roe;RodwWbBg5urRgaKvHC*_6Vz+<4opieuew&Rmq@d]&Y)X,T#X0Rh}<BqP=4qS9:ReMg/ujReNJw0!/<Jui%!bd{kawwnemRelAxUa?a3#*.&UX(Ya+a/RhvRnQ<o}9Wmtd-#Y&RgSRmw9;Rmxay=Rmyg-vaRmuxEhSrNu,v-voC!%(aR.a(a7+1Ro1>Ro5CE{A9b]{@;5x#eO{:g;urRi+KrNA!%(Ro3>Ro79;Ri_Ku@>{;&!x%gX|{KunA_+g5QRj/g3u5Rj#g>uERj%wio/xRhS&!,!#^1U}wba{8>>@=be}qC@:D5ba{7Ku+A&!}x?ba}t>>@=be}se(aA^^^Uat!b0#{pa+awUazbGa#aLb9bgaWac'a5TbS=Br!d1#`%scp_Jvl!#rT>Re0JvX&!VyN=H{Fcm#U&:pY=ReaJv2&!]h0=]nUJvG'!6Vy|=<r%JrM_=]h2@Wlud'#)U'Wf'b]{i=]h/Jvh!&~BpWg=v]RnMx+ny#'Nu;pVwjnu=]nwxJnx,T#`&Reqwjnt=]nvieu9vrRjLLuYwP(#+!th@wih5pX~Gr'g5v/Rh4KunA'!-CARnP@wwiN:Rm_9x'cvw>!|l=<saKvAA!0&3@q}>w^e1bp#&Re2Re3BDx7gH#T|f5H|eKuZ>!%(:qNAH{]Jv6!+3B2B9=b^{X<5<B92:E{ZLvhwA(a;a%!igQuyRmad+#Y}m@3Rh5d8#X'X*:AqUAHzmaxwbh<aXRnVcF}RT#Nw&cj#U(BWnug/vsRntdka)(a3+.Zb7aYYan1!bVa@Xa}[y^@b[{G=H{+hFu73Rj&Pv#5ReQcK%T#sig1v{Rj'Ku+D#'!t]~Grm~?rkKuMB!01d5#`'Vy.ta3Dtu~Hroc8#'{^45s85AwZbP&!#Rn!wghxWn#KvEA!)&2RlA2RlBx:h|#(T,=]j09Wobz>x]z/@awRoTd+#Y(az]hFhCrm4d,#Y+jTv|Q~EfMj]uNr|~FRfOdCa!Xa9_X#@<plJvf!%b`{(9;Rgwc;.!#2x7cw#T|UDb]|T5Ju={(!=@E{&Jv)&!Ab`{'awJvf!~*>>@=be{#KuY>!+&4Ezyi[ugv&RjIdea+T)#UXa&T-T&a!Rh9auRmW=]kLg5vuRn+g3u4Rn-Ow6ARn,hHus5xNk?#UX(U~)/g8v0RkD~AwkkF?Ri.OuNBwkkA?Ri/d|a2`a*^UYa.!aBTZaTa'Xa;!(!2!-a#b2[yC>6Vyq3[xr2Wi?g1rusVh%s?DtF~<5rbJs;%!DtBfswKtCj[uvuSsEu3RgVx3o:u+wN'*Zt;@3rd~Grh~?rfg8w)Lq)qE&-a%!>bI|`jWv0vV~EfCjTv|vV~Ef@j]uNpn~FRfBcK#T']gWNu7x,k7q4ai(0!hHv8<RhmkMu9vrsBuev/RhlCJvB!,g<v{wchh~@:Rhji[vrv{wchi~@:RhkdS&a5UY#Ta!RgPwwiI5BwciI~@:Rh`x'iJvj'!5]iJPu8Bwch]~@:Rhach)U#h3rp]gLh@t|Ax,hTq3ah!-(~@:Ro0Ou!5RhXj^v(pyw8unRhVd|)`,^UYas!a?/a2Z'a^Ta{Tb7Ta(a#!a,Wf&9sZ3DtAadamov=Bqt3[xig8vsRm~>waiL2b`{QJv*_Ouv2qgj<v]v2BqfdR'X*X#Y-@3qr~Gqv~?p6hHv-]glPup5Lq+q?_%*b_{qF{n9b^{rOu4ARhpKvCD!+&~Bqp:5Dbb}nwoiKl&unuTuBv]v+ueunaXRf0=Jvh!0nKufu8v1w&w7q%w&uHrz:Rgnj5w,uxDJq/(!hNw'5ReCk0s2u3w/w'5ReFd>Za&!*UaA=<wkgsRnSJv^!%Refifw3vyRgOKu_B'!,<]gkiiu:w&Rh<=C@a^<B57@2F{[<B5@aW:=3away9A5aW=<B=C@a^<B57@2F{Ie-#`(^^^bCara.b8aza6!/bZ,!adTbnTbOb+aFaS!aAT9@Wf~2Wli3Dtl2@d,#Y&RfnRfmJwJZtN~GqyJva&!VyMg<v~Rm%iXuJu3Rm9Jv[_=]ih9wlkDRkCd1#`(@Wg>2Wls3cH#T(@<Rj*=>Ri|b~'#23s9h<~El.d'#Y&Dtxi^rzvdRl#d*#U%(o|B2s`hJwSaxRmDKv4B&!1:Rmdd5#`'Vx}to~Hq{x'f1v3(!BA5ba|bJv_&!Wfug1v]ReIdO+U/Y#&G}-8wze=Rh{g1v]ReHg/uQRf/by#)ibQwERl/cH#T(@<Rj+=>Ri{cNu+vlax-!(#a0qa9<Rii2;;bU{H;x<i=&X#Rk`<4wwi=C9H~8xAI(Y#<azRi@45wXI<B9;5bb~7dL(X#Xa(+!aL6Vy{g5QqOau:5au2@ay547EzbxOcU(UX-T#Ta#:Cbb|A?wjh/b_|SOw6ARgtihr}u7Rhy<d1#T)X1@@=I|~=ay<2@@=aybb}Sj3vLv;<d,#Y(56H}A978H}@dGpvs@uAu`vcw9*!aFa+ai%(b!aXa8.a?a[ozWey=sU2@G}Nch&U#Rf_WexKu+D#'!t:~Gr`~?r^j]uNr|~FRg*j^psurwJt|RmcKv)@&!)7Rkv~Br[@wxfO:Rl3co#U'6Rezj_q#vIuavjRltwzeyh@vr5JqD0!>aY?C9:9au@9Cb]}9cl#U*5;5<H||jbuus1ucv&Rfvg1v~d/pppzqFr^a--a~!aMat1(hFv;Wiz@@=Izoj5uuv-7Rix~Cw`fk2WlVcZ#X,k)u3vWs@u2]ktg;wEx'fBq(_2Wg/jTv|vV~EfoJv]!15x'hzqG!(P~EfU~CRl_j6v(us5x4i-#T(2WmZ?C2F|d>Kq<aj1!*jTqIsBv=Wl`~Cw`fi2WlWj`v0u*~>RlR=c>Z,k#u3vWs@u2]kr<c1Z+jTqIsBv=Wla~Cw`fm2WlXdmb3!a{(arZa`bkTa%TbQTa-a9+c'!aM!/[yL=Bqug.w'RifhFvyDRj.g>vgwyk^9]k^Jv3_@WfbAARkhJw2_[x|JvB_wkoIRoKwkoJRoLd'(Y#<]gm=<9<H|yd'%_X#skDtb3awwqkgNulRkgdB#^',9:p'hJwSaxRmEBwVb8@4=H|qLu+w50&!)@3qs~?pU>Awwn;;Rn=c:Z'ARn<=<qwKvC@!/&~BqqJv6!&]eVb^z^xRge'/a%+^`#Sge}6<4Rn3=]n0Pw2>Rn8Jw0!&>Rn:>Rn6cY#a7+!a&=<wkaNw~h3z_c5Z{=wjh#=]nLKv^D!&)Vyz=bW|swYb<WetcG#T(2wxa@qVx@gD#Y&b^|V5JwG&!5bb|pg/w&RgD@x=kHs=uAvn!a%%/'+RmSRh694Ro`g-vaRmRhHv-]mlxCcS#`&ba~.5cD#Ta)P~=d,#Y(56H{>978H{Dd_#{2^Y%_+qbbb{6g3sERhsbU{?dfa.,`a(Xa<!aiX#(55RiG54RiHcI#T'WiU3RiVNvdwtfcRlKNvdd,#Y&RlHRlExQgf.1*^T'X#Sgf}6Wn4=]hfPrk>Rn7Jw0!&>Rn5>Rn9Lunw?&a2!,5<oq@@wqfdRlJj5Q~=d,#Y(~ARfcOuN]fdDKw;ay(}i!547E}j?cI#T(@5bV}iCbV}hdv(^^Tb?a40,b##Tbo!a*bR!a<b|a/!aKai!aU[yK=]o^g:v>ReGJwPZtK<7Rh+h<~El,Pv#5ReR@awwxjCg,ulRjDJv6&!]j!z?aQeeg>w=Sh<eeJw;!&axEzOg,Qosc!#*:wkeJ]eJ>x'h-u(!%Ro.w~h.zPdNZ(X,Ya![x{;9ReY;wkgxRiF:x?ap#Y&RmUg<s2Rkod]+UY0TZ'!a&A9sw<=bczLNvuw{gqzNhJwSaxRmCKuLay!#&s_Rf-55b^{uJvZa!!c%#(55Ri654wmiu5RiuawLu,vp!+}^%b_}Y9;wkgxba}o>A9:=b^}zKuh=a''!3awRk3c*'!#aHRk6c+Z&Rk5Rk4Jv)&!awRjSawd9*`#0?C2@EzMj8u<uJ5RmbjQrquJu3x,k>uq@_+=ayb^|W~ARkEOuN]k@7dhzV^X/X&a-#zRzSb`zXcJzTT#2WkVKvDBzW!%FzY9;5bbzWjQrquJu3Jw3%!b`zU=ayb^zQd:#X(T-a!6Vyywxh}=b]{Jg=u1RiAdGp~qHtzv!w(wA+a+a;<!aJaYai'anasb(=azRmV:Cbb{MLq2vb!%')RjuRjrRjtRjqx3jnqCw3!%')Rk(Rk+Rk&Rk)Lq2vb!%')Rj{RjxRjzRjwLq2vb!%')RjsRjpRjfRjex3jcqCw3!%')Rk'Rk*RjkRjl9<CbbzfOu4ARhxLq2vb!%')RjyRjvRjhRjgx=joq*uKvb!%')+-Rk.Rk%Rj~Rk-Rk#Rj}x=jdq*uKvb!%')+-Rk,Rk!Rj|RjmRjjRjidAq&qKs@uAv8Aa.'*-a@a&0!aM@a5[y73Dsy3Ds|3Dt):wxgI2sHJwJZt.~Gqxwsf0ikrzt}Rl0Jvy_[xj~HqzKv_A|D!&WfP8axRoVcf,U#k(v]v+ueunaXRf1Ju}'!g8u#Ri=jQw!sCunLprq>!,')~<5qeGzq9F{W=c##%s5au:5aU3CBE|;d4#X(D!a&6Vygx(b;#(=]ed?C2F{N<capoq2r[a&!aPa9,'Pw;5s:@@=I|,55w_h|@@=IzcP~=x'fCqB_2Wl2>aU@@=I|1OuNBc1Z+jTqIsBv=Wlc~Cw`fl2WlZ~AcTa%!Z+jTqIsBv=Wlb~Cw`fh2WlYk+uNqJsBv=WlSg,u3dca3#UXaMYa)TaB-=cM|7T#<bI}l5@B932:aV2G{BOuNBJq:|M!5Ezt=<B=C@a^<B57@2F{v>cB{/T#=ay<bI{3Jv6!a.6BKq0ah&+!5E}HP~Ef{978BaU@@=Iza<7d#.Y#978BaU@@=IzH~AJq0!(@@=IzG978BaU@@=IzFe,aU*Y&^^^bvJb,b:bFad!a,c2Ta>aL.bo6!a#CbTa'T#Re{2Wlh2@G{yg6t~Ro_NvdRfticuRQRllJv3&!x&c|zs@Jw3!%RflwpfkRlpKuL;%(!Re<@G|C2GzdhIvuBwgjAg-u0RjAKQB%!(GzZ@G|5NuuRl7d='T+Y#Vy[g<v~Rm!==G|>JvA!)@wma=]m1ifuaw&RmnLs@vT'!|/+[y,g:v>ReTJw1!#qX=x!eC{bLu+wT&)ZtZauq_~Graci&U#F|89:r_Lupvq!.)&2RlG8RfaC=x!eF{_h?rpWlmd&'!#X|&]k::xJey#`'T|+<E|&2@H|%dE#(^,g;u.RiEg6vjRiC9xCkA{O|zY#g=ucRmXKs0@!&*@G|m@awRknJuh!,3d(}gY}eJvj!%Rm):Jw3!%Rm+Rm-Ls0w(&!a(a#@b[|6cZ#X'7RkxWgAOu4ARn'dH'U#Y*Vz-Wm'CARm}d]*#a%^a*T'aK!a<9bV{PC=p*Jw4!&SgxcbB5r]idw(wBRmF7xFkt#&`(Rm/Rm8E|!JuY_9:Rl5=wrgr2:bbxd@xXfB(a*#T+!.X0X1Ta/a'T&RlDRfL>RlyARl9b[z[>RfZ:RlL:RfRwlg/ARl;9;RlxKv,A/!%7s69<74=BA5ba{-8Bde#`a<XaKYa1,a'P~=wxfB2bZ}}?C972@@=I}r8@55B9;5bb}G978B2@@=aybb}3j3vLv;<Jw3&!>Rfk=ayb^}4~Ad1#`*@@=aybb{w2@>==<bbz]dx+UY#^UaF!a9!bB'Ya1.!ajXa#%olRhD[y=3Dt#Ov5BrHKuMB%!(Rf^Wep~HrJwkiQjKr|~FRg)Ku+D#'!t5~GrF~?rDdV)UY,Z/_7RkuG{<~BrBg,rlsO:235B@bX}|d?a1!#`(6Vyn5@d##Y+jTv|vV~EfIj]uNpn~FRfH7Lq2vb1!a9-978BaU@@=Iz9978BbU}#~AJq0!(@@=Iz8978BaU@@=Iz7~AJQ|}!978BbU}!JvkaK!AdUa21-U#`a+(g/vsRn~Ou!5RPj:rmu9WhOjXuvvNr}:RhAj^v(pyw8unRn[kPr}p|u7vwv]RiSBd;pppzq@qHQa?(b.!a.a`@.|xa(hFv;Wiyj5uuv-7Riw~Cw`fg2WlU978BbU|wOuNBJqG!(P~EfD~CRlQcZ#X,k)u3vWs@u2]ksg;wEx'f@q1_2Wg.j]uNpn~FRfqJv]!15x'h{qG!(@@=IzK~CRl^j6v(us5x4i,#T(2WmY?C2F{1>Kq<aj1!*jTqIsBv=Wld~Cw`fj2Wl[j`v0u*~>RlT=c>Z,k#u3vWs@u2]kq<c1Z+jTqIsBv=Wle~Cw`fn2Wl]dn1#c(a(b^a2!b/bAT(bj!aDa7bu,a_a{c0!2T0g:v>ReD2@G{42@G{5~DpM~<5rc=Bx6i>{RT#RnI@zCx]y]z:2Jv[!zr5Awyk]9]k]dD(Y+X#6Vz.g=wKtgwhaCwgmTWj2Lu,w%_+/[y-B;b^xeg3u3Rj-2@bX{*KrJ<!+'@Wg(g?QRlC@Jv`!%b[zIwsfII}8JQ_@w|kW|=Jv(%!AqcOuNBJvEzh!bYzjLs@wP#(0!oy@>RkdJwMZtc3Dtd@BcG#T'9bWxg2@2Fznd*#Y+;2x'c}w<zizixNgwa#Z'U+!/!a'!a+w~g~z6wcn{Rn}wcnzRn|5Rh%=]nJg5vuRmvNvdRlvcprJu}w*az*a#!%.a.'Bot9qT]kj@Wg'ay2Gzv@Jv`!%b[zEwsfHI}1;ck#Ux`<Cbbx_Lu+w!a&0*!wko*wwo,So,}6Juqxf!E}PigQuyRm`d3(`#8>Rn%:A5B;bZ~%KvhCa!a2!x>k7#Uxb@b{#xaRk7Jw0!)>wwhlShl}6>wwhmShm}6CJvB!.x'hhvj{!!5Bwkhhbaz}x'hivjz~!5Bwkhibaz|xEhTrNu,v-vpD!a%&/)a3a.,%Ro2t[CE{)@3re9b]{%wjo09:rgc:Z&Ro6=<riifuaw&RmoKrNA!%(Ro4>Ro89;Ri`dSaL'UYzxZb)7Rka3xRhT&!,!#^1U}vbaz{>>@=be}yC@:D5bazzKu+A&!}{?ba}y>>@=be}wxBh[t`u~vJvr!%a!a()a,a0a4RoC=]o;Ju(!%RoGRhdwjh`=]oAg>w#Ro?g5vuRo=NvdRl|Ku]C.!&;RoEJvB!%RoORoMBx'h[v+_?w~h`}~5?w~hd~!xKh]oiptu-utv.vp!#%&a30a@a'a+(a/aOp(o~p!RoDJu(!%RoHRhewjha=]oBNvdRl}g>w#Ro@g5vuRo>c[#X']o<CauRoRAd-#Y':RkpauRoQKu]C.!&;RoFJvB!%RoNRoPBx'h]v+_?w~ha}t5?w~he}ue!/UbhYacXaW^Tc&a;b:a-c/#b&aja1(!cL+!bKbt!bmcRc9aIc?8[yW3Dtt94Rg`Jv}!&SiRMzBhEebShEMNuPRe>x7gL#TzuwjirRipc<Z&>on;>z=h-MSh.Mwqczx'a7vj&!>Re4@=ResJt__NuPRi*NuPRi)j]uNr|~FRfzKrJ>_+@Wfy@Wf]2WocKrJ<!+'@Wg%g/QRl@@Jv`!&awRl<wsfFIzgLu(w*!.*&ShBMwvhIRhI9;RhNx1hK'!#Sn]Mx1hK~0!#:2<H~7cNu+w7D*'1ZtW>Rn1~?rOc:Z&Rn2=<rQ<7wjh&=BSnLMc]#X(6Vz)w[b=a!U#9wzgMc3#&(RgMRitRis<x,gKt`ax!&+SioM=BSilMc3#&(RgKRinRimKurB,!&SiQMzBhDebShDM6BJQ!(P~Efx978B2@@=I}WLrJw!!,a*&@G}O@9wkibRid@@x'fKwC!&SlDMSfLMjUv~Q~EfKKv3@a+!(hFv-]mpx/hYZ(C5RiWz<o/MwkhY?So/M@x,gbvfB*&!SgEM:SoeeehFu3:Rgbda(,^TZa)X/7Sg[eb:2RgI~BrMC@wgkc:wwkcRerx3h(uUvK!&*,SnOM4Sh*MArRg;wHRh(x=h;rJvPwI!a4',a'0@Wg&=BSh/Mg>w=Rh=g3w*wwgGRgGcW(X#;Sg}M2Gzk@Jv`!&awRl=wsfGIz`dKZ*T'Y-:RhR7RhQg5u-p`j6v(us5d,#Y+~Awkia?RicOuNBwkibba}Ld6p~tyu_vbAa'a+!a/'a3aEa8a!>Sh,ebJv{!&Sh@ebSaReb9;SgwebNuPRi(NvdRl)NuPRi'hHu^<Rm^Jvv_@Wl(g;u1Si/ebKu'B&!*Sh?eb@Wl'z@aPeb95Si.ebcpputyvjB)!,&a+0a%ShAMWeK@G}C@WfJ9;RhMwvhH9w{ia}ix,hJvRA1(!zAn[MRhHx1hJ~*!#hFv(BSn[MBJQ!(@@=I~'978B2@@=I}2db.Ua<'X}+T#a0XaG2G}E;wkg|wuh!Rh!x,hZu,@)!&So0MVy)C5RiXACJvB!&5RiY5RiZg8w)cG}*T#2@bU}=KsA>(!a.3wkhZba~(x,h^u(A!&(SoCMRhb5Bz=h[eb?w~hb~6x,h_u(A!&(SoDMRhc5Bz=h]eb?w~hc~6e)aA1T#T,^^^c-bMb&blcPaP(a/!0!bA=b5c@a(!bfbrc#2afwmhARnjwchORnp2Wlf3DtsNvdRl-2@wpa<]m0bx(#:awRk2@Jw3!%RfhwpfgRlnKQB%!(G{V@G|'NuuRl6d='T+Y#VyUg<v~Rl~==G|<Jv+'!aYShC}6@B<5?ba~8@Jw3'!g2QRljhLrpWlOd+#Y'g.w'rIg>w*wgj@g-u0Rj@Lu+wT&)ZtUauq]~GrGci&U#F|39:rELrNvj!.%*RhCwunfw~nf~:9;Ri]>wtnhg;wHRnhx3hDs@v~!/+'@Wfr@9RkSNu&Rlo=@<5GzoKs0@_+@Wl+@awRkmJuh!-3d(}pY#qWJvj!%Rm(:Jw3!%Rm,Rm*de&!1U-U#`)Re;@G|.@9Ri82@wjfvRlq=@<5GzpLvOvr!).&2RlF8Rf`C=x!eE{.Jw3_g2QRlkhLrpWlPde(!#U{s,UXa*Ta'[y'g:v>ReS;x0PZ&RnlRnn~HrKJw1}f!=x!eB|2w]aP(#Xa&a*Ta.Ua2a7=]iOd'#Y&Ro&WnWg;u.RiDg6vjRiBNvdRlzhNvj]nYJuW_2Wm3x)kFze{9d])!a.!,Y01!#&aC!a3RndC=ox~BrC@2b^{pg,rlse7x'ksuq!%Rm.E{xidw(wBRmGx9o+)X#wwo-So-}69:Rl4@xSf@a#XZ'X)X,Ta(/ARl8b[xc>RfY:RlI:RfQwlg.ARl:9;Rlwdn'#^XafaQa1X1TaHTa)@b[{zcZ#X'7RkwWg@Ou4ARn&x)kG#{,g7u/RkGdH'U#Y*Vz'Wm&CARm|bx#(A]gUbUzJj9Q~=d,#Y(56H}l978H{U7d,0#U*2>ABb_xZ978BbU{e~AJQ{g!978BbU{hxMh?ad{oUYZ.x1h?{l!#:2<H{mx3n[t{vl!,&a%3Ro(z=iS}6ARnr=Bwsn^wvn`Rnbd`*T}B0!#^X'BG{c9b]{a>>@=be}F?JvS!&BG{d7BG}(Bde#`a1X,Ya@!a'P~=wxf@2bZ}I56B2@@=aybb}08@55B9;5bb}<j3vLv;<Jw3&!>Rfg=ayb^}&OuNBKuLA!)a!P~=x#fD{f2@>==<bbzl?C972@@=Ix^d6rSu,v7w*C(0a)a6#B+a%!sQ[y?3Dt%3[xn~<5rLOu!5p@Ku+D#'!t7~GrP~?rNKvlaya7'!h+v-5qMg=t|cd,U#5AAaa5Abb{S@52B5@a[@52B5Gx[iXueu;d<#`a(!/549C;ag>23ExY5@Dah89b^~689Jv)!~2b[~1Lv'w(%*!a#bX|aPrmawRe]keu7uhv-q6rxu,q`xTo]/a5aU!bNaDXbi!b-!ao!b<bwA!#5@B932:aV2G|:d-)Y#hJrL>RhG<7@C5<H|_=Cau:5aj5@B932:bJ|ng>vIbs)#?C2F|9jPv0w.vISh-MKvUaz(.!9ABbb|[5;5<H|Eg>unwfh;9:4E|YjQsBt|vjx'hYq3!(?C2F|J:2<BaY?C2F|GOu!5x,g|p{ah!-(?C2F|c9:4E|OjXuvvNr}:Rh&i[w*t|cd+U#jJvsu)vsSn~Mkfrmu9p}u7vwv]So!McW#Xa!ax5@A5aY:5;5<H|>kJv~vYrquJu3x4ib#T)2@SmZM?C2F|Bj:rmu9@xPhI(a*a#U#`a3-5Abb|L~@:RhK9:4E|0@52B5G|#C::aY?C2F|-:2<BaY?C2F|.5Jvk!a)javYrquJu3x4ia#T)2@SmYM?C2F|HAxPhH(!a#U#`a*-5Abb|4~@:RhJ9:4E|R@52B5G|F:2<BaY?C2F|Sc^#Xa2j=Qq5CJvB!-g<v{z;hhM?C2F|Zi[vrv{z;hiM?C2F|XKsA>!a)-g<v{z;h[eb?C2F|]i[vrv{z;h]eb?C2F|^iZu.vix,hZq3ah!.(?C2F|QOu!5ShXM:2<BaY?C2F|P", 13494, 2713, 49, 25, 61);
 
-// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/internal/bin-trie-flags.js
+// ../../node_modules/entities/dist/internal/bin-trie-flags.js
 var BinTrieFlags;
 (function(BinTrieFlags2) {
   BinTrieFlags2[BinTrieFlags2["VALUE_LENGTH"] = 49152] = "VALUE_LENGTH";
@@ -8942,7 +8877,7 @@ var BinTrieFlags;
   BinTrieFlags2[BinTrieFlags2["VALUE_MASK"] = 8191] = "VALUE_MASK";
 })(BinTrieFlags || (BinTrieFlags = {}));
 
-// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/decode.js
+// ../../node_modules/entities/dist/decode.js
 var CharCodes;
 (function(CharCodes2) {
   CharCodes2[CharCodes2["AMP"] = 38] = "AMP";
@@ -9216,7 +9151,7 @@ function decodeHTMLStrict(htmlString) {
   return decodeWithTrie(htmlString, true, false);
 }
 
-// ../../../../../../../studio-library/node_modules/markdown-it/node_modules/entities/dist/index.js
+// ../../node_modules/entities/dist/index.js
 var EntityLevel;
 (function(EntityLevel2) {
   EntityLevel2[EntityLevel2["XML"] = 0] = "XML";
@@ -9231,7 +9166,7 @@ var EncodingMode;
   EncodingMode2[EncodingMode2["Text"] = 4] = "Text";
 })(EncodingMode || (EncodingMode = {}));
 
-// ../../../../../../../studio-library/node_modules/linkify-it/build/index.mjs
+// ../../node_modules/linkify-it/build/index.mjs
 var REBuilder = class {
   src_Any = Any.source;
   src_Cc = Cc.source;
@@ -9753,7 +9688,7 @@ var LinkifyIt = class {
   }
 };
 
-// ../../../../../../../studio-library/node_modules/punycode.js/punycode.es6.js
+// ../../node_modules/punycode.js/punycode.es6.js
 var maxInt = 2147483647;
 var base = 36;
 var tMin = 1;
@@ -9987,7 +9922,7 @@ var punycode = {
 };
 var punycode_es6_default = punycode;
 
-// ../../../../../../../studio-library/node_modules/markdown-it/dist/markdown-it.mjs
+// ../../node_modules/markdown-it/dist/markdown-it.mjs
 var __defProp2 = Object.defineProperty;
 var __exportAll = (all, no_symbols) => {
   let target = {};
@@ -13692,11 +13627,11 @@ _defineProperty(MarkdownIt, "ParserInline", ParserInline);
 _defineProperty(MarkdownIt, "StateInline", StateInline);
 var MarkdownItCallable = callable(MarkdownIt);
 
-// ../../../../../../../studio-library/node_modules/highlight.js/es/core.js
+// ../../node_modules/highlight.js/es/core.js
 var import_core = __toESM(require_core(), 1);
 var core_default = import_core.default;
 
-// ../../../../../../../studio-library/node_modules/highlight.js/es/languages/typescript.js
+// ../../node_modules/highlight.js/es/languages/typescript.js
 var IDENT_RE = "[A-Za-z$_][0-9A-Za-z$_]*";
 var KEYWORDS = [
   "as",
@@ -14512,7 +14447,7 @@ function typescript(hljs) {
   return tsLanguage;
 }
 
-// ../../../../../../../studio-library/node_modules/highlight.js/es/languages/javascript.js
+// ../../node_modules/highlight.js/es/languages/javascript.js
 var IDENT_RE2 = "[A-Za-z$_][0-9A-Za-z$_]*";
 var KEYWORDS2 = [
   "as",
@@ -15215,7 +15150,7 @@ function javascript2(hljs) {
   };
 }
 
-// ../../../../../../../studio-library/node_modules/highlight.js/es/languages/css.js
+// ../../node_modules/highlight.js/es/languages/css.js
 var MODES = (hljs) => {
   return {
     IMPORTANT: {
@@ -16163,7 +16098,7 @@ function css(hljs) {
   };
 }
 
-// ../../../../../../../studio-library/node_modules/highlight.js/es/languages/json.js
+// ../../node_modules/highlight.js/es/languages/json.js
 var EXTENDED_NUMBER_RE = "([-+]?)(\\b0[xX][a-fA-F0-9]+|(\\b\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)|NaN|[-+]?Infinity";
 var EXTENDED_NUMBER_MODE = {
   scope: "number",
@@ -17604,9 +17539,11 @@ function ConsolePane() {
   const [updInfo, setUpdInfo] = (0, import_react.useState)(() => readCache().info);
   const [autoCheckOn, setAutoCheckOn] = (0, import_react.useState)(() => getAutoCheck());
   const [statusOpen, setStatusOpen] = (0, import_react.useState)(false);
+  const [statusPosition, setStatusPosition] = (0, import_react.useState)(null);
   const [studioStatus, setStudioStatus] = (0, import_react.useState)(null);
   const [studioStatusLoading, setStudioStatusLoading] = (0, import_react.useState)(false);
   const [studioStatusError, setStudioStatusError] = (0, import_react.useState)("");
+  const statusButtonRef = (0, import_react.useRef)(null);
   const updBusyRef = (0, import_react.useRef)(false);
   const photoUrlRef = (0, import_react.useRef)("");
   const [openMenu, setOpenMenu] = (0, import_react.useState)(null);
@@ -17793,6 +17730,19 @@ function ConsolePane() {
     } finally {
       setStudioStatusLoading(false);
     }
+  };
+  const toggleStudioStatus = () => {
+    const next = !statusOpen;
+    setOpenMenu(null);
+    setStatusOpen(next);
+    if (!next) return;
+    const rect = statusButtonRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const width = Math.min(360, Math.max(280, window.innerWidth - 24));
+    setStatusPosition({
+      left: Math.max(12, Math.min(window.innerWidth - width - 12, rect.right - width)),
+      top: Math.max(12, rect.top - 360)
+    });
   };
   const dragRowRef = (0, import_react.useRef)(null);
   const dragFlipRef = (0, import_react.useRef)(null);
@@ -18171,12 +18121,9 @@ function ConsolePane() {
       ),
       cards.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_consoleEmpty", children: T("console.empty") })
     ] }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_consoleDockWrap", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_consoleDockWrap" + (statusOpen ? " dsh-wt_consoleDockWrapOpen" : ""), children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_consoleDock", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (statusOpen ? " dsh-wt_dockBtnOn" : ""), title: T("console.statusLabel"), "aria-label": T("console.statusLabel"), onClick: () => {
-          setOpenMenu(null);
-          setStatusOpen((value) => !value);
-        }, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, children: "\u25C9" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { ref: statusButtonRef, type: "button", className: "dsh-wt_dockBtn" + (statusOpen ? " dsh-wt_dockBtnOn" : ""), title: T("console.statusLabel"), "aria-label": T("console.statusLabel"), onClick: toggleStudioStatus, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": true, children: "\u25C9" }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (openMenu === "theme" ? " dsh-wt_dockBtnOn" : ""), title: T("console.themeLabel"), "aria-label": T("console.themeLabel"), onClick: () => setOpenMenu(openMenu === "theme" ? null : "theme"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemeIcon, { mode: themeMode }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_dockBtn" + (openMenu === "shape" ? " dsh-wt_dockBtnOn" : ""), title: T("console.shapeLabel"), "aria-label": T("console.shapeLabel"), onClick: () => setOpenMenu(openMenu === "shape" ? null : "shape"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", { width: "20", height: "20", viewBox: "0 0 16 16", "aria-hidden": true, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", { x: "2.2", y: "2.2", width: "7", height: "7", rx: "1.5", fill: "none", stroke: "currentColor", strokeWidth: "0.9" }),
@@ -18206,16 +18153,20 @@ function ConsolePane() {
           updInfo && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "dsh-wt_dockBadge", "aria-hidden": true })
         ] })
       ] }),
-      statusOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_drop dsh-wt_statusDrop", role: "status", "aria-live": "polite", children: [
+      statusOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_statusMask", onClick: () => setStatusOpen(false) }),
+      statusOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_drop dsh-wt_statusDrop", role: "status", "aria-live": "polite", style: statusPosition ? { left: statusPosition.left, top: statusPosition.top } : void 0, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_dropRow", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: T("console.statusTitle") }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { type: "button", className: "dsh-wt_updateBtn", onClick: () => void refreshStudioStatus(), disabled: studioStatusLoading, children: studioStatusLoading ? T("console.statusLoading") : T("console.statusRefresh") })
         ] }),
         studioStatusError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_consoleErr", children: studioStatusError }),
         studioStatus?.workspace && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_statusWorkspace", title: studioStatus.workspace.path, children: [
-          T("console.workspacePath"),
-          "\uFF1A",
-          studioStatus.workspace.path || T("console.workspaceUnknown")
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: studioStatus.workspace.title || T("console.workspaceUnknown") }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+            T("console.workspacePath"),
+            "\uFF1A",
+            studioStatus.workspace.path || T("console.workspaceUnknown")
+          ] })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_statusSection", children: T("console.installedStudios") }),
         (studioStatus?.studios ?? []).length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_statusEmpty", children: T("console.noStudios") }) : studioStatus?.studios.map((studio) => {
@@ -18227,12 +18178,12 @@ function ConsolePane() {
               " ",
               studio.name ?? studio.title ?? studio.id
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: ready ? "dsh-wt_statusReady" : "dsh-wt_statusOffline", children: ready ? T("console.statusReady") : T("console.statusOffline") })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: ready ? "dsh-wt_statusReady" : "dsh-wt_statusOffline", title: studio.startupError, children: ready ? T("console.statusReady") : T("console.statusOffline") })
           ] }, studio.id);
         }),
         (studioStatus?.integrations ?? []).filter((item) => !(studioStatus?.studios ?? []).some((studio) => studio.id === item.id)).map((integration) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "dsh-wt_statusItem", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: integration.title ?? integration.name ?? integration.id }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: integration.ready ? "dsh-wt_statusReady" : "dsh-wt_statusOffline", children: integration.ready ? T("console.statusReady") : T("console.statusOffline") })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: integration.ready ? "dsh-wt_statusReady" : "dsh-wt_statusOffline", title: integration.startupError, children: integration.ready ? T("console.statusReady") : T("console.statusOffline") })
         ] }, integration.id)),
         studioStatus?.serviceFailures.map((failure, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "dsh-wt_consoleErr", children: failure.message }, index))
       ] }),
@@ -19651,7 +19602,7 @@ function StudioUpdates({ t, icon }) {
 // src/client/index.tsx
 var import_react4 = require("react");
 
-// ../../../../../../../studio-library/node_modules/xterm/css/xterm.css
+// ../../node_modules/xterm/css/xterm.css
 var xterm_default = `/**
  * Copyright (c) 2014 The xterm.js authors. All rights reserved.
  * Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
@@ -20118,41 +20069,7 @@ var css2 = xterm_default + "\n" + [
   // 新建分组：父目录 / 名称单行输入
   ".dsh-wt_customPathInput{flex:1;min-width:0;box-sizing:border-box;padding:5px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;outline:none}",
   ".dsh-wt_customPathInput:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  // 新建项目强制文件夹：两行（父目录/名称）
-  ".dsh-wt_addFolderRow{display:flex;align-items:center;gap:8px;margin-top:6px;padding:0 2px}",
-  ".dsh-wt_addFolderPath{flex:1;min-width:0;padding:4px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));font-size:11.5px;line-height:17px;color:var(--dsw-alias-label-primary,#e6e8eb);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_addFolderPathNone{color:var(--dsw-alias-label-tertiary,#6b7280);border-style:dashed}",
-  ".dsh-wt_addFolderRow .dsh-wt_customLabel{flex:none;width:auto;text-align:left}",
-  ".dsh-wt_manualPathInput{flex:1;min-width:0;padding:4px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));font-size:11.5px;line-height:17px;color:var(--dsw-alias-label-primary,#e6e8eb)}",
-  ".dsh-wt_addFolderRow .dsh-wt_bindFolderChange:disabled{opacity:.5;cursor:default}",
-  ".dsh-wt_folderPickHint{margin-top:6px;margin-bottom:0;font-size:11.5px;line-height:17px;color:var(--dsw-alias-state-warning,#e0a33c)}",
-  ".dsh-wt_bindFolderBox .dsh-wt_addError{margin-top:6px;margin-bottom:0}",
-  // 绑定弹窗内的项目文件夹区
-  ".dsh-wt_bindFolderBox{margin-top:8px;padding:6px 8px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px}",
-  ".dsh-wt_bindFolderRow{display:flex;align-items:center;gap:6px}",
-  ".dsh-wt_bindFolderLabel{font-size:12px;line-height:18px;color:var(--dsw-alias-label-primary,#e6e8eb);margin-right:auto}",
-  ".dsh-wt_bindFolderChange{flex:none;padding:2px 10px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
-  ".dsh-wt_bindFolderChange:hover{color:var(--dsw-alias-label-primary,#e6e8eb);border-color:var(--dsw-alias-border-l2,#3a4150)}",
-  ".dsh-wt_bindFolderPath{margin-top:4px;font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary,#9aa4b2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_bindFolderPathNone{color:var(--dsw-alias-label-tertiary,#6b7280)}",
-  ".dsh-wt_bindFolderForm{display:flex;flex-direction:column;gap:6px;margin-top:6px}",
-  // 自定义布局弹窗（＋磁贴）：描述输入 + 复制提示词 + Toast
-  ".dsh-wt_customLayoutInput{width:100%;box-sizing:border-box;min-height:110px;margin-top:8px;padding:8px 10px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03));border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:8px;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;outline:none;resize:vertical}",
-  ".dsh-wt_customLayoutInput:focus{border-color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
-  ".dsh-wt_customLayoutBtn{width:100%;margin-top:8px;padding:7px 10px;border:1px solid var(--dsw-alias-state-accent-primary,#4f8ef7);border-radius:8px;background:transparent;color:var(--dsw-alias-state-accent-primary,#4f8ef7);font:inherit;font-size:12px;line-height:18px;cursor:pointer}",
-  ".dsh-wt_customLayoutBtn:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
-  ".dsh-wt_customLayoutToast{margin:8px 0 0;font-size:11.5px;line-height:17px;color:var(--dsw-alias-state-success,#3fb950)}",
-  ".dsh-wt_customLayoutToastFail{color:var(--dsw-alias-state-danger,#f85149)}",
-  // 对话绑定弹窗：绑定对话框内的对话行（点击右侧弹列表）
-  ".dsh-wt_bindNoneText{font-size:12px;line-height:18px}",
-  ".dsh-wt_bindFolder{flex:none;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary,#9aa4b2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:40%}",
-  ".dsh-wt_bindSep{flex:none;color:var(--dsw-alias-border-l2,#3a4150);font-size:11px}",
-  ".dsh-wt_bindConvRow{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;margin-top:4px;padding:3px 4px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px;cursor:pointer;text-align:left}",
-  ".dsh-wt_bindConvRow:hover{background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05));border-color:var(--dsw-alias-border-l2,#3a4150)}",
-  ".dsh-wt_bindConvRowNone{color:var(--dsw-alias-label-secondary,#9aa4b2)}",
-  ".dsh-wt_bindConvName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-  ".dsh-wt_bindConvChevron{flex:none;color:var(--dsw-alias-label-tertiary,#6b7280);font-size:9px;line-height:1}",
-  ".dsh-wt_bindHint{margin:6px 0 2px;font-size:11px;line-height:16px;color:var(--dsw-alias-label-secondary,#9aa4b2)}",
+  ".dsh-wt_addHint{margin-top:6px;margin-bottom:0;font-size:11.5px;line-height:17px;color:var(--dsw-alias-state-warning,#e0a33c)}",
   // 自定义窗完成页：自动绑定提示
   ".dsh-wt_customDoneBind{margin:6px 0 0;font-size:11px;line-height:16px;color:var(--dsw-alias-state-accent-primary,#4f8ef7)}",
   ".dsh-wt_bindUnbind{flex:none;display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font:inherit;font-size:11px;line-height:16px;cursor:pointer}",
@@ -20301,6 +20218,7 @@ var css2 = xterm_default + "\n" + [
   ".dsh-wt_announceStatus{font-size:11px;line-height:16px;color:var(--wt-text3)}",
   ".dsh-wt_announceBody{white-space:pre-wrap;font-size:13px;line-height:1.75;color:var(--wt-text2);user-select:text}",
   ".dsh-wt_consoleDockWrap{position:relative;z-index:12;flex:none;display:flex;justify-content:center;padding-top:12px}",
+  ".dsh-wt_consoleDockWrapOpen{z-index:1000}",
   ".dsh-wt_consoleDock{display:flex;align-items:center;gap:4px;padding:5px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);box-shadow:0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(14px) saturate(1.3)}",
   ".dsh-wt_console[data-wt-theme=light] .dsh-wt_consoleDock{background:rgba(255,255,255,.62);border-color:rgba(27,31,36,.12);box-shadow:0 8px 24px rgba(31,41,55,.12)}",
   ".dsh-wt_dockBtn{position:relative;width:32px;height:32px;padding:0;border:none;border-radius:9px;background:transparent;color:var(--wt-text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .15s ease}",
@@ -20468,13 +20386,16 @@ var css2 = xterm_default + "\n" + [
   ".dsh-wt_consoleCreateBtn{margin-top:2px;padding:7px 10px;border:1px solid var(--dsw-alias-state-accent-primary,#4f8ef7);border-radius:8px;background:transparent;color:var(--dsw-alias-state-accent-primary,#4f8ef7);font:inherit;font-size:12px;line-height:18px;cursor:pointer}",
   ".dsh-wt_consoleCreateBtn:hover:not(:disabled){background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}",
   ".dsh-wt_consoleCreateBtn:disabled{opacity:.55;cursor:default}",
-  ".dsh-wt_statusDrop{left:auto;right:8px;transform:none;bottom:48px;z-index:90;width:300px;max-width:calc(100vw - 24px);padding:10px;display:flex;flex-direction:column;gap:7px}",
+  ".dsh-wt_statusMask{position:fixed;inset:0;z-index:998;background:transparent}",
+  ".dsh-wt_statusDrop{position:fixed;left:12px;top:12px;transform:none;z-index:999;width:300px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto;padding:10px;display:flex;flex-direction:column;gap:7px}",
   ".dsh-wt_statusDrop .dsh-wt_dropRow{justify-content:space-between;align-items:center}",
   ".dsh-wt_statusSection{font-size:10px;letter-spacing:.04em;color:var(--dsw-alias-label-tertiary,#6e7683)}",
-  ".dsh-wt_statusItem{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;line-height:18px}",
+  ".dsh-wt_statusItem{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;font-size:11px;line-height:18px}",
   ".dsh-wt_statusReady{color:#42d392}",
   ".dsh-wt_statusOffline{color:#f3b562}",
-  ".dsh-wt_statusWorkspace{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:var(--dsw-alias-label-secondary,#9aa4b2)}",
+  ".dsh-wt_statusWorkspace{display:flex;flex-direction:column;gap:2px;overflow:hidden;font-size:10px;color:var(--dsw-alias-label-secondary,#9aa4b2)}",
+  ".dsh-wt_statusWorkspace strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--wt-text)}",
+  ".dsh-wt_statusWorkspace span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
   // ── 更新提示：侧栏标题旁徽标（仅图标 + 琥珀呼吸光）与设置面板更新卡 / 版本行 ──
   ".dsh-wt_updateBadge{flex:none;display:flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:3px;padding:0;border:none;border-radius:50%;background:rgba(245,185,66,.16);color:#f7d488;font-size:11px;line-height:1;cursor:pointer;position:relative}",
   '.dsh-wt_updateBadge::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(245,185,66,.55);animation:dsh-wt_updatePulse 1.8s ease-out infinite}',
@@ -20502,7 +20423,7 @@ var css2 = xterm_default + "\n" + [
 ].join("\n");
 
 // src/client/studio.generated.css
-var studio_generated_default = '/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer properties;\n@layer theme, utilities;\n@layer theme {\n  :root, :host {\n    --studio-color-blue-500: oklch(62.3% 0.214 259.815);\n    --studio-color-black: #000;\n    --studio-spacing: 0.25rem;\n    --studio-text-xs: 0.75rem;\n    --studio-text-xs--line-height: calc(1 / 0.75);\n    --studio-text-sm: 0.875rem;\n    --studio-text-sm--line-height: calc(1.25 / 0.875);\n    --studio-text-base: 1rem;\n    --studio-text-base--line-height: calc(1.5 / 1);\n    --studio-font-weight-medium: 500;\n    --studio-ease-out: cubic-bezier(0, 0, 0.2, 1);\n    --studio-default-transition-duration: 150ms;\n    --studio-default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  }\n}\n@layer utilities {\n  .studio\\:absolute {\n    position: absolute;\n  }\n  .studio\\:top-1\\/2 {\n    top: calc(1 / 2 * 100%);\n  }\n  .studio\\:right-\\[26px\\] {\n    right: 26px;\n  }\n  .studio\\:m-0 {\n    margin: 0px;\n  }\n  .studio\\:m-auto {\n    margin: auto;\n  }\n  .studio\\:mt-1 {\n    margin-top: var(--studio-spacing);\n  }\n  .studio\\:mt-2 {\n    margin-top: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:mb-0 {\n    margin-bottom: 0px;\n  }\n  .studio\\:mb-4 {\n    margin-bottom: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:ml-auto {\n    margin-left: auto;\n  }\n  .studio\\:box-border {\n    box-sizing: border-box;\n  }\n  .studio\\:flex {\n    display: flex;\n  }\n  .studio\\:grid {\n    display: grid;\n  }\n  .studio\\:hidden {\n    display: none;\n  }\n  .studio\\:inline-block {\n    display: inline-block;\n  }\n  .studio\\:size-\\[22px\\] {\n    width: 22px;\n    height: 22px;\n  }\n  .studio\\:h-5 {\n    height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:h-7 {\n    height: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:h-60 {\n    height: calc(var(--studio-spacing) * 60);\n  }\n  .studio\\:h-\\[34px\\] {\n    height: 34px;\n  }\n  .studio\\:max-h-\\[40vh\\] {\n    max-height: 40vh;\n  }\n  .studio\\:max-h-\\[calc\\(100dvh-2rem\\)\\] {\n    max-height: calc(100dvh - 2rem);\n  }\n  .studio\\:min-h-0 {\n    min-height: 0px;\n  }\n  .studio\\:w-4 {\n    width: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:w-7 {\n    width: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:w-\\[min\\(48rem\\,calc\\(100vw-2rem\\)\\)\\] {\n    width: min(48rem, calc(100vw - 2rem));\n  }\n  .studio\\:w-full {\n    width: 100%;\n  }\n  .studio\\:max-w-none {\n    max-width: none;\n  }\n  .studio\\:min-w-0 {\n    min-width: 0px;\n  }\n  .studio\\:flex-1 {\n    flex: 1;\n  }\n  .studio\\:shrink-0 {\n    flex-shrink: 0;\n  }\n  .studio\\:-translate-y-1\\/2 {\n    --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);\n    translate: var(--tw-translate-x) var(--tw-translate-y);\n  }\n  .studio\\:rotate-90 {\n    rotate: 90deg;\n  }\n  .studio\\:cursor-pointer {\n    cursor: pointer;\n  }\n  .studio\\:\\[scrollbar-width\\:none\\] {\n    scrollbar-width: none;\n  }\n  .studio\\:grid-rows-\\[0fr\\] {\n    grid-template-rows: 0fr;\n  }\n  .studio\\:grid-rows-\\[1fr\\] {\n    grid-template-rows: 1fr;\n  }\n  .studio\\:flex-col {\n    flex-direction: column;\n  }\n  .studio\\:flex-wrap {\n    flex-wrap: wrap;\n  }\n  .studio\\:items-center {\n    align-items: center;\n  }\n  .studio\\:items-start {\n    align-items: flex-start;\n  }\n  .studio\\:justify-between {\n    justify-content: space-between;\n  }\n  .studio\\:justify-center {\n    justify-content: center;\n  }\n  .studio\\:gap-1 {\n    gap: var(--studio-spacing);\n  }\n  .studio\\:gap-1\\.5 {\n    gap: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:gap-2 {\n    gap: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:gap-3 {\n    gap: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:truncate {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .studio\\:overflow-hidden {\n    overflow: hidden;\n  }\n  .studio\\:overflow-x-hidden {\n    overflow-x: hidden;\n  }\n  .studio\\:overflow-y-auto {\n    overflow-y: auto;\n  }\n  .studio\\:overscroll-contain {\n    overscroll-behavior: contain;\n  }\n  .studio\\:rounded {\n    border-radius: 0.25rem;\n  }\n  .studio\\:rounded-\\(--dsw-radius-lg\\) {\n    border-radius: var(--dsw-radius-lg);\n  }\n  .studio\\:rounded-\\(--dsw-radius-md\\) {\n    border-radius: var(--dsw-radius-md);\n  }\n  .studio\\:rounded-\\(--dsw-radius-sm\\) {\n    border-radius: var(--dsw-radius-sm);\n  }\n  .studio\\:border {\n    border-style: var(--tw-border-style);\n    border-width: 1px;\n  }\n  .studio\\:border-0 {\n    border-style: var(--tw-border-style);\n    border-width: 0px;\n  }\n  .studio\\:border-\\(--dsw-alias-border-l1\\) {\n    border-color: var(--dsw-alias-border-l1);\n  }\n  .studio\\:bg-\\(--dsw-alias-bg-base\\) {\n    background-color: var(--dsw-alias-bg-base);\n  }\n  .studio\\:bg-transparent {\n    background-color: transparent;\n  }\n  .studio\\:p-3 {\n    padding: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:p-5 {\n    padding: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:px-1 {\n    padding-inline: var(--studio-spacing);\n  }\n  .studio\\:px-2 {\n    padding-inline: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:px-3 {\n    padding-inline: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:py-0\\.5 {\n    padding-block: calc(var(--studio-spacing) * 0.5);\n  }\n  .studio\\:py-1\\.5 {\n    padding-block: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:text-left {\n    text-align: left;\n  }\n  .studio\\:text-base {\n    font-size: var(--studio-text-base);\n    line-height: var(--tw-leading, var(--studio-text-base--line-height));\n  }\n  .studio\\:text-sm {\n    font-size: var(--studio-text-sm);\n    line-height: var(--tw-leading, var(--studio-text-sm--line-height));\n  }\n  .studio\\:text-xs {\n    font-size: var(--studio-text-xs);\n    line-height: var(--tw-leading, var(--studio-text-xs--line-height));\n  }\n  .studio\\:leading-5 {\n    --tw-leading: calc(var(--studio-spacing) * 5);\n    line-height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:leading-6 {\n    --tw-leading: calc(var(--studio-spacing) * 6);\n    line-height: calc(var(--studio-spacing) * 6);\n  }\n  .studio\\:font-medium {\n    --tw-font-weight: var(--studio-font-weight-medium);\n    font-weight: var(--studio-font-weight-medium);\n  }\n  .studio\\:break-words {\n    overflow-wrap: break-word;\n  }\n  .studio\\:break-all {\n    word-break: break-all;\n  }\n  .studio\\:text-\\(--dsw-alias-label-primary\\) {\n    color: var(--dsw-alias-label-primary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-secondary\\) {\n    color: var(--dsw-alias-label-secondary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-tertiary\\) {\n    color: var(--dsw-alias-label-tertiary);\n  }\n  .studio\\:text-inherit {\n    color: inherit;\n  }\n  .studio\\:underline {\n    text-decoration-line: underline;\n  }\n  .studio\\:opacity-0 {\n    opacity: 0%;\n  }\n  .studio\\:opacity-100 {\n    opacity: 100%;\n  }\n  .studio\\:shadow-xl {\n    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);\n  }\n  .studio\\:transition-\\[grid-template-rows\\] {\n    transition-property: grid-template-rows;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-opacity {\n    transition-property: opacity;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-transform {\n    transition-property: transform, translate, scale, rotate;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:duration-100 {\n    --tw-duration: 100ms;\n    transition-duration: 100ms;\n  }\n  .studio\\:duration-150 {\n    --tw-duration: 150ms;\n    transition-duration: 150ms;\n  }\n  .studio\\:duration-200 {\n    --tw-duration: 200ms;\n    transition-duration: 200ms;\n  }\n  .studio\\:ease-\\(--ds-ease-in-out\\) {\n    --tw-ease: var(--ds-ease-in-out);\n    transition-timing-function: var(--ds-ease-in-out);\n  }\n  .studio\\:ease-out {\n    --tw-ease: var(--studio-ease-out);\n    transition-timing-function: var(--studio-ease-out);\n  }\n  @media (hover: hover) {\n    .studio\\:group-hover\\:hidden:is(:where(.studio\\:group):hover *) {\n      display: none;\n    }\n    .studio\\:group-hover\\:inline-flex:is(:where(.studio\\:group):hover *) {\n      display: inline-flex;\n    }\n  }\n  .studio\\:group-focus-visible\\:hidden:is(:where(.studio\\:group):focus-visible *) {\n    display: none;\n  }\n  .studio\\:group-focus-visible\\:inline-flex:is(:where(.studio\\:group):focus-visible *) {\n    display: inline-flex;\n  }\n  .studio\\:backdrop\\:bg-black\\/30::backdrop {\n    background-color: var(--studio-color-black);\n    @supports (color: color-mix(in lab, red, red)) {\n      background-color: color-mix(in oklab, var(--studio-color-black) 30%, transparent);\n    }\n  }\n  @media (hover: hover) {\n    .studio\\:hover\\:bg-\\(--dsw-alias-interactive-bg-hover\\):hover {\n      background-color: var(--dsw-alias-interactive-bg-hover);\n    }\n    .studio\\:hover\\:bg-black\\/5:hover {\n      background-color: var(--studio-color-black);\n    }\n    @supports (color: color-mix(in lab, red, red)) {\n      .studio\\:hover\\:bg-black\\/5:hover {\n        background-color: color-mix(in oklab, var(--studio-color-black) 5%, transparent);\n      }\n    }\n  }\n  .studio\\:focus-visible\\:outline-2:focus-visible {\n    outline-style: var(--tw-outline-style);\n    outline-width: 2px;\n  }\n  .studio\\:focus-visible\\:outline-blue-500:focus-visible {\n    outline-color: var(--studio-color-blue-500);\n  }\n  .studio\\:disabled\\:cursor-default:disabled {\n    cursor: default;\n  }\n  .studio\\:disabled\\:opacity-50:disabled {\n    opacity: 50%;\n  }\n  @media (prefers-reduced-motion: reduce) {\n    .studio\\:motion-reduce\\:transition-none {\n      transition-property: none;\n    }\n  }\n  .studio\\:\\[\\&_svg\\]\\:size-4 svg {\n    width: calc(var(--studio-spacing) * 4);\n    height: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:\\[\\&\\:\\:-webkit-scrollbar\\]\\:hidden::-webkit-scrollbar {\n    display: none;\n  }\n  .studio\\:\\[\\&\\[hidden\\]\\]\\:hidden[hidden] {\n    display: none;\n  }\n}\n@property --tw-translate-x {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0;\n}\n@property --tw-translate-y {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0;\n}\n@property --tw-translate-z {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0;\n}\n@property --tw-border-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@property --tw-leading {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-font-weight {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-inset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-ring-inset {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-offset-width {\n  syntax: "<length>";\n  inherits: false;\n  initial-value: 0px;\n}\n@property --tw-ring-offset-color {\n  syntax: "*";\n  inherits: false;\n  initial-value: #fff;\n}\n@property --tw-ring-offset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-duration {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ease {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-outline-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@layer properties {\n  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {\n    *, ::before, ::after, ::backdrop {\n      --tw-translate-x: 0;\n      --tw-translate-y: 0;\n      --tw-translate-z: 0;\n      --tw-border-style: solid;\n      --tw-leading: initial;\n      --tw-font-weight: initial;\n      --tw-shadow: 0 0 #0000;\n      --tw-shadow-color: initial;\n      --tw-shadow-alpha: 100%;\n      --tw-inset-shadow: 0 0 #0000;\n      --tw-inset-shadow-color: initial;\n      --tw-inset-shadow-alpha: 100%;\n      --tw-ring-color: initial;\n      --tw-ring-shadow: 0 0 #0000;\n      --tw-inset-ring-color: initial;\n      --tw-inset-ring-shadow: 0 0 #0000;\n      --tw-ring-inset: initial;\n      --tw-ring-offset-width: 0px;\n      --tw-ring-offset-color: #fff;\n      --tw-ring-offset-shadow: 0 0 #0000;\n      --tw-duration: initial;\n      --tw-ease: initial;\n      --tw-outline-style: solid;\n    }\n  }\n}\n';
+var studio_generated_default = '/*! tailwindcss v4.3.5 | MIT License | https://tailwindcss.com */\n@layer properties;\n@layer theme, utilities;\n@layer theme {\n  :root, :host {\n    --studio-color-blue-500: oklch(62.3% 0.214 259.815);\n    --studio-color-black: #000;\n    --studio-spacing: 0.25rem;\n    --studio-text-xs: 0.75rem;\n    --studio-text-xs--line-height: calc(1 / 0.75);\n    --studio-text-sm: 0.875rem;\n    --studio-text-sm--line-height: calc(1.25 / 0.875);\n    --studio-text-base: 1rem;\n    --studio-text-base--line-height: calc(1.5 / 1);\n    --studio-font-weight-medium: 500;\n    --studio-ease-out: cubic-bezier(0, 0, 0.2, 1);\n    --studio-default-transition-duration: 150ms;\n    --studio-default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  }\n}\n@layer utilities {\n  .studio\\:m-0 {\n    margin: 0px;\n  }\n  .studio\\:m-auto {\n    margin: auto;\n  }\n  .studio\\:mt-1 {\n    margin-top: var(--studio-spacing);\n  }\n  .studio\\:mt-2 {\n    margin-top: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:mb-0 {\n    margin-bottom: 0px;\n  }\n  .studio\\:mb-4 {\n    margin-bottom: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:ml-auto {\n    margin-left: auto;\n  }\n  .studio\\:box-border {\n    box-sizing: border-box;\n  }\n  .studio\\:flex {\n    display: flex;\n  }\n  .studio\\:grid {\n    display: grid;\n  }\n  .studio\\:hidden {\n    display: none;\n  }\n  .studio\\:inline-block {\n    display: inline-block;\n  }\n  .studio\\:h-5 {\n    height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:h-7 {\n    height: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:h-60 {\n    height: calc(var(--studio-spacing) * 60);\n  }\n  .studio\\:h-\\[34px\\] {\n    height: 34px;\n  }\n  .studio\\:max-h-\\[40vh\\] {\n    max-height: 40vh;\n  }\n  .studio\\:max-h-\\[calc\\(100dvh-2rem\\)\\] {\n    max-height: calc(100dvh - 2rem);\n  }\n  .studio\\:min-h-0 {\n    min-height: 0px;\n  }\n  .studio\\:w-4 {\n    width: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:w-7 {\n    width: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:w-\\[min\\(48rem\\,calc\\(100vw-2rem\\)\\)\\] {\n    width: min(48rem, calc(100vw - 2rem));\n  }\n  .studio\\:w-full {\n    width: 100%;\n  }\n  .studio\\:max-w-none {\n    max-width: none;\n  }\n  .studio\\:min-w-0 {\n    min-width: 0px;\n  }\n  .studio\\:flex-1 {\n    flex: 1;\n  }\n  .studio\\:shrink-0 {\n    flex-shrink: 0;\n  }\n  .studio\\:rotate-90 {\n    rotate: 90deg;\n  }\n  .studio\\:cursor-pointer {\n    cursor: pointer;\n  }\n  .studio\\:\\[scrollbar-width\\:none\\] {\n    scrollbar-width: none;\n  }\n  .studio\\:grid-rows-\\[0fr\\] {\n    grid-template-rows: 0fr;\n  }\n  .studio\\:grid-rows-\\[1fr\\] {\n    grid-template-rows: 1fr;\n  }\n  .studio\\:flex-col {\n    flex-direction: column;\n  }\n  .studio\\:flex-wrap {\n    flex-wrap: wrap;\n  }\n  .studio\\:items-center {\n    align-items: center;\n  }\n  .studio\\:items-start {\n    align-items: flex-start;\n  }\n  .studio\\:justify-between {\n    justify-content: space-between;\n  }\n  .studio\\:justify-center {\n    justify-content: center;\n  }\n  .studio\\:gap-1 {\n    gap: var(--studio-spacing);\n  }\n  .studio\\:gap-1\\.5 {\n    gap: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:gap-2 {\n    gap: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:gap-3 {\n    gap: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:truncate {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .studio\\:overflow-hidden {\n    overflow: hidden;\n  }\n  .studio\\:overflow-x-hidden {\n    overflow-x: hidden;\n  }\n  .studio\\:overflow-y-auto {\n    overflow-y: auto;\n  }\n  .studio\\:overscroll-contain {\n    overscroll-behavior: contain;\n  }\n  .studio\\:rounded {\n    border-radius: 0.25rem;\n  }\n  .studio\\:rounded-\\(--dsw-radius-lg\\) {\n    border-radius: var(--dsw-radius-lg);\n  }\n  .studio\\:rounded-\\(--dsw-radius-md\\) {\n    border-radius: var(--dsw-radius-md);\n  }\n  .studio\\:border {\n    border-style: var(--tw-border-style);\n    border-width: 1px;\n  }\n  .studio\\:border-0 {\n    border-style: var(--tw-border-style);\n    border-width: 0px;\n  }\n  .studio\\:border-\\(--dsw-alias-border-l1\\) {\n    border-color: var(--dsw-alias-border-l1);\n  }\n  .studio\\:bg-\\(--dsw-alias-bg-base\\) {\n    background-color: var(--dsw-alias-bg-base);\n  }\n  .studio\\:bg-transparent {\n    background-color: transparent;\n  }\n  .studio\\:p-3 {\n    padding: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:p-5 {\n    padding: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:px-1 {\n    padding-inline: var(--studio-spacing);\n  }\n  .studio\\:px-2 {\n    padding-inline: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:px-3 {\n    padding-inline: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:py-0\\.5 {\n    padding-block: calc(var(--studio-spacing) * 0.5);\n  }\n  .studio\\:py-1\\.5 {\n    padding-block: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:text-left {\n    text-align: left;\n  }\n  .studio\\:text-base {\n    font-size: var(--studio-text-base);\n    line-height: var(--tw-leading, var(--studio-text-base--line-height));\n  }\n  .studio\\:text-sm {\n    font-size: var(--studio-text-sm);\n    line-height: var(--tw-leading, var(--studio-text-sm--line-height));\n  }\n  .studio\\:text-xs {\n    font-size: var(--studio-text-xs);\n    line-height: var(--tw-leading, var(--studio-text-xs--line-height));\n  }\n  .studio\\:leading-5 {\n    --tw-leading: calc(var(--studio-spacing) * 5);\n    line-height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:leading-6 {\n    --tw-leading: calc(var(--studio-spacing) * 6);\n    line-height: calc(var(--studio-spacing) * 6);\n  }\n  .studio\\:font-medium {\n    --tw-font-weight: var(--studio-font-weight-medium);\n    font-weight: var(--studio-font-weight-medium);\n  }\n  .studio\\:break-words {\n    overflow-wrap: break-word;\n  }\n  .studio\\:break-all {\n    word-break: break-all;\n  }\n  .studio\\:text-\\(--dsw-alias-label-primary\\) {\n    color: var(--dsw-alias-label-primary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-secondary\\) {\n    color: var(--dsw-alias-label-secondary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-tertiary\\) {\n    color: var(--dsw-alias-label-tertiary);\n  }\n  .studio\\:text-inherit {\n    color: inherit;\n  }\n  .studio\\:underline {\n    text-decoration-line: underline;\n  }\n  .studio\\:opacity-0 {\n    opacity: 0%;\n  }\n  .studio\\:opacity-100 {\n    opacity: 100%;\n  }\n  .studio\\:shadow-xl {\n    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);\n  }\n  .studio\\:transition-\\[grid-template-rows\\] {\n    transition-property: grid-template-rows;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-opacity {\n    transition-property: opacity;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-transform {\n    transition-property: transform, translate, scale, rotate;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:duration-100 {\n    --tw-duration: 100ms;\n    transition-duration: 100ms;\n  }\n  .studio\\:duration-150 {\n    --tw-duration: 150ms;\n    transition-duration: 150ms;\n  }\n  .studio\\:duration-200 {\n    --tw-duration: 200ms;\n    transition-duration: 200ms;\n  }\n  .studio\\:ease-\\(--ds-ease-in-out\\) {\n    --tw-ease: var(--ds-ease-in-out);\n    transition-timing-function: var(--ds-ease-in-out);\n  }\n  .studio\\:ease-out {\n    --tw-ease: var(--studio-ease-out);\n    transition-timing-function: var(--studio-ease-out);\n  }\n  @media (hover: hover) {\n    :is(:where(.studio\\:group):hover .studio\\:group-hover\\:hidden) {\n      display: none;\n    }\n    :is(:where(.studio\\:group):hover .studio\\:group-hover\\:inline-flex) {\n      display: inline-flex;\n    }\n  }\n  :is(:where(.studio\\:group):focus-visible .studio\\:group-focus-visible\\:hidden) {\n    display: none;\n  }\n  :is(:where(.studio\\:group):focus-visible .studio\\:group-focus-visible\\:inline-flex) {\n    display: inline-flex;\n  }\n  .studio\\:backdrop\\:bg-black\\/30::backdrop {\n    background-color: var(--studio-color-black);\n    @supports (color: color-mix(in lab, red, red)) {\n      background-color: color-mix(in oklab, var(--studio-color-black) 30%, transparent);\n    }\n  }\n  @media (hover: hover) {\n    .studio\\:hover\\:bg-\\(--dsw-alias-interactive-bg-hover\\):hover {\n      background-color: var(--dsw-alias-interactive-bg-hover);\n    }\n    .studio\\:hover\\:bg-black\\/5:hover {\n      background-color: var(--studio-color-black);\n    }\n    @supports (color: color-mix(in lab, red, red)) {\n      .studio\\:hover\\:bg-black\\/5:hover {\n        background-color: color-mix(in oklab, var(--studio-color-black) 5%, transparent);\n      }\n    }\n  }\n  .studio\\:focus-visible\\:outline-2:focus-visible {\n    outline-style: var(--tw-outline-style);\n    outline-width: 2px;\n  }\n  .studio\\:focus-visible\\:outline-blue-500:focus-visible {\n    outline-color: var(--studio-color-blue-500);\n  }\n  .studio\\:disabled\\:cursor-default:disabled {\n    cursor: default;\n  }\n  .studio\\:disabled\\:opacity-50:disabled {\n    opacity: 50%;\n  }\n  @media (prefers-reduced-motion: reduce) {\n    .studio\\:motion-reduce\\:transition-none {\n      transition-property: none;\n    }\n  }\n  .studio\\:\\[\\&_svg\\]\\:size-4 svg {\n    width: calc(var(--studio-spacing) * 4);\n    height: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:\\[\\&\\:\\:-webkit-scrollbar\\]\\:hidden::-webkit-scrollbar {\n    display: none;\n  }\n  .studio\\:\\[\\&\\[hidden\\]\\]\\:hidden[hidden] {\n    display: none;\n  }\n}\n@property --tw-border-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@property --tw-leading {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-font-weight {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-inset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-ring-inset {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-offset-width {\n  syntax: "<length>";\n  inherits: false;\n  initial-value: 0px;\n}\n@property --tw-ring-offset-color {\n  syntax: "*";\n  inherits: false;\n  initial-value: #fff;\n}\n@property --tw-ring-offset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-duration {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ease {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-outline-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@layer properties {\n  @supports ((-webkit-hyphens: none) and (not (margin-trim: block))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {\n    *, ::before, ::after, ::backdrop {\n      --tw-border-style: solid;\n      --tw-leading: initial;\n      --tw-font-weight: initial;\n      --tw-shadow: 0 0 #0000;\n      --tw-shadow-color: initial;\n      --tw-shadow-alpha: 100%;\n      --tw-inset-shadow: 0 0 #0000;\n      --tw-inset-shadow-color: initial;\n      --tw-inset-shadow-alpha: 100%;\n      --tw-ring-color: initial;\n      --tw-ring-shadow: 0 0 #0000;\n      --tw-inset-ring-color: initial;\n      --tw-inset-ring-shadow: 0 0 #0000;\n      --tw-ring-inset: initial;\n      --tw-ring-offset-width: 0px;\n      --tw-ring-offset-color: #fff;\n      --tw-ring-offset-shadow: 0 0 #0000;\n      --tw-duration: initial;\n      --tw-ease: initial;\n      --tw-outline-style: solid;\n    }\n  }\n}\n';
 
 // src/client/sessionCompat.ts
 function currentSessionOf(snapshot) {
@@ -21117,8 +21038,6 @@ var StudioModels = class {
     this.remote = remote;
     this.storage = storage;
   }
-  remote;
-  storage;
   listeners = /* @__PURE__ */ new Set();
   /** 读取当前项目保存的跟随方式。 */
   mode(id) {
@@ -21193,8 +21112,6 @@ var WidgetMountRegistry = class {
     } catch {
     }
   }
-  storage;
-  makeId;
   records = /* @__PURE__ */ Object.create(null);
   listeners = /* @__PURE__ */ new Set();
   persist() {
@@ -21493,7 +21410,7 @@ var WAVE_BG_B64 = "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQUFBAYFBQUHBgYHCQ8KCQgIC
 
 // src/client/index.tsx
 var import_jsx_runtime4 = require("react/jsx-runtime");
-var LOCAL_VERSION2 = false ? "dev" : "0.6.2";
+var LOCAL_VERSION2 = false ? "dev" : "0.6.3";
 var UPDATE_REPO2 = "1997liuyh-boop/deepseek-harness";
 var { command: UPGRADE_CMD, prompt: UPGRADE_AI2, desktop: DESKTOP_HOST } = worktableUpgrade();
 var ICON_SYNC = /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("svg", { viewBox: "0 0 16 16", "aria-hidden": true, children: [
@@ -21506,7 +21423,6 @@ var ICON_SPARK = /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("svg", { viewBox:
   /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("path", { d: "M8 1.6l1.5 3.9 3.9 1.5-3.9 1.5L8 12.4 6.5 8.5 2.6 7l3.9-1.5z", fill: "none", stroke: "currentColor", strokeWidth: "1.3", strokeLinejoin: "round" }),
   /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("path", { d: "M12.6 11.2l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z", fill: "currentColor" })
 ] });
-var PROJECT_FOLDER_BUTTON_CLASS = "dsh-wt_folderBtn studio:absolute studio:right-[26px] studio:top-1/2 studio:-translate-y-1/2 studio:flex studio:size-[22px] studio:items-center studio:justify-center studio:rounded-(--dsw-radius-sm) studio:text-xs studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500";
 function cmpVer2(a, b) {
   const pa = a.split(".").map(Number);
   const pb = b.split(".").map(Number);
@@ -21535,16 +21451,6 @@ var LEGACY_BUMP_COOLDOWN = 15e3;
 var OVER_BOTTOM_PX = 24;
 var OVER_TOP_PX = 24;
 var OVER_SIDE_PX = 80;
-var PRESET_DEFS = [
-  { id: "2h", leftCount: 0, topCount: 0, contentCount: 1, chatFull: false },
-  { id: "3h", leftCount: 0, topCount: 0, contentCount: 2, chatFull: false },
-  { id: "l2", leftCount: 0, topCount: 1, contentCount: 1, chatFull: true },
-  { id: "grid", leftCount: 0, topCount: 2, contentCount: 1, chatFull: false },
-  { id: "t3", leftCount: 0, topCount: 1, contentCount: 2, chatFull: true },
-  { id: "l13", leftCount: 0, topCount: 1, contentCount: 3, chatFull: true, topHeightDefault: 420, topHeightRatio: 0.55 },
-  { id: "g4", leftCount: 0, topCount: 2, contentCount: 2, chatFull: true, topHeightRatio: 0.5 },
-  { id: "l23", leftCount: 0, topCount: 2, contentCount: 3, chatFull: true, topHeightRatio: 0.5 }
-];
 var EMOJI_SET = ["\u{1F9F1}", "\u{1F3E0}", "\u{1F393}", "\u{1F697}", "\u2708\uFE0F", "\u{1F30D}", "\u{1F3E5}", "\u{1F4DA}", "\u270F\uFE0F", "\u2699\uFE0F", "\u{1F3A8}", "\u{1F3AE}", "\u{1F30F}", "\u{1F4D0}", "\u{1F9EA}", "\u{1F916}", "\u{1F4E6}", "\u{1F4AC}"];
 var ICON_SEARCH = /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("svg", { width: "14", height: "14", viewBox: "0 0 16 16", fill: "none", xmlns: "http://www.w3.org/2000/svg", children: [
   /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("path", { d: "M11.894845 6.647401C11.894845 3.725463 9.534486 1.356779 6.623219 1.35657C3.711786 1.35657 1.351635 3.725338 1.351635 6.647401C1.351843 9.569296 3.711911 11.938273 6.623219 11.938273C9.534361 11.938064 11.894637 9.569171 11.894845 6.647401ZM13.245462 6.647401C13.245254 10.317935 10.280401 13.293613 6.623219 13.293821C2.965871 13.293821 0.000204 10.31806 0 6.647401C0 2.976574 2.965746 0 6.623219 0C10.280526 0.000205 13.245462 2.9767 13.245462 6.647401Z", fill: "currentColor" }),
@@ -21555,122 +21461,6 @@ var ICON_ADD = /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("svg", { width: "16
   /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("path", { transform: "translate(9.52 2.52)", d: "M3.55246 0L3.55246 2.44252L6 2.44252L6 3.55748L3.55246 3.55748L3.55246 6L2.43834 6L2.43834 3.55748L0 3.55748L0 2.44252L2.43834 2.44252L2.43834 0L3.55246 0Z", fill: "currentColor" }),
   /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("path", { transform: "translate(0.3496 2.35)", d: "M4.76367 0C5.36861 1.80598e-05 5.93113 0.310294 6.25488 0.821289L6.78027 1.64941C6.79685 1.67558 6.81791 1.69775 6.83887 1.71973C6.72186 2.15521 6.65702 2.61192 6.65137 3.08301C6.25601 2.96045 5.90909 2.70478 5.68164 2.3457L5.15723 1.5166C5.07183 1.38189 4.92318 1.3008 4.76367 1.30078L2.32422 1.30078C1.7589 1.30078 1.30078 1.7589 1.30078 2.32422L1.30078 10.1338C1.30078 10.6991 1.7589 11.1572 2.32422 11.1572L11.9766 11.1572C12.5419 11.1572 13 10.6991 13 10.1338L13 8.58398C13.4545 8.5135 13.8903 8.38748 14.3008 8.21289L14.3008 10.1338C14.3008 11.4171 13.2598 12.458 11.9766 12.458L2.32422 12.458C1.04093 12.458 0 11.4171 0 10.1338L0 2.32422C0 1.04093 1.04093 0 2.32422 0L4.76367 0Z", fill: "currentColor" })
 ] });
-function buildLayout(presetId, name) {
-  const def = PRESET_DEFS.find((d) => d.id === presetId) ?? PRESET_DEFS[0];
-  const mk = (i) => ({
-    id: "p" + (i + 1),
-    title: "\u7A97\u53E3" + (i + 1),
-    min: 200,
-    content: null
-  });
-  const left = def.leftCount > 0 ? mk(0) : null;
-  const top = Array.from({ length: def.topCount }, (_, i) => mk(def.leftCount + i));
-  const main = Array.from({ length: def.contentCount }, (_, i) => mk(def.leftCount + def.topCount + i));
-  return {
-    id: newWidgetId("layout"),
-    title: name,
-    left: left ?? null,
-    top: top.length > 0 ? top : null,
-    main,
-    leftWidth: { default: 260, min: 160, max: 480 },
-    chatWidth: { default: 360, min: 240, max: 600 },
-    topHeight: { default: def.topHeightDefault ?? 200, min: 120, max: 480 },
-    topHeightRatio: def.topHeightRatio ?? 0.35,
-    chatSide: "right",
-    chatFullHeight: def.chatFull === true
-  };
-}
-function presetThumb(defId) {
-  const cell = (chat, key) => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumbCell" + (chat ? " dsh-wt_thumbChat" : ""), children: chat ? "\u{1F4AC}" : "" }, key);
-  if (defId === "2h") {
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumb", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbRow", children: [
-      cell(false, "a"),
-      cell(true, "b")
-    ] }) });
-  }
-  if (defId === "3h") {
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumb", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbRow", children: [
-      cell(false, "a"),
-      cell(false, "b"),
-      cell(true, "c")
-    ] }) });
-  }
-  if (defId === "g4") {
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumb dsh-wt_thumbCols", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbCol", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbRow", children: [
-          cell(false, "a"),
-          cell(false, "b")
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbRow", children: [
-          cell(false, "c"),
-          cell(false, "d")
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumbCol", children: cell(true, "e") })
-    ] });
-  }
-  if (defId === "l23") {
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumb dsh-wt_thumbCols", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbCol", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbRow", children: [
-          cell(false, "a"),
-          cell(false, "b")
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbRow", children: [
-          cell(false, "c"),
-          cell(false, "d"),
-          cell(false, "e")
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumbCol", children: cell(true, "f") })
-    ] });
-  }
-  if (defId === "l13") {
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumb dsh-wt_thumbCols", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbCol", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumbRow", children: cell(false, "a") }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbRow", children: [
-          cell(false, "b"),
-          cell(false, "c"),
-          cell(false, "d")
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumbCol", children: cell(true, "e") })
-    ] });
-  }
-  if (defId === "grid") {
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumb", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbRow", children: [
-        cell(false, "a"),
-        cell(false, "b")
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbRow", children: [
-        cell(false, "c"),
-        cell(true, "d")
-      ] })
-    ] });
-  }
-  if (defId === "l2") {
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumb dsh-wt_thumbCols", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbCol", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumbRow", children: cell(false, "a") }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumbRow", children: cell(false, "b") })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumbCol", children: cell(true, "c") })
-    ] });
-  }
-  return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumb dsh-wt_thumbCols", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbCol", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumbRow", children: cell(false, "a") }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_thumbRow", children: [
-        cell(false, "b"),
-        cell(false, "c")
-      ] })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_thumbCol", children: cell(true, "d") })
-  ] });
-}
 var DEFAULT_VIEW = {
   query: "",
   searchOpen: false,
@@ -22459,23 +22249,11 @@ function WorktableSection(props) {
       return !v;
     });
   };
-  const [wsPreset, setWsPreset] = (0, import_react4.useState)("2h");
-  const [wsName, setWsName] = (0, import_react4.useState)("");
-  const [wsError, setWsError] = (0, import_react4.useState)(false);
-  const [wsFolderParent, setWsFolderParent] = (0, import_react4.useState)("");
-  const [wsFolderError, setWsFolderError] = (0, import_react4.useState)(false);
-  const [pickBusy, setPickBusy] = (0, import_react4.useState)(false);
-  const [pickErr, setPickErr] = (0, import_react4.useState)({ add: "", bind: "" });
-  const [manualPathFor, setManualPathFor] = (0, import_react4.useState)(null);
-  const [manualPathText, setManualPathText] = (0, import_react4.useState)("");
-  const pickSeqRef = (0, import_react4.useRef)(0);
-  const pickBusyRef = (0, import_react4.useRef)(false);
   const mountedRef = (0, import_react4.useRef)(true);
   (0, import_react4.useEffect)(() => () => {
     mountedRef.current = false;
   }, []);
   const [iconPick, setIconPick] = (0, import_react4.useState)(null);
-  const [folderPick, setFolderPick] = (0, import_react4.useState)(null);
   const [consoleBind, setConsoleBind] = (0, import_react4.useState)(null);
   const [consoleGroups, setConsoleGroups] = (0, import_react4.useState)([]);
   const [consoleMode, setConsoleMode] = (0, import_react4.useState)("none");
@@ -22485,12 +22263,7 @@ function WorktableSection(props) {
   const [consoleErr, setConsoleErr] = (0, import_react4.useState)(false);
   const [consoleBusy, setConsoleBusy] = (0, import_react4.useState)(false);
   const consoleNeedsWorkspace = blankSessionNeedsWorkspace(sessionBridge?.sessions, consoleMode === "none" ? "none" : "auto");
-  const [customOpen, setCustomOpen] = (0, import_react4.useState)(false);
-  const [customLayoutText, setCustomLayoutText] = (0, import_react4.useState)("");
-  const [copiedToast, setCopiedToast] = (0, import_react4.useState)(null);
-  const copyToastTimerRef = (0, import_react4.useRef)(null);
   const [requestDelete, setRequestDelete] = (0, import_react4.useState)(null);
-  const [viewPickFor, setViewPickFor] = (0, import_react4.useState)(null);
   const [float, setFloat] = (0, import_react4.useState)(
     () => view.dock === "float" && view.floatTop != null ? { top: view.floatTop } : null
   );
@@ -22574,10 +22347,6 @@ function WorktableSection(props) {
   const openAddPanel = () => {
     setAddOpen(true);
     setViewOptionsOpen(false);
-    if (!wsFolderParent) {
-      const cwd = sessionScopeStore.snapshot?.cwd ?? "";
-      if (cwd) setWsFolderParent(cwd);
-    }
   };
   (0, import_react4.useEffect)(() => {
     const env = {
@@ -22986,31 +22755,6 @@ function WorktableSection(props) {
       }
     }
   }, []);
-  function buildCustomLayoutPrompt(req) {
-    return [
-      "\u3010\u4E3A dsh-worktable\uFF08\u5DE5\u4F5C\u53F0\uFF09\u63D2\u4EF6\u589E\u52A0\u4E00\u4E2A\u65B0\u7684\u5E03\u5C40\u9884\u8BBE\u3011",
-      "",
-      "\u80CC\u666F\uFF1Adsh-worktable \u662F DeepSeek Harness \u7684\u81EA\u5EFA\u5BB9\u5668\u63D2\u4EF6\uFF08\u672C\u673A\u4ED3\u5E93 dsh-worktable\uFF1B\u4E0D\u4E86\u89E3\u7684\u7EC6\u8282\u53EF\u76F4\u63A5\u5411\u7528\u6237\u63D0\u95EE\uFF09\u3002",
-      "\u4FA7\u8FB9\u680F\u300C\u5DE5\u4F5C\u53F0\u300D\u533A\u5757\u7BA1\u7406\u9879\u76EE\uFF0C\u6BCF\u4E2A\u9879\u76EE\u6253\u5F00\u540E\u662F\u4E00\u4E2A\u5E73\u94FA\u5DE5\u4F5C\u533A\uFF08\u82E5\u5E72\u5185\u5BB9\u7A97 + \u53F3\u4FA7\u5BF9\u8BDD\u7A97\uFF09\u3002",
-      "\u5E03\u5C40\u9884\u8BBE\u5B9A\u4E49\u5728 01_content/src/client/index.tsx \u7684 PRESET_DEFS \u6570\u7EC4\uFF0C\u9009\u62E9\u5668\u7F29\u7565\u56FE\u5728 presetThumb() \u51FD\u6570\u3002",
-      "",
-      "\u4EFB\u52A1\uFF1A\u6309\u4E0B\u65B9\u300C\u7528\u6237\u9700\u6C42\u300D\u65B0\u589E\u4E00\u4E2A\u5E03\u5C40\u9884\u8BBE\u3002",
-      "",
-      "\u89C4\u5219\uFF08\u5FC5\u987B\u9075\u5B88\uFF09\uFF1A",
-      "1. \u65B0\u9884\u8BBE\u8FFD\u52A0\u5230 PRESET_DEFS \u6570\u7EC4\u672B\u5C3E\uFF1B\u9884\u8BBE\u9009\u62E9\u5668\u6309\u6570\u7EC4\u987A\u5E8F\u663E\u793A\uFF0C\u672B\u5C3E\u7684\u300C\uFF0B\u300D\u81EA\u5B9A\u4E49\u78C1\u8D34\u6C38\u8FDC\u662F\u6700\u540E\u4E00\u4E2A\uFF0C\u65B0\u9884\u8BBE\u81EA\u52A8\u51FA\u73B0\u5728\u5B83\u524D\u9762\u3002",
-      "2. \u9884\u8BBE\u5B57\u6BB5\uFF1Aid\uFF08kebab-case \u552F\u4E00\uFF09\uFF1BleftCount = \u5DE6\u4FA7\u6574\u5217\u5185\u5BB9\u7A97\u6570\uFF080/1\uFF09\uFF1BtopCount = \u9876\u90E8\u901A\u680F\u884C\u7A97\u6570\uFF1BcontentCount = \u4E3B\u884C\u7A97\u6570\uFF1BchatFull = \u5BF9\u8BDD\u7A97\u662F\u5426\u901A\u9AD8\u6574\u5217\uFF08true/false\uFF09\uFF1B\u53EF\u9009 topHeightDefault = \u9876\u884C\u56FA\u5B9A\u9ED8\u8BA4\u9AD8\uFF08px\uFF09\uFF1B\u53EF\u9009 topHeightRatio = \u9996\u6B21\u6253\u5F00\u65F6\u9876\u884C\u9AD8\u5EA6\u5360\u53EF\u7528\u9AD8\u5EA6\u6BD4\u4F8B\uFF080~1\uFF0C0.5 = \u4E0A\u4E0B\u7B49\u5206\uFF1B\u7F3A\u7701 0.35\uFF09\u3002",
-      "3. \u786C\u7EA6\u675F\uFF1A\u5BF9\u8BDD\u7A97\u6052\u5728\u53F3\u4FA7\uFF08chatSide \u56FA\u5B9A right\uFF09\uFF1B\u804A\u5929 \u21C4 \u7FFB\u8F6C\u8D34\u5DE6\u7531\u5F15\u64CE\u81EA\u5E26\uFF0C\u4E0D\u8981\u6539\u3002",
-      "4. \u60F3\u8981\u300C\u4E0A\u4E0B\u7B49\u5927\u300D\u7684\u7F51\u683C\u5C31\u7528 topHeightRatio: 0.5\uFF1B\u6BCF\u884C\u5185\u7684\u7A97\u683C\u5BBD\u5EA6\u7531\u5F15\u64CE\u6309\u53EF\u7528\u5BBD\u5EA6\u81EA\u52A8\u5747\u5206\uFF0C\u65E0\u9700\u914D\u7F6E\u3002",
-      "5. \u7A97\u683C\u6700\u5C0F\u5BBD 200\u3001\u804A\u5929\u7A97\u6700\u5C0F\u5BBD 240\uFF0C\u5F15\u64CE\u6709\u94B3\u5236\uFF0C\u65E0\u9700\u914D\u7F6E\u3002",
-      "6. \u5728 presetThumb(defId) \u91CC\u4E3A\u65B0 id \u589E\u52A0\u4E00\u4E2A\u7F29\u7565\u56FE\u5206\u652F\uFF08\u7528 dsh-wt_thumb / dsh-wt_thumbCol / dsh-wt_thumbRow / cell()\uFF1B\u804A\u5929\u7A97\u7528 cell(true) \u7684\u84DD\u8272 \u{1F4AC} \u683C\uFF09\u3002",
-      "7. \u73B0\u6709\u9884\u8BBE\u7684\u987A\u5E8F\u4E0E\u5185\u5BB9\u4E0D\u8981\u6539\u52A8\uFF1A2h / 3h / l2 / grid / t3 / l13 / g4 / l23\u3002",
-      "8. \u6539\u5B8C\u5728 01_content \u76EE\u5F55\u6267\u884C npm run build \u91CD\u65B0\u6253\u5305\uFF0C\u6D4F\u89C8\u5668 F5 \u5373\u751F\u6548\u3002",
-      "9. \u9700\u6C42\u82E5\u8D85\u51FA\u4EE5\u4E0A\u5B57\u6BB5\u7684\u8868\u8FBE\u80FD\u529B\uFF08\u4F8B\u5982\u4E09\u884C\u3001\u5D4C\u5957\u5206\u680F\uFF09\uFF0C\u6309\u73B0\u6709\u5F15\u64CE\u6A21\u578B\u505A\u6700\u63A5\u8FD1\u7684\u5B9E\u73B0\uFF0C\u5E76\u5728\u56DE\u590D\u91CC\u8BF4\u660E\u53D6\u820D\u3002",
-      "",
-      "\u7528\u6237\u9700\u6C42\uFF1A",
-      req
-    ].join("\n");
-  }
   const openSplit = (0, import_react4.useCallback)(async (spec) => {
     engineIdsRef.current.add(spec.id);
     await openStudioSplit(projects.views[spec.id] ?? spec);
@@ -23145,139 +22889,6 @@ function WorktableSection(props) {
     }
   };
   actionsRef.current = { openSplit, openConsole };
-  const openFolderPick = (0, import_react4.useCallback)((id, anchor) => {
-    invalidatePickState();
-    const rect = anchor.getBoundingClientRect();
-    setFolderPick({ id, x: clamp2(Math.round(rect.right + 8), 8, window.innerWidth - 300), y: clamp2(Math.round(rect.top), 8, window.innerHeight - 240) });
-  }, []);
-  const pickFolder = async (target, apply2) => {
-    if (pickBusyRef.current) return;
-    const ws = sessionBridge?.workspaces;
-    const legacy = ws && typeof ws.pickDirectory === "function" ? () => ws.pickDirectory() : null;
-    let remotePicker = null;
-    try {
-      const rp = clientCtx?.get?.("remote.directoryPicker");
-      if (rp && typeof rp.pick === "function") remotePicker = () => rp.pick();
-    } catch {
-    }
-    if (!remotePicker) {
-      try {
-        const dp = clientCtx?.directoryPicker;
-        if (dp && typeof dp.pick === "function") remotePicker = () => dp.pick();
-      } catch {
-      }
-    }
-    if (!legacy && !remotePicker) {
-      setPickErr((prev) => ({ ...prev, [target]: t("add.folderPickerUnavailable") }));
-      return;
-    }
-    pickBusyRef.current = true;
-    setPickBusy(true);
-    setPickErr((prev) => ({ ...prev, [target]: "" }));
-    const seq = ++pickSeqRef.current;
-    try {
-      let p = null;
-      if (legacy) {
-        p = await legacy();
-      } else {
-        const r = await remotePicker();
-        if (r && typeof r === "object" && "ok" in r) {
-          if (!r.ok) throw new Error(r?.error?.message ?? "directory picker failed");
-          const v = r.value;
-          p = typeof v === "string" ? v : v && typeof v === "object" && typeof v.path === "string" ? v.path : null;
-        } else {
-          p = typeof r === "string" ? r : null;
-        }
-      }
-      if (seq !== pickSeqRef.current) return;
-      if (!mountedRef.current) return;
-      if (p && typeof p === "string") apply2(p);
-    } catch (e) {
-      if (seq !== pickSeqRef.current) return;
-      if (!mountedRef.current) return;
-      const msg = e && typeof e === "object" && typeof e.message === "string" ? e.message : String(e ?? "");
-      setPickErr((prev) => ({ ...prev, [target]: t("add.folderPickFail", { msg: msg || "unknown" }) }));
-    } finally {
-      if (seq === pickSeqRef.current && mountedRef.current) {
-        pickBusyRef.current = false;
-        setPickBusy(false);
-      }
-    }
-  };
-  const invalidatePickState = () => {
-    pickSeqRef.current++;
-    pickBusyRef.current = false;
-    setPickBusy(false);
-    setManualPathFor(null);
-    setManualPathText("");
-    setPickErr({ add: "", bind: "" });
-  };
-  const applyManualPath = (target) => {
-    const p = manualPathText.trim();
-    if (!p) {
-      setPickErr((prev) => ({ ...prev, [target]: t("add.folderManualEmpty") }));
-      return;
-    }
-    if (!isAbs(p)) {
-      setPickErr((prev) => ({ ...prev, [target]: t("add.folderManualAbs") }));
-      return;
-    }
-    pickSeqRef.current++;
-    pickBusyRef.current = false;
-    setPickBusy(false);
-    if (target === "add") {
-      setWsFolderParent(p);
-      setWsFolderError(false);
-    } else if (folderPick) {
-      if (projectsRef.current.projects.folders[folderPick.id] !== p) invalidateWidgetProject(folderPick.id);
-      persistProjects((prev) => ({ ...prev, folders: { ...prev.folders, [folderPick.id]: p } }));
-    }
-    setManualPathFor(null);
-    setManualPathText("");
-    setPickErr((prev) => ({ ...prev, [target]: "" }));
-  };
-  const changeProjectFolder = () => {
-    if (!folderPick || pickBusyRef.current) return;
-    pickFolder("bind", (p) => {
-      if (projectsRef.current.projects.folders[folderPick.id] !== p) invalidateWidgetProject(folderPick.id);
-      persistProjects((prev) => ({ ...prev, folders: { ...prev.folders, [folderPick.id]: p } }));
-    });
-  };
-  const copyCustomLayout = async () => {
-    const text2 = customLayoutText.trim();
-    if (!text2) {
-      setCopiedToast("fail");
-      return;
-    }
-    const prompt = buildCustomLayoutPrompt(text2);
-    try {
-      window.__dshLastPrompt = prompt;
-    } catch {
-    }
-    let ok = false;
-    try {
-      await navigator.clipboard.writeText(prompt);
-      ok = true;
-    } catch {
-    }
-    if (!ok) {
-      try {
-        const tmp = document.createElement("textarea");
-        tmp.value = prompt;
-        tmp.style.position = "fixed";
-        tmp.style.opacity = "0";
-        document.body.appendChild(tmp);
-        tmp.focus();
-        tmp.select();
-        ok = document.execCommand("copy");
-        tmp.remove();
-      } catch {
-      }
-    }
-    setCopiedToast(ok ? "ok" : "fail");
-    if (copyToastTimerRef.current != null) window.clearTimeout(copyToastTimerRef.current);
-    copyToastTimerRef.current = window.setTimeout(() => setCopiedToast(null), 6e3);
-  };
   (0, import_react4.useEffect)(() => {
     const l = () => {
       setNotifyTick((t2) => t2 + 1);
@@ -23438,7 +23049,6 @@ function WorktableSection(props) {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch {
     }
-    invalidatePickState();
     setViewOptionsOpen(false);
     setAddOpen(false);
   };
@@ -23508,90 +23118,9 @@ function WorktableSection(props) {
   const removeShortcut = (id) => {
     persistProjects((prev) => ({ ...prev, shortcuts: prev.shortcuts.filter((s) => s.id !== id) }));
   };
-  const saveLayout = async () => {
-    const name = wsName.trim();
-    if (!name) {
-      setWsError(true);
-      return;
-    }
-    const folderPath = wsFolderParent.trim();
-    if (!folderPath) {
-      setWsFolderError(true);
-      return;
-    }
-    if (!isAbs(folderPath)) {
-      setWsFolderError(true);
-      return;
-    }
-    try {
-      const r = await fetch("/api/worktable/mkdir", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ path: folderPath }) });
-      if (!r.ok) {
-        setWsFolderError(true);
-        setPickErr((prev) => ({ ...prev, add: t("add.folderCreateFail") }));
-        return;
-      }
-    } catch {
-      setWsFolderError(true);
-      setPickErr((prev) => ({ ...prev, add: t("add.folderCreateFail") }));
-      return;
-    }
-    const layout = buildLayout(wsPreset, name);
-    persistProjects((prev) => ({ ...prev, layouts: [...prev.layouts, layout], folders: { ...prev.folders, [layout.id]: folderPath } }));
-    invalidatePickState();
-    setWsName("");
-    setWsFolderParent("");
-    setWsError(false);
-    setWsFolderError(false);
-    setAddOpen(false);
-    openSplit(layout);
-    reportUsed(layout.id);
-  };
   const removeLayout = (id) => {
     invalidateWidgetProject(id);
     persistProjects((prev) => ({ ...prev, layouts: prev.layouts.filter((l) => l.id !== id) }));
-  };
-  const applyLayoutChange = (id, presetId) => {
-    invalidateWidgetProject(id);
-    const layout = projects.layouts.find((l) => l.id === id);
-    const meta = metas[id];
-    const current = layout ?? projects.views[id];
-    const sources = current ? [...current.top ?? [], ...current.main].map((pp) => pp.tabs ?? []).filter((tabs) => tabs.length > 0) : [];
-    const next = buildLayout(presetId, layout ? layout.title : meta?.name ?? id);
-    next.id = id;
-    next.icon = layout ? layout.icon : projects.iconOverrides[id] ?? meta?.icon;
-    const targets = [...next.left ? [next.left] : [], ...next.top ?? [], ...next.main];
-    let si = 0;
-    for (const pane of targets) {
-      if (si < sources.length) {
-        pane.tabs = sources[si];
-        pane.active = 0;
-        pane.content = null;
-        si++;
-      }
-    }
-    const overflow = sources.slice(si).flat();
-    if (overflow.length > 0 && targets.length > 0) {
-      const last = targets[targets.length - 1];
-      last.tabs = [...last.tabs ?? [], ...overflow];
-      last.active = 0;
-    }
-    persistProjects((prev) => layout ? { ...prev, layouts: prev.layouts.map((l) => l.id === id ? next : l) } : { ...prev, views: { ...prev.views, [id]: next } });
-    const wasOpen = splitStore.active && splitStore.spec?.id === id;
-    if (wasOpen) {
-      splitStore.close();
-      openSplit(next);
-    }
-    setViewPickFor(null);
-  };
-  const presetOf = (l) => {
-    const leftCount = l.left ? 1 : 0;
-    const topCount = (l.top ?? []).length;
-    const contentCount = l.main.length;
-    const chatFull = l.chatFullHeight === true;
-    const def = PRESET_DEFS.find(
-      (d) => d.leftCount === leftCount && d.topCount === topCount && d.contentCount === contentCount && d.chatFull === chatFull
-    );
-    return def ? def.id : "2h";
   };
   const removeProject = (id) => {
     if (id === CONSOLE_ID) return;
@@ -23659,21 +23188,6 @@ function WorktableSection(props) {
         const id = aliveRegisteredIds[i];
         if (id) {
           el.setAttribute("data-wt-id", id);
-          let folderButton = el.querySelector(".dsh-wt_folderBtn");
-          if (!folderButton) {
-            folderButton = document.createElement("span");
-            folderButton.className = PROJECT_FOLDER_BUTTON_CLASS;
-            folderButton.setAttribute("role", "button");
-            folderButton.tabIndex = 0;
-            const icon2 = document.createElement("span");
-            icon2.setAttribute("aria-hidden", "true");
-            icon2.textContent = "\u{1F4C2}";
-            folderButton.appendChild(icon2);
-            el.appendChild(folderButton);
-            if (getComputedStyle(el).position === "static") el.style.position = "relative";
-          }
-          folderButton.title = t("bind.folder");
-          folderButton.setAttribute("aria-label", t("bind.folder"));
           const kids = Array.from(el.children);
           const arrow = kids.find((k) => k.tagName === "SPAN" && String(k.textContent ?? "").trim() === "\u203A");
           if (arrow) arrow.classList.add("dsh-wt_resArrow");
@@ -23707,13 +23221,6 @@ function WorktableSection(props) {
       if (!card) return;
       const pid = card.getAttribute("data-wt-id");
       if (!pid) return;
-      const folderButton = target?.closest(".dsh-wt_folderBtn");
-      if (folderButton) {
-        e.stopPropagation();
-        e.preventDefault();
-        openFolderPick(pid, folderButton);
-        return;
-      }
       const first = card.children[0];
       if (first && target && first.contains(target)) {
         e.stopPropagation();
@@ -23738,22 +23245,11 @@ function WorktableSection(props) {
       }
       ackProjectNotify(pid);
     };
-    const onFolderKeyDown = (event) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      const target = event.target instanceof HTMLElement ? event.target.closest(".dsh-wt_folderBtn") : null;
-      const id = target?.closest("[data-wt-id]")?.getAttribute("data-wt-id");
-      if (!target || !id) return;
-      event.preventDefault();
-      event.stopPropagation();
-      openFolderPick(id, target);
-    };
     document.addEventListener("click", onDocClick, true);
-    document.addEventListener("keydown", onFolderKeyDown, true);
     return () => {
       document.removeEventListener("click", onDocClick, true);
-      document.removeEventListener("keydown", onFolderKeyDown, true);
     };
-  }, [projects.views, openSplit, reportUsed, openFolderPick]);
+  }, [projects.views, openSplit, reportUsed]);
   const query = view.query.trim();
   const queryLower = query.toLowerCase();
   const visibleShortcuts = projects.shortcuts.filter(
@@ -23914,7 +23410,6 @@ function WorktableSection(props) {
           "aria-label": t("menu.viewOptions"),
           title: t("menu.viewOptions"),
           onClick: () => {
-            invalidatePickState();
             setViewOptionsOpen((v) => !v);
             setAddOpen(false);
           },
@@ -23929,13 +23424,8 @@ function WorktableSection(props) {
           "aria-label": t("menu.add"),
           title: t("menu.add"),
           onClick: () => {
-            invalidatePickState();
             setAddOpen((v) => !v);
             setViewOptionsOpen(false);
-            if (!wsFolderParent) {
-              const cwd = sessionScopeStore.snapshot?.cwd ?? "";
-              if (cwd) setWsFolderParent(cwd);
-            }
           },
           children: ICON_ADD
         }
@@ -23966,118 +23456,14 @@ function WorktableSection(props) {
         }
       )
     ] }),
-    addOpen && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_popBackdrop", onClick: () => {
-      invalidatePickState();
-      setAddOpen(false);
-    } }),
+    addOpen && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_popBackdrop", onClick: () => setAddOpen(false) }),
     addOpen && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_menu dsh-wt_add dsh-wt_pop", style: { position: "fixed", left: popLeft, top: popTop, width: 360, zIndex: 80 }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_menuLabel", children: t("add.chooseLayout") }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_presets", children: [
-        PRESET_DEFS.map((def) => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          "button",
-          {
-            type: "button",
-            className: "dsh-wt_preset",
-            "data-on": wsPreset === def.id ? "true" : "false",
-            onClick: () => {
-              setWsPreset(def.id);
-              setWsError(false);
-            },
-            children: presetThumb(def.id)
-          },
-          def.id
-        )),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
-          "button",
-          {
-            type: "button",
-            className: "dsh-wt_preset dsh-wt_presetAdd",
-            title: t("customLayout.addTitle"),
-            onClick: () => {
-              invalidatePickState();
-              setAddOpen(false);
-              setCustomOpen(true);
-            },
-            children: [
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_presetAddIcon", "aria-hidden": true, children: "\uFF0B" }),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_presetAddText", children: t("customLayout.add") })
-            ]
-          }
-        )
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_addForm", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_addBtn", onClick: () => {
-          appendHostInput(sessionBridge, "\u8BF7\u65B0\u589E\u4E00\u4E2A\u5DE5\u4F5C\u5BA4\u3002\u5148\u8BE2\u95EE\u6211\u4FDD\u5B58\u5230\u672C\u5730\u8FD8\u662F GitHub\uFF1B\u6765\u6E90\u786E\u5B9A\u540E\uFF0C\u518D\u8BE2\u95EE\u6211\u662F\u5426\u7ACB\u523B\u5BFC\u5165\u5E76\u542F\u7528\u3002");
-          setAddOpen(false);
-        }, children: t("add.studio") }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_folderPickHint", children: t("add.studioHint") }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          "input",
-          {
-            type: "text",
-            placeholder: t("add.layoutNamePh"),
-            value: wsName,
-            onChange: (e) => {
-              setWsName(e.target.value);
-              setWsError(false);
-            }
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_addFolderRow", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_customLabel", children: t("add.folderParent") }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_addFolderPath" + (wsFolderParent ? "" : " dsh-wt_addFolderPathNone"), title: wsFolderParent || "", children: wsFolderParent || t("add.folderNone") }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-            "button",
-            {
-              type: "button",
-              className: "dsh-wt_bindFolderChange",
-              disabled: pickBusy,
-              onClick: () => {
-                pickFolder("add", (p) => {
-                  setWsFolderParent(p);
-                  setWsFolderError(false);
-                });
-                setWsError(false);
-              },
-              children: pickBusy ? t("add.folderPicking") : t("add.folderPick")
-            }
-          ),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-            "button",
-            {
-              type: "button",
-              className: "dsh-wt_bindFolderChange",
-              title: t("add.folderManual"),
-              onClick: () => {
-                setManualPathFor(manualPathFor === "add" ? null : "add");
-                setPickErr((prev) => ({ ...prev, add: "" }));
-              },
-              children: t("add.folderManual")
-            }
-          )
-        ] }),
-        pickBusy && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_folderPickHint", children: t("add.folderPickerHint") }),
-        manualPathFor === "add" && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_addFolderRow", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-            "input",
-            {
-              type: "text",
-              className: "dsh-wt_manualPathInput",
-              placeholder: t("add.folderManualPh"),
-              value: manualPathText,
-              onChange: (e) => setManualPathText(e.target.value),
-              onKeyDown: (e) => {
-                if (e.key === "Enter") applyManualPath("add");
-              }
-            }
-          ),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_bindFolderChange", onClick: () => applyManualPath("add"), children: t("add.folderManualOk") })
-        ] }),
-        pickErr.add && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_addError", children: pickErr.add }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_addBtn", onClick: saveLayout, children: t("add.layoutSave") })
-      ] }),
-      wsError && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_addError", children: t("add.layoutInvalid") }),
-      wsFolderError && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_addError", children: t("add.folderRequired") })
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_menuLabel", children: t("add.studio") }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_addHint", children: t("add.studioHint") }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_addBtn", onClick: () => {
+        appendHostInput(sessionBridge, "\u8BF7\u65B0\u589E\u4E00\u4E2A\u5DE5\u4F5C\u5BA4\u3002\u5148\u8BE2\u95EE\u6211\u4FDD\u5B58\u5230\u672C\u5730\u8FD8\u662F GitHub\uFF1B\u6765\u6E90\u786E\u5B9A\u540E\uFF0C\u518D\u8BE2\u95EE\u6211\u662F\u5426\u7ACB\u523B\u5BFC\u5165\u5E76\u542F\u7528\u3002");
+        setAddOpen(false);
+      }, children: t("add.studio") })
     ] }),
     iconPick && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_jsx_runtime4.Fragment, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_popBackdrop", onClick: () => setIconPick(null) }),
@@ -24225,7 +23611,6 @@ function WorktableSection(props) {
               ),
               /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(RenameInput, { initial: display, placeholder: t("manage.renamePh"), onCommit: (v) => renameProject(id, v) }),
               /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_manageBtn", title: isHidden ? t("manage.show") : t("manage.hide"), onClick: () => toggleHidden(id), children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(EyeIcon, { closed: isHidden }) }),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_manageBtn", title: t("manage.changeView"), onClick: () => setViewPickFor(id), children: "\u{1F9E9}" }),
               /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
                 "button",
                 {
@@ -24276,87 +23661,6 @@ function WorktableSection(props) {
         ] })
       ] })
     ] }),
-    viewPickFor && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_popBackdrop", style: { zIndex: 81 }, onClick: () => setViewPickFor(null) }),
-    viewPickFor && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_menu dsh-wt_pop", style: { position: "fixed", left: popLeft, top: popTop, width: 320, zIndex: 82 }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_menuLabel", children: t("viewPick.title") }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_presets", children: [
-        PRESET_DEFS.map((def) => {
-          const cur = projects.layouts.find((l) => l.id === viewPickFor) ?? projects.views[viewPickFor];
-          return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-            "button",
-            {
-              type: "button",
-              className: "dsh-wt_preset",
-              "data-on": cur && presetOf(cur) === def.id ? "true" : "false",
-              onClick: () => applyLayoutChange(viewPickFor, def.id),
-              children: presetThumb(def.id)
-            },
-            def.id
-          );
-        }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
-          "button",
-          {
-            type: "button",
-            className: "dsh-wt_preset dsh-wt_presetAdd",
-            title: t("customLayout.addTitle"),
-            onClick: () => {
-              setViewPickFor(null);
-              setCustomOpen(true);
-            },
-            children: [
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_presetAddIcon", "aria-hidden": true, children: "\uFF0B" }),
-              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_presetAddText", children: t("customLayout.add") })
-            ]
-          }
-        )
-      ] })
-    ] }),
-    folderPick && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_popBackdrop", style: { zIndex: 83 }, onClick: () => {
-      invalidatePickState();
-      setFolderPick(null);
-    } }),
-    folderPick && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_menu dsh-wt_pop dsh-wt_bindPop", style: { position: "fixed", left: folderPick.x, top: folderPick.y, width: 280, zIndex: 84 }, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_bindFolderBox", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_bindFolderRow", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_bindFolderLabel", children: [
-          "\u{1F4C1} ",
-          t("bind.folder")
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_bindFolderChange", disabled: pickBusy, onClick: changeProjectFolder, children: pickBusy ? t("add.folderPicking") : t("bind.folderChange") + " \u21BB" }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          "button",
-          {
-            type: "button",
-            className: "dsh-wt_bindFolderChange",
-            title: t("add.folderManual"),
-            onClick: () => {
-              setManualPathFor(manualPathFor === "bind" ? null : "bind");
-              setPickErr((prev) => ({ ...prev, bind: "" }));
-            },
-            children: t("add.folderManual")
-          }
-        )
-      ] }),
-      pickBusy && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_folderPickHint", children: t("add.folderPickerHint") }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_bindFolderPath" + (projects.folders[folderPick.id] ? "" : " dsh-wt_bindFolderPathNone"), title: projects.folders[folderPick.id] ?? "", children: projects.folders[folderPick.id] ?? t("bind.folderNone") }),
-      manualPathFor === "bind" && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_addFolderRow", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          "input",
-          {
-            type: "text",
-            className: "dsh-wt_manualPathInput",
-            placeholder: t("add.folderManualPh"),
-            value: manualPathText,
-            onChange: (e) => setManualPathText(e.target.value),
-            onKeyDown: (e) => {
-              if (e.key === "Enter") applyManualPath("bind");
-            }
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_bindFolderChange", onClick: () => applyManualPath("bind"), children: t("add.folderManualOk") })
-      ] }),
-      pickErr.bind && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_addError", children: pickErr.bind })
-    ] }) }),
     consoleBind && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_popBackdrop", style: { zIndex: 85 }, onClick: () => setConsoleBind(null) }),
     consoleBind && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_menu dsh-wt_pop dsh-wt_consoleBindPop", style: { position: "fixed", left: consoleBind.x, top: consoleBind.y, width: 560, maxHeight: "calc(100vh - 32px)", zIndex: 86 }, children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_consoleBindCols", children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_consoleBindCol", children: [
@@ -24413,26 +23717,6 @@ function WorktableSection(props) {
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_consoleCreateBtn", disabled: consoleBusy || consoleNeedsWorkspace || consoleMode === "existing" && !consoleWsId, onClick: bindConsoleNew, children: consoleBusy ? "\u2026" : t("console.createBind") })
       ] })
     ] }) }),
-    customOpen && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_popBackdrop", style: { zIndex: 83 }, onClick: () => setCustomOpen(false) }),
-    customOpen && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_menu dsh-wt_pop", style: { position: "fixed", left: popLeft, top: popTop, width: 340, zIndex: 84 }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("span", { className: "dsh-wt_menuLabel", children: [
-        "\u2728 ",
-        t("customLayout.title")
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-        "textarea",
-        {
-          className: "dsh-wt_customLayoutInput",
-          autoFocus: true,
-          rows: 6,
-          placeholder: t("customLayout.placeholder"),
-          value: customLayoutText,
-          onChange: (e) => setCustomLayoutText(e.target.value)
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "dsh-wt_customLayoutBtn", onClick: copyCustomLayout, children: t("customLayout.copy") }),
-      copiedToast && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "dsh-wt_customLayoutToast" + (copiedToast === "fail" ? " dsh-wt_customLayoutToastFail" : ""), children: copiedToast === "ok" ? "\u2705 " + t("customLayout.copied") : "\u26A0\uFE0F " + t("customLayout.copyFail") })
-    ] }),
     requestDelete && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "dsh-wt_confirmBackdrop", onClick: () => setRequestDelete(null) }),
     requestDelete && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_confirm", role: "alertdialog", children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "dsh-wt_confirmTitle", children: [
@@ -24458,28 +23742,6 @@ function WorktableSection(props) {
           children: [
             /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_layoutIcon", children: CONSOLE_ICON }),
             /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_layoutText", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_layoutName", children: t("console.name") }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-              "span",
-              {
-                className: PROJECT_FOLDER_BUTTON_CLASS,
-                role: "button",
-                tabIndex: 0,
-                title: t("bind.folder"),
-                "aria-label": t("bind.folder"),
-                onClick: (event) => {
-                  event.stopPropagation();
-                  openFolderPick(CONSOLE_ID, event.currentTarget);
-                },
-                onKeyDown: (event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    openFolderPick(CONSOLE_ID, event.currentTarget);
-                  }
-                },
-                children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { "aria-hidden": true, children: "\u{1F4C2}" })
-              }
-            ),
             /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_layoutArrow", "aria-hidden": true, children: "\u203A" })
           ]
         }
@@ -24512,28 +23774,6 @@ function WorktableSection(props) {
               }
             ),
             /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_layoutText", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_layoutName", children: projects.nameOverrides[l.id] ?? l.title }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-              "span",
-              {
-                className: PROJECT_FOLDER_BUTTON_CLASS,
-                role: "button",
-                tabIndex: 0,
-                title: t("bind.folder"),
-                "aria-label": t("bind.folder"),
-                onClick: (event) => {
-                  event.stopPropagation();
-                  openFolderPick(l.id, event.currentTarget);
-                },
-                onKeyDown: (event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    openFolderPick(l.id, event.currentTarget);
-                  }
-                },
-                children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { "aria-hidden": true, children: "\u{1F4C2}" })
-              }
-            ),
             /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "dsh-wt_layoutArrow", "aria-hidden": true, children: "\u203A" })
           ]
         },

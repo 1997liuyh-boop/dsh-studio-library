@@ -1,4 +1,4 @@
-/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.5 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme, utilities;
 @layer theme {
@@ -19,15 +19,6 @@
   }
 }
 @layer utilities {
-  .studio\:absolute {
-    position: absolute;
-  }
-  .studio\:top-1\/2 {
-    top: calc(1 / 2 * 100%);
-  }
-  .studio\:right-\[26px\] {
-    right: 26px;
-  }
   .studio\:m-0 {
     margin: 0px;
   }
@@ -63,10 +54,6 @@
   }
   .studio\:inline-block {
     display: inline-block;
-  }
-  .studio\:size-\[22px\] {
-    width: 22px;
-    height: 22px;
   }
   .studio\:h-5 {
     height: calc(var(--studio-spacing) * 5);
@@ -112,10 +99,6 @@
   }
   .studio\:shrink-0 {
     flex-shrink: 0;
-  }
-  .studio\:-translate-y-1\/2 {
-    --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .studio\:rotate-90 {
     rotate: 90deg;
@@ -187,9 +170,6 @@
   }
   .studio\:rounded-\(--dsw-radius-md\) {
     border-radius: var(--dsw-radius-md);
-  }
-  .studio\:rounded-\(--dsw-radius-sm\) {
-    border-radius: var(--dsw-radius-sm);
   }
   .studio\:border {
     border-style: var(--tw-border-style);
@@ -323,17 +303,17 @@
     transition-timing-function: var(--studio-ease-out);
   }
   @media (hover: hover) {
-    .studio\:group-hover\:hidden:is(:where(.studio\:group):hover *) {
+    :is(:where(.studio\:group):hover .studio\:group-hover\:hidden) {
       display: none;
     }
-    .studio\:group-hover\:inline-flex:is(:where(.studio\:group):hover *) {
+    :is(:where(.studio\:group):hover .studio\:group-hover\:inline-flex) {
       display: inline-flex;
     }
   }
-  .studio\:group-focus-visible\:hidden:is(:where(.studio\:group):focus-visible *) {
+  :is(:where(.studio\:group):focus-visible .studio\:group-focus-visible\:hidden) {
     display: none;
   }
-  .studio\:group-focus-visible\:inline-flex:is(:where(.studio\:group):focus-visible *) {
+  :is(:where(.studio\:group):focus-visible .studio\:group-focus-visible\:inline-flex) {
     display: inline-flex;
   }
   .studio\:backdrop\:bg-black\/30::backdrop {
@@ -383,21 +363,6 @@
   .studio\:\[\&\[hidden\]\]\:hidden[hidden] {
     display: none;
   }
-}
-@property --tw-translate-x {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-translate-y {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-translate-z {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
 }
 @property --tw-border-style {
   syntax: "*";
@@ -491,11 +456,8 @@
   initial-value: solid;
 }
 @layer properties {
-  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: block))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
-      --tw-translate-x: 0;
-      --tw-translate-y: 0;
-      --tw-translate-z: 0;
       --tw-border-style: solid;
       --tw-leading: initial;
       --tw-font-weight: initial;

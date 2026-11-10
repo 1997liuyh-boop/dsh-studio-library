@@ -1672,9 +1672,11 @@ function ConsolePane() {
   const [updInfo, setUpdInfo] = useState<UpdateInfo | null>(() => readCache().info)
   const [autoCheckOn, setAutoCheckOn] = useState<boolean>(() => getAutoCheck())
   const [statusOpen, setStatusOpen] = useState(false)
+  const [statusPosition, setStatusPosition] = useState<{ left: number; top: number } | null>(null)
   const [studioStatus, setStudioStatus] = useState<ConsoleStatusSnapshot | null>(null)
   const [studioStatusLoading, setStudioStatusLoading] = useState(false)
   const [studioStatusError, setStudioStatusError] = useState('')
+  const statusButtonRef = useRef<HTMLButtonElement | null>(null)
   const updBusyRef = useRef(false)
   const photoUrlRef = useRef<string>('')
   const [openMenu, setOpenMenu] = useState<string | null>(null)
@@ -1829,6 +1831,20 @@ function ConsolePane() {
     } finally {
       setStudioStatusLoading(false)
     }
+  }
+  /** 状态弹窗使用设置弹窗相同的视口定位，避免被控制室内容窗或滚动容器遮挡。 */
+  const toggleStudioStatus = () => {
+    const next = !statusOpen
+    setOpenMenu(null)
+    setStatusOpen(next)
+    if (!next) return
+    const rect = statusButtonRef.current?.getBoundingClientRect()
+    if (!rect) return
+    const width = Math.min(360, Math.max(280, window.innerWidth - 24))
+    setStatusPosition({
+      left: Math.max(12, Math.min(window.innerWidth - width - 12, rect.right - width)),
+      top: Math.max(12, rect.top - 360),
+    })
   }
   /** 抓手拖拽排序：按住抓手上下移动 → 行实时重排，松手持久化 */
   const dragRowRef = useRef<string | null>(null)
@@ -2154,9 +2170,9 @@ function ConsolePane() {
         </div>
         )}
       </div>
-      <div className="dsh-wt_consoleDockWrap">
+      <div className={'dsh-wt_consoleDockWrap' + (statusOpen ? ' dsh-wt_consoleDockWrapOpen' : '')}>
         <div className="dsh-wt_consoleDock">
-          <button type="button" className={'dsh-wt_dockBtn' + (statusOpen ? ' dsh-wt_dockBtnOn' : '')} title={T('console.statusLabel')} aria-label={T('console.statusLabel')} onClick={() => { setOpenMenu(null); setStatusOpen((value) => !value) }}>
+          <button ref={statusButtonRef} type="button" className={'dsh-wt_dockBtn' + (statusOpen ? ' dsh-wt_dockBtnOn' : '')} title={T('console.statusLabel')} aria-label={T('console.statusLabel')} onClick={toggleStudioStatus}>
             <span aria-hidden>◉</span>
           </button>
           <button type="button" className={'dsh-wt_dockBtn' + (openMenu === 'theme' ? ' dsh-wt_dockBtnOn' : '')} title={T('console.themeLabel')} aria-label={T('console.themeLabel')} onClick={() => setOpenMenu(openMenu === 'theme' ? null : 'theme')}><ThemeIcon mode={themeMode} /></button>
@@ -2165,8 +2181,9 @@ function ConsolePane() {
           <button type="button" className={'dsh-wt_dockBtn' + (openMenu === 'cols' ? ' dsh-wt_dockBtnOn' : '')} title={T('console.colsLabel')} aria-label={T('console.colsLabel')} onClick={() => setOpenMenu(openMenu === 'cols' ? null : 'cols')}><svg width="20" height="20" viewBox="0 0 16 16" aria-hidden><rect x="2.2" y="3.4" width="2.7" height="9.2" rx="0.9" fill="none" stroke="currentColor" strokeWidth="0.9" /><rect x="6.65" y="3.4" width="2.7" height="9.2" rx="0.9" fill="none" stroke="currentColor" strokeWidth="0.9" /><rect x="11.1" y="3.4" width="2.7" height="9.2" rx="0.9" fill="none" stroke="currentColor" strokeWidth="0.9" /></svg></button>
           <button type="button" className={'dsh-wt_dockBtn' + (annOpen ? ' dsh-wt_dockBtnOn' : '')} title={T('annot.updateTitle')} aria-label={T('annot.updateTitle')} onClick={() => { setOpenMenu(null); setAnnOpen((v) => !v) }}><svg width="18" height="18" viewBox="0 0 16 16" aria-hidden><path d="M2.6 7c0-2.9 2.4-4.9 5.4-4.9s5.4 2 5.4 4.9v2.9l1.2 1.7H1.4l1.2-1.7z" fill="none" stroke="currentColor" strokeWidth="0.9" strokeLinejoin="round" /><path d="M6.2 12.9c.3.7 1 1.2 1.8 1.2s1.5-.5 1.8-1.2" fill="none" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" /></svg>{updInfo && <span className="dsh-wt_dockBadge" aria-hidden />}</button>
         </div>
+        {statusOpen && <div className="dsh-wt_statusMask" onClick={() => setStatusOpen(false)} />}
         {statusOpen && (
-          <div className="dsh-wt_drop dsh-wt_statusDrop" role="status" aria-live="polite">
+          <div className="dsh-wt_drop dsh-wt_statusDrop" role="status" aria-live="polite" style={statusPosition ? { left: statusPosition.left, top: statusPosition.top } : undefined}>
             <div className="dsh-wt_dropRow">
               <strong>{T('console.statusTitle')}</strong>
               <button type="button" className="dsh-wt_updateBtn" onClick={() => void refreshStudioStatus()} disabled={studioStatusLoading}>
@@ -2176,7 +2193,8 @@ function ConsolePane() {
             {studioStatusError && <div className="dsh-wt_consoleErr">{studioStatusError}</div>}
             {studioStatus?.workspace && (
               <div className="dsh-wt_statusWorkspace" title={studioStatus.workspace.path}>
-                {T('console.workspacePath')}：{studioStatus.workspace.path || T('console.workspaceUnknown')}
+                <strong>{studioStatus.workspace.title || T('console.workspaceUnknown')}</strong>
+                <span>{T('console.workspacePath')}：{studioStatus.workspace.path || T('console.workspaceUnknown')}</span>
               </div>
             )}
             <div className="dsh-wt_statusSection">{T('console.installedStudios')}</div>
@@ -2187,13 +2205,13 @@ function ConsolePane() {
                 const ready = integration?.ready ?? true
                 return <div className="dsh-wt_statusItem" key={studio.id}>
                   <span>{studio.icon ?? '◫'} {studio.name ?? studio.title ?? studio.id}</span>
-                  <span className={ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'}>{ready ? T('console.statusReady') : T('console.statusOffline')}</span>
+                  <span className={ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'} title={studio.startupError}>{ready ? T('console.statusReady') : T('console.statusOffline')}</span>
                 </div>
               })}
             {(studioStatus?.integrations ?? []).filter((item) => !(studioStatus?.studios ?? []).some((studio) => studio.id === item.id)).map((integration) => (
               <div className="dsh-wt_statusItem" key={integration.id}>
                 <span>{integration.title ?? integration.name ?? integration.id}</span>
-                <span className={integration.ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'}>{integration.ready ? T('console.statusReady') : T('console.statusOffline')}</span>
+                <span className={integration.ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'} title={integration.startupError}>{integration.ready ? T('console.statusReady') : T('console.statusOffline')}</span>
               </div>
             ))}
             {studioStatus?.serviceFailures.map((failure, index) => <div className="dsh-wt_consoleErr" key={index}>{failure.message}</div>)}

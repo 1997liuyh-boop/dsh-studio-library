@@ -58,7 +58,6 @@ const ICON_SPARK = (
     <path d="M12.6 11.2l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z" fill="currentColor" />
   </svg>
 )
-const PROJECT_FOLDER_BUTTON_CLASS = 'dsh-wt_folderBtn studio:absolute studio:right-[26px] studio:top-1/2 studio:-translate-y-1/2 studio:flex studio:size-[22px] studio:items-center studio:justify-center studio:rounded-(--dsw-radius-sm) studio:text-xs studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500'
 type UpdateInfo = { latest: string; notes: string; url: string }
 function cmpVer(a: string, b: string): number {
   const pa = a.split('.').map(Number)
@@ -160,7 +159,7 @@ const OVER_BOTTOM_PX = 24
 const OVER_TOP_PX = 24
 const OVER_SIDE_PX = 80
 
-/** 拓扑预设（聊天窗恒贴右，PRD §13.2 硬约束）：左右/三栏/左二右一/井字/左品右聊/左1大下3小 */
+/** 旧版布局数据兼容定义；新增工作室入口不再展示布局选择器。 */
 const PRESET_DEFS = [
   { id: '2h', leftCount: 0, topCount: 0, contentCount: 1, chatFull: false },
   { id: '3h', leftCount: 0, topCount: 0, contentCount: 2, chatFull: false },
@@ -1122,27 +1121,11 @@ function WorktableSection(props: any) {
       return !v
     })
   }
-  const [wsPreset, setWsPreset] = useState<string>('2h')
-  const [wsName, setWsName] = useState('')
-  const [wsError, setWsError] = useState(false)
-  // 新建项目强制工作文件夹：经「选择位置…」弹窗选定（系统资源管理器式选择窗）
-  const [wsFolderParent, setWsFolderParent] = useState('')
-  const [wsFolderError, setWsFolderError] = useState(false)
-  /** 文件夹选择器状态：busy=等待系统选择器；err=按入口分开的失败原因（用户取消不报错）；manual=手工输入展开目标 */
-  const [pickBusy, setPickBusy] = useState(false)
-  const [pickErr, setPickErr] = useState<{ add: string; bind: string }>({ add: '', bind: '' })
-  const [manualPathFor, setManualPathFor] = useState<'add' | 'bind' | null>(null)
-  const [manualPathText, setManualPathText] = useState('')
-  /** 文件夹选择在途锁 + 请求序号（useRef：跨渲染稳定；弹窗关闭/切换目标/手工确认时自增使旧请求失效） */
-  const pickSeqRef = useRef(0)
-  const pickBusyRef = useRef(false)
   /** 组件卸载后不再应用旧选择结果 */
   const mountedRef = useRef(true)
   useEffect(() => () => { mountedRef.current = false }, [])
   /** 图标选择器：kind + 目标 id + 弹窗锚点坐标（fixed 定位） */
   const [iconPick, setIconPick] = useState<{ kind: 'layout' | 'shortcut' | 'project'; id: string; x: number; y: number } | null>(null)
-  /** 项目文件夹设置弹窗：项目 id 与触发位置。 */
-  const [folderPick, setFolderPick] = useState<{ id: string; x: number; y: number } | null>(null)
   /** 控制室强制绑定弹窗：未绑定点开「工作台」时弹出（左加入现有对话 / 右新建对话） */
   const [consoleBind, setConsoleBind] = useState<{ x: number; y: number } | null>(null)
   const [consoleGroups, setConsoleGroups] = useState<{ title: string; sessions: { id: string; title: string; isCurrent: boolean }[] }[]>([])
@@ -1154,15 +1137,9 @@ function WorktableSection(props: any) {
   const [consoleBusy, setConsoleBusy] = useState(false)
   const consoleNeedsWorkspace = blankSessionNeedsWorkspace(sessionBridge?.sessions, consoleMode === 'none' ? 'none' : 'auto')
 
-  /** 自定义布局弹窗（预设网格末尾的 ＋ 磁贴）：描述 → 复制提示词到剪贴板 */
-  const [customOpen, setCustomOpen] = useState(false)
-  const [customLayoutText, setCustomLayoutText] = useState('')
-  const [copiedToast, setCopiedToast] = useState<'ok' | 'fail' | null>(null)
-  const copyToastTimerRef = useRef<number | null>(null)
   /** 删除二次确认：kind + 目标 id + 显示名 */
   const [requestDelete, setRequestDelete] = useState<{ kind: 'layout' | 'shortcut' | 'project'; id: string; name: string } | null>(null)
   /** 变更视图：正在挑选新拓扑的布局 id */
-  const [viewPickFor, setViewPickFor] = useState<string | null>(null)
   const [float, setFloat] = useState<FloatRect | null>(() =>
     view.dock === 'float' && view.floatTop != null ? { top: view.floatTop } : null,
   )
@@ -1251,14 +1228,10 @@ function WorktableSection(props: any) {
     return cards
   }
 
-  /** 打开「添加项目」面板（侧栏 ＋ 与控制室创建卡共用）：默认父目录 = 当前会话工作目录 */
+  /** 打开「新增工作室」面板（侧栏 ＋ 与控制室入口共用）。 */
   const openAddPanel = () => {
     setAddOpen(true)
     setViewOptionsOpen(false)
-    if (!wsFolderParent) {
-      const cwd = sessionScopeStore.snapshot?.cwd ?? ''
-      if (cwd) setWsFolderParent(cwd)
-    }
   }
 
   // 会话作用域（当前会话 + 工作目录）与后台任务：注入分栏引擎环境
@@ -1648,34 +1621,6 @@ function WorktableSection(props: any) {
     }
   }, [])
 
-/** 自定义布局提示词模板（复制到剪贴板，可发给任意 dsh 会话让 agent 实现）。
- *  零泄漏硬约束：禁止写入用户的个人工作区分组名/项目名/私人路径——本提示词会被发给别人的 DSH。 */
-function buildCustomLayoutPrompt(req: string): string {
-  return [
-    '【为 dsh-worktable（工作台）插件增加一个新的布局预设】',
-    '',
-    '背景：dsh-worktable 是 DeepSeek Harness 的自建容器插件（本机仓库 dsh-worktable；不了解的细节可直接向用户提问）。',
-    '侧边栏「工作台」区块管理项目，每个项目打开后是一个平铺工作区（若干内容窗 + 右侧对话窗）。',
-    '布局预设定义在 01_content/src/client/index.tsx 的 PRESET_DEFS 数组，选择器缩略图在 presetThumb() 函数。',
-    '',
-    '任务：按下方「用户需求」新增一个布局预设。',
-    '',
-    '规则（必须遵守）：',
-    '1. 新预设追加到 PRESET_DEFS 数组末尾；预设选择器按数组顺序显示，末尾的「＋」自定义磁贴永远是最后一个，新预设自动出现在它前面。',
-    '2. 预设字段：id（kebab-case 唯一）；leftCount = 左侧整列内容窗数（0/1）；topCount = 顶部通栏行窗数；contentCount = 主行窗数；chatFull = 对话窗是否通高整列（true/false）；可选 topHeightDefault = 顶行固定默认高（px）；可选 topHeightRatio = 首次打开时顶行高度占可用高度比例（0~1，0.5 = 上下等分；缺省 0.35）。',
-    '3. 硬约束：对话窗恒在右侧（chatSide 固定 right）；聊天 ⇄ 翻转贴左由引擎自带，不要改。',
-    '4. 想要「上下等大」的网格就用 topHeightRatio: 0.5；每行内的窗格宽度由引擎按可用宽度自动均分，无需配置。',
-    '5. 窗格最小宽 200、聊天窗最小宽 240，引擎有钳制，无需配置。',
-    '6. 在 presetThumb(defId) 里为新 id 增加一个缩略图分支（用 dsh-wt_thumb / dsh-wt_thumbCol / dsh-wt_thumbRow / cell()；聊天窗用 cell(true) 的蓝色 💬 格）。',
-    '7. 现有预设的顺序与内容不要改动：2h / 3h / l2 / grid / t3 / l13 / g4 / l23。',
-    '8. 改完在 01_content 目录执行 npm run build 重新打包，浏览器 F5 即生效。',
-    '9. 需求若超出以上字段的表达能力（例如三行、嵌套分栏），按现有引擎模型做最接近的实现，并在回复里说明取舍。',
-    '',
-    '用户需求：',
-    req,
-  ].join('\n')
-}
-
   /** 分栏工作区入口（M1 引擎）：项目卡片调用 openSplit(spec) 打开声明式布局；
    * 若该 id 存在视图覆盖（用户在设置里变更过视图），用覆盖布局替换打开。
    * 若项目绑定了会话，打开后右侧对话窗自动切换过去。 */
@@ -1783,143 +1728,6 @@ function buildCustomLayoutPrompt(req: string): string {
   }
 
   actionsRef.current = { openSplit, openConsole }
-
-  /** 打开项目文件夹设置，不读取或选择要跟随的对话。 */
-  const openFolderPick = useCallback((id: string, anchor: HTMLElement) => {
-    invalidatePickState()
-    const rect = anchor.getBoundingClientRect()
-    setFolderPick({ id, x: clamp(Math.round(rect.right + 8), 8, window.innerWidth - 300), y: clamp(Math.round(rect.top), 8, window.innerHeight - 240) })
-  }, [])
-
-  /** 弹出系统文件夹选择窗（宿主 pickDirectory）；选中后回调。
-   *  - useRef 在途锁 + 请求序号：真实防重入；手工确认/新请求会使旧请求失效，旧弹窗返回后丢弃
-   *  - 返回 null = 用户取消：不报错
-   *  - 抛异常 = 显示真实错误信息，不再静默吞掉
-   *  - 宿主能力三级探测（运行时，不硬写 inject）：
-   *      ① 0.1.1-rc.2：ctx.workspaces.pickDirectory() → string | null
-   *      ② 0.1.2-rc.1：ctx remote.directoryPicker.pick() → { ok, value, error }（value 即路径或 null）
-   *      ③ 0.1.2 新能力不可用 → 提示改用「手动输入」 */
-  const pickFolder = async (target: 'add' | 'bind', apply: (p: string) => void) => {
-    if (pickBusyRef.current) return
-    // 解析本次选择器调用路径
-    const ws = sessionBridge?.workspaces as any
-    const legacy = ws && typeof ws.pickDirectory === 'function'
-      ? () => ws.pickDirectory()
-      : null
-    let remotePicker: (() => Promise<any>) | null = null
-    try {
-      const rp = clientCtx?.get?.('remote.directoryPicker')
-      if (rp && typeof rp.pick === 'function') remotePicker = () => rp.pick()
-    } catch {}
-    if (!remotePicker) {
-      try {
-        const dp = (clientCtx as any)?.directoryPicker
-        if (dp && typeof dp.pick === 'function') remotePicker = () => dp.pick()
-      } catch {}
-    }
-    if (!legacy && !remotePicker) {
-      setPickErr((prev) => ({ ...prev, [target]: t('add.folderPickerUnavailable') }))
-      return
-    }
-    pickBusyRef.current = true
-    setPickBusy(true)
-    setPickErr((prev) => ({ ...prev, [target]: '' }))
-    const seq = ++pickSeqRef.current
-    try {
-      let p: string | null = null
-      if (legacy) {
-        p = await legacy()
-      } else {
-        const r = await remotePicker!()
-        if (r && typeof r === 'object' && 'ok' in r) {
-          if (!r.ok) throw new Error(r?.error?.message ?? 'directory picker failed')
-          const v = r.value
-          p = typeof v === 'string' ? v : (v && typeof v === 'object' && typeof v.path === 'string' ? v.path : null)
-        } else {
-          p = typeof r === 'string' ? r : null
-        }
-      }
-      if (seq !== pickSeqRef.current) return // 已被手工确认/新请求/弹窗关闭失效：丢弃旧弹窗结果
-      if (!mountedRef.current) return // 组件已卸载：不再应用
-      if (p && typeof p === 'string') apply(p)
-      // p 为 null：用户取消，静默
-    } catch (e: any) {
-      if (seq !== pickSeqRef.current) return
-      if (!mountedRef.current) return // 组件已卸载：不再更新状态
-      const msg = (e && typeof e === 'object' && typeof e.message === 'string') ? e.message : String(e ?? '')
-      setPickErr((prev) => ({ ...prev, [target]: t('add.folderPickFail', { msg: msg || 'unknown' }) }))
-    } finally {
-      if (seq === pickSeqRef.current && mountedRef.current) {
-        pickBusyRef.current = false
-        setPickBusy(false)
-      }
-    }
-  }
-
-  /** 使在途选择请求失效并清空选择器 UI 状态（弹窗关闭/切换目标时调用） */
-  const invalidatePickState = () => {
-    pickSeqRef.current++
-    pickBusyRef.current = false
-    setPickBusy(false)
-    setManualPathFor(null)
-    setManualPathText('')
-    setPickErr({ add: '', bind: '' })
-  }
-
-  /** 手工输入绝对路径（选择器不可用/失败的降级入口）：必须通过 isAbs，并失效在途系统选择请求 */
-  const applyManualPath = (target: 'add' | 'bind') => {
-    const p = manualPathText.trim()
-    if (!p) { setPickErr((prev) => ({ ...prev, [target]: t('add.folderManualEmpty') })); return }
-    if (!isAbs(p)) { setPickErr((prev) => ({ ...prev, [target]: t('add.folderManualAbs') })); return }
-    pickSeqRef.current++ // 使在途系统选择请求失效（旧弹窗返回后丢弃）
-    pickBusyRef.current = false
-    setPickBusy(false)
-    if (target === 'add') { setWsFolderParent(p); setWsFolderError(false) }
-    else if (folderPick) {
-      if (projectsRef.current.projects.folders[folderPick.id] !== p) invalidateWidgetProject(folderPick.id)
-      persistProjects((prev) => ({ ...prev, folders: { ...prev.folders, [folderPick.id]: p } }))
-    }
-    setManualPathFor(null)
-    setManualPathText('')
-    setPickErr((prev) => ({ ...prev, [target]: '' }))
-  }
-
-  /** 项目目录设置：选择文件夹后更新项目工作目录 */
-  const changeProjectFolder = () => {
-    if (!folderPick || pickBusyRef.current) return
-    pickFolder('bind', (p) => {
-      if (projectsRef.current.projects.folders[folderPick.id] !== p) invalidateWidgetProject(folderPick.id)
-      persistProjects((prev) => ({ ...prev, folders: { ...prev.folders, [folderPick.id]: p } }))
-    })
-  }
-
-
-  /** 复制自定义布局提示词到剪贴板（失败则全选输入框手动复制） */
-  const copyCustomLayout = async () => {
-    const text = customLayoutText.trim()
-    if (!text) { setCopiedToast('fail'); return }
-    const prompt = buildCustomLayoutPrompt(text)
-    try { (window as any).__dshLastPrompt = prompt } catch {}
-    let ok = false
-    try { await navigator.clipboard.writeText(prompt); ok = true } catch {}
-    if (!ok) {
-      // 降级：临时隐藏 textarea 选中提示词全文后 execCommand('copy')
-      try {
-        const tmp = document.createElement('textarea')
-        tmp.value = prompt
-        tmp.style.position = 'fixed'
-        tmp.style.opacity = '0'
-        document.body.appendChild(tmp)
-        tmp.focus()
-        tmp.select()
-        ok = document.execCommand('copy')
-        tmp.remove()
-      } catch {}
-    }
-    setCopiedToast(ok ? 'ok' : 'fail')
-    if (copyToastTimerRef.current != null) window.clearTimeout(copyToastTimerRef.current)
-    copyToastTimerRef.current = window.setTimeout(() => setCopiedToast(null), 6000)
-  }
 
   // 会话快照变化 → 重渲染（驱动项目卡片的完成/待决提醒镜像 + 控制室面板 + 预览防抖刷新）
   useEffect(() => {
@@ -2085,7 +1893,6 @@ function buildCustomLayoutPrompt(req: string): string {
     const startRect = root.getBoundingClientRect()
     dragRef.current = { startY: e.clientY, startX: e.clientX, startRect, dragging: false, prevFloat: float }
     try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId) } catch {}
-    invalidatePickState()
     setViewOptionsOpen(false); setAddOpen(false)
   }
 
@@ -2176,85 +1983,9 @@ function buildCustomLayoutPrompt(req: string): string {
     persistProjects((prev) => ({ ...prev, shortcuts: prev.shortcuts.filter((s) => s.id !== id) }))
   }
 
-  // ── 布局（新建工作区） ── 强制项目文件夹：必须经「选择位置…」选定；路径即为项目文件夹
-  const saveLayout = async () => {
-    const name = wsName.trim()
-    if (!name) { setWsError(true); return }
-    const folderPath = wsFolderParent.trim()
-    if (!folderPath) { setWsFolderError(true); return }
-    if (!isAbs(folderPath)) { setWsFolderError(true); return }
-    try {
-      // 兜底建目录；HTTP 非 2xx 视为失败，不能继续保存（路径可能无效）
-      const r = await fetch('/api/worktable/mkdir', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ path: folderPath }) })
-      if (!r.ok) { setWsFolderError(true); setPickErr((prev) => ({ ...prev, add: t('add.folderCreateFail') })); return }
-    } catch { setWsFolderError(true); setPickErr((prev) => ({ ...prev, add: t('add.folderCreateFail') })); return }
-    const layout = buildLayout(wsPreset, name)
-    persistProjects((prev) => ({ ...prev, layouts: [...prev.layouts, layout], folders: { ...prev.folders, [layout.id]: folderPath } }))
-    invalidatePickState() // 保存成功：失效在途选择请求（防止旧选择器稍后返回写回已重置的表单）
-    setWsName(''); setWsFolderParent(''); setWsError(false); setWsFolderError(false)
-    setAddOpen(false)
-    openSplit(layout)
-    reportUsed(layout.id)
-  }
-
   const removeLayout = (id: string) => {
     invalidateWidgetProject(id)
     persistProjects((prev) => ({ ...prev, layouts: prev.layouts.filter((l) => l.id !== id) }))
-  }
-
-  // ── 变更视图：所有项目通用。布局项目 = 重建其布局条目；入驻项目 = 建立/更新视图覆盖。
-  // 现有窗内容（标签）按序迁入新拓扑，不丢失。 ──
-  const applyLayoutChange = (id: string, presetId: string) => {
-    invalidateWidgetProject(id)
-    const layout = projects.layouts.find((l) => l.id === id)
-    const meta = metas[id]
-    const current = layout ?? projects.views[id]
-    const sources = current
-      ? [...(current.top ?? []), ...current.main]
-          .map((pp) => pp.tabs ?? [])
-          .filter((tabs) => tabs.length > 0)
-      : []
-    const next = buildLayout(presetId, layout ? layout.title : (meta?.name ?? id))
-    next.id = id
-    next.icon = layout ? layout.icon : (projects.iconOverrides[id] ?? meta?.icon)
-    const targets = [...(next.left ? [next.left] : []), ...(next.top ?? []), ...next.main]
-    let si = 0
-    for (const pane of targets) {
-      if (si < sources.length) {
-        pane.tabs = sources[si]
-        pane.active = 0
-        pane.content = null
-        si++
-      }
-    }
-    const overflow = sources.slice(si).flat()
-    if (overflow.length > 0 && targets.length > 0) {
-      const last = targets[targets.length - 1]
-      last.tabs = [...(last.tabs ?? []), ...overflow]
-      last.active = 0
-    }
-    persistProjects((prev) => layout
-      ? { ...prev, layouts: prev.layouts.map((l) => (l.id === id ? next : l)) }
-      : { ...prev, views: { ...prev.views, [id]: next } })
-    // 该视图当前打开时：关旧开新，工作区即时变为新视图
-    const wasOpen = splitStore.active && splitStore.spec?.id === id
-    if (wasOpen) {
-      splitStore.close()
-      openSplit(next)
-    }
-    setViewPickFor(null)
-  }
-
-  /** 布局当前拓扑对应的预设 id（用于视图选择器高亮） */
-  const presetOf = (l: LayoutSpec): string => {
-    const leftCount = l.left ? 1 : 0
-    const topCount = (l.top ?? []).length
-    const contentCount = l.main.length
-    const chatFull = l.chatFullHeight === true
-    const def = PRESET_DEFS.find((d) =>
-      d.leftCount === leftCount && d.topCount === topCount && d.contentCount === contentCount && d.chatFull === chatFull,
-    )
-    return def ? def.id : '2h'
   }
 
   // ── 删除（全部走二次确认；项目彻底移出工作台：对话与项目文件均保留，仅清理本地关联状态） ──
@@ -2325,22 +2056,6 @@ function buildCustomLayoutPrompt(req: string): string {
         const id = aliveRegisteredIds[i]
         if (id) {
           el.setAttribute('data-wt-id', id)
-          // 项目目录入口保留在卡片尾部。
-          let folderButton = el.querySelector<HTMLElement>('.dsh-wt_folderBtn')
-          if (!folderButton) {
-            folderButton = document.createElement('span')
-            folderButton.className = PROJECT_FOLDER_BUTTON_CLASS
-            folderButton.setAttribute('role', 'button')
-            folderButton.tabIndex = 0
-            const icon = document.createElement('span')
-            icon.setAttribute('aria-hidden', 'true')
-            icon.textContent = '📂'
-            folderButton.appendChild(icon)
-            el.appendChild(folderButton)
-            if (getComputedStyle(el).position === 'static') el.style.position = 'relative'
-          }
-          folderButton.title = t('bind.folder')
-          folderButton.setAttribute('aria-label', t('bind.folder'))
           // 入驻卡自带箭头（文本 ›）：加统一对齐类，视觉居中（字面框偏下补偿 1px）
           const kids = Array.from(el.children)
           const arrow = kids.find((k: any) => k.tagName === 'SPAN' && String((k as HTMLElement).textContent ?? '').trim() === '›')
@@ -2382,14 +2097,6 @@ function buildCustomLayoutPrompt(req: string): string {
       if (!card) return
       const pid = card.getAttribute('data-wt-id')
       if (!pid) return
-      // 文件夹入口只打开目录设置。
-      const folderButton = target?.closest<HTMLElement>('.dsh-wt_folderBtn')
-      if (folderButton) {
-        e.stopPropagation()
-        e.preventDefault()
-        openFolderPick(pid, folderButton)
-        return
-      }
       // 图标点击（卡片第一个子元素内） → 打开图标选择器（阻止卡片自身打开项目）
       const first = card.children[0] as HTMLElement | null
       if (first && target && first.contains(target)) {
@@ -2412,22 +2119,11 @@ function buildCustomLayoutPrompt(req: string): string {
       if (bound) { try { openHostSession(clientCtx, sessionBridge?.sessions, bound) } catch {} }
       ackProjectNotify(pid)
     }
-    const onFolderKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Enter' && event.key !== ' ') return
-      const target = event.target instanceof HTMLElement ? event.target.closest<HTMLElement>('.dsh-wt_folderBtn') : null
-      const id = target?.closest('[data-wt-id]')?.getAttribute('data-wt-id')
-      if (!target || !id) return
-      event.preventDefault()
-      event.stopPropagation()
-      openFolderPick(id, target)
-    }
     document.addEventListener('click', onDocClick, true)
-    document.addEventListener('keydown', onFolderKeyDown, true)
     return () => {
       document.removeEventListener('click', onDocClick, true)
-      document.removeEventListener('keydown', onFolderKeyDown, true)
     }
-  }, [projects.views, openSplit, reportUsed, openFolderPick])
+  }, [projects.views, openSplit, reportUsed])
 
   const query = view.query.trim()
   const queryLower = query.toLowerCase()
@@ -2603,7 +2299,7 @@ function buildCustomLayoutPrompt(req: string): string {
             className="dsh-wt_iconBtn"
             aria-label={t('menu.viewOptions')}
             title={t('menu.viewOptions')}
-            onClick={() => { invalidatePickState(); setViewOptionsOpen((v) => !v); setAddOpen(false) }}
+            onClick={() => { setViewOptionsOpen((v) => !v); setAddOpen(false) }}
           >{ICON_VIEW_OPTIONS}</button>
           <button
             type="button"
@@ -2611,13 +2307,7 @@ function buildCustomLayoutPrompt(req: string): string {
             aria-label={t('menu.add')}
             title={t('menu.add')}
             onClick={() => {
-              invalidatePickState()
               setAddOpen((v) => !v); setViewOptionsOpen(false)
-              // 父目录默认 = 当前会话工作目录（不落 C 盘默认位置）
-              if (!wsFolderParent) {
-                const cwd = sessionScopeStore.snapshot?.cwd ?? ''
-                if (cwd) setWsFolderParent(cwd)
-              }
             }}
           >{ICON_ADD}</button>
         </div>
@@ -2640,59 +2330,12 @@ function buildCustomLayoutPrompt(req: string): string {
         </div>
       )}
 
-      {addOpen && <div className="dsh-wt_popBackdrop" onClick={() => { invalidatePickState(); setAddOpen(false) }} />}
+      {addOpen && <div className="dsh-wt_popBackdrop" onClick={() => setAddOpen(false)} />}
       {addOpen && (
         <div className="dsh-wt_menu dsh-wt_add dsh-wt_pop" style={{ position: 'fixed', left: popLeft, top: popTop, width: 360, zIndex: 80 }}>
-          <span className="dsh-wt_menuLabel">{t('add.chooseLayout')}</span>
-          <div className="dsh-wt_presets">
-            {PRESET_DEFS.map((def) => (
-              <button
-                key={def.id}
-                type="button"
-                className="dsh-wt_preset"
-                data-on={wsPreset === def.id ? 'true' : 'false'}
-                onClick={() => { setWsPreset(def.id); setWsError(false) }}
-              >
-                {presetThumb(def.id)}
-              </button>
-            ))}
-            <button type="button" className="dsh-wt_preset dsh-wt_presetAdd" title={t('customLayout.addTitle')}
-              onClick={() => { invalidatePickState(); setAddOpen(false); setCustomOpen(true) }}>
-              <span className="dsh-wt_presetAddIcon" aria-hidden>＋</span>
-              <span className="dsh-wt_presetAddText">{t('customLayout.add')}</span>
-            </button>
-          </div>
-          <div className="dsh-wt_addForm">
-            <button type="button" className="dsh-wt_addBtn" onClick={() => { appendHostInput(sessionBridge, '请新增一个工作室。先询问我保存到本地还是 GitHub；来源确定后，再询问我是否立刻导入并启用。'); setAddOpen(false) }}>{t('add.studio')}</button>
-            <p className="dsh-wt_folderPickHint">{t('add.studioHint')}</p>
-            <input type="text" placeholder={t('add.layoutNamePh')} value={wsName}
-              onChange={(e) => { setWsName(e.target.value); setWsError(false) }} />
-            <div className="dsh-wt_addFolderRow">
-              <span className="dsh-wt_customLabel">{t('add.folderParent')}</span>
-              <span className={'dsh-wt_addFolderPath' + (wsFolderParent ? '' : ' dsh-wt_addFolderPathNone')} title={wsFolderParent || ''}>
-                {wsFolderParent || t('add.folderNone')}
-              </span>
-              <button type="button" className="dsh-wt_bindFolderChange" disabled={pickBusy}
-                onClick={() => { pickFolder('add', (p) => { setWsFolderParent(p); setWsFolderError(false) }); setWsError(false) }}>
-                {pickBusy ? t('add.folderPicking') : t('add.folderPick')}
-              </button>
-              <button type="button" className="dsh-wt_bindFolderChange" title={t('add.folderManual')}
-                onClick={() => { setManualPathFor(manualPathFor === 'add' ? null : 'add'); setPickErr((prev) => ({ ...prev, add: '' })) }}>{t('add.folderManual')}</button>
-            </div>
-            {pickBusy && <p className="dsh-wt_folderPickHint">{t('add.folderPickerHint')}</p>}
-            {manualPathFor === 'add' && (
-              <div className="dsh-wt_addFolderRow">
-                <input type="text" className="dsh-wt_manualPathInput" placeholder={t('add.folderManualPh')} value={manualPathText}
-                  onChange={(e) => setManualPathText(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') applyManualPath('add') }} />
-                <button type="button" className="dsh-wt_bindFolderChange" onClick={() => applyManualPath('add')}>{t('add.folderManualOk')}</button>
-              </div>
-            )}
-            {pickErr.add && <p className="dsh-wt_addError">{pickErr.add}</p>}
-            <button type="button" className="dsh-wt_addBtn" onClick={saveLayout}>{t('add.layoutSave')}</button>
-          </div>
-          {wsError && <p className="dsh-wt_addError">{t('add.layoutInvalid')}</p>}
-          {wsFolderError && <p className="dsh-wt_addError">{t('add.folderRequired')}</p>}
+          <span className="dsh-wt_menuLabel">{t('add.studio')}</span>
+          <p className="dsh-wt_addHint">{t('add.studioHint')}</p>
+          <button type="button" className="dsh-wt_addBtn" onClick={() => { appendHostInput(sessionBridge, '请新增一个工作室。先询问我保存到本地还是 GitHub；来源确定后，再询问我是否立刻导入并启用。'); setAddOpen(false) }}>{t('add.studio')}</button>
         </div>
       )}
 
@@ -2805,7 +2448,6 @@ function buildCustomLayoutPrompt(req: string): string {
                 <button type="button" className="dsh-wt_manageBtn" title={isHidden ? t('manage.show') : t('manage.hide')} onClick={() => toggleHidden(id)}>
                   <EyeIcon closed={isHidden} />
                 </button>
-                <button type="button" className="dsh-wt_manageBtn" title={t('manage.changeView')} onClick={() => setViewPickFor(id)}>🧩</button>
                 <button
                   type="button"
                   className="dsh-wt_manageBtn"
@@ -2844,64 +2486,6 @@ function buildCustomLayoutPrompt(req: string): string {
                 <span className="dsh-wt_updateSwitch" data-off={updateCheckOn ? undefined : 'true'} />
               </span>
             </span>
-          </div>
-        </div>
-      )}
-
-      {viewPickFor && <div className="dsh-wt_popBackdrop" style={{ zIndex: 81 }} onClick={() => setViewPickFor(null)} />}
-      {viewPickFor && (
-        <div className="dsh-wt_menu dsh-wt_pop" style={{ position: 'fixed', left: popLeft, top: popTop, width: 320, zIndex: 82 }}>
-          <span className="dsh-wt_menuLabel">{t('viewPick.title')}</span>
-          <div className="dsh-wt_presets">
-            {PRESET_DEFS.map((def) => {
-              const cur = projects.layouts.find((l) => l.id === viewPickFor) ?? projects.views[viewPickFor]
-              return (
-                <button
-                  key={def.id}
-                  type="button"
-                  className="dsh-wt_preset"
-                  data-on={cur && presetOf(cur) === def.id ? 'true' : 'false'}
-                  onClick={() => applyLayoutChange(viewPickFor, def.id)}
-                >
-                  {presetThumb(def.id)}
-                </button>
-              )
-            })}
-            <button type="button" className="dsh-wt_preset dsh-wt_presetAdd" title={t('customLayout.addTitle')}
-              onClick={() => { setViewPickFor(null); setCustomOpen(true) }}>
-              <span className="dsh-wt_presetAddIcon" aria-hidden>＋</span>
-              <span className="dsh-wt_presetAddText">{t('customLayout.add')}</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {folderPick && <div className="dsh-wt_popBackdrop" style={{ zIndex: 83 }} onClick={() => { invalidatePickState(); setFolderPick(null) }} />}
-      {folderPick && (
-        <div className="dsh-wt_menu dsh-wt_pop dsh-wt_bindPop" style={{ position: 'fixed', left: folderPick.x, top: folderPick.y, width: 280, zIndex: 84 }}>
-          {/* 项目文件夹框（格式基准）：第一行 emoji+标题，第二行路径；可随时更改 */}
-          <div className="dsh-wt_bindFolderBox">
-            <div className="dsh-wt_bindFolderRow">
-              <span className="dsh-wt_bindFolderLabel">📁 {t('bind.folder')}</span>
-              <button type="button" className="dsh-wt_bindFolderChange" disabled={pickBusy} onClick={changeProjectFolder}>
-                {pickBusy ? t('add.folderPicking') : t('bind.folderChange') + ' ↻'}
-              </button>
-              <button type="button" className="dsh-wt_bindFolderChange" title={t('add.folderManual')}
-                onClick={() => { setManualPathFor(manualPathFor === 'bind' ? null : 'bind'); setPickErr((prev) => ({ ...prev, bind: '' })) }}>{t('add.folderManual')}</button>
-            </div>
-            {pickBusy && <p className="dsh-wt_folderPickHint">{t('add.folderPickerHint')}</p>}
-            <div className={'dsh-wt_bindFolderPath' + (projects.folders[folderPick.id] ? '' : ' dsh-wt_bindFolderPathNone')} title={projects.folders[folderPick.id] ?? ''}>
-              {projects.folders[folderPick.id] ?? t('bind.folderNone')}
-            </div>
-            {manualPathFor === 'bind' && (
-              <div className="dsh-wt_addFolderRow">
-                <input type="text" className="dsh-wt_manualPathInput" placeholder={t('add.folderManualPh')} value={manualPathText}
-                  onChange={(e) => setManualPathText(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') applyManualPath('bind') }} />
-                <button type="button" className="dsh-wt_bindFolderChange" onClick={() => applyManualPath('bind')}>{t('add.folderManualOk')}</button>
-              </div>
-            )}
-            {pickErr.bind && <p className="dsh-wt_addError">{pickErr.bind}</p>}
           </div>
         </div>
       )}
@@ -2967,27 +2551,6 @@ function buildCustomLayoutPrompt(req: string): string {
         </div>
       )}
 
-      {customOpen && <div className="dsh-wt_popBackdrop" style={{ zIndex: 83 }} onClick={() => setCustomOpen(false)} />}
-      {customOpen && (
-        <div className="dsh-wt_menu dsh-wt_pop" style={{ position: 'fixed', left: popLeft, top: popTop, width: 340, zIndex: 84 }}>
-          <span className="dsh-wt_menuLabel">✨ {t('customLayout.title')}</span>
-          <textarea
-            className="dsh-wt_customLayoutInput"
-            autoFocus
-            rows={6}
-            placeholder={t('customLayout.placeholder')}
-            value={customLayoutText}
-            onChange={(e) => setCustomLayoutText(e.target.value)}
-          />
-          <button type="button" className="dsh-wt_customLayoutBtn" onClick={copyCustomLayout}>{t('customLayout.copy')}</button>
-          {copiedToast && (
-            <p className={'dsh-wt_customLayoutToast' + (copiedToast === 'fail' ? ' dsh-wt_customLayoutToastFail' : '')}>
-              {copiedToast === 'ok' ? '✅ ' + t('customLayout.copied') : '⚠️ ' + t('customLayout.copyFail')}
-            </p>
-          )}
-        </div>
-      )}
-
       {requestDelete && <div className="dsh-wt_confirmBackdrop" onClick={() => setRequestDelete(null)} />}
       {requestDelete && (
         <div className="dsh-wt_confirm" role="alertdialog">
@@ -3020,9 +2583,6 @@ function buildCustomLayoutPrompt(req: string): string {
           <span className="dsh-wt_layoutText">
             <span className="dsh-wt_layoutName">{t('console.name')}</span>
           </span>
-          <span className={PROJECT_FOLDER_BUTTON_CLASS} role="button" tabIndex={0} title={t('bind.folder')} aria-label={t('bind.folder')}
-            onClick={(event) => { event.stopPropagation(); openFolderPick(CONSOLE_ID, event.currentTarget) }}
-            onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); openFolderPick(CONSOLE_ID, event.currentTarget) } }}><span aria-hidden>📂</span></span>
           <span className="dsh-wt_layoutArrow" aria-hidden>›</span>
         </button>
         {renderProjectSlot
@@ -3047,9 +2607,6 @@ function buildCustomLayoutPrompt(req: string): string {
             <span className="dsh-wt_layoutText">
               <span className="dsh-wt_layoutName">{projects.nameOverrides[l.id] ?? l.title}</span>
             </span>
-            <span className={PROJECT_FOLDER_BUTTON_CLASS} role="button" tabIndex={0} title={t('bind.folder')} aria-label={t('bind.folder')}
-              onClick={(event) => { event.stopPropagation(); openFolderPick(l.id, event.currentTarget) }}
-              onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); openFolderPick(l.id, event.currentTarget) } }}><span aria-hidden>📂</span></span>
             <span className="dsh-wt_layoutArrow" aria-hidden>›</span>
           </button>
         ))}
