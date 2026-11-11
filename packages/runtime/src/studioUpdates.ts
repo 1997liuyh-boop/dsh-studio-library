@@ -9,6 +9,7 @@ import semver from 'semver'
 import { list as listTar } from 'tar'
 import type { PluginManager } from '@deepseek-ai/dsh-plugin-manager'
 import type { StudioProjects } from './registry'
+import type { ServiceStartupConfig, ServiceStartupFailure } from './serviceStartup'
 import type { StudioUpdateReport } from '../../sdk/updates'
 
 export interface UpdateConfig { timeoutMs?: number; downloadTimeoutMs?: number; maxPackageBytes?: number; directory?: string; repositories?: Record<string, string> }
@@ -24,6 +25,14 @@ interface Release { assets: { name: string; url: string }[] }
 type Manager = Pick<PluginManager, 'listBundles' | 'installBundle'>
 const active = (phase: Phase) => ['downloading', 'verifying', 'installing'].includes(phase)
 const object = (value: unknown): Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value) ? value as Record<string, unknown> : {}
+
+/**
+ * 更新时的本机服务协调：先停止在安装目录内运行的服务（否则 Windows 上 pnpm 无法替换目录），装完再重启。
+ */
+export interface UpdateServiceHooks {
+  stopForUpdate(studioId: string, directory: string): Promise<{ stopped: ServiceStartupConfig[]; failures: ServiceStartupFailure[] }>
+  restart(groups: readonly ServiceStartupConfig[]): Promise<ServiceStartupFailure[]>
+}
 
 class UpdateFailure extends Error {
   constructor(readonly code: string) { super(code) }
@@ -109,7 +118,14 @@ export class StudioUpdates {
   private writes = Promise.resolve()
 
   constructor(private readonly registry: StudioProjects, private readonly manager: Manager, private readonly hostVersion: string,
-    private readonly options: Options, private readonly request: typeof fetch = fetch) {}
+    private readonly options: Options, private readonly request: typeof fetch = fetch, private readonly services?: UpdateServiceHooks) {}
+
+  /** 工作室（或工作室库主插件）的安装目录：页面根目录的上一级。 */
+  private packageDirectory(id: string): string | undefined {
+    if (id === LIBRARY_ID) return this.options.libraryRoot
+    const page = this.registry.entries().find(entry => entry.id === id)
+    return page ? dirname(resolve(page.root)) : undefined
+  }
 
   /** 恢复上次结果；中断的安装标记为未知，等待用户检查后重试。 */
   async initialize(): Promise<void> {
@@ -291,6 +307,8 @@ export class StudioUpdates {
   }
 
   private async performInstall(pkg: PackageInfo, candidate: Candidate): Promise<void> {
+    /** 为更新而停止的服务，结束后（成功或失败）都要重新启动 */
+    let stopped: ServiceStartupConfig[] = []
     try {
       const bundle = (await this.manager.listBundles()).find(bundle => bundle.name === pkg.packageName)
       if (!bundle || bundle.version !== pkg.version || !bundle.installed) throw new UpdateFailure('recheck')
@@ -318,6 +336,13 @@ export class StudioUpdates {
       if (!stillInstalled || stillInstalled.version !== pkg.version) throw new UpdateFailure('recheck')
       this.lifetime.signal.throwIfAborted()
       await this.phase('installing')
+      // 在安装目录内运行的本机服务会占用目录，先停掉再交给宿主替换
+      const installDirectory = this.packageDirectory(pkg.id)
+      if (this.services && installDirectory) {
+        const outcome = await this.services.stopForUpdate(pkg.id, installDirectory)
+        stopped = outcome.stopped
+        if (outcome.failures.length) throw new UpdateFailure('service-stop')
+      }
       this.hostInstalling = true
       let result = await this.manager.installBundle(file, { enabled: bundle.enabled })
       // pnpm 拦下本包的构建脚本时，宿主会把待决定的键记入 allowBuilds：只批准本包自己的键并重试一次
@@ -331,9 +356,12 @@ export class StudioUpdates {
       } else if (result.bundle !== pkg.packageName || result.version !== candidate.version) await this.phase('unknown', 'version-mismatch')
       else { this.candidates.delete(pkg.id); this.checks.delete(pkg.id); await this.phase(result.application === 'restart-required' ? 'restart-required' : 'complete') }
     } catch (error) {
-      const phase = this.operation?.phase === 'installing' ? 'unknown' : 'failed'
+      const phase = this.operation?.phase === 'installing' && !(error instanceof UpdateFailure && error.code === 'service-stop') ? 'unknown' : 'failed'
       try { await this.phase(phase, error instanceof UpdateFailure ? error.code : 'operation') }
       catch (recordError) { console.error('工作室升级结果无法保存，请重启后核对插件版本', recordError instanceof Error ? recordError.name : 'Error') }
+    } finally {
+      // 无论更新成功与否，都把为更新停下的服务重新启动（启动脚本可安全重复执行）
+      if (stopped.length && this.services) await this.services.restart(stopped).catch(() => [])
     }
   }
 

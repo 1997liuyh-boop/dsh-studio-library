@@ -55,3 +55,26 @@ test('失败记录按启动组覆盖：重新启动成功后清除旧失败', as
   await launcher.start('media')
   assert.deepEqual(launcher.report().map(item => item.message), ['影音失败'])
 })
+
+test('更新前只停止在安装目录内运行的启动组，并可重启', async (t) => {
+  const { StudioServiceLauncher, stopArgsOf, isInside } = await load(t)
+  // 用正斜杠书写路径：path.resolve 在 Windows 上会统一规范化
+  const pkg = 'C:/profile/node_modules/dsh-studio-cineflow'
+  const cineflow = { ...group('影音', ['cineflow']), command: 'C:/pwsh/pwsh.exe', args: ['-NoProfile', '-File', pkg + '/scripts/start.ps1'], cwd: pkg }
+  const films = { ...group('剧', ['media', 'film']), command: 'C:/pwsh/pwsh.exe', args: ['-File', 'D:/apps/studio-apps.ps1'], cwd: 'D:/apps' }
+  assert.equal(isInside(pkg + '/scripts/start.ps1', pkg), true)
+  assert.equal(isInside('C:/profile/node_modules/dsh-studio-cineflow-old', pkg), false)
+  assert.deepEqual(stopArgsOf(cineflow), ['-NoProfile', '-File', pkg + '/scripts/start.ps1', '-Stop'])
+  assert.deepEqual(stopArgsOf({ ...films, stopArgs: ['stop-now'] }), ['stop-now'])
+  assert.equal(stopArgsOf({ ...films, command: 'C:/node.exe', args: ['x.js'] }), undefined)
+  const started = []
+  const stoppedRuns = []
+  const launcher = new StudioServiceLauncher([cineflow, films], async (configs) => { started.push(configs.map(c => c.label)); return [] }, async (configs) => { stoppedRuns.push(configs.map(c => c.label)); return [] })
+  assert.deepEqual(launcher.groupsInside('film', 'C:/profile/node_modules/dsh-studio-film').map(c => c.label), [])
+  const { stopped, failures } = await launcher.stopForUpdate('cineflow', pkg)
+  assert.deepEqual(stopped.map(c => c.label), ['影音'])
+  assert.deepEqual([...failures], [])
+  assert.deepEqual(stoppedRuns, [['影音']])
+  await launcher.restart(stopped)
+  assert.deepEqual(started, [['影音']])
+})

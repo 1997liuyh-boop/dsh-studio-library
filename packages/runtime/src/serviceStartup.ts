@@ -1,7 +1,7 @@
 /** 工作室启动脚本由本机配置指定；服务及数据库仍由原启动器管理。 */
 import { spawn } from 'node:child_process'
 import { mkdir, open } from 'node:fs/promises'
-import { dirname, isAbsolute } from 'node:path'
+import { basename, dirname, isAbsolute, resolve, sep } from 'node:path'
 
 /** 每组脚本独立启动；路径、等待预算和日志位置均由配置提供。 */
 export interface ServiceStartupConfig {
@@ -12,6 +12,8 @@ export interface ServiceStartupConfig {
   cwd: string
   logFile: string
   timeoutMs: number
+  /** 停止服务的参数；缺省时 PowerShell -File 脚本自动追加 -Stop（现有启动脚本均支持） */
+  stopArgs?: string[]
 }
 
 /** 启动失败不撤销已经运行的服务；工作室可继续检查真实健康状态。 */
@@ -47,24 +49,58 @@ export function resolveServiceStartup(input: unknown): ServiceStartupConfig[] {
       || !Number.isSafeInteger(entry.timeoutMs) || entry.timeoutMs <= 0) {
       throw new Error('工作室自动启动配置无效：需要名称、工作室标识、绝对路径、字符串参数和正整数超时')
     }
+    if ('stopArgs' in entry && entry.stopArgs !== undefined && !strings(entry.stopArgs)) {
+      throw new Error('工作室自动启动配置无效：stopArgs 必须是字符串列表')
+    }
     return { label: entry.label, studioIds: [...entry.studioIds], command: entry.command,
-      args: [...entry.args], cwd: entry.cwd, logFile: entry.logFile, timeoutMs: entry.timeoutMs }
+      args: [...entry.args], cwd: entry.cwd, logFile: entry.logFile, timeoutMs: entry.timeoutMs,
+      ...('stopArgs' in entry && strings(entry.stopArgs) ? { stopArgs: [...entry.stopArgs] } : {}) }
   })
 }
 
+/**
+ * 停止服务所用的参数：优先配置的 stopArgs；PowerShell -File 脚本缺省追加 -Stop；其余无法停止返回 undefined。
+ * @param config - 启动组。
+ */
+export function stopArgsOf(config: ServiceStartupConfig): string[] | undefined {
+  if (config.stopArgs) return config.stopArgs
+  const shell = basename(config.command).toLowerCase()
+  if ((shell === 'pwsh.exe' || shell === 'pwsh' || shell === 'powershell.exe') && config.args.some(arg => arg.toLowerCase() === '-file')) return [...config.args, '-Stop']
+  return undefined
+}
+
+/** 路径是否位于目录内（Windows 下不区分大小写）。 */
+export function isInside(path: string, directory: string): boolean {
+  const norm = (value: string) => { const full = resolve(value); return process.platform === 'win32' ? full.toLowerCase() : full }
+  const target = norm(path)
+  const root = norm(directory)
+  return target === root || target.startsWith(root.endsWith(sep) ? root : root + sep)
+}
+
 async function startService(config: ServiceStartupConfig, signal: AbortSignal): Promise<ServiceStartupFailure | undefined> {
+  return runService(config, config.args, '启动', signal)
+}
+
+/** 执行启动组的停止参数；与启动共用日志、超时和失败报告。 */
+async function stopService(config: ServiceStartupConfig, signal: AbortSignal): Promise<ServiceStartupFailure | undefined> {
+  const args = stopArgsOf(config)
+  if (!args) return { kind: 'launch', studioIds: config.studioIds, message: config.label + '没有可用的停止命令，请手动关闭后再更新' }
+  return runService(config, args, '停止', signal)
+}
+
+async function runService(config: ServiceStartupConfig, args: readonly string[], verb: '启动' | '停止', signal: AbortSignal): Promise<ServiceStartupFailure | undefined> {
   const failure = (kind: ServiceStartupFailure['kind'], reason: string): ServiceStartupFailure => ({
     kind, studioIds: config.studioIds,
     message: config.label + reason + '，请查看日志后重新启动应用：' + config.logFile,
   })
-  if (signal.aborted) return failure('cancelled', '自动启动已取消，部分服务可能已运行')
+  if (signal.aborted) return failure('cancelled', '自动'+verb+'已取消，部分服务可能已运行')
   try {
     await mkdir(dirname(config.logFile), { recursive: true })
     const log = await open(config.logFile, 'a', 0o600)
     try {
-      if (signal.aborted) return failure('cancelled', '自动启动已取消，部分服务可能已运行')
-      await log.write('\n[' + new Date().toISOString() + '] ' + config.label + '自动启动\n')
-      const child = spawn(config.command, config.args, {
+      if (signal.aborted) return failure('cancelled', '自动'+verb+'已取消，部分服务可能已运行')
+      await log.write('\n[' + new Date().toISOString() + '] ' + config.label + '自动' + verb + '\n')
+      const child = spawn(config.command, [...args], {
         cwd: config.cwd, windowsHide: true, signal, killSignal: 'SIGKILL', stdio: ['ignore', log.fd, log.fd],
       })
       let timedOut = false
@@ -77,14 +113,14 @@ async function startService(config: ServiceStartupConfig, signal: AbortSignal): 
       const report = (kind: ServiceStartupFailure['kind'], reason: string) => ({
         ...failure(kind, reason), process: { ...outcome, timedOut },
       })
-      if (signal.aborted) return report('cancelled', '自动启动已取消，部分服务可能已运行')
-      if (timedOut) return report('timeout', '自动启动超时，部分服务可能已运行')
-      if (launchError) return report('launch', '无法自动启动（' + launchError.message + '）')
-      if (outcome.exitCode !== 0) return report('exit', '自动启动失败（退出码 ' + String(outcome.exitCode) + '）')
+      if (signal.aborted) return report('cancelled', '自动'+verb+'已取消，部分服务可能已运行')
+      if (timedOut) return report('timeout', '自动'+verb+'超时，部分服务可能已运行')
+      if (launchError) return report('launch', '无法自动'+verb+'（' + launchError.message + '）')
+      if (outcome.exitCode !== 0) return report('exit', '自动'+verb+'失败（退出码 ' + String(outcome.exitCode) + '）')
       return undefined
     } finally { await log.close() }
   } catch (error) {
-    return failure('launch', '无法自动启动（' + (error instanceof Error ? error.message : String(error)) + '）')
+    return failure('launch', '无法自动'+verb+'（' + (error instanceof Error ? error.message : String(error)) + '）')
   }
 }
 
@@ -96,6 +132,17 @@ async function startService(config: ServiceStartupConfig, signal: AbortSignal): 
  */
 export async function startStudioServices(configs: readonly ServiceStartupConfig[], signal: AbortSignal): Promise<ServiceStartupFailure[]> {
   const outcomes = await Promise.all(configs.map(config => startService(config, signal)))
+  return outcomes.filter((outcome): outcome is ServiceStartupFailure => outcome !== undefined)
+}
+
+/**
+ * 并行停止多个启动组（执行各自的停止命令）。
+ * @param configs - 需要停止的启动组。
+ * @param signal - 停用插件时取消。
+ * @returns 停止失败的报告。
+ */
+export async function stopStudioServices(configs: readonly ServiceStartupConfig[], signal: AbortSignal): Promise<ServiceStartupFailure[]> {
+  const outcomes = await Promise.all(configs.map(config => stopService(config, signal)))
   return outcomes.filter((outcome): outcome is ServiceStartupFailure => outcome !== undefined)
 }
 
@@ -118,7 +165,35 @@ export class StudioServiceLauncher {
    * @param run - 实际执行启动组的函数，测试时可替换。
    */
   constructor(private readonly configs: readonly ServiceStartupConfig[],
-    private readonly run: (configs: readonly ServiceStartupConfig[], signal: AbortSignal) => Promise<ServiceStartupFailure[]> = startStudioServices) {}
+    private readonly run: (configs: readonly ServiceStartupConfig[], signal: AbortSignal) => Promise<ServiceStartupFailure[]> = startStudioServices,
+    private readonly stopRun: (configs: readonly ServiceStartupConfig[], signal: AbortSignal) => Promise<ServiceStartupFailure[]> = stopStudioServices) {}
+
+  /**
+   * 在安装目录内运行的启动组：命令、脚本参数或工作目录位于该目录中。
+   * 这类服务运行时会占用安装目录，Windows 上 pnpm 无法替换，更新前必须先停止。
+   */
+  groupsInside(studioId: string, directory: string): ServiceStartupConfig[] {
+    return this.configs.filter(config => config.studioIds.includes(studioId)
+      && (isInside(config.cwd, directory) || isInside(config.command, directory)
+        || config.args.some(arg => isAbsolute(arg) && isInside(arg, directory))))
+  }
+
+  /**
+   * 更新前停止占用安装目录的服务；正在进行的启动先等它结束，避免与停止交错。
+   * @returns 已停止的启动组（供更新后重启）与停止失败的报告。
+   */
+  async stopForUpdate(studioId: string, directory: string): Promise<{ stopped: ServiceStartupConfig[]; failures: ServiceStartupFailure[] }> {
+    const groups = this.groupsInside(studioId, directory)
+    if (!groups.length) return { stopped: [], failures: [] }
+    await Promise.allSettled(groups.map(config => this.running.get(config.label)).filter(task => task !== undefined))
+    const failures = await this.stopRun(groups, this.abort.signal)
+    return { stopped: groups, failures }
+  }
+
+  /** 更新后重新启动之前停止的启动组。 */
+  restart(groups: readonly ServiceStartupConfig[]): Promise<ServiceStartupFailure[]> {
+    return this.startGroups(groups)
+  }
 
   /** 该工作室是否配置了启动脚本。 */
   startable(studioId: string): boolean {
@@ -143,6 +218,11 @@ export class StudioServiceLauncher {
   async start(studioId?: string): Promise<ServiceStartupFailure[]> {
     const groups = this.configs.filter(config => !studioId || config.studioIds.includes(studioId))
     if (studioId && !groups.length) throw new ServiceNotConfigured(studioId)
+    return this.startGroups(groups)
+  }
+
+  /** 启动指定启动组：同组运行中复用任务，失败记录按启动组覆盖。 */
+  private async startGroups(groups: readonly ServiceStartupConfig[]): Promise<ServiceStartupFailure[]> {
     const results = await Promise.all(groups.map(config => {
       let task = this.running.get(config.label)
       if (!task) {

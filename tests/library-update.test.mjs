@@ -147,3 +147,67 @@ test('构建脚本被拦时自动批准本包的键并重试，其他依赖不�
   assert.deepEqual(installs[1][1], { enabled: true, approvedBuilds: ['dsh-studio-library@file:' + installs[0][0]] })
   assert.equal((await service.list()).studios[0].operation.phase, 'restart-required')
 })
+
+/** 主插件 0.1.8 → 0.1.9 的更新环境：可注入宿主管理器与服务协调钩子。 */
+async function libraryUpdate(t, manager, services) {
+  const { dir, updates, assets } = await load(t)
+  const libraryRoot = join(dir, 'library')
+  await mkdir(libraryRoot, { recursive: true })
+  await writeFile(join(libraryRoot, 'package.json'), JSON.stringify({ name: 'dsh-studio-library', version: '0.1.8', repository: { type: 'git', url: 'https://github.com/owner/dsh-studio-library.git' } }))
+  const bytes = await tarball(dir, { name: 'dsh-studio-library', version: '0.1.9' })
+  const manifest = assets.releaseManifest({ name: 'dsh-studio-library', version: '0.1.9', filename: 'dsh-studio-library-0.1.9.tgz' }, bytes)
+  const download = 'https://github.com/owner/dsh-studio-library/releases/download/v0.1.9/'
+  const request = async (url) => {
+    if (url.startsWith('https://api.github.com/repos/owner/dsh-studio-library/releases')) return new Response(JSON.stringify([{ draft: false, prerelease: false, assets: [
+      { name: 'manifest.json', browser_download_url: download + 'manifest.json' },
+      { name: 'dsh-studio-library-0.1.9.tgz', browser_download_url: download + 'dsh-studio-library-0.1.9.tgz' },
+    ] }]))
+    if (url === download + 'manifest.json') return new Response(JSON.stringify(manifest))
+    if (url === download + 'dsh-studio-library-0.1.9.tgz') return new Response(bytes)
+    return new Response('', { status: 404 })
+  }
+  const options = { ...updates.resolveUpdates({ directory: join(dir, 'updates') }), libraryRoot }
+  const service = new updates.StudioUpdates({ entries: () => [] }, manager, '0.2.2-rc.1', options, request, services)
+  t.after(() => service.dispose())
+  await service.initialize()
+  await service.check('library')
+  return { service, libraryRoot }
+}
+
+test('更新前停止安装目录内运行的服务，安装完成后重新启动', async (t) => {
+  const steps = []
+  const group = { label: '影音服务', studioIds: ['library'] }
+  const manager = {
+    listBundles: async () => [{ name: 'dsh-studio-library', version: '0.1.8', installed: true, enabled: true }],
+    installBundle: async () => { steps.push('install'); return { application: 'restart-required', bundle: 'dsh-studio-library', version: '0.1.9' } },
+  }
+  let stopDirectory = ''
+  const services = {
+    stopForUpdate: async (id, directory) => { steps.push('stop:' + id); stopDirectory = directory; return { stopped: [group], failures: [] } },
+    restart: async (groups) => { steps.push('restart:' + groups.map(g => g.label).join(',')); return [] },
+  }
+  const { service, libraryRoot } = await libraryUpdate(t, manager, services)
+  await service.install('library', '0.1.9')
+  assert.deepEqual(steps, ['stop:library', 'install', 'restart:影音服务'])
+  assert.equal(stopDirectory, libraryRoot)
+  assert.equal((await service.list()).studios[0].operation.phase, 'restart-required')
+})
+
+test('服务停不下来时不交给宿主安装，记录失败并把服务重新启动', async (t) => {
+  const steps = []
+  const group = { label: '影音服务', studioIds: ['library'] }
+  const manager = {
+    listBundles: async () => [{ name: 'dsh-studio-library', version: '0.1.8', installed: true, enabled: true }],
+    installBundle: async () => { steps.push('install'); return { application: 'applied', bundle: 'dsh-studio-library', version: '0.1.9' } },
+  }
+  const services = {
+    stopForUpdate: async () => { steps.push('stop'); return { stopped: [group], failures: [{ kind: 'exit', studioIds: ['library'], message: '停止失败' }] } },
+    restart: async () => { steps.push('restart'); return [] },
+  }
+  const { service } = await libraryUpdate(t, manager, services)
+  await service.install('library', '0.1.9')
+  assert.deepEqual(steps, ['stop', 'restart'])
+  const operation = (await service.list()).studios[0].operation
+  assert.equal(operation.phase, 'failed')
+  assert.equal(operation.error, 'service-stop')
+})

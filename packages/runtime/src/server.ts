@@ -26,14 +26,18 @@ export const inject = ['webServer', 'connection', 'tools', 'agents', 'systemProm
 export async function apply(ctx: HostContext & Context, config: IntegrationConfig = {}): Promise<void> {
   const registry = new StudioProjects()
   ctx.provide('studioProjects', registry)
-  const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates))
+  const startupConfig = resolveServiceStartup(config.autoStartServices)
+  // 宿主启动时、「一键启动」与更新时的停/启共用同一启动器，同一启动组不会并行重复拉起
+  const launcher = new StudioServiceLauncher(startupConfig)
+  // 更新前停止在安装目录内运行的服务（Windows 上运行中的目录无法被替换），装完再重启
+  const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates), fetch, {
+    stopForUpdate: (studioId, directory) => launcher.stopForUpdate(studioId, directory),
+    restart: groups => launcher.restart(groups),
+  })
   await updates.initialize()
   const handleUpdates = updateRoutes(updates)
   ctx.effect(() => () => updates.dispose(), '工作室：版本检查与更新记录')
   const statuses = createIntegrations(config)
-  const startupConfig = resolveServiceStartup(config.autoStartServices)
-  // 宿主启动时与「一键启动」共用同一启动器，同一启动组不会并行重复拉起
-  const launcher = new StudioServiceLauncher(startupConfig)
   let startup = Promise.resolve<ServiceStartupFailure[]>([])
   ctx.effect(() => {
     if (process.env.DSH_STUDIO_SKIP_APPS !== '1') startup = launcher.start()

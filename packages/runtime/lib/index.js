@@ -5361,12 +5361,13 @@ function resolveUpdates(config = {}) {
   return options;
 }
 var StudioUpdates = class {
-  constructor(registry, manager, hostVersion, options, request = fetch) {
+  constructor(registry, manager, hostVersion, options, request = fetch, services) {
     this.registry = registry;
     this.manager = manager;
     this.hostVersion = hostVersion;
     this.options = options;
     this.request = request;
+    this.services = services;
   }
   checks = /* @__PURE__ */ new Map();
   candidates = /* @__PURE__ */ new Map();
@@ -5379,6 +5380,12 @@ var StudioUpdates = class {
   hostInstalling = false;
   recordFailure = false;
   writes = Promise.resolve();
+  /** 工作室（或工作室库主插件）的安装目录：页面根目录的上一级。 */
+  packageDirectory(id) {
+    if (id === LIBRARY_ID) return this.options.libraryRoot;
+    const page = this.registry.entries().find((entry) => entry.id === id);
+    return page ? dirname(resolve2(page.root)) : void 0;
+  }
   /** 恢复上次结果；中断的安装标记为未知，等待用户检查后重试。 */
   async initialize() {
     this.recordFailure = false;
@@ -5578,6 +5585,7 @@ var StudioUpdates = class {
     await this.performInstall(pkg, candidate);
   }
   async performInstall(pkg, candidate) {
+    let stopped = [];
     try {
       const bundle = (await this.manager.listBundles()).find((bundle2) => bundle2.name === pkg.packageName);
       if (!bundle || bundle.version !== pkg.version || !bundle.installed) throw new UpdateFailure("recheck");
@@ -5607,6 +5615,12 @@ var StudioUpdates = class {
       if (!stillInstalled || stillInstalled.version !== pkg.version) throw new UpdateFailure("recheck");
       this.lifetime.signal.throwIfAborted();
       await this.phase("installing");
+      const installDirectory = this.packageDirectory(pkg.id);
+      if (this.services && installDirectory) {
+        const outcome = await this.services.stopForUpdate(pkg.id, installDirectory);
+        stopped = outcome.stopped;
+        if (outcome.failures.length) throw new UpdateFailure("service-stop");
+      }
       this.hostInstalling = true;
       let result = await this.manager.installBundle(file, { enabled: bundle.enabled });
       const approvals = installFailed(result.application) ? ownBuildApprovals(result.pendingBuilds, pkg.packageName) : [];
@@ -5623,12 +5637,14 @@ var StudioUpdates = class {
         await this.phase(result.application === "restart-required" ? "restart-required" : "complete");
       }
     } catch (error) {
-      const phase = this.operation?.phase === "installing" ? "unknown" : "failed";
+      const phase = this.operation?.phase === "installing" && !(error instanceof UpdateFailure && error.code === "service-stop") ? "unknown" : "failed";
       try {
         await this.phase(phase, error instanceof UpdateFailure ? error.code : "operation");
       } catch (recordError) {
         console.error("\u5DE5\u4F5C\u5BA4\u5347\u7EA7\u7ED3\u679C\u65E0\u6CD5\u4FDD\u5B58\uFF0C\u8BF7\u91CD\u542F\u540E\u6838\u5BF9\u63D2\u4EF6\u7248\u672C", recordError instanceof Error ? recordError.name : "Error");
       }
+    } finally {
+      if (stopped.length && this.services) await this.services.restart(stopped).catch(() => []);
     }
   }
   /** 只取消本服务的下载和检查；安装由宿主管理器完成，避免卸载与安装互等。 */
@@ -5873,7 +5889,7 @@ var StudioControl = class {
     if (this.closed) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u63A7\u5236\u5DF2\u505C\u7528"));
     if (!command.studio || !this.registry.has(command.studio)) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u672A\u5B89\u88C5\u6216\u5DF2\u505C\u7528\uFF0C\u8BF7\u5148\u8C03\u7528 list"));
     if (this.pending.size >= 16) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u7E41\u5FD9\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5"));
-    return new Promise((resolve5, reject) => {
+    return new Promise((resolve6, reject) => {
       const id = randomUUID3();
       const abort = () => finish(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u5DF2\u53D6\u6D88\uFF1B\u5DF2\u89E6\u53D1\u7684\u9875\u9762\u64CD\u4F5C\u65E0\u6CD5\u64A4\u9500"));
       const timer = setTimeout(() => finish(new Error("\u5DE5\u4F5C\u5BA4\u54CD\u5E94\u8D85\u65F6\uFF0C\u8BF7\u786E\u8BA4\u4E3B\u7A97\u53E3\u5DF2\u6253\u5F00\uFF1B\u8BF7\u8BFB\u53D6\u9875\u9762\u786E\u8BA4\u64CD\u4F5C\u7ED3\u679C\uFF0C\u4E0D\u8981\u91CD\u590D\u63D0\u4EA4")), this.timeout);
@@ -5881,7 +5897,7 @@ var StudioControl = class {
         if (!this.pending.delete(id)) return;
         clearTimeout(timer);
         signal.removeEventListener("abort", abort);
-        error ? reject(error) : resolve5(result);
+        error ? reject(error) : resolve6(result);
       };
       this.pending.set(id, { command, expiresAt: Date.now() + this.timeout, finish });
       signal.addEventListener("abort", abort, { once: true });
@@ -6115,7 +6131,7 @@ function installStudioTasks(ctx, registry) {
 // packages/runtime/src/serviceStartup.ts
 import { spawn } from "node:child_process";
 import { mkdir as mkdir3, open } from "node:fs/promises";
-import { dirname as dirname3, isAbsolute as isAbsolute2 } from "node:path";
+import { basename, dirname as dirname3, isAbsolute as isAbsolute2, resolve as resolve5, sep as sep3 } from "node:path";
 function strings(value) {
   return Array.isArray(value) && value.every((item) => typeof item === "string");
 }
@@ -6126,6 +6142,9 @@ function resolveServiceStartup(input) {
     if (!entry || typeof entry !== "object" || Array.isArray(entry) || !("label" in entry) || typeof entry.label !== "string" || !entry.label.trim() || !("studioIds" in entry) || !strings(entry.studioIds) || !entry.studioIds.length || !entry.studioIds.every((id) => /^[a-z][a-z0-9-]*$/.test(id)) || !("command" in entry) || typeof entry.command !== "string" || !isAbsolute2(entry.command) || !("args" in entry) || !strings(entry.args) || !("cwd" in entry) || typeof entry.cwd !== "string" || !isAbsolute2(entry.cwd) || !("logFile" in entry) || typeof entry.logFile !== "string" || !isAbsolute2(entry.logFile) || !("timeoutMs" in entry) || typeof entry.timeoutMs !== "number" || !Number.isSafeInteger(entry.timeoutMs) || entry.timeoutMs <= 0) {
       throw new Error("\u5DE5\u4F5C\u5BA4\u81EA\u52A8\u542F\u52A8\u914D\u7F6E\u65E0\u6548\uFF1A\u9700\u8981\u540D\u79F0\u3001\u5DE5\u4F5C\u5BA4\u6807\u8BC6\u3001\u7EDD\u5BF9\u8DEF\u5F84\u3001\u5B57\u7B26\u4E32\u53C2\u6570\u548C\u6B63\u6574\u6570\u8D85\u65F6");
     }
+    if ("stopArgs" in entry && entry.stopArgs !== void 0 && !strings(entry.stopArgs)) {
+      throw new Error("\u5DE5\u4F5C\u5BA4\u81EA\u52A8\u542F\u52A8\u914D\u7F6E\u65E0\u6548\uFF1AstopArgs \u5FC5\u987B\u662F\u5B57\u7B26\u4E32\u5217\u8868");
+    }
     return {
       label: entry.label,
       studioIds: [...entry.studioIds],
@@ -6133,24 +6152,48 @@ function resolveServiceStartup(input) {
       args: [...entry.args],
       cwd: entry.cwd,
       logFile: entry.logFile,
-      timeoutMs: entry.timeoutMs
+      timeoutMs: entry.timeoutMs,
+      ..."stopArgs" in entry && strings(entry.stopArgs) ? { stopArgs: [...entry.stopArgs] } : {}
     };
   });
 }
+function stopArgsOf(config) {
+  if (config.stopArgs) return config.stopArgs;
+  const shell = basename(config.command).toLowerCase();
+  if ((shell === "pwsh.exe" || shell === "pwsh" || shell === "powershell.exe") && config.args.some((arg) => arg.toLowerCase() === "-file")) return [...config.args, "-Stop"];
+  return void 0;
+}
+function isInside(path, directory) {
+  const norm = (value) => {
+    const full = resolve5(value);
+    return process.platform === "win32" ? full.toLowerCase() : full;
+  };
+  const target = norm(path);
+  const root = norm(directory);
+  return target === root || target.startsWith(root.endsWith(sep3) ? root : root + sep3);
+}
 async function startService(config, signal) {
+  return runService(config, config.args, "\u542F\u52A8", signal);
+}
+async function stopService(config, signal) {
+  const args = stopArgsOf(config);
+  if (!args) return { kind: "launch", studioIds: config.studioIds, message: config.label + "\u6CA1\u6709\u53EF\u7528\u7684\u505C\u6B62\u547D\u4EE4\uFF0C\u8BF7\u624B\u52A8\u5173\u95ED\u540E\u518D\u66F4\u65B0" };
+  return runService(config, args, "\u505C\u6B62", signal);
+}
+async function runService(config, args, verb, signal) {
   const failure = (kind, reason) => ({
     kind,
     studioIds: config.studioIds,
     message: config.label + reason + "\uFF0C\u8BF7\u67E5\u770B\u65E5\u5FD7\u540E\u91CD\u65B0\u542F\u52A8\u5E94\u7528\uFF1A" + config.logFile
   });
-  if (signal.aborted) return failure("cancelled", "\u81EA\u52A8\u542F\u52A8\u5DF2\u53D6\u6D88\uFF0C\u90E8\u5206\u670D\u52A1\u53EF\u80FD\u5DF2\u8FD0\u884C");
+  if (signal.aborted) return failure("cancelled", "\u81EA\u52A8" + verb + "\u5DF2\u53D6\u6D88\uFF0C\u90E8\u5206\u670D\u52A1\u53EF\u80FD\u5DF2\u8FD0\u884C");
   try {
     await mkdir3(dirname3(config.logFile), { recursive: true });
     const log = await open(config.logFile, "a", 384);
     try {
-      if (signal.aborted) return failure("cancelled", "\u81EA\u52A8\u542F\u52A8\u5DF2\u53D6\u6D88\uFF0C\u90E8\u5206\u670D\u52A1\u53EF\u80FD\u5DF2\u8FD0\u884C");
-      await log.write("\n[" + (/* @__PURE__ */ new Date()).toISOString() + "] " + config.label + "\u81EA\u52A8\u542F\u52A8\n");
-      const child = spawn(config.command, config.args, {
+      if (signal.aborted) return failure("cancelled", "\u81EA\u52A8" + verb + "\u5DF2\u53D6\u6D88\uFF0C\u90E8\u5206\u670D\u52A1\u53EF\u80FD\u5DF2\u8FD0\u884C");
+      await log.write("\n[" + (/* @__PURE__ */ new Date()).toISOString() + "] " + config.label + "\u81EA\u52A8" + verb + "\n");
+      const child = spawn(config.command, [...args], {
         cwd: config.cwd,
         windowsHide: true,
         signal,
@@ -6176,20 +6219,24 @@ async function startService(config, signal) {
         ...failure(kind, reason),
         process: { ...outcome, timedOut }
       });
-      if (signal.aborted) return report("cancelled", "\u81EA\u52A8\u542F\u52A8\u5DF2\u53D6\u6D88\uFF0C\u90E8\u5206\u670D\u52A1\u53EF\u80FD\u5DF2\u8FD0\u884C");
-      if (timedOut) return report("timeout", "\u81EA\u52A8\u542F\u52A8\u8D85\u65F6\uFF0C\u90E8\u5206\u670D\u52A1\u53EF\u80FD\u5DF2\u8FD0\u884C");
-      if (launchError) return report("launch", "\u65E0\u6CD5\u81EA\u52A8\u542F\u52A8\uFF08" + launchError.message + "\uFF09");
-      if (outcome.exitCode !== 0) return report("exit", "\u81EA\u52A8\u542F\u52A8\u5931\u8D25\uFF08\u9000\u51FA\u7801 " + String(outcome.exitCode) + "\uFF09");
+      if (signal.aborted) return report("cancelled", "\u81EA\u52A8" + verb + "\u5DF2\u53D6\u6D88\uFF0C\u90E8\u5206\u670D\u52A1\u53EF\u80FD\u5DF2\u8FD0\u884C");
+      if (timedOut) return report("timeout", "\u81EA\u52A8" + verb + "\u8D85\u65F6\uFF0C\u90E8\u5206\u670D\u52A1\u53EF\u80FD\u5DF2\u8FD0\u884C");
+      if (launchError) return report("launch", "\u65E0\u6CD5\u81EA\u52A8" + verb + "\uFF08" + launchError.message + "\uFF09");
+      if (outcome.exitCode !== 0) return report("exit", "\u81EA\u52A8" + verb + "\u5931\u8D25\uFF08\u9000\u51FA\u7801 " + String(outcome.exitCode) + "\uFF09");
       return void 0;
     } finally {
       await log.close();
     }
   } catch (error) {
-    return failure("launch", "\u65E0\u6CD5\u81EA\u52A8\u542F\u52A8\uFF08" + (error instanceof Error ? error.message : String(error)) + "\uFF09");
+    return failure("launch", "\u65E0\u6CD5\u81EA\u52A8" + verb + "\uFF08" + (error instanceof Error ? error.message : String(error)) + "\uFF09");
   }
 }
 async function startStudioServices(configs, signal) {
   const outcomes = await Promise.all(configs.map((config) => startService(config, signal)));
+  return outcomes.filter((outcome) => outcome !== void 0);
+}
+async function stopStudioServices(configs, signal) {
+  const outcomes = await Promise.all(configs.map((config) => stopService(config, signal)));
   return outcomes.filter((outcome) => outcome !== void 0);
 }
 var ServiceNotConfigured = class extends Error {
@@ -6202,13 +6249,36 @@ var StudioServiceLauncher = class {
    * @param configs - 已校验的启动组。
    * @param run - 实际执行启动组的函数，测试时可替换。
    */
-  constructor(configs, run = startStudioServices) {
+  constructor(configs, run = startStudioServices, stopRun = stopStudioServices) {
     this.configs = configs;
     this.run = run;
+    this.stopRun = stopRun;
   }
   abort = new AbortController();
   running = /* @__PURE__ */ new Map();
   failures = [];
+  /**
+   * 在安装目录内运行的启动组：命令、脚本参数或工作目录位于该目录中。
+   * 这类服务运行时会占用安装目录，Windows 上 pnpm 无法替换，更新前必须先停止。
+   */
+  groupsInside(studioId, directory) {
+    return this.configs.filter((config) => config.studioIds.includes(studioId) && (isInside(config.cwd, directory) || isInside(config.command, directory) || config.args.some((arg) => isAbsolute2(arg) && isInside(arg, directory))));
+  }
+  /**
+   * 更新前停止占用安装目录的服务；正在进行的启动先等它结束，避免与停止交错。
+   * @returns 已停止的启动组（供更新后重启）与停止失败的报告。
+   */
+  async stopForUpdate(studioId, directory) {
+    const groups = this.groupsInside(studioId, directory);
+    if (!groups.length) return { stopped: [], failures: [] };
+    await Promise.allSettled(groups.map((config) => this.running.get(config.label)).filter((task) => task !== void 0));
+    const failures = await this.stopRun(groups, this.abort.signal);
+    return { stopped: groups, failures };
+  }
+  /** 更新后重新启动之前停止的启动组。 */
+  restart(groups) {
+    return this.startGroups(groups);
+  }
   /** 该工作室是否配置了启动脚本。 */
   startable(studioId) {
     return this.configs.some((config) => config.studioIds.includes(studioId));
@@ -6229,6 +6299,10 @@ var StudioServiceLauncher = class {
   async start(studioId) {
     const groups = this.configs.filter((config) => !studioId || config.studioIds.includes(studioId));
     if (studioId && !groups.length) throw new ServiceNotConfigured(studioId);
+    return this.startGroups(groups);
+  }
+  /** 启动指定启动组：同组运行中复用任务，失败记录按启动组覆盖。 */
+  async startGroups(groups) {
     const results = await Promise.all(groups.map((config) => {
       let task = this.running.get(config.label);
       if (!task) {
@@ -6255,13 +6329,16 @@ var inject = ["webServer", "connection", "tools", "agents", "systemPrompt", "wor
 async function apply(ctx, config = {}) {
   const registry = new StudioProjects();
   ctx.provide("studioProjects", registry);
-  const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates));
+  const startupConfig = resolveServiceStartup(config.autoStartServices);
+  const launcher = new StudioServiceLauncher(startupConfig);
+  const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates), fetch, {
+    stopForUpdate: (studioId, directory) => launcher.stopForUpdate(studioId, directory),
+    restart: (groups) => launcher.restart(groups)
+  });
   await updates.initialize();
   const handleUpdates = updateRoutes(updates);
   ctx.effect(() => () => updates.dispose(), "\u5DE5\u4F5C\u5BA4\uFF1A\u7248\u672C\u68C0\u67E5\u4E0E\u66F4\u65B0\u8BB0\u5F55");
   const statuses = createIntegrations(config);
-  const startupConfig = resolveServiceStartup(config.autoStartServices);
-  const launcher = new StudioServiceLauncher(startupConfig);
   let startup = Promise.resolve([]);
   ctx.effect(() => {
     if (process.env.DSH_STUDIO_SKIP_APPS !== "1") startup = launcher.start();
