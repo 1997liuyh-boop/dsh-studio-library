@@ -1,6 +1,8 @@
 /** 已登记工作室的发布检查与安装；安装包和进度保存在独立更新目录。 */
 import { createHash, randomUUID } from 'node:crypto'
 import { readFile, mkdir, writeFile, rename } from 'node:fs/promises'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { join, dirname, resolve } from 'node:path'
 import { homedir } from 'node:os'
 import semver from 'semver'
@@ -10,7 +12,8 @@ import type { StudioProjects } from './registry'
 import type { StudioUpdateReport } from '../../sdk/updates'
 
 export interface UpdateConfig { timeoutMs?: number; downloadTimeoutMs?: number; maxPackageBytes?: number; directory?: string; repositories?: Record<string, string> }
-interface Options { timeoutMs: number; downloadTimeoutMs: number; maxPackageBytes: number; directory: string; repositories: Record<string, string> }
+/** libraryRoot：工作室库主插件（dsh-studio-library）根目录；找不到时只检查子工作室。 */
+interface Options { timeoutMs: number; downloadTimeoutMs: number; maxPackageBytes: number; directory: string; repositories: Record<string, string>; libraryRoot?: string }
 type State = 'idle' | 'available' | 'latest' | 'unpublished' | 'incompatible' | 'unconfigured' | 'failed'
 type Phase = 'downloading' | 'verifying' | 'installing' | 'complete' | 'restart-required' | 'failed' | 'unknown'
 interface Operation { id: string; studio: string; from: string; to: string; phase: Phase; error?: string }
@@ -26,10 +29,39 @@ class UpdateFailure extends Error {
   constructor(readonly code: string) { super(code) }
 }
 
+/** 工作室库主插件在更新列表中的标识。 */
+export const LIBRARY_ID = 'library'
+/** 工作室库主插件包名。 */
+const LIBRARY_PACKAGE = 'dsh-studio-library'
+
+/**
+ * 从运行时所在目录向上查找工作室库主插件根目录：
+ * 安装后运行时作为捆绑依赖位于 dsh-studio-library/node_modules/ 下，开发时位于 packages/runtime 下。
+ */
+export function findLibraryRoot(start: string): string | undefined {
+  let dir = start
+  for (let depth = 0; depth < 8; depth++) {
+    try {
+      const pkg = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8'))
+      if (pkg?.name === LIBRARY_PACKAGE) return dir
+    } catch { /* 该层没有 package.json，继续向上 */ }
+    const parent = dirname(dir)
+    if (parent === dir) return undefined
+    dir = parent
+  }
+  return undefined
+}
+
+/** 当前模块所在目录（打包后为运行时 lib 目录）。 */
+function moduleDirectory(): string | undefined {
+  try { return dirname(fileURLToPath(import.meta.url)) } catch { return undefined }
+}
+
 /** 配置省略时使用本机更新目录；超时及安装包大小可由 profile 调整。 */
 export function resolveUpdates(config: UpdateConfig = {}): Options {
   const options = { timeoutMs: config.timeoutMs ?? 15000, downloadTimeoutMs: config.downloadTimeoutMs ?? 180000, maxPackageBytes: config.maxPackageBytes ?? 512 * 1024 * 1024,
-    directory: config.directory ?? join(process.env.DSH_HOME ?? join(homedir(), '.dsh'), 'studio/updates'), repositories: config.repositories ?? {} }
+    directory: config.directory ?? join(process.env.DSH_HOME ?? join(homedir(), '.dsh'), 'studio/updates'), repositories: config.repositories ?? {},
+    libraryRoot: (() => { const start = moduleDirectory(); return start ? findLibraryRoot(start) : undefined })() }
   if (!Number.isSafeInteger(options.timeoutMs) || options.timeoutMs < 1000 || !Number.isSafeInteger(options.downloadTimeoutMs) || options.downloadTimeoutMs < 1000 || !Number.isSafeInteger(options.maxPackageBytes) || options.maxPackageBytes < 1024 || !/^(?:[A-Za-z]:[\\/]|\/)/.test(options.directory)) throw new Error('工作室更新配置无效')
   if (typeof options.repositories !== 'object' || options.repositories === null || Array.isArray(options.repositories) || Object.entries(options.repositories).some(([name, repository]) => !/^dsh-studio-[a-z0-9-]+$/.test(name) || typeof repository !== 'string' || !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))) throw new Error('工作室更新仓库配置无效')
   return options
@@ -66,6 +98,25 @@ export class StudioUpdates {
   }
 
   private async packages(): Promise<PackageInfo[]> {
+    const studios = await this.studioPackages()
+    const library = await this.libraryPackage()
+    return library ? [library, ...studios] : studios
+  }
+
+  /** 工作室库主插件自身：读取失败时不影响子工作室的检查。 */
+  private async libraryPackage(): Promise<PackageInfo | undefined> {
+    const root = this.options.libraryRoot
+    if (!root) return undefined
+    try {
+      const pkg = object(JSON.parse(await readFile(join(root, 'package.json'), 'utf8')))
+      if (pkg.name !== LIBRARY_PACKAGE || typeof pkg.version !== 'string' || !semver.valid(pkg.version)) return undefined
+      const repositoryUrl = typeof pkg.repository === 'string' ? pkg.repository : object(pkg.repository).url
+      const repository = this.options.repositories[LIBRARY_PACKAGE] ?? (typeof repositoryUrl === 'string' ? /^(?:git\+)?https:\/\/github\.com\/([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)(?:\.git)?\/?$/.exec(repositoryUrl)?.[1] : undefined)
+      return { id: LIBRARY_ID, name: '工作室库', packageName: LIBRARY_PACKAGE, version: pkg.version, ...(repository ? { repository } : {}) }
+    } catch { return undefined }
+  }
+
+  private async studioPackages(): Promise<PackageInfo[]> {
     return Promise.all(this.registry.entries().map(async page => {
       const base = dirname(resolve(page.root))
       const pkg = object(JSON.parse(await readFile(join(base, 'package.json'), 'utf8')))

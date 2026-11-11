@@ -2326,6 +2326,8 @@ var StudioProjects = class {
 var import_semver = __toESM(require_semver2(), 1);
 import { createHash, randomUUID } from "node:crypto";
 import { readFile as readFile2, mkdir, writeFile, rename } from "node:fs/promises";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { join, dirname, resolve as resolve2 } from "node:path";
 import { homedir } from "node:os";
 
@@ -5307,13 +5309,40 @@ var UpdateFailure = class extends Error {
     this.code = code;
   }
 };
+var LIBRARY_ID = "library";
+var LIBRARY_PACKAGE = "dsh-studio-library";
+function findLibraryRoot(start) {
+  let dir = start;
+  for (let depth = 0; depth < 8; depth++) {
+    try {
+      const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
+      if (pkg?.name === LIBRARY_PACKAGE) return dir;
+    } catch {
+    }
+    const parent = dirname(dir);
+    if (parent === dir) return void 0;
+    dir = parent;
+  }
+  return void 0;
+}
+function moduleDirectory() {
+  try {
+    return dirname(fileURLToPath(import.meta.url));
+  } catch {
+    return void 0;
+  }
+}
 function resolveUpdates(config = {}) {
   const options = {
     timeoutMs: config.timeoutMs ?? 15e3,
     downloadTimeoutMs: config.downloadTimeoutMs ?? 18e4,
     maxPackageBytes: config.maxPackageBytes ?? 512 * 1024 * 1024,
     directory: config.directory ?? join(process.env.DSH_HOME ?? join(homedir(), ".dsh"), "studio/updates"),
-    repositories: config.repositories ?? {}
+    repositories: config.repositories ?? {},
+    libraryRoot: (() => {
+      const start = moduleDirectory();
+      return start ? findLibraryRoot(start) : void 0;
+    })()
   };
   if (!Number.isSafeInteger(options.timeoutMs) || options.timeoutMs < 1e3 || !Number.isSafeInteger(options.downloadTimeoutMs) || options.downloadTimeoutMs < 1e3 || !Number.isSafeInteger(options.maxPackageBytes) || options.maxPackageBytes < 1024 || !/^(?:[A-Za-z]:[\\/]|\/)/.test(options.directory)) throw new Error("\u5DE5\u4F5C\u5BA4\u66F4\u65B0\u914D\u7F6E\u65E0\u6548");
   if (typeof options.repositories !== "object" || options.repositories === null || Array.isArray(options.repositories) || Object.entries(options.repositories).some(([name2, repository]) => !/^dsh-studio-[a-z0-9-]+$/.test(name2) || typeof repository !== "string" || !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))) throw new Error("\u5DE5\u4F5C\u5BA4\u66F4\u65B0\u4ED3\u5E93\u914D\u7F6E\u65E0\u6548");
@@ -5351,6 +5380,25 @@ var StudioUpdates = class {
     }
   }
   async packages() {
+    const studios = await this.studioPackages();
+    const library = await this.libraryPackage();
+    return library ? [library, ...studios] : studios;
+  }
+  /** 工作室库主插件自身：读取失败时不影响子工作室的检查。 */
+  async libraryPackage() {
+    const root = this.options.libraryRoot;
+    if (!root) return void 0;
+    try {
+      const pkg = object(JSON.parse(await readFile2(join(root, "package.json"), "utf8")));
+      if (pkg.name !== LIBRARY_PACKAGE || typeof pkg.version !== "string" || !import_semver.default.valid(pkg.version)) return void 0;
+      const repositoryUrl = typeof pkg.repository === "string" ? pkg.repository : object(pkg.repository).url;
+      const repository = this.options.repositories[LIBRARY_PACKAGE] ?? (typeof repositoryUrl === "string" ? /^(?:git\+)?https:\/\/github\.com\/([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)(?:\.git)?\/?$/.exec(repositoryUrl)?.[1] : void 0);
+      return { id: LIBRARY_ID, name: "\u5DE5\u4F5C\u5BA4\u5E93", packageName: LIBRARY_PACKAGE, version: pkg.version, ...repository ? { repository } : {} };
+    } catch {
+      return void 0;
+    }
+  }
+  async studioPackages() {
     return Promise.all(this.registry.entries().map(async (page) => {
       const base = dirname(resolve2(page.root));
       const pkg = object(JSON.parse(await readFile2(join(base, "package.json"), "utf8")));

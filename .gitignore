@@ -4,3 +4,5 @@ node_modules/
 *.log
 *.tgz
 artifacts/
+release/
+.claude-tmp/

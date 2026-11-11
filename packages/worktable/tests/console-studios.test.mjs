@@ -110,6 +110,21 @@ test('服务未连接时显示一键启动与单行启动，启动后显示已�
   assert.equal(dialog.querySelector('[data-start-all]'), null)
 })
 
+test('工作室库主插件显示版本与有更新，点击升级调用安装接口', async (t) => {
+  const calls = []
+  const report = { hostVersion: '0.2.2-rc.1', busy: false, studios: [
+    { id: 'library', name: '工作室库', version: '0.1.8', state: 'available', latest: '0.1.9' },
+    { id: 'film', name: '剧', version: '0.2.3', state: 'available', latest: '0.2.4' },
+  ] }
+  const { dom, dialog } = await render(t, [{ id: 'studio-film', studioId: 'film', name: '剧' }], report, { studios: [] }, calls)
+  const line = dialog.querySelector('[data-library]')
+  assert.match(line.textContent, /工作室库 v0\.1\.8/)
+  assert.match(line.textContent, /有更新 v0\.1\.9/)
+  assert.ok(dialog.querySelector('[data-console-studio="studio-film"] [data-upgrade="film"]'))
+  await act(async () => { line.querySelector('[data-upgrade="library"]').dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true })); await flush(); await flush() })
+  assert.ok(calls.some(([url, body]) => url === '/studio-projects/updates/install' && body === JSON.stringify({ id: 'library', version: '0.1.9' })))
+})
+
 test('没有子工作室时只显示空状态图，不显示说明文字', async (t) => {
   const { dialog } = await render(t, [], { hostVersion: '', busy: false, studios: [] })
   const image = dialog.querySelector('[data-console-empty] img')

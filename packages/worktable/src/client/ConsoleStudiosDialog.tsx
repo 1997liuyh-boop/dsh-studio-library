@@ -26,7 +26,14 @@ interface StudioInfo {
   source?: 'github' | 'local'
   address?: string
   hasUpdate?: boolean
+  /** 可升级到的版本 */
+  latest?: string
+  /** 最近一次升级的阶段（downloading / restart-required / failed …） */
+  phase?: string
 }
+
+/** 工作室库主插件在更新列表中的标识（与运行时一致）。 */
+const LIBRARY_ID = 'library'
 
 type InfoTable = Record<string, StudioInfo>
 
@@ -60,7 +67,8 @@ function readUpdates(report: any): { table: InfoTable; idle: string[] } {
   const idle: string[] = []
   for (const row of Array.isArray(report?.studios) ? report.studios : []) {
     if (typeof row?.id !== 'string') continue
-    table[row.id] = { hasUpdate: row.state === 'available', ...(typeof row.version === 'string' ? { version: row.version } : {}) }
+    table[row.id] = { hasUpdate: row.state === 'available', ...(typeof row.version === 'string' ? { version: row.version } : {}),
+      ...(typeof row.latest === 'string' ? { latest: row.latest } : {}), ...(typeof row.operation?.phase === 'string' ? { phase: row.operation.phase } : {}) }
     if (row.state === 'idle') idle.push(row.id)
   }
   return { table, idle }
@@ -175,6 +183,44 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
   }
   const offline = Object.values(services).filter(item => !item.ready && item.startable)
 
+  /** 正在升级的工作室标识 */
+  const [upgrading, setUpgrading] = useState<string | null>(null)
+  const [upgradeError, setUpgradeError] = useState('')
+  /** 升级到已检查出的版本：下载、校验后交给宿主安装；结果按阶段显示 */
+  const upgrade = async (id: string, version: string) => {
+    if (upgrading) return
+    setUpgrading(id)
+    setUpgradeError('')
+    try {
+      const response = await fetch('/studio-projects/updates/install', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id, version }) })
+      let data: any = null
+      try { data = await response.json() } catch {}
+      if (!response.ok) throw new Error(typeof data?.error === 'string' ? data.error : 'HTTP ' + response.status)
+      setInfo(current => merge(current, readUpdates(data).table))
+    } catch (error) {
+      setUpgradeError(t('consoleList.upgradeFail', { reason: error instanceof Error ? error.message : String(error) }))
+    } finally { setUpgrading(null) }
+  }
+  /** 升级阶段 → 提示文字；无升级记录返回空串 */
+  const phaseText = (phase?: string) => !phase ? ''
+    : phase === 'restart-required' ? t('consoleList.upgradeRestart')
+    : phase === 'complete' ? t('consoleList.upgradeDone')
+    : phase === 'failed' || phase === 'unknown' ? t('consoleList.upgradeFailed')
+    : t('consoleList.upgrading')
+  /** 「升级」按钮或升级进度 */
+  const upgradeControl = (id: string, entry?: StudioInfo) => {
+    if (upgrading === id) return <span data-upgrading className="studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)">{t('consoleList.upgrading')}</span>
+    const done = phaseText(entry?.phase)
+    if (entry?.hasUpdate && entry.latest) return (
+      <button type="button" data-upgrade={id} disabled={!!upgrading} onClick={() => void upgrade(id, entry.latest!)} title={t('consoleList.upgradeTo', { version: entry.latest })}
+        className="studio:shrink-0 studio:rounded-(--dsw-radius-sm) studio:border-0 studio:bg-blue-600 studio:px-2 studio:text-xs studio:leading-5 studio:text-white studio:cursor-pointer studio:hover:bg-blue-500 studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50">
+        {t('consoleList.upgrade')}
+      </button>
+    )
+    return done ? <span data-upgrade-phase={entry?.phase} className="studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)">{done}</span> : null
+  }
+  const library = info[LIBRARY_ID]
+
   const commit = (next: ConsoleStudioItem[]) => {
     const ids = next.map(item => item.id)
     if (ids.join('\n') !== studios.map(item => item.id).join('\n')) onReorder(ids)
@@ -255,6 +301,14 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
             className="studio:flex studio:h-8 studio:w-8 studio:shrink-0 studio:items-center studio:justify-center studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-transparent studio:text-(--dsw-alias-label-secondary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500">×</button>
         </div>
       </div>
+      {library?.version && (
+        <div data-library className="studio:-mt-2 studio:mb-4 studio:flex studio:items-center studio:gap-2 studio:text-xs studio:text-(--dsw-alias-label-secondary)">
+          <span>{t('consoleList.library')} v{library.version}</span>
+          {library.hasUpdate && library.latest && <span className="studio:rounded-full studio:bg-blue-600 studio:px-1.5 studio:py-px studio:text-[10px] studio:font-medium studio:leading-4 studio:text-white">{t('consoleList.hasUpdate')} v{library.latest}</span>}
+          {upgradeControl(LIBRARY_ID, library)}
+        </div>
+      )}
+      {upgradeError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{upgradeError}</p>}
       {startError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{startError}</p>}
       {loadError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:text-sm studio:text-red-500">{t('consoleList.versionFail')}</p>}
       {order.length === 0
@@ -299,6 +353,7 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
                   </span>
                 </span>
                 <span data-version className="studio:shrink-0 studio:text-xs studio:tabular-nums studio:text-(--dsw-alias-label-secondary)">{row?.version ? 'v' + row.version : '—'}</span>
+                {upgradeControl(item.studioId, row)}
                 <span data-grip role="button" tabIndex={0} aria-label={t('consoleList.drag', { name: item.name })} title={t('consoleList.dragHint')}
                   onPointerDown={event => onGripDown(event, item.id)} onPointerMove={onGripMove} onPointerUp={onGripUp} onPointerCancel={onGripUp}
                   onKeyDown={event => onGripKey(event, item.id)}

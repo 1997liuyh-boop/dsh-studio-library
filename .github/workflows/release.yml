@@ -1,0 +1,56 @@
+# 打 v* 标签后自动发布 GitHub Release，附带主插件安装包与 manifest.json；
+# 控制台的「有更新」与升级读取的就是这里的 Release。也可手动运行，为已有标签补发 Release。
+name: 发布 Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '要补发 Release 的已有标签，例如 v0.1.9'
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 运行测试
+        run: |
+          npm test
+          node --test packages/worktable/tests/*.test.mjs
+
+      - name: 生成 Release 资产
+        run: node scripts/release-assets.mjs
+
+      - name: 创建或更新 Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" release/* --clobber
+          else
+            gh release create "$RELEASE_TAG" release/* --verify-tag --title "$RELEASE_TAG" \
+              --notes "工作室库 $RELEASE_TAG。附带主插件安装包与 manifest.json，供控制台检查更新与一键升级。"
+          fi
