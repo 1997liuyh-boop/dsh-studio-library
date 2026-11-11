@@ -5309,6 +5309,13 @@ var UpdateFailure = class extends Error {
     this.code = code;
   }
 };
+function hostCompatible(host, dsh, dshVersions = []) {
+  if (dshVersions.includes(host)) return true;
+  const declared = dsh.trim();
+  if (!declared) return true;
+  if (import_semver.default.valid(declared)) return !!import_semver.default.valid(host) && import_semver.default.gte(host, declared);
+  return !!import_semver.default.validRange(declared) && import_semver.default.satisfies(host, declared, { includePrerelease: true });
+}
 var LIBRARY_ID = "library";
 var LIBRARY_PACKAGE = "dsh-studio-library";
 function findLibraryRoot(start) {
@@ -5516,7 +5523,7 @@ var StudioUpdates = class {
       }
       candidates.sort((a, b2) => import_semver.default.rcompare(a.version, b2.version));
       const newer = candidates.filter((candidate) => import_semver.default.gt(candidate.version, pkg.version));
-      const compatible = newer.find((candidate) => candidate.dshVersions.includes(this.hostVersion) || !!import_semver.default.validRange(candidate.dsh) && import_semver.default.satisfies(this.hostVersion, candidate.dsh, { includePrerelease: true }));
+      const compatible = newer.find((candidate) => hostCompatible(this.hostVersion, candidate.dsh, candidate.dshVersions));
       if (compatible) {
         this.candidates.set(id, compatible);
         this.checks.set(id, { state: "available", checkedAt, latest: compatible.version });

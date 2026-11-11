@@ -29,6 +29,21 @@ class UpdateFailure extends Error {
   constructor(readonly code: string) { super(code) }
 }
 
+/**
+ * 判断新版本是否适配当前 DSH。
+ * - 明确列出的 dshVersions 包含当前版本 → 适配；
+ * - dsh 为单个版本号（如 0.2.1-rc.2）→ 视为最低版本，当前版本不低于它即适配；
+ * - dsh 为范围（如 >=0.2.1-rc.2 <0.3）→ 按范围判断（含预发布版本）；
+ * - 未声明 → 不限制。
+ */
+export function hostCompatible(host: string, dsh: string, dshVersions: readonly string[] = []): boolean {
+  if (dshVersions.includes(host)) return true
+  const declared = dsh.trim()
+  if (!declared) return true
+  if (semver.valid(declared)) return !!semver.valid(host) && semver.gte(host, declared)
+  return !!semver.validRange(declared) && semver.satisfies(host, declared, { includePrerelease: true })
+}
+
 /** 工作室库主插件在更新列表中的标识。 */
 export const LIBRARY_ID = 'library'
 /** 工作室库主插件包名。 */
@@ -217,7 +232,7 @@ export class StudioUpdates {
       }
       candidates.sort((a, b) => semver.rcompare(a.version, b.version))
       const newer = candidates.filter(candidate => semver.gt(candidate.version, pkg.version))
-      const compatible = newer.find(candidate => candidate.dshVersions.includes(this.hostVersion) || !!semver.validRange(candidate.dsh) && semver.satisfies(this.hostVersion, candidate.dsh, { includePrerelease: true }))
+      const compatible = newer.find(candidate => hostCompatible(this.hostVersion, candidate.dsh, candidate.dshVersions))
       if (compatible) { this.candidates.set(id, compatible); this.checks.set(id, { state: 'available', checkedAt, latest: compatible.version }) }
       else this.checks.set(id, { state: !candidates.length ? 'unpublished' : newer.length ? 'incompatible' : 'latest', checkedAt, ...(newer[0] ? { latest: newer[0].version } : {}) })
     } catch (error) { this.checks.set(id, { state: 'failed', checkedAt, error: error instanceof UpdateFailure ? error.code : 'network' }) }

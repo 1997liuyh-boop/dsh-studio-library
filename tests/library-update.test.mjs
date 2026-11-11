@@ -89,3 +89,17 @@ test('主插件读取 GitHub Release 后显示有更新，并校验下载后交�
   assert.deepEqual(installs[0][1], { enabled: true })
   assert.equal((await service.list()).studios[0].operation.phase, 'restart-required')
 })
+
+test('兼容性：单个版本号视为最低版本，高于它的 DSH 都适配', async (t) => {
+  const { updates } = await load(t)
+  const { hostCompatible } = updates
+  assert.equal(hostCompatible('0.2.2-rc.1', '0.2.1-rc.2'), true)
+  assert.equal(hostCompatible('0.2.1-rc.2', '0.2.1-rc.2'), true)
+  assert.equal(hostCompatible('0.3.0', '0.2.1-rc.2'), true)
+  assert.equal(hostCompatible('0.2.0', '0.2.1-rc.2'), false)
+  assert.equal(hostCompatible('0.2.1-rc.1', '0.2.1-rc.2'), false)
+  assert.equal(hostCompatible('0.2.2-rc.1', '>=0.2.1-rc.2 <0.3.0'), true)
+  assert.equal(hostCompatible('0.3.0', '>=0.2.1-rc.2 <0.3.0'), false)
+  assert.equal(hostCompatible('0.2.0', '0.2.5', ['0.2.0']), true)
+  assert.equal(hostCompatible('0.2.2-rc.1', ''), true)
+})
