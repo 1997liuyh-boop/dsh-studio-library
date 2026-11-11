@@ -44,6 +44,18 @@ export function hostCompatible(host: string, dsh: string, dshVersions: readonly 
   return !!semver.validRange(declared) && semver.satisfies(host, declared, { includePrerelease: true })
 }
 
+/**
+ * 从宿主报告的待决定构建脚本中，挑出属于本包自己的 allowBuilds 键。
+ * 键为包名本身，或以「包名@」开头（版本、tarball、git 提交等形式）；其他依赖的脚本仍留给用户决定。
+ */
+export function ownBuildApprovals(pending: unknown, packageName: string): string[] {
+  if (!Array.isArray(pending)) return []
+  return [...new Set(pending.filter((key): key is string => typeof key === 'string' && (key === packageName || key.startsWith(packageName + '@'))))]
+}
+
+/** 宿主安装结果是否表示失败。 */
+const installFailed = (application: unknown) => application === 'failed' || application === 'cancelled' || application === 'overridden'
+
 /** 工作室库主插件在更新列表中的标识。 */
 export const LIBRARY_ID = 'library'
 /** 工作室库主插件包名。 */
@@ -307,8 +319,14 @@ export class StudioUpdates {
       this.lifetime.signal.throwIfAborted()
       await this.phase('installing')
       this.hostInstalling = true
-      const result = await this.manager.installBundle(file, { enabled: bundle.enabled })
-      if (result.application === 'failed' || result.application === 'cancelled' || result.application === 'overridden') {
+      let result = await this.manager.installBundle(file, { enabled: bundle.enabled })
+      // pnpm 拦下本包的构建脚本时，宿主会把待决定的键记入 allowBuilds：只批准本包自己的键并重试一次
+      const approvals = installFailed(result.application) ? ownBuildApprovals(result.pendingBuilds, pkg.packageName) : []
+      if (approvals.length) {
+        this.lifetime.signal.throwIfAborted()
+        result = await this.manager.installBundle(file, { enabled: bundle.enabled, approvedBuilds: approvals })
+      }
+      if (installFailed(result.application)) {
         await this.phase('failed', result.error?.code ?? result.packageResult?.kind ?? result.application)
       } else if (result.bundle !== pkg.packageName || result.version !== candidate.version) await this.phase('unknown', 'version-mismatch')
       else { this.candidates.delete(pkg.id); this.checks.delete(pkg.id); await this.phase(result.application === 'restart-required' ? 'restart-required' : 'complete') }

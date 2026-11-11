@@ -5316,6 +5316,11 @@ function hostCompatible(host, dsh, dshVersions = []) {
   if (import_semver.default.valid(declared)) return !!import_semver.default.valid(host) && import_semver.default.gte(host, declared);
   return !!import_semver.default.validRange(declared) && import_semver.default.satisfies(host, declared, { includePrerelease: true });
 }
+function ownBuildApprovals(pending, packageName) {
+  if (!Array.isArray(pending)) return [];
+  return [...new Set(pending.filter((key) => typeof key === "string" && (key === packageName || key.startsWith(packageName + "@"))))];
+}
+var installFailed = (application) => application === "failed" || application === "cancelled" || application === "overridden";
 var LIBRARY_ID = "library";
 var LIBRARY_PACKAGE = "dsh-studio-library";
 function findLibraryRoot(start) {
@@ -5603,8 +5608,13 @@ var StudioUpdates = class {
       this.lifetime.signal.throwIfAborted();
       await this.phase("installing");
       this.hostInstalling = true;
-      const result = await this.manager.installBundle(file, { enabled: bundle.enabled });
-      if (result.application === "failed" || result.application === "cancelled" || result.application === "overridden") {
+      let result = await this.manager.installBundle(file, { enabled: bundle.enabled });
+      const approvals = installFailed(result.application) ? ownBuildApprovals(result.pendingBuilds, pkg.packageName) : [];
+      if (approvals.length) {
+        this.lifetime.signal.throwIfAborted();
+        result = await this.manager.installBundle(file, { enabled: bundle.enabled, approvedBuilds: approvals });
+      }
+      if (installFailed(result.application)) {
         await this.phase("failed", result.error?.code ?? result.packageResult?.kind ?? result.application);
       } else if (result.bundle !== pkg.packageName || result.version !== candidate.version) await this.phase("unknown", "version-mismatch");
       else {

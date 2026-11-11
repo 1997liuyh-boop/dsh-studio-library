@@ -103,3 +103,47 @@ test('兼容性：单个版本号视为最低版本，高于它的 DSH 都适配
   assert.equal(hostCompatible('0.2.0', '0.2.5', ['0.2.0']), true)
   assert.equal(hostCompatible('0.2.2-rc.1', ''), true)
 })
+
+test('ownBuildApprovals 只挑出本包自己的 allowBuilds 键', async (t) => {
+  const { updates } = await load(t)
+  const pending = ['dsh-studio-library@file:C:/updates/a.tgz', 'dsh-studio-library', 'node-pty@1.3.0', 'dsh-studio-library-evil@1.0.0', 'dsh-studio-library']
+  assert.deepEqual(updates.ownBuildApprovals(pending, 'dsh-studio-library'), ['dsh-studio-library@file:C:/updates/a.tgz', 'dsh-studio-library'])
+  assert.deepEqual(updates.ownBuildApprovals(undefined, 'dsh-studio-library'), [])
+})
+
+test('构建脚本被拦时自动批准本包的键并重试，其他依赖不代为批准', async (t) => {
+  const { dir, updates, assets } = await load(t)
+  const libraryRoot = join(dir, 'library')
+  await mkdir(libraryRoot, { recursive: true })
+  await writeFile(join(libraryRoot, 'package.json'), JSON.stringify({ name: 'dsh-studio-library', version: '0.1.8', repository: { type: 'git', url: 'https://github.com/owner/dsh-studio-library.git' } }))
+  const bytes = await tarball(dir, { name: 'dsh-studio-library', version: '0.1.9' })
+  const manifest = assets.releaseManifest({ name: 'dsh-studio-library', version: '0.1.9', filename: 'dsh-studio-library-0.1.9.tgz' }, bytes)
+  const download = 'https://github.com/owner/dsh-studio-library/releases/download/v0.1.9/'
+  const request = async (url) => {
+    if (url.startsWith('https://api.github.com/repos/owner/dsh-studio-library/releases')) return new Response(JSON.stringify([{ draft: false, prerelease: false, assets: [
+      { name: 'manifest.json', browser_download_url: download + 'manifest.json' },
+      { name: 'dsh-studio-library-0.1.9.tgz', browser_download_url: download + 'dsh-studio-library-0.1.9.tgz' },
+    ] }]))
+    if (url === download + 'manifest.json') return new Response(JSON.stringify(manifest))
+    if (url === download + 'dsh-studio-library-0.1.9.tgz') return new Response(bytes)
+    return new Response('', { status: 404 })
+  }
+  const installs = []
+  const manager = {
+    listBundles: async () => [{ name: 'dsh-studio-library', version: '0.1.8', installed: true, enabled: true }],
+    installBundle: async (file, options) => {
+      installs.push([file, options])
+      if (!options.approvedBuilds) return { application: 'failed', error: { code: 'operation-error' }, pendingBuilds: ['dsh-studio-library@file:' + file, 'node-pty@1.3.0'] }
+      return { application: 'restart-required', bundle: 'dsh-studio-library', version: '0.1.9' }
+    },
+  }
+  const options = { ...updates.resolveUpdates({ directory: join(dir, 'updates') }), libraryRoot }
+  const service = new updates.StudioUpdates({ entries: () => [] }, manager, '0.2.2-rc.1', options, request)
+  t.after(() => service.dispose())
+  await service.initialize()
+  await service.check('library')
+  await service.install('library', '0.1.9')
+  assert.equal(installs.length, 2)
+  assert.deepEqual(installs[1][1], { enabled: true, approvedBuilds: ['dsh-studio-library@file:' + installs[0][0]] })
+  assert.equal((await service.list()).studios[0].operation.phase, 'restart-required')
+})
