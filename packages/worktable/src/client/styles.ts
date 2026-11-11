@@ -25,11 +25,28 @@ export const css = xtermCss + '\n' + [
   '.dsh-wt_iconBtn{display:flex;align-items:center;justify-content:center;width:24px;height:22px;padding:0;border:none;border-radius:5px;background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);font-size:12px;line-height:1;cursor:pointer}',
   '.dsh-wt_iconBtn:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.05))}',
   // 搜索行
-  '.dsh-wt_search{display:flex;align-items:center;gap:6px;padding:3px 6px 3px 8px;border:1px solid var(--dsw-alias-border-l1,#262b36);border-radius:6px;background:var(--dsw-alias-fill-l1,rgba(255,255,255,.03))}',
-  '.dsh-wt_search input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--dsw-alias-label-primary,#e6e8eb);font:inherit;font-size:12px;line-height:18px}',
-  '.dsh-wt_search input::placeholder{color:var(--dsw-alias-label-tertiary,#6e7683)}',
-  '.dsh-wt_searchClear{display:flex;align-items:center;justify-content:center;width:18px;height:18px;padding:0;border:none;border-radius:4px;background:transparent;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:11px;cursor:pointer}',
-  '.dsh-wt_searchClear:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-fill-l1,rgba(255,255,255,.06))}',
+  // 标题栏内联搜索：对齐宿主「工作区」搜索——放大镜原地展开 180ms，标题与右侧按钮同步收起让位
+  '[data-studio-header] [data-studio-toggle]{transition:flex-grow 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1))}',
+  '[data-studio-header] [data-studio-title]{max-width:100%;opacity:1;visibility:visible;transition:max-width 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1)),opacity 120ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1)),transform 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1)),visibility 0s linear}',
+  '[data-studio-header][data-searching=true] [data-studio-toggle]{flex-grow:0}',
+  '[data-studio-header][data-searching=true] [data-studio-title]{max-width:0;opacity:0;transform:translateX(-4px);visibility:hidden;transition-delay:0s,0s,0s,180ms}',
+  '[data-studio-header] [data-studio-toolbar]{max-width:120px;opacity:1;overflow:hidden;visibility:visible;transition:max-width 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1)),opacity 120ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1)),transform 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1)),visibility 0s linear}',
+  '[data-studio-header][data-searching=true] [data-studio-toolbar]{max-width:0;opacity:0;transform:translateX(4px);visibility:hidden;pointer-events:none;transition-delay:0s,0s,0s,180ms}',
+  '.dsh-wt_searchSlot{flex:1 1 auto;max-width:28px;min-width:0;display:flex;align-items:center;margin-left:auto;transition:max-width 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1))}',
+  '.dsh-wt_searchSlot[data-expanded=true]{max-width:100%}',
+  '.dsh-wt_searchPill{flex:none;display:flex;align-items:center;width:100%;height:28px;margin:0;padding:0;box-sizing:border-box;border:.5px solid transparent;border-radius:var(--dsw-radius-sm,6px);background:transparent;cursor:text;color:var(--dsw-alias-label-secondary,#9aa4b2);overflow:hidden;transition:height 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1)),padding 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1)),border-color 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1)),background-color 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1))}',
+  '.dsh-wt_searchPill[data-expanded=true]{height:32px;padding:0 4px 0 0;border-color:var(--dsw-alias-border-l4,#3a4150);border-radius:var(--dsw-radius-md,8px);color:var(--dsw-alias-label-caption,#9aa4b2)}',
+  '.dsh-wt_searchBtn{flex:none;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;border:none;border-radius:var(--dsw-radius-sm,6px);background:transparent;color:inherit;cursor:pointer}',
+  '.dsh-wt_searchPill[data-expanded=true] .dsh-wt_searchBtn{height:32px;cursor:text}',
+  '.dsh-wt_searchBtn svg{display:block;width:14px;height:14px;transition:width 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1)),height 180ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1))}',
+  '.dsh-wt_searchPill[data-expanded=true] .dsh-wt_searchBtn svg{width:11px;height:11px}',
+  '.dsh-wt_searchInput{flex:1;width:0;min-width:0;margin:0;padding:0;border:none;outline:none;background:transparent;opacity:0;pointer-events:none;font:inherit;font-size:13px;line-height:18px;color:var(--dsw-alias-label-primary,#e6e8eb);transition:opacity 120ms var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1))}',
+  '.dsh-wt_searchPill[data-expanded=true] .dsh-wt_searchInput{margin-left:-2px;opacity:1;pointer-events:auto}',
+  '.dsh-wt_searchInput::placeholder{color:var(--dsw-alias-label-tertiary,#6e7683)}',
+  '.dsh-wt_searchClearBtn{flex:none;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:none;border-radius:var(--dsw-radius-sm,6px);background:transparent;color:var(--dsw-alias-label-secondary,#9aa4b2);cursor:pointer}',
+  '@media (hover:hover){.dsh-wt_searchBtn:hover,.dsh-wt_searchClearBtn:hover{background:var(--dsw-alias-interactive-bg-hover,rgba(255,255,255,.06))}.dsh-wt_searchPill[data-expanded=true] .dsh-wt_searchBtn:hover{background:transparent}}',
+  '.dsh-wt_searchBtn:focus-visible,.dsh-wt_searchClearBtn:focus-visible{outline:var(--dsw-focus-ring-width,2px) solid var(--dsw-focus-ring-color,#4f8ef7);outline-offset:-2px}',
+  '@media (prefers-reduced-motion:reduce){[data-studio-header] *,.dsh-wt_searchSlot,.dsh-wt_searchPill,.dsh-wt_searchPill *{transition:none!important}}',
   // 菜单与提示
   '.dsh-wt_menu{position:relative;z-index:12;display:flex;flex-direction:column;gap:1px;padding:5px;border:1px solid var(--dsw-alias-border-l2,#3a4150);border-radius:8px;background:var(--dsw-alias-bg-base,#0b0e14);box-shadow:var(--dsw-shadow-lv2,0 8px 24px rgba(0,0,0,.4))}',
   '.dsh-wt_menuLabel{font-size:10px;letter-spacing:.05em;color:var(--dsw-alias-label-tertiary,#6e7683);padding:3px 7px 1px}',
@@ -211,6 +228,9 @@ export const css = xtermCss + '\n' + [
   '.dsh-wt_layoutName{font-size:12px;font-weight:400;line-height:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
   // 箭头与项目名同一行高 + 字面中心对齐；› 墨迹在字面框内偏下，整体上移 1px 使视觉居中
   '.dsh-wt_layoutArrow{flex:none;display:inline-flex;align-items:center;height:18px;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:14px;line-height:18px;transform:translateY(-1.5px)}',
+  '.dsh-wt_consoleArrow{justify-content:center;width:22px;height:22px;margin-right:-4px;border-radius:5px;cursor:pointer;transform:none}',
+  '.dsh-wt_consoleArrow:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-interactive-bg-hover,rgba(255,255,255,.08))}',
+  '.dsh-wt_consoleArrow:focus-visible{outline:2px solid var(--dsw-focus-ring-color,#4f8ef7);outline-offset:-2px}',
   // 入驻项目卡自带箭头（桥注入 .dsh-wt_resArrow）：与布局卡同款视觉居中
   'button[data-wt-id] > .dsh-wt_resArrow{display:inline-flex;align-items:center;height:18px;line-height:18px;transform:translateY(-1.5px)}',
   // 项目卡片统一：所有入驻项目卡片（data-wt-id 通用标记）与布局卡片同款常显框

@@ -1,6 +1,5 @@
 import { installSplitNavigation, openStudioSplit } from './splitNavigation'
 import { StudioSection, type StudioSectionProps } from './StudioSection'
-import { StudioUpdates } from './StudioUpdates'
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { css } from './styles'
 import studioCss from './studio.generated.css'
@@ -22,6 +21,7 @@ import { photoStore, kindOf } from './photoStore'
 import { DEFAULT_BG_SVG, b64ToBlob } from './defaultBg'
 import { WAVE_BG_B64 } from './waveBg'
 import { AddStudioDialog, type StudioImportOutcome } from './AddStudioDialog'
+import { ConsoleStudiosDialog } from './ConsoleStudiosDialog'
 import { buildStudioDraftPrompt, draftStamp, studioFeatureName, watchFirstUserMessage } from './studioDraft'
 
 /**
@@ -1160,6 +1160,8 @@ function WorktableSection(props: any) {
   const [metas, setMetas] = useState<Record<string, ProjectMeta>>({})
   const [registeredIds, setRegisteredIds] = useState<string[]>(() => [...registryStore.ids])
   const [addOpen, setAddOpen] = useState(false)
+  /** 控制室箭头打开的「控制台」子工作室列表弹窗 */
+  const [consoleListOpen, setConsoleListOpen] = useState(false)
   const [viewOptionsOpen, setViewOptionsOpen] = useState(false)
   // 更新检查：徽标 / 更新卡 / 版本行共用；节流一天一次，忽略按版本号存 localStorage
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null)
@@ -2038,12 +2040,8 @@ function WorktableSection(props: any) {
     setFloat(null); persistView({ dock: 'footer', floatTop: null })
   }
 
-  // Esc 关闭搜索
-  const onSearchKeyDown = (e: any) => {
-    if (e.key === 'Escape') {
-      persistView({ searchOpen: false, query: '' })
-    }
-  }
+  // 清空并收起标题栏内联搜索（Esc / 叉号 / 空词时点外部）
+  const closeSearch = () => persistView({ searchOpen: false, query: '' })
 
   // ── 编辑模式动作（排序只用左缘 ≡ 抓手拖拽，无 ↑↓ 按钮） ──
   const moveTo = (id: string, targetId: string) => {
@@ -2055,6 +2053,15 @@ function WorktableSection(props: any) {
     list.splice(from, 1)
     list.splice(to, 0, id)
     persistProjects({ order: list })
+  }
+
+  /** 控制台弹窗拖拽排序：新顺序依次填回工作室原先占用的位置，布局项不动；并切换为手动排序。 */
+  const reorderStudios = (ids: string[]) => {
+    const wanted = new Set(ids)
+    const queue = [...ids]
+    const list = effectiveOrder.map((id) => (wanted.has(id) ? queue.shift() ?? id : id))
+    persistProjects({ order: list })
+    if (view.orderBy !== 'manual') persistView({ orderBy: 'manual' })
   }
 
   const toggleHidden = (id: string) => {
@@ -2375,7 +2382,6 @@ function WorktableSection(props: any) {
   }
 
   const toolbar = <>
-        <StudioUpdates t={t} icon={ICON_SYNC} />
         {updateInfo && (
           <button
             type="button"
@@ -2386,13 +2392,6 @@ function WorktableSection(props: any) {
           >{ICON_SYNC}</button>
         )}
         <div className="dsh-wt_actions">
-          <button
-            type="button"
-            className="dsh-wt_iconBtn"
-            aria-label={t('menu.search')}
-            title={t('menu.search')}
-            onClick={() => persistView({ searchOpen: !view.searchOpen, query: view.searchOpen ? '' : view.query })}
-          >{ICON_SEARCH}</button>
           <button
             type="button"
             className="dsh-wt_iconBtn"
@@ -2415,22 +2414,29 @@ function WorktableSection(props: any) {
       }}
       onImport={importStudio}
     />
-    <StudioSection wide={wide} title={t('title')} expandSidebar={props.expandSidebar} toolbar={toolbar}>
+    <ConsoleStudiosDialog
+      open={consoleListOpen}
+      t={t}
+      studios={effectiveOrder.filter((id) => aliveRegisteredIds.includes(id)).map((id) => ({
+        id,
+        name: projects.nameOverrides[id] ?? metas[id]?.name ?? id,
+        icon: projects.iconOverrides[id] ?? metas[id]?.icon,
+      }))}
+      onClose={() => setConsoleListOpen(false)}
+      onReorder={reorderStudios}
+    />
+    <StudioSection wide={wide} title={t('title')} expandSidebar={props.expandSidebar} toolbar={toolbar} search={{
+      expanded: view.searchOpen,
+      query: view.query,
+      label: t('menu.search'),
+      placeholder: t('search.placeholder'),
+      clearLabel: t('search.close'),
+      icon: ICON_SEARCH,
+      onExpand: () => { persistView({ searchOpen: true }); setAddOpen(false) },
+      onQuery: (query) => persistView({ query }),
+      onClose: closeSearch,
+    }}>
     <div ref={rootRef} className={'dsh-wt_section' + (isFloat ? ' dsh-wt_float' : '')} style={{ marginBottom: 0 }}>
-      {view.searchOpen && (
-        <div className="dsh-wt_search">
-          <input
-            autoFocus
-            type="text"
-            placeholder={t('search.placeholder')}
-            value={view.query}
-            onChange={(e) => persistView({ query: e.target.value })}
-            onKeyDown={onSearchKeyDown}
-          />
-          <button type="button" className="dsh-wt_searchClear" aria-label={t('search.close')}
-            onClick={() => persistView({ searchOpen: false, query: '' })}>✕</button>
-        </div>
-      )}
 
       {iconPick && (
         <>
@@ -2676,7 +2682,19 @@ function WorktableSection(props: any) {
           <span className="dsh-wt_layoutText">
             <span className="dsh-wt_layoutName">{t('console.name')}</span>
           </span>
-          <span className="dsh-wt_layoutArrow" aria-hidden>›</span>
+          <span
+            className="dsh-wt_layoutArrow dsh-wt_consoleArrow"
+            role="button"
+            tabIndex={0}
+            aria-haspopup="dialog"
+            aria-label={t('consoleList.open')}
+            title={t('consoleList.open')}
+            onClick={(e) => { e.stopPropagation(); setConsoleListOpen(true) }}
+            onKeyDown={(e) => {
+              if (e.key !== 'Enter' && e.key !== ' ') return
+              e.preventDefault(); e.stopPropagation(); setConsoleListOpen(true)
+            }}
+          >›</span>
         </button>
         {renderProjectSlot
           ? renderProjectSlot('sidebar.worktable.project', ownerProps)
