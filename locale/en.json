@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Studio Library",
+    "title": "dsh-studio-library",
     "description": "Studio console and shared runtime bundle; business studios install on demand"
   }
 }
