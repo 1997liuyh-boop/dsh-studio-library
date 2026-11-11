@@ -612,6 +612,7 @@ export const css = xtermCss + '\n' + [
   '.dsh-wt_statusAi svg{width:14px;height:14px}',
   '.dsh-wt_statusReady{color:#42d392}',
   '.dsh-wt_statusOffline{color:#f3b562}',
+  '.dsh-wt_statusStart{padding:1px 8px;font-size:11px;line-height:18px}',
   '.dsh-wt_statusWorkspace{display:flex;flex-direction:column;gap:2px;overflow:hidden;font-size:10px;color:var(--dsw-alias-label-secondary,#9aa4b2)}',
   '.dsh-wt_statusWorkspace strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--wt-text)}',
   '.dsh-wt_statusWorkspace span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',

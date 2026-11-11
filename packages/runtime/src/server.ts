@@ -9,8 +9,9 @@ import { createIntegrations, type IntegrationConfig } from './integrations'
 import { createToonflowSessions } from './toonflowSessions'
 import { readFile } from 'node:fs/promises'
 import { installStudioControl, handleStudioImport } from './studioControl'
+import { studioCatalog } from './studioCatalog'
 import { installStudioTasks } from './studioTasks'
-import { resolveServiceStartup, startStudioServices } from './serviceStartup'
+import { resolveServiceStartup, ServiceNotConfigured, StudioServiceLauncher, type ServiceStartupFailure } from './serviceStartup'
 
 interface HostContext {
   provide(name: string, value: StudioProjects): void
@@ -31,11 +32,12 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
   ctx.effect(() => () => updates.dispose(), '工作室：版本检查与更新记录')
   const statuses = createIntegrations(config)
   const startupConfig = resolveServiceStartup(config.autoStartServices)
-  const startupAbort = new AbortController()
-  let startup = Promise.resolve<Awaited<ReturnType<typeof startStudioServices>>>([])
+  // 宿主启动时与「一键启动」共用同一启动器，同一启动组不会并行重复拉起
+  const launcher = new StudioServiceLauncher(startupConfig)
+  let startup = Promise.resolve<ServiceStartupFailure[]>([])
   ctx.effect(() => {
-    if (process.env.DSH_STUDIO_SKIP_APPS !== '1') startup = startStudioServices(startupConfig, startupAbort.signal)
-    return async () => { startupAbort.abort(); await startup }
+    if (process.env.DSH_STUDIO_SKIP_APPS !== '1') startup = launcher.start()
+    return async () => { await launcher.dispose(); await startup.catch(() => []) }
   }, '工作室：本机服务自动启动')
   const toonflow = await createToonflowSessions(ctx, config)
   const control = installStudioControl(ctx, registry, ctx.pluginManager)
@@ -48,8 +50,44 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
       if (req.method === 'GET' && url.pathname === '/studio-projects/control/catalog') {
         res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify(registry.list())); return
       }
+      // 依赖本机服务的工作室：连接状态、是否可一键启动、是否正在启动（不等待开机启动完成）
+      if (req.method === 'GET' && url.pathname === '/studio-projects/control/services') {
+        const failures = launcher.report()
+        const services = (await statuses()).map(status => ({ id: status.id, title: status.title, ready: status.ready,
+          startable: launcher.startable(status.id), starting: launcher.starting(status.id),
+          error: status.ready ? undefined : failures.find(failure => failure.studioIds.includes(status.id))?.message }))
+        res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify({ services })); return
+      }
+      // 一键启动：body { studio?: string }，不传则启动全部已配置的启动组
+      if (url.pathname === '/studio-projects/control/start') {
+        const send = (code: number, value: unknown) => { res.writeHead(code, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify(value)) }
+        if (req.method !== 'POST') { send(405, { error: '仅支持 POST' }); return }
+        if (req.headers['sec-fetch-site'] === 'cross-site' || req.headers['content-type']?.split(';')[0] !== 'application/json') { send(403, { error: '请求来源无效' }); return }
+        const chunks: Buffer[] = []; let size = 0
+        for await (const chunk of req) { size += chunk.length; if (size > 1024) { send(413, { error: '请求过大' }); return } chunks.push(chunk) }
+        let studio: string | undefined
+        try {
+          const input = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')
+          if (input?.studio !== undefined && (typeof input.studio !== 'string' || !/^[a-z][a-z0-9-]{0,63}$/.test(input.studio))) throw new SyntaxError('studio')
+          studio = input?.studio
+        } catch { send(400, { error: '参数无效' }); return }
+        try {
+          const failures = await launcher.start(studio)
+          const services = (await statuses()).map(status => ({ id: status.id, title: status.title, ready: status.ready, startable: launcher.startable(status.id), starting: launcher.starting(status.id),
+            error: status.ready ? undefined : failures.find(failure => failure.studioIds.includes(status.id))?.message }))
+          send(200, { failures, services })
+        } catch (error) {
+          if (error instanceof ServiceNotConfigured) { send(404, { error: error.message }); return }
+          throw error
+        }
+        return
+      }
+      if (req.method === 'GET' && url.pathname === '/studio-projects/control/studios') {
+        res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify({ studios: await studioCatalog(registry.entries()) })); return
+      }
       if (req.method === 'GET' && url.pathname === '/studio-projects/control/status') {
-        const failures = await startup
+        await startup
+        const failures = launcher.report()
         const integrations = await statuses()
         res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' })
         res.end(JSON.stringify({
@@ -80,7 +118,8 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
         res.end(req.method === 'HEAD' ? undefined : body);return
       }
       if (url.pathname === '/studio-projects/integrations' && req.method === 'GET') {
-        const failures = await startup
+        await startup
+        const failures = launcher.report()
         const report = (await statuses()).map(status => ({ ...status,
           startupError: status.ready ? undefined : failures.find(failure => failure.studioIds.includes(status.id))?.message }))
         res.writeHead(200,{'content-type':'application/json','cache-control':'no-store'}); res.end(JSON.stringify(report)); return

@@ -1,39 +1,72 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { createPortal } from 'react-dom'
 import type { WorktableKey } from './locales'
+import { fetchStudioServices, startStudioServices, type StudioServiceState } from './studioServices'
 
 type Translate = (key: WorktableKey, params?: Record<string, string>) => string
 
+/** 空状态插图（体积较大，按地址加载而不打包进插件）。 */
+export const CONSOLE_EMPTY_IMAGE = 'https://img.aigengtu.com/meme/2279.gif'
+
 /** 控制台列表中的一个子工作室。 */
 export interface ConsoleStudioItem {
-  /** 工作室项目标识 */
+  /** 侧栏项目标识（如 studio-film），用于排序回写 */
   id: string
+  /** 工作室标识（如 film），用于读取版本与地址 */
+  studioId: string
   /** 显示名称 */
   name: string
   /** 图标（emoji） */
   icon?: string
 }
 
-/** 单个工作室的版本信息（来自 /studio-projects/updates）。 */
-interface StudioVersion {
+/** 单个工作室的版本、地址与更新状态。 */
+interface StudioInfo {
   version?: string
-  hasUpdate: boolean
+  source?: 'github' | 'local'
+  address?: string
+  hasUpdate?: boolean
 }
 
-/** 读取全部工作室的本地版本与更新状态；失败返回空表，不阻断排序。 */
-async function loadVersions(signal: AbortSignal): Promise<Record<string, StudioVersion>> {
-  const response = await fetch('/studio-projects/updates', { cache: 'no-store', signal })
+type InfoTable = Record<string, StudioInfo>
+
+/** 合并一张信息表到现有表。 */
+function merge(base: InfoTable, patch: InfoTable): InfoTable {
+  const next: InfoTable = { ...base }
+  for (const [id, info] of Object.entries(patch)) next[id] = { ...next[id], ...info }
+  return next
+}
+
+/** 读取版本号与来源地址（逐个工作室容错）。 */
+async function loadCatalog(signal: AbortSignal): Promise<InfoTable> {
+  const response = await fetch('/studio-projects/control/studios', { cache: 'no-store', signal })
   if (!response.ok) throw new Error('HTTP ' + response.status)
-  const report = await response.json()
-  const table: Record<string, StudioVersion> = {}
-  for (const row of Array.isArray(report?.studios) ? report.studios : []) {
+  const data = await response.json()
+  const table: InfoTable = {}
+  for (const row of Array.isArray(data?.studios) ? data.studios : []) {
     if (typeof row?.id !== 'string') continue
-    table[row.id] = { version: typeof row.version === 'string' ? row.version : undefined, hasUpdate: row.state === 'available' }
+    table[row.id] = {
+      version: typeof row.version === 'string' ? row.version : undefined,
+      source: row.source === 'github' ? 'github' : 'local',
+      address: typeof row.address === 'string' ? row.address : undefined,
+    }
   }
   return table
 }
 
-/** 把 id 从 from 位置移到 to 位置，返回新数组。 */
+/** 更新报告 → 有更新标记表；同时返回尚未检查过的工作室。 */
+function readUpdates(report: any): { table: InfoTable; idle: string[] } {
+  const table: InfoTable = {}
+  const idle: string[] = []
+  for (const row of Array.isArray(report?.studios) ? report.studios : []) {
+    if (typeof row?.id !== 'string') continue
+    table[row.id] = { hasUpdate: row.state === 'available', ...(typeof row.version === 'string' ? { version: row.version } : {}) }
+    if (row.state === 'idle') idle.push(row.id)
+  }
+  return { table, idle }
+}
+
+/** 把 from 位置的元素移到 to 位置，返回新数组。 */
 export function moveItem<T>(list: readonly T[], from: number, to: number): T[] {
   const next = [...list]
   if (from < 0 || from >= next.length || to < 0 || to >= next.length || from === to) return next
@@ -51,8 +84,8 @@ const ICON_GRIP = (
   </svg>
 )
 
-/** 控制台弹窗：列出全部子工作室（名称 / 版本 / 有更新标记），按住右侧抓手拖拽排序。 */
-export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder }: {
+/** 控制台弹窗：列出全部子工作室（名称 / 地址 / 版本 / 有更新标记），按住右侧抓手拖拽排序。 */
+export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onEnterConsole }: {
   /** 是否显示弹窗 */
   open: boolean
   /** 文案翻译函数 */
@@ -61,21 +94,28 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder }: {
   studios: ConsoleStudioItem[]
   /** 关闭弹窗 */
   onClose: () => void
-  /** 拖拽结束后提交新顺序（工作室 id 列表） */
+  /** 拖拽结束后提交新顺序（侧栏项目 id 列表） */
   onReorder: (ids: string[]) => void
+  /** 进入控制室（弹窗关闭后执行）；不传则不显示入口 */
+  onEnterConsole?: () => void
 }) {
   const dialog = useRef<HTMLDialogElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
   const titleId = useId()
   const [order, setOrder] = useState<ConsoleStudioItem[]>(studios)
-  const [versions, setVersions] = useState<Record<string, StudioVersion>>({})
+  const [info, setInfo] = useState<InfoTable>({})
   const [loadError, setLoadError] = useState(false)
+  /** 依赖本机服务的工作室状态（按工作室标识） */
+  const [services, setServices] = useState<Record<string, StudioServiceState>>({})
+  /** 正在一键启动的目标：工作室标识，或 '*' 表示全部 */
+  const [startBusy, setStartBusy] = useState<string | null>(null)
+  const [startError, setStartError] = useState('')
   const [dragId, setDragId] = useState<string | null>(null)
   const dragging = useRef<{ id: string; pointerId: number } | null>(null)
   const orderRef = useRef(order)
   orderRef.current = order
 
-  // 打开时以外部顺序为准；拖拽过程中不被外部刷新打断
+  // 以外部顺序为准；拖拽过程中不被外部刷新打断
   useEffect(() => { if (!dragging.current) setOrder(studios) }, [studios])
 
   useEffect(() => {
@@ -85,13 +125,55 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder }: {
     if (!open && node.open) node.close()
   }, [open])
 
+  // 打开时读取版本与地址；随后读取更新状态，并逐个检查从未检查过的工作室
   useEffect(() => {
     if (!open) return
     const controller = new AbortController()
+    const { signal } = controller
     setLoadError(false)
-    loadVersions(controller.signal).then(setVersions).catch(() => { if (!controller.signal.aborted) setLoadError(true) })
+    loadCatalog(signal).then(table => setInfo(current => merge(current, table))).catch(() => { if (!signal.aborted) setLoadError(true) })
+    void (async () => {
+      try {
+        const response = await fetch('/studio-projects/updates', { cache: 'no-store', signal })
+        if (!response.ok) return
+        const first = readUpdates(await response.json())
+        setInfo(current => merge(current, first.table))
+        for (const id of first.idle) {
+          if (signal.aborted) return
+          const checked = await fetch('/studio-projects/updates/check', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id }), signal }).catch(() => null)
+          if (!checked?.ok) continue
+          const next = readUpdates(await checked.json())
+          setInfo(current => merge(current, next.table))
+        }
+      } catch { /* 更新检查失败不影响版本与排序 */ }
+    })()
     return () => controller.abort()
   }, [open])
+
+  const applyServices = (list: StudioServiceState[]) => setServices(Object.fromEntries(list.map(item => [item.id, item])))
+
+  // 打开时读取本机服务状态
+  useEffect(() => {
+    if (!open) return
+    const controller = new AbortController()
+    setStartError('')
+    fetchStudioServices(controller.signal).then(applyServices).catch(() => {})
+    return () => controller.abort()
+  }, [open])
+
+  /** 一键启动：studio 为空时启动全部；结束后刷新状态。 */
+  const startService = async (studio?: string) => {
+    if (startBusy) return
+    setStartBusy(studio ?? '*')
+    setStartError('')
+    try { applyServices(await startStudioServices(studio)) }
+    catch (error) { setStartError(t('consoleList.startFail', { reason: error instanceof Error ? error.message : String(error) })) }
+    finally {
+      setStartBusy(null)
+      fetchStudioServices().then(applyServices).catch(() => {})
+    }
+  }
+  const offline = Object.values(services).filter(item => !item.ready && item.startable)
 
   const commit = (next: ConsoleStudioItem[]) => {
     const ids = next.map(item => item.id)
@@ -154,31 +236,69 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder }: {
         if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) onClose()
       }}
       className="studio:box-border studio:m-auto studio:max-h-[calc(100dvh-2rem)] studio:w-[min(32rem,calc(100vw-2rem))] studio:max-w-none studio:overflow-y-auto studio:overscroll-contain studio:rounded-(--dsw-radius-lg) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-(--dsw-alias-bg-base) studio:p-5 studio:text-(--dsw-alias-label-primary) studio:shadow-xl studio:backdrop:bg-black/30">
-      <div className="studio:flex studio:items-center studio:justify-between studio:gap-3">
+      <div className="studio:mb-4 studio:flex studio:items-center studio:justify-between studio:gap-3">
         <h2 id={titleId} className="studio:m-0 studio:text-base studio:font-medium">{t('consoleList.title')}</h2>
-        <button type="button" aria-label={t('add.close')} title={t('add.close')} onClick={onClose}
-          className="studio:flex studio:h-8 studio:w-8 studio:shrink-0 studio:items-center studio:justify-center studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-transparent studio:text-(--dsw-alias-label-secondary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500">×</button>
+        <div className="studio:flex studio:items-center studio:gap-1">
+          {offline.length > 0 && (
+            <button type="button" data-start-all disabled={!!startBusy} aria-busy={startBusy === '*'} onClick={() => void startService()}
+              className="studio:flex studio:h-8 studio:items-center studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-blue-600 studio:px-3 studio:text-sm studio:font-medium studio:text-white studio:cursor-pointer studio:hover:bg-blue-500 studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50">
+              {startBusy === '*' ? t('consoleList.starting') : t('consoleList.startAll')}
+            </button>
+          )}
+          {onEnterConsole && (
+            <button type="button" onClick={() => { onClose(); onEnterConsole() }}
+              className="studio:flex studio:h-8 studio:items-center studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-transparent studio:px-3 studio:text-sm studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500">
+              {t('consoleList.enter')}
+            </button>
+          )}
+          <button type="button" aria-label={t('add.close')} title={t('add.close')} onClick={onClose}
+            className="studio:flex studio:h-8 studio:w-8 studio:shrink-0 studio:items-center studio:justify-center studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-transparent studio:text-(--dsw-alias-label-secondary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500">×</button>
+        </div>
       </div>
-      <p className="studio:mb-4 studio:mt-2 studio:text-sm studio:leading-6 studio:text-(--dsw-alias-label-secondary)">{t('consoleList.description')}</p>
+      {startError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{startError}</p>}
       {loadError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:text-sm studio:text-red-500">{t('consoleList.versionFail')}</p>}
       {order.length === 0
-        ? <p className="studio:m-0 studio:text-sm studio:text-(--dsw-alias-label-secondary)">{t('consoleList.empty')}</p>
+        ? <div data-console-empty className="studio:flex studio:justify-center studio:py-4">
+            <img src={CONSOLE_EMPTY_IMAGE} alt={t('consoleList.emptyAlt')} loading="lazy" className="studio:block studio:max-h-48 studio:max-w-full studio:rounded-(--dsw-radius-md)" />
+          </div>
         : <ul ref={listRef} aria-label={t('consoleList.title')} className="studio:m-0 studio:flex studio:list-none studio:flex-col studio:gap-3 studio:p-0 studio:pt-1">
           {order.map(item => {
-            const info = versions[item.id]
+            const row = info[item.studioId]
+            const service = services[item.studioId]
+            const serviceStarting = !!service && (service.starting || startBusy === item.studioId || (startBusy === '*' && !service.ready && service.startable))
             const active = dragId === item.id
             return (
               <li key={item.id} data-console-studio={item.id}
                 className={'studio:group studio:relative studio:flex studio:items-center studio:gap-3 studio:rounded-(--dsw-radius-md) studio:border studio:bg-(--dsw-alias-fill-l1) studio:px-3 studio:py-2.5 studio:transition-colors studio:duration-150 studio:hover:bg-(--dsw-alias-interactive-bg-hover) '
                   + (active ? 'studio:border-blue-500 studio:shadow-lg' : 'studio:border-(--dsw-alias-border-l1)')}>
-                {info?.hasUpdate && (
-                  <span className="studio:absolute studio:-top-2 studio:right-3 studio:rounded-full studio:bg-blue-600 studio:px-1.5 studio:py-px studio:text-[10px] studio:font-medium studio:leading-4 studio:text-white">{t('consoleList.hasUpdate')}</span>
+                {row?.hasUpdate && (
+                  <span data-update-tag className="studio:absolute studio:-top-2 studio:right-3 studio:rounded-full studio:bg-blue-600 studio:px-1.5 studio:py-px studio:text-[10px] studio:font-medium studio:leading-4 studio:text-white">{t('consoleList.hasUpdate')}</span>
                 )}
-                <span className="studio:flex studio:min-w-0 studio:flex-1 studio:items-center studio:gap-2 studio:text-sm">
-                  {item.icon && <span aria-hidden="true" className="studio:shrink-0">{item.icon}</span>}
-                  <span className="studio:truncate">{item.name}</span>
+                <span className="studio:flex studio:min-w-0 studio:flex-1 studio:items-center studio:gap-2">
+                  {item.icon && <span aria-hidden="true" className="studio:shrink-0 studio:text-base">{item.icon}</span>}
+                  <span className="studio:flex studio:min-w-0 studio:flex-col">
+                    <span className="studio:truncate studio:text-sm">{item.name}</span>
+                    {row?.address && (row.source === 'github'
+                      ? <a data-address href={row.address} target="_blank" rel="noreferrer noopener" title={row.address}
+                          className="studio:truncate studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-tertiary) studio:no-underline studio:hover:underline">{row.address.replace(/^https:\/\//, '')}</a>
+                      : <span data-address title={row.address} className="studio:truncate studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-tertiary)">{row.address}</span>)}
+                    {service && (
+                      <span data-service={service.ready ? 'ready' : serviceStarting ? 'starting' : 'offline'} title={service.error}
+                        className="studio:flex studio:items-center studio:gap-1.5 studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-secondary)">
+                        <span aria-hidden="true" className={'studio:h-1.5 studio:w-1.5 studio:shrink-0 studio:rounded-full ' + (service.ready ? 'studio:bg-green-500' : serviceStarting ? 'studio:bg-amber-400' : 'studio:bg-red-500')} />
+                        {service.ready ? t('consoleList.serviceReady') : serviceStarting ? t('consoleList.starting') : t('consoleList.serviceOffline')}
+                        {!service.ready && !serviceStarting && service.startable && (
+                          <button type="button" data-start={item.studioId} disabled={!!startBusy} onClick={() => void startService(item.studioId)}
+                            className="studio:ml-1 studio:rounded-(--dsw-radius-sm) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-transparent studio:px-1.5 studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50">
+                            {t('consoleList.start')}
+                          </button>
+                        )}
+                        {!service.ready && !service.startable && <span>{t('consoleList.notConfigured')}</span>}
+                      </span>
+                    )}
+                  </span>
                 </span>
-                <span className="studio:shrink-0 studio:text-xs studio:tabular-nums studio:text-(--dsw-alias-label-secondary)">{info?.version ? 'v' + info.version : '—'}</span>
+                <span data-version className="studio:shrink-0 studio:text-xs studio:tabular-nums studio:text-(--dsw-alias-label-secondary)">{row?.version ? 'v' + row.version : '—'}</span>
                 <span data-grip role="button" tabIndex={0} aria-label={t('consoleList.drag', { name: item.name })} title={t('consoleList.dragHint')}
                   onPointerDown={event => onGripDown(event, item.id)} onPointerMove={onGripMove} onPointerUp={onGripUp} onPointerCancel={onGripUp}
                   onKeyDown={event => onGripKey(event, item.id)}

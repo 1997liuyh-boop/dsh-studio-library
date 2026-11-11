@@ -5791,7 +5791,7 @@ async function createToonflowSessions(ctx, config) {
 }
 
 // packages/runtime/src/server.ts
-import { readFile as readFile5 } from "node:fs/promises";
+import { readFile as readFile6 } from "node:fs/promises";
 
 // packages/runtime/src/studioControl.ts
 import { randomUUID as randomUUID3 } from "node:crypto";
@@ -5808,7 +5808,7 @@ var StudioControl = class {
     if (this.closed) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u63A7\u5236\u5DF2\u505C\u7528"));
     if (!command.studio || !this.registry.has(command.studio)) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u672A\u5B89\u88C5\u6216\u5DF2\u505C\u7528\uFF0C\u8BF7\u5148\u8C03\u7528 list"));
     if (this.pending.size >= 16) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u7E41\u5FD9\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5"));
-    return new Promise((resolve4, reject) => {
+    return new Promise((resolve5, reject) => {
       const id = randomUUID3();
       const abort = () => finish(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u5DF2\u53D6\u6D88\uFF1B\u5DF2\u89E6\u53D1\u7684\u9875\u9762\u64CD\u4F5C\u65E0\u6CD5\u64A4\u9500"));
       const timer = setTimeout(() => finish(new Error("\u5DE5\u4F5C\u5BA4\u54CD\u5E94\u8D85\u65F6\uFF0C\u8BF7\u786E\u8BA4\u4E3B\u7A97\u53E3\u5DF2\u6253\u5F00\uFF1B\u8BF7\u8BFB\u53D6\u9875\u9762\u786E\u8BA4\u64CD\u4F5C\u7ED3\u679C\uFF0C\u4E0D\u8981\u91CD\u590D\u63D0\u4EA4")), this.timeout);
@@ -5816,7 +5816,7 @@ var StudioControl = class {
         if (!this.pending.delete(id)) return;
         clearTimeout(timer);
         signal.removeEventListener("abort", abort);
-        error ? reject(error) : resolve4(result);
+        error ? reject(error) : resolve5(result);
       };
       this.pending.set(id, { command, expiresAt: Date.now() + this.timeout, finish });
       signal.addEventListener("abort", abort, { once: true });
@@ -5968,6 +5968,38 @@ function installStudioControl(ctx, registry, pluginManager) {
   return control;
 }
 
+// packages/runtime/src/studioCatalog.ts
+import { readFile as readFile5, realpath as realpath2 } from "node:fs/promises";
+import { dirname as dirname2, join as join3, resolve as resolve4, sep as sep2 } from "node:path";
+function githubUrlOf(repository) {
+  const raw = typeof repository === "string" ? repository : repository && typeof repository === "object" && typeof repository.url === "string" ? repository.url : "";
+  const match = /^(?:git\+)?(?:https:\/\/|git:\/\/|ssh:\/\/git@)?github\.com[/:]([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)(?:\.git)?\/?$/.exec(raw) ?? /^github:([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)(?:#.*)?$/.exec(raw);
+  return match ? "https://github.com/" + match[1] : void 0;
+}
+async function catalogRow(page) {
+  const base = dirname2(resolve4(page.root));
+  let version;
+  let github;
+  try {
+    const raw = await readFile5(join3(base, "package.json"), "utf8");
+    const pkg = JSON.parse(raw.charCodeAt(0) === 65279 ? raw.slice(1) : raw);
+    if (typeof pkg?.version === "string") version = pkg.version;
+    github = githubUrlOf(pkg?.repository);
+  } catch {
+  }
+  const real = await realpath2(base).catch(() => base);
+  const linked = !real.split(sep2).includes("node_modules");
+  return {
+    id: page.id,
+    name: page.name ?? page.id,
+    ...version ? { version } : {},
+    ...github && !linked ? { source: "github", address: github } : { source: "local", address: real }
+  };
+}
+function studioCatalog(pages) {
+  return Promise.all(pages.map(catalogRow));
+}
+
 // packages/runtime/src/studioTasks.ts
 var mentionPattern = /^\s*@(工作室[:：])?(\S+)\s+([\s\S]*)$/;
 var labelBoundary = /^(?:$|[\s:：,，;；。])/;
@@ -6018,7 +6050,7 @@ function installStudioTasks(ctx, registry) {
 // packages/runtime/src/serviceStartup.ts
 import { spawn } from "node:child_process";
 import { mkdir as mkdir3, open } from "node:fs/promises";
-import { dirname as dirname2, isAbsolute as isAbsolute2 } from "node:path";
+import { dirname as dirname3, isAbsolute as isAbsolute2 } from "node:path";
 function strings(value) {
   return Array.isArray(value) && value.every((item) => typeof item === "string");
 }
@@ -6048,7 +6080,7 @@ async function startService(config, signal) {
   });
   if (signal.aborted) return failure("cancelled", "\u81EA\u52A8\u542F\u52A8\u5DF2\u53D6\u6D88\uFF0C\u90E8\u5206\u670D\u52A1\u53EF\u80FD\u5DF2\u8FD0\u884C");
   try {
-    await mkdir3(dirname2(config.logFile), { recursive: true });
+    await mkdir3(dirname3(config.logFile), { recursive: true });
     const log = await open(config.logFile, "a", 384);
     try {
       if (signal.aborted) return failure("cancelled", "\u81EA\u52A8\u542F\u52A8\u5DF2\u53D6\u6D88\uFF0C\u90E8\u5206\u670D\u52A1\u53EF\u80FD\u5DF2\u8FD0\u884C");
@@ -6095,6 +6127,62 @@ async function startStudioServices(configs, signal) {
   const outcomes = await Promise.all(configs.map((config) => startService(config, signal)));
   return outcomes.filter((outcome) => outcome !== void 0);
 }
+var ServiceNotConfigured = class extends Error {
+  constructor(studioId) {
+    super("\u5DE5\u4F5C\u5BA4 " + studioId + " \u672A\u914D\u7F6E\u542F\u52A8\u811A\u672C\uFF0C\u8BF7\u5728 dsh-studio-projects \u63D2\u4EF6\u914D\u7F6E\u4E2D\u586B\u5199 autoStartServices");
+  }
+};
+var StudioServiceLauncher = class {
+  /**
+   * @param configs - 已校验的启动组。
+   * @param run - 实际执行启动组的函数，测试时可替换。
+   */
+  constructor(configs, run = startStudioServices) {
+    this.configs = configs;
+    this.run = run;
+  }
+  abort = new AbortController();
+  running = /* @__PURE__ */ new Map();
+  failures = [];
+  /** 该工作室是否配置了启动脚本。 */
+  startable(studioId) {
+    return this.configs.some((config) => config.studioIds.includes(studioId));
+  }
+  /** 该工作室的启动组是否正在运行。 */
+  starting(studioId) {
+    return this.configs.some((config) => config.studioIds.includes(studioId) && this.running.has(config.label));
+  }
+  /** 最近一次启动失败记录。 */
+  report() {
+    return [...this.failures];
+  }
+  /**
+   * 启动指定工作室所在的启动组；不传则启动全部。
+   * @param studioId - 工作室标识。
+   * @returns 本次涉及启动组的失败记录。
+   */
+  async start(studioId) {
+    const groups = this.configs.filter((config) => !studioId || config.studioIds.includes(studioId));
+    if (studioId && !groups.length) throw new ServiceNotConfigured(studioId);
+    const results = await Promise.all(groups.map((config) => {
+      let task = this.running.get(config.label);
+      if (!task) {
+        task = this.run([config], this.abort.signal).finally(() => this.running.delete(config.label));
+        this.running.set(config.label, task);
+      }
+      return task;
+    }));
+    const touched = new Set(groups.flatMap((config) => config.studioIds));
+    const latest = results.flat();
+    this.failures = [...this.failures.filter((failure) => !failure.studioIds.some((id) => touched.has(id))), ...latest];
+    return latest;
+  }
+  /** 停用插件时取消协调脚本（不主动停止已运行的服务），并等待收尾。 */
+  async dispose() {
+    this.abort.abort();
+    await Promise.allSettled(this.running.values());
+  }
+};
 
 // packages/runtime/src/server.ts
 var name = "dsh-studio-projects";
@@ -6108,13 +6196,13 @@ async function apply(ctx, config = {}) {
   ctx.effect(() => () => updates.dispose(), "\u5DE5\u4F5C\u5BA4\uFF1A\u7248\u672C\u68C0\u67E5\u4E0E\u66F4\u65B0\u8BB0\u5F55");
   const statuses = createIntegrations(config);
   const startupConfig = resolveServiceStartup(config.autoStartServices);
-  const startupAbort = new AbortController();
+  const launcher = new StudioServiceLauncher(startupConfig);
   let startup = Promise.resolve([]);
   ctx.effect(() => {
-    if (process.env.DSH_STUDIO_SKIP_APPS !== "1") startup = startStudioServices(startupConfig, startupAbort.signal);
+    if (process.env.DSH_STUDIO_SKIP_APPS !== "1") startup = launcher.start();
     return async () => {
-      startupAbort.abort();
-      await startup;
+      await launcher.dispose();
+      await startup.catch(() => []);
     };
   }, "\u5DE5\u4F5C\u5BA4\uFF1A\u672C\u673A\u670D\u52A1\u81EA\u52A8\u542F\u52A8");
   const toonflow = await createToonflowSessions(ctx, config);
@@ -6134,8 +6222,80 @@ async function apply(ctx, config = {}) {
         res.end(JSON.stringify(registry.list()));
         return;
       }
+      if (req.method === "GET" && url.pathname === "/studio-projects/control/services") {
+        const failures = launcher.report();
+        const services = (await statuses()).map((status) => ({
+          id: status.id,
+          title: status.title,
+          ready: status.ready,
+          startable: launcher.startable(status.id),
+          starting: launcher.starting(status.id),
+          error: status.ready ? void 0 : failures.find((failure) => failure.studioIds.includes(status.id))?.message
+        }));
+        res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" });
+        res.end(JSON.stringify({ services }));
+        return;
+      }
+      if (url.pathname === "/studio-projects/control/start") {
+        const send = (code, value) => {
+          res.writeHead(code, { "content-type": "application/json", "cache-control": "no-store" });
+          res.end(JSON.stringify(value));
+        };
+        if (req.method !== "POST") {
+          send(405, { error: "\u4EC5\u652F\u6301 POST" });
+          return;
+        }
+        if (req.headers["sec-fetch-site"] === "cross-site" || req.headers["content-type"]?.split(";")[0] !== "application/json") {
+          send(403, { error: "\u8BF7\u6C42\u6765\u6E90\u65E0\u6548" });
+          return;
+        }
+        const chunks = [];
+        let size = 0;
+        for await (const chunk of req) {
+          size += chunk.length;
+          if (size > 1024) {
+            send(413, { error: "\u8BF7\u6C42\u8FC7\u5927" });
+            return;
+          }
+          chunks.push(chunk);
+        }
+        let studio;
+        try {
+          const input = JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
+          if (input?.studio !== void 0 && (typeof input.studio !== "string" || !/^[a-z][a-z0-9-]{0,63}$/.test(input.studio))) throw new SyntaxError("studio");
+          studio = input?.studio;
+        } catch {
+          send(400, { error: "\u53C2\u6570\u65E0\u6548" });
+          return;
+        }
+        try {
+          const failures = await launcher.start(studio);
+          const services = (await statuses()).map((status) => ({
+            id: status.id,
+            title: status.title,
+            ready: status.ready,
+            startable: launcher.startable(status.id),
+            starting: launcher.starting(status.id),
+            error: status.ready ? void 0 : failures.find((failure) => failure.studioIds.includes(status.id))?.message
+          }));
+          send(200, { failures, services });
+        } catch (error) {
+          if (error instanceof ServiceNotConfigured) {
+            send(404, { error: error.message });
+            return;
+          }
+          throw error;
+        }
+        return;
+      }
+      if (req.method === "GET" && url.pathname === "/studio-projects/control/studios") {
+        res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" });
+        res.end(JSON.stringify({ studios: await studioCatalog(registry.entries()) }));
+        return;
+      }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/status") {
-        const failures = await startup;
+        await startup;
+        const failures = launcher.report();
         const integrations = await statuses();
         res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" });
         res.end(JSON.stringify({
@@ -6151,7 +6311,7 @@ async function apply(ctx, config = {}) {
       }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/bridge.js") {
         res.writeHead(200, { "content-type": "text/javascript; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
-        res.end(await readFile5(new URL("../static/controlBridge.js", import.meta.url)));
+        res.end(await readFile6(new URL("../static/controlBridge.js", import.meta.url)));
         return;
       }
       if (await handleUpdates(req, res, url.pathname)) return;
@@ -6170,13 +6330,14 @@ async function apply(ctx, config = {}) {
           return;
         }
         const file = legacyAsset ?? "index.html";
-        const body = await readFile5(new URL("../static/legacy/" + file, import.meta.url));
+        const body = await readFile6(new URL("../static/legacy/" + file, import.meta.url));
         res.writeHead(200, { "content-type": file.endsWith(".js") ? "text/javascript; charset=utf-8" : file.endsWith(".css") ? "text/css; charset=utf-8" : "text/html; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
         res.end(req.method === "HEAD" ? void 0 : body);
         return;
       }
       if (url.pathname === "/studio-projects/integrations" && req.method === "GET") {
-        const failures = await startup;
+        await startup;
+        const failures = launcher.report();
         const report = (await statuses()).map((status) => ({
           ...status,
           startupError: status.ready ? void 0 : failures.find((failure) => failure.studioIds.includes(status.id))?.message

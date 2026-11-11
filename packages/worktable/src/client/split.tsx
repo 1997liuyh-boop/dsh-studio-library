@@ -5,6 +5,7 @@ import { createChatVisibility } from './chatVisibility'
 import { hostWebSocketUrl, worktableUpgrade } from './hostTransport'
 import { CHANGELOG_V030 } from './changelog'
 import { zh, type WorktableKey } from './locales'
+import { startStudioServices } from './studioServices'
 import { LOCAL_VERSION, checkUpdate, getAutoCheck, readCache, setAutoCheck as storeAutoCheck, setSkipVersion, type UpdateInfo, type UpdateStatus } from './updateCheck'
 import { Terminal } from 'xterm'
 
@@ -1843,6 +1844,20 @@ function ConsolePane() {
       setStudioStatusLoading(false)
     }
   }
+  /** 一键启动本机服务：结束后刷新状态，失败原因显示在状态弹窗中 */
+  const [startingService, setStartingService] = useState<string | null>(null)
+  const startService = async (studioId: string) => {
+    if (startingService) return
+    setStartingService(studioId)
+    setStudioStatusError('')
+    try { await startStudioServices(studioId) }
+    catch (error) { setStudioStatusError(error instanceof Error ? error.message : T('console.statusFail')) }
+    finally { setStartingService(null); void refreshStudioStatus() }
+  }
+  /** 未连接服务的「启动」按钮；正在启动时显示进度文字 */
+  const startButton = (studioId: string) => startingService === studioId
+    ? <span className="dsh-wt_statusMeta">{T('consoleList.starting')}</span>
+    : <button type="button" className="dsh-wt_updateBtn dsh-wt_statusStart" disabled={!!startingService} onClick={() => void startService(studioId)}>{T('consoleList.start')}</button>
   /** 状态弹窗使用设置弹窗相同的视口定位，避免被控制室内容窗或滚动容器遮挡。 */
   const toggleStudioStatus = () => {
     const next = !statusOpen
@@ -2224,6 +2239,7 @@ function ConsolePane() {
                   <div className="dsh-wt_statusStudioMain">
                     <span>{studio.icon ?? '◫'} {studio.name ?? studio.title ?? studio.id}</span>
                     <span className={ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'} title={integration?.startupError ?? studio.startupError}>{ready ? T('console.statusReady') : T('console.statusOffline')}</span>
+                    {!ready && integration && startButton(studio.id)}
                     <span className={update?.state === 'available' ? 'dsh-wt_statusUpdate' : 'dsh-wt_statusMeta'}>{updateText}</span>
                   </div>
                   {studio.source === 'local' && studio.localPath && <button type="button" className="dsh-wt_statusAi" title={T('console.editStudio')} aria-label={T('console.editStudio')} onClick={() => {
@@ -2237,6 +2253,7 @@ function ConsolePane() {
               <div className="dsh-wt_statusItem" key={integration.id}>
                 <span>{integration.title ?? integration.name ?? integration.id}</span>
                 <span className={integration.ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'} title={integration.startupError}>{integration.ready ? T('console.statusReady') : T('console.statusOffline')}</span>
+                {!integration.ready && startButton(integration.id)}
               </div>
             ))}
             {studioStatus?.serviceFailures.map((failure, index) => <div className="dsh-wt_consoleErr" key={index}>{failure.message}</div>)}

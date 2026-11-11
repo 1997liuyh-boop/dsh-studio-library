@@ -1162,6 +1162,8 @@ function WorktableSection(props: any) {
   const [addOpen, setAddOpen] = useState(false)
   /** 控制室箭头打开的「控制台」子工作室列表弹窗 */
   const [consoleListOpen, setConsoleListOpen] = useState(false)
+  /** 控制室侧栏条目：「进入控制室」时作为绑定弹窗的定位锚点 */
+  const consoleEntryRef = useRef<HTMLButtonElement | null>(null)
   const [viewOptionsOpen, setViewOptionsOpen] = useState(false)
   // 更新检查：徽标 / 更新卡 / 版本行共用；节流一天一次，忽略按版本号存 localStorage
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null)
@@ -2421,9 +2423,11 @@ function WorktableSection(props: any) {
         id,
         name: projects.nameOverrides[id] ?? metas[id]?.name ?? id,
         icon: projects.iconOverrides[id] ?? metas[id]?.icon,
+        studioId: id.startsWith('studio-') ? id.slice('studio-'.length) : id,
       }))}
       onClose={() => setConsoleListOpen(false)}
       onReorder={reorderStudios}
+      onEnterConsole={() => { if (consoleEntryRef.current) clickConsoleCard(consoleEntryRef.current) }}
     />
     <StudioSection wide={wide} title={t('title')} expandSidebar={props.expandSidebar} toolbar={toolbar} search={{
       expanded: view.searchOpen,
@@ -2675,8 +2679,10 @@ function WorktableSection(props: any) {
           className="dsh-wt_layout dsh-wt_consoleEntry"
           data-on={activeSplitId === CONSOLE_ID ? 'true' : 'false'}
           style={{ order: 0, position: 'relative' }}
+          ref={consoleEntryRef}
           title={t('console.name')}
-          onClick={(e) => clickConsoleCard(e.currentTarget as HTMLElement)}
+          aria-haspopup="dialog"
+          onClick={() => setConsoleListOpen(true)}
         >
           <span className="dsh-wt_layoutIcon">{CONSOLE_ICON}</span>
           <span className="dsh-wt_layoutText">

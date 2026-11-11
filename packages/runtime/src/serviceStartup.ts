@@ -98,3 +98,68 @@ export async function startStudioServices(configs: readonly ServiceStartupConfig
   const outcomes = await Promise.all(configs.map(config => startService(config, signal)))
   return outcomes.filter((outcome): outcome is ServiceStartupFailure => outcome !== undefined)
 }
+
+/** 未配置启动脚本的工作室请求一键启动时抛出。 */
+export class ServiceNotConfigured extends Error {
+  constructor(studioId: string) { super('工作室 ' + studioId + ' 未配置启动脚本，请在 dsh-studio-projects 插件配置中填写 autoStartServices') }
+}
+
+/**
+ * 工作室服务启动器：宿主启动时与「一键启动」共用；同一启动组运行中不会重复拉起。
+ * 失败记录按启动组覆盖，便于界面展示最近一次结果。
+ */
+export class StudioServiceLauncher {
+  private readonly abort = new AbortController()
+  private readonly running = new Map<string, Promise<ServiceStartupFailure[]>>()
+  private failures: ServiceStartupFailure[] = []
+
+  /**
+   * @param configs - 已校验的启动组。
+   * @param run - 实际执行启动组的函数，测试时可替换。
+   */
+  constructor(private readonly configs: readonly ServiceStartupConfig[],
+    private readonly run: (configs: readonly ServiceStartupConfig[], signal: AbortSignal) => Promise<ServiceStartupFailure[]> = startStudioServices) {}
+
+  /** 该工作室是否配置了启动脚本。 */
+  startable(studioId: string): boolean {
+    return this.configs.some(config => config.studioIds.includes(studioId))
+  }
+
+  /** 该工作室的启动组是否正在运行。 */
+  starting(studioId: string): boolean {
+    return this.configs.some(config => config.studioIds.includes(studioId) && this.running.has(config.label))
+  }
+
+  /** 最近一次启动失败记录。 */
+  report(): ServiceStartupFailure[] {
+    return [...this.failures]
+  }
+
+  /**
+   * 启动指定工作室所在的启动组；不传则启动全部。
+   * @param studioId - 工作室标识。
+   * @returns 本次涉及启动组的失败记录。
+   */
+  async start(studioId?: string): Promise<ServiceStartupFailure[]> {
+    const groups = this.configs.filter(config => !studioId || config.studioIds.includes(studioId))
+    if (studioId && !groups.length) throw new ServiceNotConfigured(studioId)
+    const results = await Promise.all(groups.map(config => {
+      let task = this.running.get(config.label)
+      if (!task) {
+        task = this.run([config], this.abort.signal).finally(() => this.running.delete(config.label))
+        this.running.set(config.label, task)
+      }
+      return task
+    }))
+    const touched = new Set(groups.flatMap(config => config.studioIds))
+    const latest = results.flat()
+    this.failures = [...this.failures.filter(failure => !failure.studioIds.some(id => touched.has(id))), ...latest]
+    return latest
+  }
+
+  /** 停用插件时取消协调脚本（不主动停止已运行的服务），并等待收尾。 */
+  async dispose(): Promise<void> {
+    this.abort.abort()
+    await Promise.allSettled(this.running.values())
+  }
+}
