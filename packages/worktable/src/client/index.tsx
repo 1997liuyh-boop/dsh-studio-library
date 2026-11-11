@@ -347,7 +347,8 @@ function loadView(): ViewState {
       consoleTheme: p.consoleTheme === 'dark' || p.consoleTheme === 'light' || p.consoleTheme === 'system' ? p.consoleTheme : 'system',
       consoleCols: typeof p.consoleCols === 'number' && p.consoleCols >= 1 && p.consoleCols <= 5 ? Math.round(p.consoleCols) : 3,
       consoleShape: p.consoleShape === 'circle' ? 'circle' : 'square',
-      consoleBg: p.consoleBg === 'plain' || p.consoleBg === 'photo' ? p.consoleBg : 'glow',
+      // 默认背景改为项目自带图片（照片模式）：未迁移过的旧设置统一切换一次，之后尊重用户的选择
+      consoleBg: p.consoleBgDefaultV2 !== true ? 'photo' : p.consoleBg === 'plain' || p.consoleBg === 'glow' ? p.consoleBg : 'photo',
       consoleBgPlainHsl: normHsl(p.consoleBgPlainHsl),
       consoleBgGlowHsl: normHsl(p.consoleBgGlowHsl),
       consoleBgPhotoId: typeof p.consoleBgPhotoId === 'string' && p.consoleBgPhotoId ? p.consoleBgPhotoId : undefined,
@@ -1396,7 +1397,7 @@ function WorktableSection(props: any) {
         setCols: (n: number) => persistView({ consoleCols: n }),
         getShape: () => viewRef.current.consoleShape ?? 'square',
         setShape: (s: 'square' | 'circle') => persistView({ consoleShape: s }),
-        getBg: () => viewRef.current.consoleBg ?? 'glow',
+        getBg: () => viewRef.current.consoleBg ?? 'photo',
         setBg: (m: 'plain' | 'glow' | 'photo') => persistView({ consoleBg: m }),
         getPhotoLib: async () => {
           let records = await photoStore.list().catch(() => [])
@@ -1552,7 +1553,7 @@ function WorktableSection(props: any) {
   const persistView = (patch: Partial<ViewState>) => {
     setView((prev) => {
       const next = { ...prev, ...patch }
-      try { localStorage.setItem(PERSIST_KEY, JSON.stringify({ ...next, sortMigratedV2: true })) } catch {}
+      try { localStorage.setItem(PERSIST_KEY, JSON.stringify({ ...next, sortMigratedV2: true, consoleBgDefaultV2: true })) } catch {}
       return next
     })
   }
@@ -2681,8 +2682,7 @@ function WorktableSection(props: any) {
           style={{ order: 0, position: 'relative' }}
           ref={consoleEntryRef}
           title={t('console.name')}
-          aria-haspopup="dialog"
-          onClick={() => setConsoleListOpen(true)}
+          onClick={(e) => clickConsoleCard(e.currentTarget as HTMLElement)}
         >
           <span className="dsh-wt_layoutIcon">{CONSOLE_ICON}</span>
           <span className="dsh-wt_layoutText">

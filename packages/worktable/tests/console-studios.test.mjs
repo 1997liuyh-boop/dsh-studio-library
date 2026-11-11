@@ -146,7 +146,8 @@ test('控制室箭头打开控制台、工作室栏移除版本与更新、搜�
   const section = readFileSync(new URL('../src/client/StudioSection.tsx', import.meta.url), 'utf8')
   assert.doesNotMatch(source, /StudioUpdates/)
   assert.match(source, /dsh-wt_consoleArrow[\s\S]{0,400}setConsoleListOpen\(true\)/)
-  assert.match(source, /ref=\{consoleEntryRef\}[\s\S]{0,120}onClick=\{\(\) => setConsoleListOpen\(true\)\}/)
+  // 点击「控制室」条目默认直接进入控制室；右侧箭头打开控制台总览
+  assert.match(source, /ref=\{consoleEntryRef\}[\s\S]{0,120}onClick=\{\(e\) => clickConsoleCard\(e\.currentTarget as HTMLElement\)\}/)
   assert.match(source, /studioId: id\.startsWith\('studio-'\)/)
   assert.match(source, /<ConsoleStudiosDialog[\s\S]{0,500}onReorder=\{reorderStudios\}/)
   assert.doesNotMatch(source, /className="dsh-wt_search"/)

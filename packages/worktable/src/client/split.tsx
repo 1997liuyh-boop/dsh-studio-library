@@ -6,6 +6,8 @@ import { hostWebSocketUrl, worktableUpgrade } from './hostTransport'
 import { CHANGELOG_V030 } from './changelog'
 import { zh, type WorktableKey } from './locales'
 import { startStudioServices } from './studioServices'
+import { CONSOLE_DEFAULT_BG } from './consoleBg'
+import { useStudioInfo, refreshStudioInfo, upgradeStudio, studioIdOf, releaseLabelKind } from './studioInfo'
 import { LOCAL_VERSION, checkUpdate, getAutoCheck, readCache, setAutoCheck as storeAutoCheck, setSkipVersion, type UpdateInfo, type UpdateStatus } from './updateCheck'
 import { Terminal } from 'xterm'
 
@@ -1666,7 +1668,7 @@ function ConsolePane() {
   const [now, setNow] = useState(() => Date.now())
   const [cols, setColsState] = useState<number>(() => splitEnv?.console?.getCols?.() ?? 3)
   const [shape, setShapeState] = useState<'square' | 'circle'>(() => splitEnv?.console?.getShape?.() ?? 'square')
-  const [bg, setBgState] = useState<'plain' | 'glow' | 'photo'>(() => splitEnv?.console?.getBg?.() ?? 'glow')
+  const [bg, setBgState] = useState<'plain' | 'glow' | 'photo'>(() => splitEnv?.console?.getBg?.() ?? 'photo')
   const [bgPhoto, setBgPhoto] = useState<string>('')
   const [photoId, setPhotoIdLocal] = useState<string>('')
   const [photoList, setPhotoList] = useState<{ id: string; kind: 'photo' | 'video'; url: string }[]>([])
@@ -1684,6 +1686,8 @@ function ConsolePane() {
   const [updInfo, setUpdInfo] = useState<UpdateInfo | null>(() => readCache().info)
   const [autoCheckOn, setAutoCheckOn] = useState<boolean>(() => getAutoCheck())
   const [statusOpen, setStatusOpen] = useState(false)
+  /** 工作室版本、Release 与更新状态（卡片与状态弹窗共用） */
+  const studioInfo = useStudioInfo()
   const [statusPosition, setStatusPosition] = useState<{ left: number; top: number } | null>(null)
   const [studioStatus, setStudioStatus] = useState<ConsoleStatusSnapshot | null>(null)
   const [studioStatusLoading, setStudioStatusLoading] = useState(false)
@@ -1858,6 +1862,43 @@ function ConsolePane() {
   const startButton = (studioId: string) => startingService === studioId
     ? <span className="dsh-wt_statusMeta">{T('consoleList.starting')}</span>
     : <button type="button" className="dsh-wt_updateBtn dsh-wt_statusStart" disabled={!!startingService} onClick={() => void startService(studioId)}>{T('consoleList.start')}</button>
+  /** 一键更新按钮（卡片与状态弹窗共用）；compact = 卡片右上角标签样式 */
+  const upgradeButton = (id: string, version: string, compact = false) => studioInfo.upgrading === id
+    ? <span className={compact ? 'dsh-wt_cardTag dsh-wt_cardTagBusy' : 'dsh-wt_statusMeta'}>{T('console.upgrading')}</span>
+    : <button type="button" className={compact ? 'dsh-wt_cardTag dsh-wt_cardTagUpdate' : 'dsh-wt_updateBtn dsh-wt_statusStart'} data-upgrade={id}
+        disabled={!!studioInfo.upgrading} title={T('console.upgradeTo', { version })}
+        onClick={(event) => { event.stopPropagation(); void upgradeStudio(id, version) }}>
+        {compact ? T('console.tagUpdate', { version }) : T('console.upgrade')}
+      </button>
+  /** 状态弹窗中一个工作室的版本行：本地版本 · Release 版本 · 是否需要更新（可一键更新） */
+  const releaseLine = (id: string) => {
+    const item = studioInfo.info[id]
+    if (!item) return null
+    const kind = releaseLabelKind(item)
+    const release = item.latest ?? (item.state === 'latest' ? item.version : undefined)
+    return (
+      <div className="dsh-wt_statusRelease" data-release={id}>
+        <span>{T('console.localVersion', { version: item.version ?? '—' })}</span>
+        <span>{release ? T('console.releaseVersion', { version: release }) : T('console.releaseNone')}</span>
+        {kind === 'available' && <><span className="dsh-wt_statusUpdate">{T('console.needUpdate')}</span>{upgradeButton(id, item.latest!)}</>}
+        {kind === 'latest' && <span className="dsh-wt_statusReady">{T('console.isLatest')}</span>}
+        {kind === 'restart' && <span className="dsh-wt_statusMeta">{T('console.restartToApply')}</span>}
+        {kind === 'checking' && <span className="dsh-wt_statusMeta">{T('console.releaseChecking')}</span>}
+        {kind === 'other' && <span className="dsh-wt_statusMeta">{T('console.releaseState.' + item.state)}</span>}
+      </div>
+    )
+  }
+  /** 卡片右上角的版本标签：有更新 = 可点击一键更新；没更新 = 已是最新 */
+  const cardTag = (cardId: string) => {
+    const id = studioIdOf(cardId)
+    const item = studioInfo.info[id]
+    const kind = releaseLabelKind(item)
+    if (kind === 'available') return upgradeButton(id, item!.latest!, true)
+    if (studioInfo.upgrading === id) return <span className="dsh-wt_cardTag dsh-wt_cardTagBusy">{T('console.upgrading')}</span>
+    if (kind === 'restart') return <span className="dsh-wt_cardTag dsh-wt_cardTagBusy">{T('console.restartToApply')}</span>
+    if (kind === 'latest') return <span className="dsh-wt_cardTag dsh-wt_cardTagLatest">{T('console.isLatest')}</span>
+    return null
+  }
   /** 状态弹窗使用设置弹窗相同的视口定位，避免被控制室内容窗或滚动容器遮挡。 */
   const toggleStudioStatus = () => {
     const next = !statusOpen
@@ -2041,7 +2082,7 @@ function ConsolePane() {
     splitEnv?.console?.refreshPreviews?.()
   }, [])
   useEffect(() => {
-    if (statusOpen) void refreshStudioStatus()
+    if (statusOpen) { void refreshStudioStatus(); void refreshStudioInfo() }
   }, [statusOpen])
   // 自动检查更新（节流一天；手动按钮始终 force）
   useEffect(() => { if (getAutoCheck()) void runUpdateCheck(false) }, [])
@@ -2120,7 +2161,9 @@ function ConsolePane() {
       <span className="dsh-wt_consoleBg" aria-hidden style={bg === 'glow' && (glowHsl.h !== 0 || glowHsl.s !== 100 || glowHsl.l !== 100) ? { filter: 'hue-rotate(' + glowHsl.h + 'deg) saturate(' + glowHsl.s + '%) brightness(' + glowHsl.l + '%)' } : undefined}>
         {bg === 'photo' && (bgVideo
           ? <ConsoleVideo src={bgVideo} style={photoHsl.h !== 0 || photoHsl.s !== 100 || photoHsl.l !== 100 ? { filter: 'hue-rotate(' + photoHsl.h + 'deg) saturate(' + photoHsl.s + '%) brightness(' + photoHsl.l + '%)' } : undefined} />
-          : bgPhoto ? <img className="dsh-wt_consoleMedia" src={bgPhoto} alt="" style={photoHsl.h !== 0 || photoHsl.s !== 100 || photoHsl.l !== 100 ? { filter: 'hue-rotate(' + photoHsl.h + 'deg) saturate(' + photoHsl.s + '%) brightness(' + photoHsl.l + '%)' } : undefined} /> : null)}
+          : bgPhoto ? <img className="dsh-wt_consoleMedia" src={bgPhoto} alt="" style={photoHsl.h !== 0 || photoHsl.s !== 100 || photoHsl.l !== 100 ? { filter: 'hue-rotate(' + photoHsl.h + 'deg) saturate(' + photoHsl.s + '%) brightness(' + photoHsl.l + '%)' } : undefined} />
+          // 未上传自定义照片时使用项目自带的默认背景图
+          : <img className="dsh-wt_consoleMedia" data-default-bg src={CONSOLE_DEFAULT_BG} alt="" />)}
         {bg === 'glow' && (<><i className="dsh-wt_blob dsh-wt_blob1" /><i className="dsh-wt_blob dsh-wt_blob2" /><i className="dsh-wt_blob dsh-wt_blob3" /><i className="dsh-wt_blob dsh-wt_blob4" /></>)}</span>
       {openMenu !== null && <div className="dsh-wt_dropMask" onClick={() => setOpenMenu(null)} />}
       <div className="dsh-wt_consoleScroll">
@@ -2131,7 +2174,8 @@ function ConsolePane() {
               <span className="dsh-wt_announceVer">{T('annot.curVer')} v{LOCAL_VERSION}</span>
               <button type="button" className="dsh-wt_announceBtn" disabled={updStatus === 'checking'} onClick={() => runUpdateCheck(true)}>{updStatus === 'checking' ? T('annot.checking') : T('annot.checkNow')}</button>
               <span className="dsh-wt_announceAuto">{T('annot.autoCheck')}</span>
-              <button type="button" className={'dsh-wt_switch' + (autoCheckOn ? ' dsh-wt_switchOn' : '')} aria-pressed={autoCheckOn} aria-label={T('annot.autoCheck')} onClick={onAutoCheckToggle}><span className="dsh-wt_switchKnob" /></button>
+              <button type="button" className={'dsh-wt_switch dsh-wt_autoSwitch' + (autoCheckOn ? ' dsh-wt_switchOn' : '')} role="switch" aria-checked={autoCheckOn} aria-label={T('annot.autoCheck')} onClick={onAutoCheckToggle}><span className="dsh-wt_switchKnob" /></button>
+              <span className={'dsh-wt_autoState' + (autoCheckOn ? ' dsh-wt_autoStateOn' : '')} aria-hidden>{autoCheckOn ? T('annot.autoOn') : T('annot.autoOff')}</span>
             </div>
             {updInfo && (
               <div className="dsh-wt_announceUpdate">
@@ -2169,7 +2213,12 @@ function ConsolePane() {
             <div className="dsh-wt_consoleCardHead">
               <span className="dsh-wt_consoleIcon" aria-hidden>{c.icon}</span>
               <span className="dsh-wt_consoleName">{c.name}</span>
+              {!c.self && cardTag(c.id)}
             </div>
+            {!c.self && studioInfo.info[studioIdOf(c.id)]?.address && (() => {
+              const address = studioInfo.info[studioIdOf(c.id)]!.address!
+              return <div className="dsh-wt_consoleRepo" title={address}>{address.replace(/^https:\/\//, '')}</div>
+            })()}
             <div className="dsh-wt_consoleDivider" aria-hidden />
             <div className="dsh-wt_consoleStatusRow">
               <span className={'dsh-wt_consoleStatus dsh-wt_consoleStatus-' + c.status}>{statusLabel[c.status]}</span>
@@ -2223,25 +2272,26 @@ function ConsolePane() {
                 <span>{T('console.workspacePath')}：{studioStatus.workspace.path || T('console.workspaceUnknown')}</span>
               </div>
             )}
+            {studioInfo.error && <div className="dsh-wt_consoleErr">{T('console.upgradeFail', { reason: studioInfo.error })}</div>}
+            {studioInfo.info.library && (
+              <div className="dsh-wt_statusItem dsh-wt_statusItemCol" data-library>
+                <div className="dsh-wt_statusStudioMain"><span>{T('console.libraryName')}</span></div>
+                {releaseLine('library')}
+              </div>
+            )}
             <div className="dsh-wt_statusSection">{T('console.installedStudios')}</div>
             {(studioStatus?.studios ?? []).length === 0
               ? <div className="dsh-wt_statusEmpty">{T('console.noStudios')}</div>
               : studioStatus?.studios.map((studio) => {
                 const integration = studioStatus.integrations.find((item) => item.id === studio.id)
                 const ready = integration?.ready ?? true
-                const update = studioStatus.updates?.find((item) => item.id === studio.id)
-                const updateText = update?.state === 'available'
-                  ? T('console.updateAvailable', { version: update.latest ?? '' })
-                  : update?.state === 'latest'
-                    ? T('console.updateNone')
-                    : T('console.updateUnknown')
                 return <div className="dsh-wt_statusItem" key={studio.id}>
                   <div className="dsh-wt_statusStudioMain">
                     <span>{studio.icon ?? '◫'} {studio.name ?? studio.title ?? studio.id}</span>
                     <span className={ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'} title={integration?.startupError ?? studio.startupError}>{ready ? T('console.statusReady') : T('console.statusOffline')}</span>
                     {!ready && integration && startButton(studio.id)}
-                    <span className={update?.state === 'available' ? 'dsh-wt_statusUpdate' : 'dsh-wt_statusMeta'}>{updateText}</span>
                   </div>
+                  {releaseLine(studio.id)}
                   {studio.source === 'local' && studio.localPath && <button type="button" className="dsh-wt_statusAi" title={T('console.editStudio')} aria-label={T('console.editStudio')} onClick={() => {
                     void splitEnv?.console?.onEditStudio(studio).catch((error) => setStudioStatusError(error instanceof Error ? error.message : T('console.statusFail')))
                   }}>
