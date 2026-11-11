@@ -4,6 +4,7 @@
 @layer theme {
   :root, :host {
     --studio-color-red-500: oklch(63.7% 0.237 25.331);
+    --studio-color-green-600: oklch(62.7% 0.194 149.214);
     --studio-color-blue-500: oklch(62.3% 0.214 259.815);
     --studio-color-blue-600: oklch(54.6% 0.245 262.881);
     --studio-color-black: #000;
@@ -73,6 +74,9 @@
   .studio\:h-8 {
     height: calc(var(--studio-spacing) * 8);
   }
+  .studio\:h-10 {
+    height: calc(var(--studio-spacing) * 10);
+  }
   .studio\:h-60 {
     height: calc(var(--studio-spacing) * 60);
   }
@@ -96,6 +100,9 @@
   }
   .studio\:w-8 {
     width: calc(var(--studio-spacing) * 8);
+  }
+  .studio\:w-10 {
+    width: calc(var(--studio-spacing) * 10);
   }
   .studio\:w-\[min\(32rem\,calc\(100vw-2rem\)\)\] {
     width: min(32rem, calc(100vw - 2rem));
@@ -272,9 +279,6 @@
   .studio\:break-all {
     word-break: break-all;
   }
-  .studio\:whitespace-pre-wrap {
-    white-space: pre-wrap;
-  }
   .studio\:text-\(--dsw-alias-label-primary\) {
     color: var(--dsw-alias-label-primary);
   }
@@ -283,6 +287,12 @@
   }
   .studio\:text-\(--dsw-alias-label-tertiary\) {
     color: var(--dsw-alias-label-tertiary);
+  }
+  .studio\:text-blue-500 {
+    color: var(--studio-color-blue-500);
+  }
+  .studio\:text-green-600 {
+    color: var(--studio-color-green-600);
   }
   .studio\:text-inherit {
     color: inherit;

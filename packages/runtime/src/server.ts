@@ -8,7 +8,7 @@ import type {} from '@deepseek-ai/dsh-plugin-manager'
 import { createIntegrations, type IntegrationConfig } from './integrations'
 import { createToonflowSessions } from './toonflowSessions'
 import { readFile } from 'node:fs/promises'
-import { installStudioControl } from './studioControl'
+import { installStudioControl, handleStudioImport } from './studioControl'
 import { installStudioTasks } from './studioTasks'
 import { resolveServiceStartup, startStudioServices } from './serviceStartup'
 
@@ -67,6 +67,7 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
         res.writeHead(200, { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' }); res.end(await readFile(new URL('../static/controlBridge.js', import.meta.url))); return
       }
       if (await handleUpdates(req, res, url.pathname)) return
+      if (url.pathname === '/studio-projects/import') { await handleStudioImport(req, res, ctx.pluginManager); return }
       if (await control.handle(req, res, url.pathname)) return
       const legacyId=url.pathname.split('/')[2] ?? ''
       const legacyPage=url.searchParams.has('legacy') && ['travel','knowledge','media','fitness'].includes(legacyId) && registry.has(legacyId)

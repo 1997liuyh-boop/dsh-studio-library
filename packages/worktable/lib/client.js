@@ -7538,8 +7538,10 @@ __export(index_exports, {
   WorktableSection: () => WorktableSection,
   apply: () => apply,
   createCustomSession: () => createCustomSession,
+  createStudioDraftSession: () => createStudioDraftSession,
   createStudioEditSession: () => createStudioEditSession,
   createStudioSession: () => createStudioSession,
+  importStudio: () => importStudio,
   inject: () => inject,
   sendCustomToSession: () => sendCustomToSession
 });
@@ -7822,15 +7824,22 @@ var zh = {
   "shortcut.badge": "\u672C\u5730",
   "add.studio": "\u65B0\u589E\u5DE5\u4F5C\u5BA4",
   "add.studioHint": "\u8BA9 AI \u8BE2\u95EE\u4FDD\u5B58\u5230\u672C\u5730\u6216 GitHub\uFF0C\u5E76\u5728\u521B\u5EFA\u540E\u8BE2\u95EE\u662F\u5426\u7ACB\u5373\u5BFC\u5165\u3002",
-  "add.studioDescription": "\u8F93\u5165\u5DE5\u4F5C\u5BA4\u7684 GitHub \u5730\u5740\u6216\u672C\u5730\u76EE\u5F55\u5730\u5740",
-  "add.studioPlaceholder": "https://github.com/\u7528\u6237/\u5DE5\u4F5C\u5BA4 \u6216 C:\\\u5DE5\u4F5C\u5BA4\u76EE\u5F55",
-  "add.promptLabel": "\u53D1\u9001\u7ED9\u5927\u80A5\u9C7C\u7684\u9ED8\u8BA4\u63D0\u793A\u8BCD",
+  "add.studioDescription": "\u5DF2\u6709\u5DE5\u4F5C\u5BA4\uFF1F\u7C98\u8D34 GitHub \u4ED3\u5E93\u5730\u5740\u6216\u672C\u673A\u5DE5\u4F5C\u5BA4\u76EE\u5F55\uFF0C\u70B9\u300C\u5BFC\u5165\u5DE5\u4F5C\u5BA4\u300D\u5373\u53EF\u542F\u7528\u3002\u8FD8\u6CA1\u6709\u5DE5\u4F5C\u5BA4\uFF1F\u70B9\u5DE6\u4E0B\u89D2 AI \u56FE\u6807\uFF0C\u8BA9\u5927\u80A5\u9C7C\u966A\u4F60\u4ECE\u96F6\u65B0\u5EFA\u3002",
+  "add.studioInputLabel": "\u5DE5\u4F5C\u5BA4\u5730\u5740\uFF08GitHub \u4ED3\u5E93\u6216\u672C\u673A\u7EDD\u5BF9\u8DEF\u5F84\uFF09",
+  "add.studioPlaceholder": "\u4F8B\u5982 https://github.com/\u7528\u6237\u540D/\u4ED3\u5E93 \u6216 D:\\studios\\\u6211\u7684\u5DE5\u4F5C\u5BA4",
   "add.promptIntro": "\u6211\u4EEC\u9700\u8981\u65B0\u589E\u5DE5\u4F5C\u5BA4",
   "add.promptFeature": "\u5DE5\u4F5C\u5BA4\u529F\u80FD\u662F\uFF1A",
   "add.promptPath": "\u5DE5\u4F5C\u5BA4\u672C\u5730\u76EE\u5F55\u662F\uFF1A",
-  "add.callBigFish": "\u547C\u53EB\u5927\u80A5\u9C7C\u65B0\u589E\u5DE5\u4F5C\u5BA4",
-  "add.creating": "\u6B63\u5728\u521B\u5EFA\u4F1A\u8BDD\u2026",
-  "add.createFail": "\u521B\u5EFA\u5DE5\u4F5C\u5BA4\u4F1A\u8BDD\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5",
+  "add.callBigFish": "\u8BA9\u5927\u80A5\u9C7C\u65B0\u5EFA\u5DE5\u4F5C\u5BA4\uFF08\u65B0\u5F00\u4F1A\u8BDD\uFF09",
+  "add.creating": "\u6B63\u5728\u65B0\u5EFA\u4F1A\u8BDD\u2026",
+  "add.createFail": "\u65B0\u5EFA\u5DE5\u4F5C\u5BA4\u4F1A\u8BDD\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5",
+  "add.draftWorkspace": "\u65B0\u5DE5\u4F5C\u5BA4",
+  "add.import": "\u5BFC\u5165\u5DE5\u4F5C\u5BA4",
+  "add.importing": "\u6B63\u5728\u5BFC\u5165\u2026",
+  "add.importInvalid": "\u8BF7\u586B\u5199 GitHub \u4ED3\u5E93\u5730\u5740\u6216\u672C\u673A\u7EDD\u5BF9\u8DEF\u5F84",
+  "add.importFail": "\u5BFC\u5165\u5931\u8D25\uFF1A{reason}",
+  "add.importDone": "\u5DE5\u4F5C\u5BA4\u5DF2\u5BFC\u5165\u5E76\u542F\u7528",
+  "add.importRestart": "\u5DE5\u4F5C\u5BA4\u5DF2\u5BFC\u5165\uFF0C\u5B8C\u6574\u9000\u51FA\u5E76\u91CD\u65B0\u6253\u5F00 dsh \u540E\u751F\u6548",
   "add.close": "\u5173\u95ED",
   "manage.deleteLayout": "\u5220\u9664\u5E03\u5C40",
   "manage.deleteProject": "\u5220\u9664\u9879\u76EE",
@@ -8075,15 +8084,22 @@ var en = {
   "shortcut.badge": "Local",
   "add.studio": "Add studio",
   "add.studioHint": "Ask AI to choose local or GitHub, then ask whether to import it now.",
-  "add.studioDescription": "Enter a GitHub URL or a local studio directory",
-  "add.studioPlaceholder": "https://github.com/user/studio or C:\\studio",
-  "add.promptLabel": "Default prompt sent to Big Fish",
+  "add.studioDescription": "Already have a studio? Paste its GitHub repository URL or local folder and choose Import studio. Starting from scratch? Click the AI icon at the bottom left and Big Fish will build one with you.",
+  "add.studioInputLabel": "Studio location (GitHub repository or absolute local path)",
+  "add.studioPlaceholder": "e.g. https://github.com/user/repo or D:\\studios\\my-studio",
   "add.promptIntro": "We need to add a studio",
   "add.promptFeature": "Studio features:",
   "add.promptPath": "Studio local directory:",
-  "add.callBigFish": "Ask Big Fish to add the studio",
-  "add.creating": "Creating conversation\u2026",
-  "add.createFail": "Could not create the studio conversation. Try again.",
+  "add.callBigFish": "Ask Big Fish to build a studio (new conversation)",
+  "add.creating": "Opening conversation\u2026",
+  "add.createFail": "Could not open the studio conversation. Try again.",
+  "add.draftWorkspace": "New studio",
+  "add.import": "Import studio",
+  "add.importing": "Importing\u2026",
+  "add.importInvalid": "Enter a GitHub repository URL or an absolute local path",
+  "add.importFail": "Import failed: {reason}",
+  "add.importDone": "Studio imported and enabled",
+  "add.importRestart": "Studio imported. Quit and reopen dsh to load it.",
   "add.close": "Close",
   "manage.deleteLayout": "Delete layout",
   "manage.deleteProject": "Delete project",
@@ -20472,7 +20488,7 @@ var css2 = xterm_default + "\n" + [
 ].join("\n");
 
 // src/client/studio.generated.css
-var studio_generated_default = '/*! tailwindcss v4.3.5 | MIT License | https://tailwindcss.com */\n@layer properties;\n@layer theme, utilities;\n@layer theme {\n  :root, :host {\n    --studio-color-red-500: oklch(63.7% 0.237 25.331);\n    --studio-color-blue-500: oklch(62.3% 0.214 259.815);\n    --studio-color-blue-600: oklch(54.6% 0.245 262.881);\n    --studio-color-black: #000;\n    --studio-color-white: #fff;\n    --studio-spacing: 0.25rem;\n    --studio-text-xs: 0.75rem;\n    --studio-text-xs--line-height: calc(1 / 0.75);\n    --studio-text-sm: 0.875rem;\n    --studio-text-sm--line-height: calc(1.25 / 0.875);\n    --studio-text-base: 1rem;\n    --studio-text-base--line-height: calc(1.5 / 1);\n    --studio-font-weight-medium: 500;\n    --studio-ease-out: cubic-bezier(0, 0, 0.2, 1);\n    --studio-default-transition-duration: 150ms;\n    --studio-default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  }\n}\n@layer utilities {\n  .studio\\:m-0 {\n    margin: 0px;\n  }\n  .studio\\:m-auto {\n    margin: auto;\n  }\n  .studio\\:mt-1 {\n    margin-top: var(--studio-spacing);\n  }\n  .studio\\:mt-2 {\n    margin-top: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:mt-3 {\n    margin-top: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:mt-4 {\n    margin-top: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:mb-0 {\n    margin-bottom: 0px;\n  }\n  .studio\\:mb-4 {\n    margin-bottom: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:ml-auto {\n    margin-left: auto;\n  }\n  .studio\\:box-border {\n    box-sizing: border-box;\n  }\n  .studio\\:flex {\n    display: flex;\n  }\n  .studio\\:grid {\n    display: grid;\n  }\n  .studio\\:hidden {\n    display: none;\n  }\n  .studio\\:inline-block {\n    display: inline-block;\n  }\n  .studio\\:h-5 {\n    height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:h-7 {\n    height: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:h-8 {\n    height: calc(var(--studio-spacing) * 8);\n  }\n  .studio\\:h-60 {\n    height: calc(var(--studio-spacing) * 60);\n  }\n  .studio\\:h-\\[34px\\] {\n    height: 34px;\n  }\n  .studio\\:max-h-\\[40vh\\] {\n    max-height: 40vh;\n  }\n  .studio\\:max-h-\\[calc\\(100dvh-2rem\\)\\] {\n    max-height: calc(100dvh - 2rem);\n  }\n  .studio\\:min-h-0 {\n    min-height: 0px;\n  }\n  .studio\\:w-4 {\n    width: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:w-7 {\n    width: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:w-8 {\n    width: calc(var(--studio-spacing) * 8);\n  }\n  .studio\\:w-\\[min\\(32rem\\,calc\\(100vw-2rem\\)\\)\\] {\n    width: min(32rem, calc(100vw - 2rem));\n  }\n  .studio\\:w-\\[min\\(48rem\\,calc\\(100vw-2rem\\)\\)\\] {\n    width: min(48rem, calc(100vw - 2rem));\n  }\n  .studio\\:w-full {\n    width: 100%;\n  }\n  .studio\\:max-w-none {\n    max-width: none;\n  }\n  .studio\\:min-w-0 {\n    min-width: 0px;\n  }\n  .studio\\:flex-1 {\n    flex: 1;\n  }\n  .studio\\:shrink-0 {\n    flex-shrink: 0;\n  }\n  .studio\\:rotate-90 {\n    rotate: 90deg;\n  }\n  .studio\\:cursor-pointer {\n    cursor: pointer;\n  }\n  .studio\\:\\[scrollbar-width\\:none\\] {\n    scrollbar-width: none;\n  }\n  .studio\\:grid-rows-\\[0fr\\] {\n    grid-template-rows: 0fr;\n  }\n  .studio\\:grid-rows-\\[1fr\\] {\n    grid-template-rows: 1fr;\n  }\n  .studio\\:flex-col {\n    flex-direction: column;\n  }\n  .studio\\:flex-wrap {\n    flex-wrap: wrap;\n  }\n  .studio\\:items-center {\n    align-items: center;\n  }\n  .studio\\:items-start {\n    align-items: flex-start;\n  }\n  .studio\\:justify-between {\n    justify-content: space-between;\n  }\n  .studio\\:justify-center {\n    justify-content: center;\n  }\n  .studio\\:gap-1 {\n    gap: var(--studio-spacing);\n  }\n  .studio\\:gap-1\\.5 {\n    gap: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:gap-2 {\n    gap: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:gap-3 {\n    gap: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:truncate {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .studio\\:overflow-hidden {\n    overflow: hidden;\n  }\n  .studio\\:overflow-x-hidden {\n    overflow-x: hidden;\n  }\n  .studio\\:overflow-y-auto {\n    overflow-y: auto;\n  }\n  .studio\\:overscroll-contain {\n    overscroll-behavior: contain;\n  }\n  .studio\\:rounded {\n    border-radius: 0.25rem;\n  }\n  .studio\\:rounded-\\(--dsw-radius-lg\\) {\n    border-radius: var(--dsw-radius-lg);\n  }\n  .studio\\:rounded-\\(--dsw-radius-md\\) {\n    border-radius: var(--dsw-radius-md);\n  }\n  .studio\\:border {\n    border-style: var(--tw-border-style);\n    border-width: 1px;\n  }\n  .studio\\:border-0 {\n    border-style: var(--tw-border-style);\n    border-width: 0px;\n  }\n  .studio\\:border-\\(--dsw-alias-border-l1\\) {\n    border-color: var(--dsw-alias-border-l1);\n  }\n  .studio\\:bg-\\(--dsw-alias-bg-base\\) {\n    background-color: var(--dsw-alias-bg-base);\n  }\n  .studio\\:bg-\\(--dsw-alias-fill-l1\\) {\n    background-color: var(--dsw-alias-fill-l1);\n  }\n  .studio\\:bg-blue-600 {\n    background-color: var(--studio-color-blue-600);\n  }\n  .studio\\:bg-transparent {\n    background-color: transparent;\n  }\n  .studio\\:p-3 {\n    padding: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:p-5 {\n    padding: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:px-1 {\n    padding-inline: var(--studio-spacing);\n  }\n  .studio\\:px-2 {\n    padding-inline: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:px-3 {\n    padding-inline: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:px-4 {\n    padding-inline: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:py-0\\.5 {\n    padding-block: calc(var(--studio-spacing) * 0.5);\n  }\n  .studio\\:py-1\\.5 {\n    padding-block: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:py-2\\.5 {\n    padding-block: calc(var(--studio-spacing) * 2.5);\n  }\n  .studio\\:text-left {\n    text-align: left;\n  }\n  .studio\\:text-base {\n    font-size: var(--studio-text-base);\n    line-height: var(--tw-leading, var(--studio-text-base--line-height));\n  }\n  .studio\\:text-sm {\n    font-size: var(--studio-text-sm);\n    line-height: var(--tw-leading, var(--studio-text-sm--line-height));\n  }\n  .studio\\:text-xs {\n    font-size: var(--studio-text-xs);\n    line-height: var(--tw-leading, var(--studio-text-xs--line-height));\n  }\n  .studio\\:leading-5 {\n    --tw-leading: calc(var(--studio-spacing) * 5);\n    line-height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:leading-6 {\n    --tw-leading: calc(var(--studio-spacing) * 6);\n    line-height: calc(var(--studio-spacing) * 6);\n  }\n  .studio\\:font-medium {\n    --tw-font-weight: var(--studio-font-weight-medium);\n    font-weight: var(--studio-font-weight-medium);\n  }\n  .studio\\:break-words {\n    overflow-wrap: break-word;\n  }\n  .studio\\:break-all {\n    word-break: break-all;\n  }\n  .studio\\:whitespace-pre-wrap {\n    white-space: pre-wrap;\n  }\n  .studio\\:text-\\(--dsw-alias-label-primary\\) {\n    color: var(--dsw-alias-label-primary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-secondary\\) {\n    color: var(--dsw-alias-label-secondary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-tertiary\\) {\n    color: var(--dsw-alias-label-tertiary);\n  }\n  .studio\\:text-inherit {\n    color: inherit;\n  }\n  .studio\\:text-red-500 {\n    color: var(--studio-color-red-500);\n  }\n  .studio\\:text-white {\n    color: var(--studio-color-white);\n  }\n  .studio\\:underline {\n    text-decoration-line: underline;\n  }\n  .studio\\:opacity-0 {\n    opacity: 0%;\n  }\n  .studio\\:opacity-100 {\n    opacity: 100%;\n  }\n  .studio\\:shadow-xl {\n    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);\n  }\n  .studio\\:transition-\\[grid-template-rows\\] {\n    transition-property: grid-template-rows;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-opacity {\n    transition-property: opacity;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-transform {\n    transition-property: transform, translate, scale, rotate;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:duration-100 {\n    --tw-duration: 100ms;\n    transition-duration: 100ms;\n  }\n  .studio\\:duration-150 {\n    --tw-duration: 150ms;\n    transition-duration: 150ms;\n  }\n  .studio\\:duration-200 {\n    --tw-duration: 200ms;\n    transition-duration: 200ms;\n  }\n  .studio\\:ease-\\(--ds-ease-in-out\\) {\n    --tw-ease: var(--ds-ease-in-out);\n    transition-timing-function: var(--ds-ease-in-out);\n  }\n  .studio\\:ease-out {\n    --tw-ease: var(--studio-ease-out);\n    transition-timing-function: var(--studio-ease-out);\n  }\n  .studio\\:outline-none {\n    --tw-outline-style: none;\n    outline-style: none;\n  }\n  @media (hover: hover) {\n    :is(:where(.studio\\:group):hover .studio\\:group-hover\\:hidden) {\n      display: none;\n    }\n    :is(:where(.studio\\:group):hover .studio\\:group-hover\\:inline-flex) {\n      display: inline-flex;\n    }\n  }\n  :is(:where(.studio\\:group):focus-visible .studio\\:group-focus-visible\\:hidden) {\n    display: none;\n  }\n  :is(:where(.studio\\:group):focus-visible .studio\\:group-focus-visible\\:inline-flex) {\n    display: inline-flex;\n  }\n  .studio\\:placeholder\\:text-\\(--dsw-alias-label-tertiary\\)::placeholder {\n    color: var(--dsw-alias-label-tertiary);\n  }\n  .studio\\:backdrop\\:bg-black\\/30::backdrop {\n    background-color: var(--studio-color-black);\n    @supports (color: color-mix(in lab, red, red)) {\n      background-color: color-mix(in oklab, var(--studio-color-black) 30%, transparent);\n    }\n  }\n  @media (hover: hover) {\n    .studio\\:hover\\:bg-\\(--dsw-alias-interactive-bg-hover\\):hover {\n      background-color: var(--dsw-alias-interactive-bg-hover);\n    }\n    .studio\\:hover\\:bg-black\\/5:hover {\n      background-color: var(--studio-color-black);\n    }\n    @supports (color: color-mix(in lab, red, red)) {\n      .studio\\:hover\\:bg-black\\/5:hover {\n        background-color: color-mix(in oklab, var(--studio-color-black) 5%, transparent);\n      }\n    }\n    .studio\\:hover\\:bg-blue-500:hover {\n      background-color: var(--studio-color-blue-500);\n    }\n  }\n  .studio\\:focus\\:border-blue-500:focus {\n    border-color: var(--studio-color-blue-500);\n  }\n  .studio\\:focus-visible\\:outline-2:focus-visible {\n    outline-style: var(--tw-outline-style);\n    outline-width: 2px;\n  }\n  .studio\\:focus-visible\\:outline-blue-500:focus-visible {\n    outline-color: var(--studio-color-blue-500);\n  }\n  .studio\\:disabled\\:cursor-default:disabled {\n    cursor: default;\n  }\n  .studio\\:disabled\\:opacity-50:disabled {\n    opacity: 50%;\n  }\n  @media (prefers-reduced-motion: reduce) {\n    .studio\\:motion-reduce\\:transition-none {\n      transition-property: none;\n    }\n  }\n  .studio\\:\\[\\&_svg\\]\\:size-4 svg {\n    width: calc(var(--studio-spacing) * 4);\n    height: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:\\[\\&\\:\\:-webkit-scrollbar\\]\\:hidden::-webkit-scrollbar {\n    display: none;\n  }\n  .studio\\:\\[\\&\\[hidden\\]\\]\\:hidden[hidden] {\n    display: none;\n  }\n}\n@property --tw-border-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@property --tw-leading {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-font-weight {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-inset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-ring-inset {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-offset-width {\n  syntax: "<length>";\n  inherits: false;\n  initial-value: 0px;\n}\n@property --tw-ring-offset-color {\n  syntax: "*";\n  inherits: false;\n  initial-value: #fff;\n}\n@property --tw-ring-offset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-duration {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ease {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-outline-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@layer properties {\n  @supports ((-webkit-hyphens: none) and (not (margin-trim: block))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {\n    *, ::before, ::after, ::backdrop {\n      --tw-border-style: solid;\n      --tw-leading: initial;\n      --tw-font-weight: initial;\n      --tw-shadow: 0 0 #0000;\n      --tw-shadow-color: initial;\n      --tw-shadow-alpha: 100%;\n      --tw-inset-shadow: 0 0 #0000;\n      --tw-inset-shadow-color: initial;\n      --tw-inset-shadow-alpha: 100%;\n      --tw-ring-color: initial;\n      --tw-ring-shadow: 0 0 #0000;\n      --tw-inset-ring-color: initial;\n      --tw-inset-ring-shadow: 0 0 #0000;\n      --tw-ring-inset: initial;\n      --tw-ring-offset-width: 0px;\n      --tw-ring-offset-color: #fff;\n      --tw-ring-offset-shadow: 0 0 #0000;\n      --tw-duration: initial;\n      --tw-ease: initial;\n      --tw-outline-style: solid;\n    }\n  }\n}\n';
+var studio_generated_default = '/*! tailwindcss v4.3.5 | MIT License | https://tailwindcss.com */\n@layer properties;\n@layer theme, utilities;\n@layer theme {\n  :root, :host {\n    --studio-color-red-500: oklch(63.7% 0.237 25.331);\n    --studio-color-green-600: oklch(62.7% 0.194 149.214);\n    --studio-color-blue-500: oklch(62.3% 0.214 259.815);\n    --studio-color-blue-600: oklch(54.6% 0.245 262.881);\n    --studio-color-black: #000;\n    --studio-color-white: #fff;\n    --studio-spacing: 0.25rem;\n    --studio-text-xs: 0.75rem;\n    --studio-text-xs--line-height: calc(1 / 0.75);\n    --studio-text-sm: 0.875rem;\n    --studio-text-sm--line-height: calc(1.25 / 0.875);\n    --studio-text-base: 1rem;\n    --studio-text-base--line-height: calc(1.5 / 1);\n    --studio-font-weight-medium: 500;\n    --studio-ease-out: cubic-bezier(0, 0, 0.2, 1);\n    --studio-default-transition-duration: 150ms;\n    --studio-default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  }\n}\n@layer utilities {\n  .studio\\:m-0 {\n    margin: 0px;\n  }\n  .studio\\:m-auto {\n    margin: auto;\n  }\n  .studio\\:mt-1 {\n    margin-top: var(--studio-spacing);\n  }\n  .studio\\:mt-2 {\n    margin-top: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:mt-3 {\n    margin-top: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:mt-4 {\n    margin-top: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:mb-0 {\n    margin-bottom: 0px;\n  }\n  .studio\\:mb-4 {\n    margin-bottom: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:ml-auto {\n    margin-left: auto;\n  }\n  .studio\\:box-border {\n    box-sizing: border-box;\n  }\n  .studio\\:flex {\n    display: flex;\n  }\n  .studio\\:grid {\n    display: grid;\n  }\n  .studio\\:hidden {\n    display: none;\n  }\n  .studio\\:inline-block {\n    display: inline-block;\n  }\n  .studio\\:h-5 {\n    height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:h-7 {\n    height: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:h-8 {\n    height: calc(var(--studio-spacing) * 8);\n  }\n  .studio\\:h-10 {\n    height: calc(var(--studio-spacing) * 10);\n  }\n  .studio\\:h-60 {\n    height: calc(var(--studio-spacing) * 60);\n  }\n  .studio\\:h-\\[34px\\] {\n    height: 34px;\n  }\n  .studio\\:max-h-\\[40vh\\] {\n    max-height: 40vh;\n  }\n  .studio\\:max-h-\\[calc\\(100dvh-2rem\\)\\] {\n    max-height: calc(100dvh - 2rem);\n  }\n  .studio\\:min-h-0 {\n    min-height: 0px;\n  }\n  .studio\\:w-4 {\n    width: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:w-7 {\n    width: calc(var(--studio-spacing) * 7);\n  }\n  .studio\\:w-8 {\n    width: calc(var(--studio-spacing) * 8);\n  }\n  .studio\\:w-10 {\n    width: calc(var(--studio-spacing) * 10);\n  }\n  .studio\\:w-\\[min\\(32rem\\,calc\\(100vw-2rem\\)\\)\\] {\n    width: min(32rem, calc(100vw - 2rem));\n  }\n  .studio\\:w-\\[min\\(48rem\\,calc\\(100vw-2rem\\)\\)\\] {\n    width: min(48rem, calc(100vw - 2rem));\n  }\n  .studio\\:w-full {\n    width: 100%;\n  }\n  .studio\\:max-w-none {\n    max-width: none;\n  }\n  .studio\\:min-w-0 {\n    min-width: 0px;\n  }\n  .studio\\:flex-1 {\n    flex: 1;\n  }\n  .studio\\:shrink-0 {\n    flex-shrink: 0;\n  }\n  .studio\\:rotate-90 {\n    rotate: 90deg;\n  }\n  .studio\\:cursor-pointer {\n    cursor: pointer;\n  }\n  .studio\\:\\[scrollbar-width\\:none\\] {\n    scrollbar-width: none;\n  }\n  .studio\\:grid-rows-\\[0fr\\] {\n    grid-template-rows: 0fr;\n  }\n  .studio\\:grid-rows-\\[1fr\\] {\n    grid-template-rows: 1fr;\n  }\n  .studio\\:flex-col {\n    flex-direction: column;\n  }\n  .studio\\:flex-wrap {\n    flex-wrap: wrap;\n  }\n  .studio\\:items-center {\n    align-items: center;\n  }\n  .studio\\:items-start {\n    align-items: flex-start;\n  }\n  .studio\\:justify-between {\n    justify-content: space-between;\n  }\n  .studio\\:justify-center {\n    justify-content: center;\n  }\n  .studio\\:gap-1 {\n    gap: var(--studio-spacing);\n  }\n  .studio\\:gap-1\\.5 {\n    gap: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:gap-2 {\n    gap: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:gap-3 {\n    gap: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:truncate {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n  }\n  .studio\\:overflow-hidden {\n    overflow: hidden;\n  }\n  .studio\\:overflow-x-hidden {\n    overflow-x: hidden;\n  }\n  .studio\\:overflow-y-auto {\n    overflow-y: auto;\n  }\n  .studio\\:overscroll-contain {\n    overscroll-behavior: contain;\n  }\n  .studio\\:rounded {\n    border-radius: 0.25rem;\n  }\n  .studio\\:rounded-\\(--dsw-radius-lg\\) {\n    border-radius: var(--dsw-radius-lg);\n  }\n  .studio\\:rounded-\\(--dsw-radius-md\\) {\n    border-radius: var(--dsw-radius-md);\n  }\n  .studio\\:border {\n    border-style: var(--tw-border-style);\n    border-width: 1px;\n  }\n  .studio\\:border-0 {\n    border-style: var(--tw-border-style);\n    border-width: 0px;\n  }\n  .studio\\:border-\\(--dsw-alias-border-l1\\) {\n    border-color: var(--dsw-alias-border-l1);\n  }\n  .studio\\:bg-\\(--dsw-alias-bg-base\\) {\n    background-color: var(--dsw-alias-bg-base);\n  }\n  .studio\\:bg-\\(--dsw-alias-fill-l1\\) {\n    background-color: var(--dsw-alias-fill-l1);\n  }\n  .studio\\:bg-blue-600 {\n    background-color: var(--studio-color-blue-600);\n  }\n  .studio\\:bg-transparent {\n    background-color: transparent;\n  }\n  .studio\\:p-3 {\n    padding: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:p-5 {\n    padding: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:px-1 {\n    padding-inline: var(--studio-spacing);\n  }\n  .studio\\:px-2 {\n    padding-inline: calc(var(--studio-spacing) * 2);\n  }\n  .studio\\:px-3 {\n    padding-inline: calc(var(--studio-spacing) * 3);\n  }\n  .studio\\:px-4 {\n    padding-inline: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:py-0\\.5 {\n    padding-block: calc(var(--studio-spacing) * 0.5);\n  }\n  .studio\\:py-1\\.5 {\n    padding-block: calc(var(--studio-spacing) * 1.5);\n  }\n  .studio\\:py-2\\.5 {\n    padding-block: calc(var(--studio-spacing) * 2.5);\n  }\n  .studio\\:text-left {\n    text-align: left;\n  }\n  .studio\\:text-base {\n    font-size: var(--studio-text-base);\n    line-height: var(--tw-leading, var(--studio-text-base--line-height));\n  }\n  .studio\\:text-sm {\n    font-size: var(--studio-text-sm);\n    line-height: var(--tw-leading, var(--studio-text-sm--line-height));\n  }\n  .studio\\:text-xs {\n    font-size: var(--studio-text-xs);\n    line-height: var(--tw-leading, var(--studio-text-xs--line-height));\n  }\n  .studio\\:leading-5 {\n    --tw-leading: calc(var(--studio-spacing) * 5);\n    line-height: calc(var(--studio-spacing) * 5);\n  }\n  .studio\\:leading-6 {\n    --tw-leading: calc(var(--studio-spacing) * 6);\n    line-height: calc(var(--studio-spacing) * 6);\n  }\n  .studio\\:font-medium {\n    --tw-font-weight: var(--studio-font-weight-medium);\n    font-weight: var(--studio-font-weight-medium);\n  }\n  .studio\\:break-words {\n    overflow-wrap: break-word;\n  }\n  .studio\\:break-all {\n    word-break: break-all;\n  }\n  .studio\\:text-\\(--dsw-alias-label-primary\\) {\n    color: var(--dsw-alias-label-primary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-secondary\\) {\n    color: var(--dsw-alias-label-secondary);\n  }\n  .studio\\:text-\\(--dsw-alias-label-tertiary\\) {\n    color: var(--dsw-alias-label-tertiary);\n  }\n  .studio\\:text-blue-500 {\n    color: var(--studio-color-blue-500);\n  }\n  .studio\\:text-green-600 {\n    color: var(--studio-color-green-600);\n  }\n  .studio\\:text-inherit {\n    color: inherit;\n  }\n  .studio\\:text-red-500 {\n    color: var(--studio-color-red-500);\n  }\n  .studio\\:text-white {\n    color: var(--studio-color-white);\n  }\n  .studio\\:underline {\n    text-decoration-line: underline;\n  }\n  .studio\\:opacity-0 {\n    opacity: 0%;\n  }\n  .studio\\:opacity-100 {\n    opacity: 100%;\n  }\n  .studio\\:shadow-xl {\n    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));\n    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);\n  }\n  .studio\\:transition-\\[grid-template-rows\\] {\n    transition-property: grid-template-rows;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-opacity {\n    transition-property: opacity;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:transition-transform {\n    transition-property: transform, translate, scale, rotate;\n    transition-timing-function: var(--tw-ease, var(--studio-default-transition-timing-function));\n    transition-duration: var(--tw-duration, var(--studio-default-transition-duration));\n  }\n  .studio\\:duration-100 {\n    --tw-duration: 100ms;\n    transition-duration: 100ms;\n  }\n  .studio\\:duration-150 {\n    --tw-duration: 150ms;\n    transition-duration: 150ms;\n  }\n  .studio\\:duration-200 {\n    --tw-duration: 200ms;\n    transition-duration: 200ms;\n  }\n  .studio\\:ease-\\(--ds-ease-in-out\\) {\n    --tw-ease: var(--ds-ease-in-out);\n    transition-timing-function: var(--ds-ease-in-out);\n  }\n  .studio\\:ease-out {\n    --tw-ease: var(--studio-ease-out);\n    transition-timing-function: var(--studio-ease-out);\n  }\n  .studio\\:outline-none {\n    --tw-outline-style: none;\n    outline-style: none;\n  }\n  @media (hover: hover) {\n    :is(:where(.studio\\:group):hover .studio\\:group-hover\\:hidden) {\n      display: none;\n    }\n    :is(:where(.studio\\:group):hover .studio\\:group-hover\\:inline-flex) {\n      display: inline-flex;\n    }\n  }\n  :is(:where(.studio\\:group):focus-visible .studio\\:group-focus-visible\\:hidden) {\n    display: none;\n  }\n  :is(:where(.studio\\:group):focus-visible .studio\\:group-focus-visible\\:inline-flex) {\n    display: inline-flex;\n  }\n  .studio\\:placeholder\\:text-\\(--dsw-alias-label-tertiary\\)::placeholder {\n    color: var(--dsw-alias-label-tertiary);\n  }\n  .studio\\:backdrop\\:bg-black\\/30::backdrop {\n    background-color: var(--studio-color-black);\n    @supports (color: color-mix(in lab, red, red)) {\n      background-color: color-mix(in oklab, var(--studio-color-black) 30%, transparent);\n    }\n  }\n  @media (hover: hover) {\n    .studio\\:hover\\:bg-\\(--dsw-alias-interactive-bg-hover\\):hover {\n      background-color: var(--dsw-alias-interactive-bg-hover);\n    }\n    .studio\\:hover\\:bg-black\\/5:hover {\n      background-color: var(--studio-color-black);\n    }\n    @supports (color: color-mix(in lab, red, red)) {\n      .studio\\:hover\\:bg-black\\/5:hover {\n        background-color: color-mix(in oklab, var(--studio-color-black) 5%, transparent);\n      }\n    }\n    .studio\\:hover\\:bg-blue-500:hover {\n      background-color: var(--studio-color-blue-500);\n    }\n  }\n  .studio\\:focus\\:border-blue-500:focus {\n    border-color: var(--studio-color-blue-500);\n  }\n  .studio\\:focus-visible\\:outline-2:focus-visible {\n    outline-style: var(--tw-outline-style);\n    outline-width: 2px;\n  }\n  .studio\\:focus-visible\\:outline-blue-500:focus-visible {\n    outline-color: var(--studio-color-blue-500);\n  }\n  .studio\\:disabled\\:cursor-default:disabled {\n    cursor: default;\n  }\n  .studio\\:disabled\\:opacity-50:disabled {\n    opacity: 50%;\n  }\n  @media (prefers-reduced-motion: reduce) {\n    .studio\\:motion-reduce\\:transition-none {\n      transition-property: none;\n    }\n  }\n  .studio\\:\\[\\&_svg\\]\\:size-4 svg {\n    width: calc(var(--studio-spacing) * 4);\n    height: calc(var(--studio-spacing) * 4);\n  }\n  .studio\\:\\[\\&\\:\\:-webkit-scrollbar\\]\\:hidden::-webkit-scrollbar {\n    display: none;\n  }\n  .studio\\:\\[\\&\\[hidden\\]\\]\\:hidden[hidden] {\n    display: none;\n  }\n}\n@property --tw-border-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@property --tw-leading {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-font-weight {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-inset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-shadow-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-shadow-alpha {\n  syntax: "<percentage>";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-ring-color {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-inset-ring-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-ring-inset {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ring-offset-width {\n  syntax: "<length>";\n  inherits: false;\n  initial-value: 0px;\n}\n@property --tw-ring-offset-color {\n  syntax: "*";\n  inherits: false;\n  initial-value: #fff;\n}\n@property --tw-ring-offset-shadow {\n  syntax: "*";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-duration {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-ease {\n  syntax: "*";\n  inherits: false;\n}\n@property --tw-outline-style {\n  syntax: "*";\n  inherits: false;\n  initial-value: solid;\n}\n@layer properties {\n  @supports ((-webkit-hyphens: none) and (not (margin-trim: block))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {\n    *, ::before, ::after, ::backdrop {\n      --tw-border-style: solid;\n      --tw-leading: initial;\n      --tw-font-weight: initial;\n      --tw-shadow: 0 0 #0000;\n      --tw-shadow-color: initial;\n      --tw-shadow-alpha: 100%;\n      --tw-inset-shadow: 0 0 #0000;\n      --tw-inset-shadow-color: initial;\n      --tw-inset-shadow-alpha: 100%;\n      --tw-ring-color: initial;\n      --tw-ring-shadow: 0 0 #0000;\n      --tw-inset-ring-color: initial;\n      --tw-inset-ring-shadow: 0 0 #0000;\n      --tw-ring-inset: initial;\n      --tw-ring-offset-width: 0px;\n      --tw-ring-offset-color: #fff;\n      --tw-ring-offset-shadow: 0 0 #0000;\n      --tw-duration: initial;\n      --tw-ease: initial;\n      --tw-outline-style: solid;\n    }\n  }\n}\n';
 
 // src/client/sessionCompat.ts
 function currentSessionOf(snapshot) {
@@ -21461,39 +21477,66 @@ var WAVE_BG_B64 = "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQUFBAYFBQUHBgYHCQ8KCQgIC
 var import_react4 = require("react");
 var import_react_dom2 = require("react-dom");
 var import_jsx_runtime4 = require("react/jsx-runtime");
-function buildAddStudioPrompt(t, source) {
-  return [
-    t("add.promptIntro"),
-    t("add.promptFeature"),
-    t("add.promptPath") + source.trim()
-  ].join("\n");
+var LOCAL_PATH = /^(?:[A-Za-z]:[\\/]|\\\\|\/)/;
+var GITHUB_REPO = /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\.git)?\/?$/;
+function isStudioSource(value) {
+  const text2 = value.trim();
+  return LOCAL_PATH.test(text2) || GITHUB_REPO.test(text2);
 }
-function AddStudioDialog({ open, t, onClose, onCreate }) {
+var ICON_AI_ADD = /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("svg", { width: "18", height: "18", viewBox: "0 0 16 16", fill: "none", "aria-hidden": true, children: [
+  /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("path", { d: "M8 1.6l1.5 3.9 3.9 1.5-3.9 1.5L8 12.4 6.5 8.5 2.6 7l3.9-1.5z", stroke: "currentColor", strokeWidth: "1.3", strokeLinejoin: "round" }),
+  /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("path", { d: "M12.6 11.2l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z", fill: "currentColor" })
+] });
+function AddStudioDialog({ open, t, onClose, onAiCreate, onImport }) {
   const dialog = (0, import_react4.useRef)(null);
   const titleId = (0, import_react4.useId)();
+  const descId = (0, import_react4.useId)();
   const [source, setSource] = (0, import_react4.useState)("");
-  const [busy, setBusy] = (0, import_react4.useState)(false);
+  const [busy, setBusy] = (0, import_react4.useState)("");
   const [error2, setError] = (0, import_react4.useState)("");
-  const prompt = buildAddStudioPrompt(t, source);
+  const [notice, setNotice] = (0, import_react4.useState)("");
   (0, import_react4.useEffect)(() => {
     const node = dialog.current;
     if (!node) return;
-    if (open && !node.open) node.showModal();
+    if (open && !node.open) {
+      setError("");
+      setNotice("");
+      node.showModal();
+    }
     if (!open && node.open) node.close();
   }, [open]);
-  const submit = async () => {
-    const value = source.trim();
-    if (!value || busy) return;
-    setBusy(true);
+  const aiCreate = async () => {
+    if (busy) return;
+    setBusy("ai");
     setError("");
+    setNotice("");
     try {
-      await onCreate(buildAddStudioPrompt(t, value), value);
-      setSource("");
+      await onAiCreate();
       onClose();
     } catch {
       setError(t("add.createFail"));
     } finally {
-      setBusy(false);
+      setBusy("");
+    }
+  };
+  const importStudio2 = async () => {
+    const value = source.trim();
+    if (!value || busy) return;
+    if (!isStudioSource(value)) {
+      setError(t("add.importInvalid"));
+      return;
+    }
+    setBusy("import");
+    setError("");
+    setNotice("");
+    try {
+      const outcome = await onImport(value);
+      setSource("");
+      setNotice(t(outcome === "restart" ? "add.importRestart" : "add.importDone"));
+    } catch (err) {
+      setError(t("add.importFail", { reason: err instanceof Error ? err.message : String(err) }));
+    } finally {
+      setBusy("");
     }
   };
   return (0, import_react_dom2.createPortal)(
@@ -21502,6 +21545,7 @@ function AddStudioDialog({ open, t, onClose, onCreate }) {
       {
         ref: dialog,
         "aria-labelledby": titleId,
+        "aria-describedby": descId,
         onCancel: (event) => {
           event.preventDefault();
           onClose();
@@ -21528,44 +21572,133 @@ function AddStudioDialog({ open, t, onClose, onCreate }) {
               }
             )
           ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { className: "studio:mb-4 studio:mt-2 studio:text-sm studio:leading-6 studio:text-(--dsw-alias-label-secondary)", children: t("add.studioDescription") }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { id: descId, className: "studio:mb-4 studio:mt-2 studio:text-sm studio:leading-6 studio:text-(--dsw-alias-label-secondary)", children: t("add.studioDescription") }),
           /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
             "input",
             {
               type: "text",
               autoFocus: true,
               value: source,
-              disabled: busy,
+              disabled: !!busy,
               placeholder: t("add.studioPlaceholder"),
-              "aria-label": t("add.studioDescription"),
-              onChange: (event) => setSource(event.currentTarget.value),
+              "aria-label": t("add.studioInputLabel"),
+              onChange: (event) => {
+                setSource(event.currentTarget.value);
+                setError("");
+              },
               onKeyDown: (event) => {
-                if (event.key === "Enter" && !event.nativeEvent.isComposing) void submit();
+                if (event.key === "Enter" && !event.nativeEvent.isComposing) void importStudio2();
               },
               className: "studio:box-border studio:w-full studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-(--dsw-alias-fill-l1) studio:px-3 studio:py-2.5 studio:text-sm studio:text-(--dsw-alias-label-primary) studio:outline-none studio:placeholder:text-(--dsw-alias-label-tertiary) studio:focus:border-blue-500"
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "studio:mt-4", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "studio:text-xs studio:text-(--dsw-alias-label-secondary)", children: t("add.promptLabel") }),
-            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("pre", { className: "studio:mt-2 studio:whitespace-pre-wrap studio:break-words studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-(--dsw-alias-fill-l1) studio:p-3 studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-secondary)", children: prompt })
-          ] }),
           error2 && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { role: "alert", className: "studio:mb-0 studio:mt-3 studio:text-sm studio:text-red-500", children: error2 }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-            "button",
-            {
-              type: "button",
-              disabled: !source.trim() || busy,
-              "aria-busy": busy,
-              onClick: () => void submit(),
-              className: "studio:mt-4 studio:flex studio:w-full studio:items-center studio:justify-center studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-blue-600 studio:px-4 studio:py-2.5 studio:text-sm studio:font-medium studio:text-white studio:cursor-pointer studio:hover:bg-blue-500 studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50",
-              children: busy ? t("add.creating") : t("add.callBigFish")
-            }
-          )
+          notice && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("p", { role: "status", className: "studio:mb-0 studio:mt-3 studio:text-sm studio:text-green-600", children: notice }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "studio:mt-4 studio:flex studio:items-center studio:gap-3", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+              "button",
+              {
+                type: "button",
+                disabled: !!busy,
+                "aria-busy": busy === "ai",
+                onClick: () => void aiCreate(),
+                "aria-label": busy === "ai" ? t("add.creating") : t("add.callBigFish"),
+                title: busy === "ai" ? t("add.creating") : t("add.callBigFish"),
+                className: "studio:flex studio:h-10 studio:w-10 studio:shrink-0 studio:items-center studio:justify-center studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-(--dsw-alias-fill-l1) studio:text-blue-500 studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50",
+                children: ICON_AI_ADD
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+              "button",
+              {
+                type: "button",
+                disabled: !source.trim() || !!busy,
+                "aria-busy": busy === "import",
+                onClick: () => void importStudio2(),
+                className: "studio:flex studio:h-10 studio:flex-1 studio:items-center studio:justify-center studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-blue-600 studio:px-4 studio:text-sm studio:font-medium studio:text-white studio:cursor-pointer studio:hover:bg-blue-500 studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50",
+                children: busy === "import" ? t("add.importing") : t("add.import")
+              }
+            )
+          ] })
         ]
       }
     ),
     document.body
   );
+}
+
+// src/client/studioDraft.ts
+var TITLE_LIMIT = 40;
+function buildStudioDraftPrompt(labels) {
+  return [labels.intro, labels.feature, labels.path].join("\n");
+}
+function studioFeatureName(text2, featureLabel) {
+  const label = featureLabel.replace(/[：:]\s*$/, "");
+  const lines = String(text2 ?? "").split(/\r?\n/);
+  for (const line of lines) {
+    const index = line.indexOf(label);
+    if (index < 0) continue;
+    const value = line.slice(index + label.length).replace(/^\s*[：:]\s*/, "").trim();
+    return clip(value);
+  }
+  return "";
+}
+function clip(value) {
+  const clean = value.replace(/^[「『"'“]+|[」』"'”。.;；]+$/g, "").trim();
+  return clean.length > TITLE_LIMIT ? clean.slice(0, TITLE_LIMIT) + "\u2026" : clean;
+}
+function draftStamp(now = /* @__PURE__ */ new Date()) {
+  const pad = (n) => String(n).padStart(2, "0");
+  return now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + "-" + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
+}
+function firstUserText(snapshot) {
+  const nodes = snapshot?.legacy?.nodes;
+  if (!Array.isArray(nodes)) return "";
+  for (const node of nodes) {
+    if (node?.kind !== "user") continue;
+    const blocks = Array.isArray(node.content) ? node.content : [];
+    return blocks.filter((block2) => block2?.type === "text").map((block2) => block2.text ?? "").join("\n");
+  }
+  return "";
+}
+async function watchFirstUserMessage(sessions, conversation, sessionId, onText, timeoutMs = 2 * 60 * 60 * 1e3) {
+  if (typeof sessions?.retain !== "function" || typeof conversation?.binding !== "function") throw new Error("\u4F1A\u8BDD\u670D\u52A1\u5C1A\u672A\u5C31\u7EEA");
+  const reference2 = sessions.retain(sessionId, { source: "dshWorktable" });
+  let done = false;
+  let unsubscribe = null;
+  let timer = null;
+  const dispose = () => {
+    if (done) return;
+    done = true;
+    if (timer) clearTimeout(timer);
+    try {
+      unsubscribe?.();
+    } catch {
+    }
+    try {
+      reference2.release();
+    } catch {
+    }
+  };
+  try {
+    await reference2.ready;
+    if (done) return dispose;
+    const source = conversation.binding(reference2.binding).target("chat");
+    const check = () => {
+      if (done) return;
+      const text2 = firstUserText(source.getSnapshot());
+      if (!text2.trim()) return;
+      dispose();
+      onText(text2);
+    };
+    unsubscribe = source.subscribe(check);
+    timer = setTimeout(dispose, timeoutMs);
+    check();
+    return dispose;
+  } catch (error2) {
+    dispose();
+    throw error2;
+  }
 }
 
 // src/client/index.tsx
@@ -21616,7 +21749,6 @@ var ICON_SEARCH = /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("svg", { width: 
   /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("path", { d: "M11.894845 6.647401C11.894845 3.725463 9.534486 1.356779 6.623219 1.35657C3.711786 1.35657 1.351635 3.725338 1.351635 6.647401C1.351843 9.569296 3.711911 11.938273 6.623219 11.938273C9.534361 11.938064 11.894637 9.569171 11.894845 6.647401ZM13.245462 6.647401C13.245254 10.317935 10.280401 13.293613 6.623219 13.293821C2.965871 13.293821 0.000204 10.31806 0 6.647401C0 2.976574 2.965746 0 6.623219 0C10.280526 0.000205 13.245462 2.9767 13.245462 6.647401Z", fill: "currentColor" }),
   /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("path", { d: "M16.000417 15.041079L15.044449 16.000433L11.530434 12.473588L12.486298 11.514234L16.000417 15.041079Z", fill: "currentColor" })
 ] });
-var ICON_VIEW_OPTIONS = /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("path", { transform: "translate(1.292 1.3)", d: "M10.3232 9.18164C11.2868 9.18164 12.0985 9.82833 12.3506 10.7109L13.415 10.7109L13.415 11.8711L12.3496 11.8711C12.0971 12.7532 11.2864 13.3994 10.3232 13.3994C9.36031 13.3992 8.55012 12.7531 8.29785 11.8711L0 11.8711L0 10.7109L8.29688 10.7109C8.54876 9.82845 9.35988 9.18186 10.3232 9.18164ZM10.3232 10.3418C9.7999 10.3421 9.37534 10.7667 9.375 11.29C9.375 11.8137 9.79969 12.239 10.3232 12.2393C10.847 12.2393 11.2725 11.8138 11.2725 11.29C11.2721 10.7666 10.8468 10.3418 10.3232 10.3418ZM12.4326 11.291C12.4326 11.3549 12.4284 11.418 12.4229 11.4805C12.4287 11.4181 12.4326 11.355 12.4326 11.291ZM8.21484 11.2832C8.21484 11.2856 8.21484 11.2886 8.21484 11.291L8.21484 11.29C8.21484 11.2878 8.21484 11.2855 8.21484 11.2832ZM3.08301 4.59082C4.04605 4.59095 4.85696 5.23717 5.10938 6.11914L13.415 6.11914L13.415 7.2793L5.11035 7.2793C4.85833 8.16202 4.04648 8.80846 3.08301 8.80859C2.11972 8.80843 1.30963 8.16179 1.05762 7.2793L0 7.2793L0 6.11914L1.05762 6.11914C1.30994 5.23728 2.12006 4.59098 3.08301 4.59082ZM3.08301 5.75098C2.55962 5.75117 2.13512 6.17587 2.13477 6.69922C2.13477 7.22287 2.5594 7.64824 3.08301 7.64844C3.60665 7.64828 4.03223 7.2229 4.03223 6.69922C4.03187 6.17585 3.60643 5.75113 3.08301 5.75098ZM5.19238 6.69922C5.19238 6.763 5.18816 6.82633 5.18262 6.88867C5.18846 6.82629 5.19238 6.76313 5.19238 6.69922C5.19236 6.63495 5.18853 6.57152 5.18262 6.50879C5.18826 6.57154 5.19236 6.635 5.19238 6.69922ZM0.982422 6.52344C0.977382 6.58136 0.97463 6.63999 0.974609 6.69922C0.974609 6.75775 0.977496 6.81579 0.982422 6.87305C0.977758 6.81579 0.974609 6.75767 0.974609 6.69922C0.974628 6.64 0.977618 6.58142 0.982422 6.52344ZM10.3232 0C11.2869 0 12.0986 0.646596 12.3506 1.5293L13.415 1.5293L13.415 2.68945L12.3496 2.68945C12.363 2.64266 12.3754 2.59488 12.3857 2.54688C12.1838 3.50118 11.3376 4.21777 10.3232 4.21777C9.36037 4.21756 8.55018 3.57139 8.29785 2.68945L0 2.68945L0 1.5293L8.29688 1.5293C8.5487 0.646717 9.35981 0.00021854 10.3232 0ZM10.3232 1.16016C9.79984 1.16042 9.37524 1.58499 9.375 2.1084C9.375 2.63201 9.79969 3.05735 10.3232 3.05762C10.847 3.05762 11.2725 2.63217 11.2725 2.1084C11.2722 1.58483 10.8469 1.16016 10.3232 1.16016ZM12.4229 2.29883C12.4287 2.23641 12.4326 2.17331 12.4326 2.10938C12.4326 2.17327 12.4284 2.23638 12.4229 2.29883ZM8.21484 2.10938L8.21484 2.1084L8.21484 2.10938ZM8.22266 1.93359C8.21785 1.98897 8.21506 2.04499 8.21484 2.10156C8.21503 2.04501 8.2181 1.98902 8.22266 1.93359ZM8.22266 11.1162C8.2179 11.1713 8.21507 11.227 8.21484 11.2832C8.21504 11.227 8.21814 11.1713 8.22266 11.1162Z", fill: "currentColor" }) });
 var ICON_ADD = /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", children: [
   /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("path", { transform: "translate(9.52 2.52)", d: "M3.55246 0L3.55246 2.44252L6 2.44252L6 3.55748L3.55246 3.55748L3.55246 6L2.43834 6L2.43834 3.55748L0 3.55748L0 2.44252L2.43834 2.44252L2.43834 0L3.55246 0Z", fill: "currentColor" }),
   /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("path", { transform: "translate(0.3496 2.35)", d: "M4.76367 0C5.36861 1.80598e-05 5.93113 0.310294 6.25488 0.821289L6.78027 1.64941C6.79685 1.67558 6.81791 1.69775 6.83887 1.71973C6.72186 2.15521 6.65702 2.61192 6.65137 3.08301C6.25601 2.96045 5.90909 2.70478 5.68164 2.3457L5.15723 1.5166C5.07183 1.38189 4.92318 1.3008 4.76367 1.30078L2.32422 1.30078C1.7589 1.30078 1.30078 1.7589 1.30078 2.32422L1.30078 10.1338C1.30078 10.6991 1.7589 11.1572 2.32422 11.1572L11.9766 11.1572C12.5419 11.1572 13 10.6991 13 10.1338L13 8.58398C13.4545 8.5135 13.8903 8.38748 14.3008 8.21289L14.3008 10.1338C14.3008 11.4171 13.2598 12.458 11.9766 12.458L2.32422 12.458C1.04093 12.458 0 11.4171 0 10.1338L0 2.32422C0 1.04093 1.04093 0 2.32422 0L4.76367 0Z", fill: "currentColor" })
@@ -22116,6 +22248,82 @@ async function createStudioSession(prompt, source) {
   }
   await promptIntoSession(sessionId, prompt);
   return sessionId;
+}
+async function fillSessionInput(sessionId, text2) {
+  for (let attempt = 0; attempt < 30; attempt++) {
+    const b = sessionBridge;
+    if (!b) return false;
+    const current = currentSessionOf(b.sessions?.list?.getSnapshot?.());
+    if ((!current || current === sessionId) && appendHostInput(b, text2)) return true;
+    await new Promise((resolve) => setTimeout(resolve, 150));
+  }
+  return false;
+}
+async function createDraftWorkspace(title) {
+  const ws = sessionBridge?.workspaces;
+  if (typeof ws?.create !== "function") return null;
+  try {
+    const base2 = await ws.initializeDefault?.();
+    const parent = typeof base2?.path === "string" && base2.path ? parentPathOf(base2.path) : "";
+    if (!parent) return null;
+    const name = "studio-" + draftStamp();
+    const full = joinPath(parent, name);
+    try {
+      await ws.createDirectory?.(parent, name);
+    } catch {
+    }
+    try {
+      await fetch("/api/worktable/mkdir", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ path: full }) });
+    } catch {
+    }
+    const view = await ws.create({ path: full });
+    const workspaceId = view?.workspaceId ?? view?.id ?? null;
+    if (workspaceId && typeof ws.rename === "function") {
+      try {
+        await ws.rename(workspaceId, title);
+      } catch {
+      }
+    }
+    return workspaceId;
+  } catch {
+    return null;
+  }
+}
+async function createStudioDraftSession(labels) {
+  const b = sessionBridge;
+  if (!b || typeof b.sessions?.create !== "function") throw new Error("sessions unavailable");
+  const workspaceId = await createDraftWorkspace(labels.workspace);
+  const sessionId = await createHostSession(b.sessions, b.workspaces, workspaceId ? { workspaceId } : {}, "auto");
+  await ensureSessionPreset(sessionId);
+  await ensureSessionModel(sessionId);
+  markPluginSessionOpen(sessionId);
+  try {
+    await openHostSession(clientCtx, b.sessions, sessionId);
+  } catch {
+  }
+  await fillSessionInput(sessionId, buildStudioDraftPrompt(labels));
+  if (workspaceId && sessionConversationSource) {
+    const workspaces = b.workspaces;
+    void watchFirstUserMessage(b.sessions, sessionConversationSource, sessionId, (text2) => {
+      const title = studioFeatureName(text2, labels.feature);
+      if (title && typeof workspaces?.rename === "function") void workspaces.rename(workspaceId, title).catch(() => {
+      });
+    }).catch(() => {
+    });
+  }
+  return sessionId;
+}
+async function importStudio(source) {
+  const r = await fetch("/studio-projects/import", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ path: source }) });
+  let d = null;
+  try {
+    d = await r.json();
+  } catch {
+  }
+  if (!r.ok) throw new Error(typeof d?.error === "string" ? d.error : "HTTP " + r.status);
+  if (d?.application === "restart-required") return "restart";
+  if (d?.application === "applied" || d?.application === "overridden") return "applied";
+  throw new Error(typeof d?.error === "string" ? d.error : "\u63D2\u4EF6\u7BA1\u7406\u5668\u672A\u5B8C\u6210\u5B89\u88C5");
 }
 async function createStudioEditSession(studio) {
   const localPath = studio.localPath?.trim();
@@ -23599,20 +23807,6 @@ function WorktableSection(props) {
         {
           type: "button",
           className: "dsh-wt_iconBtn",
-          "aria-label": t("menu.viewOptions"),
-          title: t("menu.viewOptions"),
-          onClick: () => {
-            setViewOptionsOpen((v) => !v);
-            setAddOpen(false);
-          },
-          children: ICON_VIEW_OPTIONS
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
-        "button",
-        {
-          type: "button",
-          className: "dsh-wt_iconBtn",
           "aria-label": t("menu.add"),
           title: t("menu.add"),
           onClick: () => {
@@ -23631,9 +23825,10 @@ function WorktableSection(props) {
         open: addOpen,
         t,
         onClose: () => setAddOpen(false),
-        onCreate: async (prompt, source) => {
-          await createStudioSession(prompt, source);
-        }
+        onAiCreate: async () => {
+          await createStudioDraftSession({ intro: t("add.promptIntro"), feature: t("add.promptFeature"), path: t("add.promptPath"), workspace: t("add.draftWorkspace") });
+        },
+        onImport: importStudio
       }
     ),
     /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(StudioSection, { wide, title: t("title"), expandSidebar: props.expandSidebar, toolbar, children: /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("div", { ref: rootRef, className: "dsh-wt_section" + (isFloat ? " dsh-wt_float" : ""), style: { marginBottom: 0 }, children: [

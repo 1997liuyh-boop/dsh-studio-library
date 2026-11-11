@@ -101,10 +101,27 @@ test('分屏与工作室通过当前宿主插槽挂载', () => {
   assert.match(source, /entriesOfSlot\('sidebar.worktable.project'/)
 })
 
-test('新增工作室入口打开独立会话弹窗，不再展示布局或项目文件夹设置', () => {
+test('新增工作室弹窗：左侧 AI 新开会话，右侧导入工作室，不再展示默认提示词', () => {
   const source = readFileSync(new URL('../src/client/index.tsx', import.meta.url), 'utf8')
-  assert.match(source, /import \{ AddStudioDialog \} from '\.\/AddStudioDialog'/)
-  assert.match(source, /onCreate=\{async \(prompt, source\) => \{ await createStudioSession\(prompt, source\) \}\}/)
-  assert.match(readFileSync(new URL('../src/client/AddStudioDialog.tsx', import.meta.url), 'utf8'), /呼叫大肥鱼新增工作室|add\.callBigFish/)
+  const dialog = readFileSync(new URL('../src/client/AddStudioDialog.tsx', import.meta.url), 'utf8')
+  assert.match(source, /import \{ AddStudioDialog, type StudioImportOutcome \} from '\.\/AddStudioDialog'/)
+  assert.match(source, /onAiCreate=\{async \(\) => \{\s+await createStudioDraftSession\(/)
+  assert.match(source, /onImport=\{importStudio\}/)
+  assert.match(dialog, /add\.callBigFish/)
+  assert.match(dialog, /add\.import'/)
+  assert.doesNotMatch(dialog, /add\.promptLabel/)
+  assert.doesNotMatch(source, /menu\.viewOptions|ICON_VIEW_OPTIONS/)
   assert.doesNotMatch(source, /add\.chooseLayout|openFolderPick|customLayout|dsh-wt_folderBtn/)
+})
+
+test('新建工作室模板与功能名称解析', async () => {
+  const { build } = await import('esbuild')
+  const out = await build({ entryPoints: [fileURLToPath(new URL('../src/client/studioDraft.ts', import.meta.url))], bundle: true, write: false, format: 'esm', platform: 'node' })
+  const mod = await import('data:text/javascript;base64,' + Buffer.from(out.outputFiles[0].text).toString('base64'))
+  const prompt = mod.buildStudioDraftPrompt({ intro: '我们需要新增工作室', feature: '工作室功能是：', path: '工作室本地目录是：' })
+  assert.equal(prompt, ['我们需要新增工作室', '工作室功能是：', '工作室本地目录是：'].join('\n'))
+  assert.equal(mod.studioFeatureName(prompt.replace('工作室功能是：', '工作室功能是： 记账助手'), '工作室功能是：'), '记账助手')
+  assert.equal(mod.studioFeatureName('工作室功能是:「旅行规划」。', '工作室功能是：'), '旅行规划')
+  assert.equal(mod.studioFeatureName(prompt, '工作室功能是：'), '')
+  assert.match(mod.draftStamp(new Date(2026, 10, 11, 9, 5, 3)), /^20261111-090503$/)
 })

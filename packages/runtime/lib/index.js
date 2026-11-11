@@ -5892,6 +5892,40 @@ var StudioControl = class {
     return true;
   }
 };
+var LOCAL_STUDIO = /^(?:[A-Za-z]:[\\/]|\\\\|\/)/;
+var GITHUB_STUDIO = /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\.git)?\/?$/;
+async function handleStudioImport(req, res, pluginManager) {
+  const send = (code, value) => {
+    res.writeHead(code, { "content-type": "application/json", "cache-control": "no-store" });
+    res.end(JSON.stringify(value));
+  };
+  if (req.method !== "POST") return send(405, { error: "\u4EC5\u652F\u6301 POST" });
+  if (req.headers["sec-fetch-site"] === "cross-site" || req.headers["content-type"]?.split(";")[0] !== "application/json") return send(403, { error: "\u8BF7\u6C42\u6765\u6E90\u65E0\u6548" });
+  let size = 0;
+  const chunks = [];
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > 8192) return send(413, { error: "\u8BF7\u6C42\u8FC7\u5927" });
+    chunks.push(chunk);
+  }
+  let input;
+  try {
+    input = JSON.parse(Buffer.concat(chunks).toString("utf8"));
+  } catch {
+    return send(400, { error: "\u53C2\u6570\u65E0\u6548" });
+  }
+  const path = typeof input?.path === "string" ? input.path.trim() : "";
+  if (!LOCAL_STUDIO.test(path) && !GITHUB_STUDIO.test(path)) return send(400, { error: "\u8BF7\u586B\u5199 GitHub \u4ED3\u5E93\u5730\u5740\u6216\u672C\u673A\u7EDD\u5BF9\u8DEF\u5F84" });
+  if (!pluginManager) return send(503, { error: "\u5F53\u524D dsh \u6CA1\u6709\u53EF\u7528\u7684\u63D2\u4EF6\u7BA1\u7406\u5668" });
+  const result = await pluginManager.installBundle(path, { enabled: true });
+  const failed = result.application === "failed" || result.application === "cancelled";
+  send(failed ? 422 : 200, {
+    application: result.application,
+    bundle: result.bundle,
+    version: result.version,
+    ...failed ? { error: result.error?.diagnostic ?? result.error?.code ?? (result.application === "cancelled" ? "\u5B89\u88C5\u5DF2\u53D6\u6D88" : "\u5B89\u88C5\u5931\u8D25") } : {}
+  });
+}
 function installStudioControl(ctx, registry, pluginManager) {
   const control = new StudioControl(registry);
   ctx.effect(() => () => control.dispose(), "\u5DE5\u4F5C\u5BA4\uFF1A\u53D6\u6D88\u5F85\u5904\u7406\u63A7\u5236");
@@ -6121,6 +6155,10 @@ async function apply(ctx, config = {}) {
         return;
       }
       if (await handleUpdates(req, res, url.pathname)) return;
+      if (url.pathname === "/studio-projects/import") {
+        await handleStudioImport(req, res, ctx.pluginManager);
+        return;
+      }
       if (await control.handle(req, res, url.pathname)) return;
       const legacyId = url.pathname.split("/")[2] ?? "";
       const legacyPage = url.searchParams.has("legacy") && ["travel", "knowledge", "media", "fitness"].includes(legacyId) && registry.has(legacyId);

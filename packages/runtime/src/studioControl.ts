@@ -97,6 +97,30 @@ export class StudioControl {
   }
 }
 
+/** 本机绝对路径（Windows 盘符 / UNC / POSIX）。 */
+const LOCAL_STUDIO = /^(?:[A-Za-z]:[\\/]|\\\\|\/)/
+/** GitHub 仓库地址。 */
+const GITHUB_STUDIO = /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\.git)?\/?$/
+
+/** 控制室「导入工作室」：校验来源后交给插件管理器安装并启用；外层路由已验证所有者。 */
+export async function handleStudioImport(req: IncomingMessage, res: ServerResponse, pluginManager?: Pick<PluginManager, 'installBundle'>): Promise<void> {
+  const send = (code: number, value: unknown) => { res.writeHead(code, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify(value)) }
+  if (req.method !== 'POST') return send(405, { error: '仅支持 POST' })
+  if (req.headers['sec-fetch-site'] === 'cross-site' || req.headers['content-type']?.split(';')[0] !== 'application/json') return send(403, { error: '请求来源无效' })
+  let size = 0
+  const chunks: Buffer[] = []
+  for await (const chunk of req) { size += chunk.length; if (size > 8192) return send(413, { error: '请求过大' }); chunks.push(chunk) }
+  let input: any
+  try { input = JSON.parse(Buffer.concat(chunks).toString('utf8')) } catch { return send(400, { error: '参数无效' }) }
+  const path = typeof input?.path === 'string' ? input.path.trim() : ''
+  if (!LOCAL_STUDIO.test(path) && !GITHUB_STUDIO.test(path)) return send(400, { error: '请填写 GitHub 仓库地址或本机绝对路径' })
+  if (!pluginManager) return send(503, { error: '当前 dsh 没有可用的插件管理器' })
+  const result = await pluginManager.installBundle(path, { enabled: true })
+  const failed = result.application === 'failed' || result.application === 'cancelled'
+  send(failed ? 422 : 200, { application: result.application, bundle: result.bundle, version: result.version,
+    ...(failed ? { error: result.error?.diagnostic ?? result.error?.code ??(result.application === 'cancelled' ? '安装已取消' : '安装失败') } : {}) })
+}
+
 export function installStudioControl(ctx: Context, registry: StudioProjects, pluginManager?: Pick<PluginManager, 'installBundle'>) {
   const control = new StudioControl(registry)
   ctx.effect(() => () => control.dispose(), '工作室：取消待处理控制')
