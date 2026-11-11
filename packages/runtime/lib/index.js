@@ -5,11 +5,7 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __commonJS = (cb, mod) => function __require() {
-  try {
-    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-  } catch (e) {
-    throw mod = 0, e;
-  }
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
 var __copyProps = (to2, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
@@ -28,9 +24,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../studio-library/node_modules/semver/internal/constants.js
+// node_modules/semver/internal/constants.js
 var require_constants = __commonJS({
-  "../studio-library/node_modules/semver/internal/constants.js"(exports, module) {
+  "node_modules/semver/internal/constants.js"(exports, module) {
     "use strict";
     var SEMVER_SPEC_VERSION = "2.0.0";
     var MAX_LENGTH = 256;
@@ -88,9 +84,9 @@ var require_constants = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/internal/debug.js
+// node_modules/semver/internal/debug.js
 var require_debug = __commonJS({
-  "../studio-library/node_modules/semver/internal/debug.js"(exports, module) {
+  "node_modules/semver/internal/debug.js"(exports, module) {
     "use strict";
     var debug = typeof process === "object" && process.env && process.env.NODE_DEBUG && /\bsemver\b/i.test(process.env.NODE_DEBUG) ? (...args) => console.error("SEMVER", ...args) : () => {
     };
@@ -98,9 +94,9 @@ var require_debug = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/internal/re.js
+// node_modules/semver/internal/re.js
 var require_re = __commonJS({
-  "../studio-library/node_modules/semver/internal/re.js"(exports, module) {
+  "node_modules/semver/internal/re.js"(exports, module) {
     "use strict";
     var {
       MAX_SAFE_COMPONENT_LENGTH,
@@ -186,9 +182,9 @@ var require_re = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/internal/parse-options.js
+// node_modules/semver/internal/parse-options.js
 var require_parse_options = __commonJS({
-  "../studio-library/node_modules/semver/internal/parse-options.js"(exports, module) {
+  "node_modules/semver/internal/parse-options.js"(exports, module) {
     "use strict";
     var looseOption = Object.freeze({ loose: true });
     var emptyOpts = Object.freeze({});
@@ -205,9 +201,9 @@ var require_parse_options = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/internal/identifiers.js
+// node_modules/semver/internal/identifiers.js
 var require_identifiers = __commonJS({
-  "../studio-library/node_modules/semver/internal/identifiers.js"(exports, module) {
+  "node_modules/semver/internal/identifiers.js"(exports, module) {
     "use strict";
     var numeric = /^[0-9]+$/;
     var compareIdentifiers = (a, b2) => {
@@ -230,9 +226,9 @@ var require_identifiers = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/classes/semver.js
+// node_modules/semver/classes/semver.js
 var require_semver = __commonJS({
-  "../studio-library/node_modules/semver/classes/semver.js"(exports, module) {
+  "node_modules/semver/classes/semver.js"(exports, module) {
     "use strict";
     var debug = require_debug();
     var { MAX_LENGTH, MAX_SAFE_INTEGER } = require_constants();
@@ -522,9 +518,9 @@ var require_semver = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/parse.js
+// node_modules/semver/functions/parse.js
 var require_parse = __commonJS({
-  "../studio-library/node_modules/semver/functions/parse.js"(exports, module) {
+  "node_modules/semver/functions/parse.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var parse = (version, options, throwErrors = false) => {
@@ -544,9 +540,9 @@ var require_parse = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/valid.js
+// node_modules/semver/functions/valid.js
 var require_valid = __commonJS({
-  "../studio-library/node_modules/semver/functions/valid.js"(exports, module) {
+  "node_modules/semver/functions/valid.js"(exports, module) {
     "use strict";
     var parse = require_parse();
     var valid = (version, options) => {
@@ -557,9 +553,9 @@ var require_valid = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/clean.js
+// node_modules/semver/functions/clean.js
 var require_clean = __commonJS({
-  "../studio-library/node_modules/semver/functions/clean.js"(exports, module) {
+  "node_modules/semver/functions/clean.js"(exports, module) {
     "use strict";
     var parse = require_parse();
     var clean = (version, options) => {
@@ -570,9 +566,9 @@ var require_clean = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/inc.js
+// node_modules/semver/functions/inc.js
 var require_inc = __commonJS({
-  "../studio-library/node_modules/semver/functions/inc.js"(exports, module) {
+  "node_modules/semver/functions/inc.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var inc = (version, release, options, identifier, identifierBase) => {
@@ -594,9 +590,9 @@ var require_inc = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/diff.js
+// node_modules/semver/functions/diff.js
 var require_diff = __commonJS({
-  "../studio-library/node_modules/semver/functions/diff.js"(exports, module) {
+  "node_modules/semver/functions/diff.js"(exports, module) {
     "use strict";
     var parse = require_parse();
     var diff = (version1, version2) => {
@@ -638,9 +634,9 @@ var require_diff = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/major.js
+// node_modules/semver/functions/major.js
 var require_major = __commonJS({
-  "../studio-library/node_modules/semver/functions/major.js"(exports, module) {
+  "node_modules/semver/functions/major.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var major = (a, loose) => new SemVer(a, loose).major;
@@ -648,9 +644,9 @@ var require_major = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/minor.js
+// node_modules/semver/functions/minor.js
 var require_minor = __commonJS({
-  "../studio-library/node_modules/semver/functions/minor.js"(exports, module) {
+  "node_modules/semver/functions/minor.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var minor = (a, loose) => new SemVer(a, loose).minor;
@@ -658,9 +654,9 @@ var require_minor = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/patch.js
+// node_modules/semver/functions/patch.js
 var require_patch = __commonJS({
-  "../studio-library/node_modules/semver/functions/patch.js"(exports, module) {
+  "node_modules/semver/functions/patch.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var patch = (a, loose) => new SemVer(a, loose).patch;
@@ -668,9 +664,9 @@ var require_patch = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/prerelease.js
+// node_modules/semver/functions/prerelease.js
 var require_prerelease = __commonJS({
-  "../studio-library/node_modules/semver/functions/prerelease.js"(exports, module) {
+  "node_modules/semver/functions/prerelease.js"(exports, module) {
     "use strict";
     var parse = require_parse();
     var prerelease = (version, options) => {
@@ -681,9 +677,9 @@ var require_prerelease = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/compare.js
+// node_modules/semver/functions/compare.js
 var require_compare = __commonJS({
-  "../studio-library/node_modules/semver/functions/compare.js"(exports, module) {
+  "node_modules/semver/functions/compare.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var compare = (a, b2, loose) => new SemVer(a, loose).compare(new SemVer(b2, loose));
@@ -691,9 +687,9 @@ var require_compare = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/rcompare.js
+// node_modules/semver/functions/rcompare.js
 var require_rcompare = __commonJS({
-  "../studio-library/node_modules/semver/functions/rcompare.js"(exports, module) {
+  "node_modules/semver/functions/rcompare.js"(exports, module) {
     "use strict";
     var compare = require_compare();
     var rcompare = (a, b2, loose) => compare(b2, a, loose);
@@ -701,9 +697,9 @@ var require_rcompare = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/compare-loose.js
+// node_modules/semver/functions/compare-loose.js
 var require_compare_loose = __commonJS({
-  "../studio-library/node_modules/semver/functions/compare-loose.js"(exports, module) {
+  "node_modules/semver/functions/compare-loose.js"(exports, module) {
     "use strict";
     var compare = require_compare();
     var compareLoose = (a, b2) => compare(a, b2, true);
@@ -711,9 +707,9 @@ var require_compare_loose = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/compare-build.js
+// node_modules/semver/functions/compare-build.js
 var require_compare_build = __commonJS({
-  "../studio-library/node_modules/semver/functions/compare-build.js"(exports, module) {
+  "node_modules/semver/functions/compare-build.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var compareBuild = (a, b2, loose) => {
@@ -725,9 +721,9 @@ var require_compare_build = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/sort.js
+// node_modules/semver/functions/sort.js
 var require_sort = __commonJS({
-  "../studio-library/node_modules/semver/functions/sort.js"(exports, module) {
+  "node_modules/semver/functions/sort.js"(exports, module) {
     "use strict";
     var compareBuild = require_compare_build();
     var sort = (list, loose) => list.sort((a, b2) => compareBuild(a, b2, loose));
@@ -735,9 +731,9 @@ var require_sort = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/rsort.js
+// node_modules/semver/functions/rsort.js
 var require_rsort = __commonJS({
-  "../studio-library/node_modules/semver/functions/rsort.js"(exports, module) {
+  "node_modules/semver/functions/rsort.js"(exports, module) {
     "use strict";
     var compareBuild = require_compare_build();
     var rsort = (list, loose) => list.sort((a, b2) => compareBuild(b2, a, loose));
@@ -745,9 +741,9 @@ var require_rsort = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/gt.js
+// node_modules/semver/functions/gt.js
 var require_gt = __commonJS({
-  "../studio-library/node_modules/semver/functions/gt.js"(exports, module) {
+  "node_modules/semver/functions/gt.js"(exports, module) {
     "use strict";
     var compare = require_compare();
     var gt2 = (a, b2, loose) => compare(a, b2, loose) > 0;
@@ -755,9 +751,9 @@ var require_gt = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/lt.js
+// node_modules/semver/functions/lt.js
 var require_lt = __commonJS({
-  "../studio-library/node_modules/semver/functions/lt.js"(exports, module) {
+  "node_modules/semver/functions/lt.js"(exports, module) {
     "use strict";
     var compare = require_compare();
     var lt2 = (a, b2, loose) => compare(a, b2, loose) < 0;
@@ -765,9 +761,9 @@ var require_lt = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/eq.js
+// node_modules/semver/functions/eq.js
 var require_eq = __commonJS({
-  "../studio-library/node_modules/semver/functions/eq.js"(exports, module) {
+  "node_modules/semver/functions/eq.js"(exports, module) {
     "use strict";
     var compare = require_compare();
     var eq = (a, b2, loose) => compare(a, b2, loose) === 0;
@@ -775,9 +771,9 @@ var require_eq = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/neq.js
+// node_modules/semver/functions/neq.js
 var require_neq = __commonJS({
-  "../studio-library/node_modules/semver/functions/neq.js"(exports, module) {
+  "node_modules/semver/functions/neq.js"(exports, module) {
     "use strict";
     var compare = require_compare();
     var neq = (a, b2, loose) => compare(a, b2, loose) !== 0;
@@ -785,9 +781,9 @@ var require_neq = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/gte.js
+// node_modules/semver/functions/gte.js
 var require_gte = __commonJS({
-  "../studio-library/node_modules/semver/functions/gte.js"(exports, module) {
+  "node_modules/semver/functions/gte.js"(exports, module) {
     "use strict";
     var compare = require_compare();
     var gte = (a, b2, loose) => compare(a, b2, loose) >= 0;
@@ -795,9 +791,9 @@ var require_gte = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/lte.js
+// node_modules/semver/functions/lte.js
 var require_lte = __commonJS({
-  "../studio-library/node_modules/semver/functions/lte.js"(exports, module) {
+  "node_modules/semver/functions/lte.js"(exports, module) {
     "use strict";
     var compare = require_compare();
     var lte = (a, b2, loose) => compare(a, b2, loose) <= 0;
@@ -805,9 +801,9 @@ var require_lte = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/cmp.js
+// node_modules/semver/functions/cmp.js
 var require_cmp = __commonJS({
-  "../studio-library/node_modules/semver/functions/cmp.js"(exports, module) {
+  "node_modules/semver/functions/cmp.js"(exports, module) {
     "use strict";
     var eq = require_eq();
     var neq = require_neq();
@@ -855,9 +851,9 @@ var require_cmp = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/coerce.js
+// node_modules/semver/functions/coerce.js
 var require_coerce = __commonJS({
-  "../studio-library/node_modules/semver/functions/coerce.js"(exports, module) {
+  "node_modules/semver/functions/coerce.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var parse = require_parse();
@@ -901,9 +897,9 @@ var require_coerce = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/truncate.js
+// node_modules/semver/functions/truncate.js
 var require_truncate = __commonJS({
-  "../studio-library/node_modules/semver/functions/truncate.js"(exports, module) {
+  "node_modules/semver/functions/truncate.js"(exports, module) {
     "use strict";
     var parse = require_parse();
     var constants = require_constants();
@@ -942,9 +938,9 @@ var require_truncate = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/internal/lrucache.js
+// node_modules/semver/internal/lrucache.js
 var require_lrucache = __commonJS({
-  "../studio-library/node_modules/semver/internal/lrucache.js"(exports, module) {
+  "node_modules/semver/internal/lrucache.js"(exports, module) {
     "use strict";
     var LRUCache = class {
       constructor() {
@@ -980,9 +976,9 @@ var require_lrucache = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/internal/trim-comparator-whitespace.js
+// node_modules/semver/internal/trim-comparator-whitespace.js
 var require_trim_comparator_whitespace = __commonJS({
-  "../studio-library/node_modules/semver/internal/trim-comparator-whitespace.js"(exports, module) {
+  "node_modules/semver/internal/trim-comparator-whitespace.js"(exports, module) {
     "use strict";
     var {
       MAX_LENGTH,
@@ -1171,9 +1167,9 @@ var require_trim_comparator_whitespace = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/classes/range.js
+// node_modules/semver/classes/range.js
 var require_range = __commonJS({
-  "../studio-library/node_modules/semver/classes/range.js"(exports, module) {
+  "node_modules/semver/classes/range.js"(exports, module) {
     "use strict";
     var SPACE_CHARACTERS = /\s+/g;
     var Range = class _Range {
@@ -1556,11 +1552,11 @@ var require_range = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/classes/comparator.js
+// node_modules/semver/classes/comparator.js
 var require_comparator = __commonJS({
-  "../studio-library/node_modules/semver/classes/comparator.js"(exports, module) {
+  "node_modules/semver/classes/comparator.js"(exports, module) {
     "use strict";
-    var ANY = /* @__PURE__ */ Symbol("SemVer ANY");
+    var ANY = Symbol("SemVer ANY");
     var Comparator = class _Comparator {
       static get ANY() {
         return ANY;
@@ -1669,9 +1665,9 @@ var require_comparator = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/functions/satisfies.js
+// node_modules/semver/functions/satisfies.js
 var require_satisfies = __commonJS({
-  "../studio-library/node_modules/semver/functions/satisfies.js"(exports, module) {
+  "node_modules/semver/functions/satisfies.js"(exports, module) {
     "use strict";
     var Range = require_range();
     var satisfies = (version, range, options) => {
@@ -1686,9 +1682,9 @@ var require_satisfies = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/to-comparators.js
+// node_modules/semver/ranges/to-comparators.js
 var require_to_comparators = __commonJS({
-  "../studio-library/node_modules/semver/ranges/to-comparators.js"(exports, module) {
+  "node_modules/semver/ranges/to-comparators.js"(exports, module) {
     "use strict";
     var Range = require_range();
     var toComparators = (range, options) => new Range(range, options).set.map((comp) => comp.map((c) => c.value).join(" ").trim().split(" "));
@@ -1696,9 +1692,9 @@ var require_to_comparators = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/max-satisfying.js
+// node_modules/semver/ranges/max-satisfying.js
 var require_max_satisfying = __commonJS({
-  "../studio-library/node_modules/semver/ranges/max-satisfying.js"(exports, module) {
+  "node_modules/semver/ranges/max-satisfying.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range();
@@ -1725,9 +1721,9 @@ var require_max_satisfying = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/min-satisfying.js
+// node_modules/semver/ranges/min-satisfying.js
 var require_min_satisfying = __commonJS({
-  "../studio-library/node_modules/semver/ranges/min-satisfying.js"(exports, module) {
+  "node_modules/semver/ranges/min-satisfying.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range();
@@ -1754,9 +1750,9 @@ var require_min_satisfying = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/min-version.js
+// node_modules/semver/ranges/min-version.js
 var require_min_version = __commonJS({
-  "../studio-library/node_modules/semver/ranges/min-version.js"(exports, module) {
+  "node_modules/semver/ranges/min-version.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var Range = require_range();
@@ -1813,9 +1809,9 @@ var require_min_version = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/valid.js
+// node_modules/semver/ranges/valid.js
 var require_valid2 = __commonJS({
-  "../studio-library/node_modules/semver/ranges/valid.js"(exports, module) {
+  "node_modules/semver/ranges/valid.js"(exports, module) {
     "use strict";
     var Range = require_range();
     var validRange = (range, options) => {
@@ -1829,9 +1825,9 @@ var require_valid2 = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/outside.js
+// node_modules/semver/ranges/outside.js
 var require_outside = __commonJS({
-  "../studio-library/node_modules/semver/ranges/outside.js"(exports, module) {
+  "node_modules/semver/ranges/outside.js"(exports, module) {
     "use strict";
     var SemVer = require_semver();
     var Comparator = require_comparator();
@@ -1898,9 +1894,9 @@ var require_outside = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/gtr.js
+// node_modules/semver/ranges/gtr.js
 var require_gtr = __commonJS({
-  "../studio-library/node_modules/semver/ranges/gtr.js"(exports, module) {
+  "node_modules/semver/ranges/gtr.js"(exports, module) {
     "use strict";
     var outside = require_outside();
     var gtr = (version, range, options) => outside(version, range, ">", options);
@@ -1908,9 +1904,9 @@ var require_gtr = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/ltr.js
+// node_modules/semver/ranges/ltr.js
 var require_ltr = __commonJS({
-  "../studio-library/node_modules/semver/ranges/ltr.js"(exports, module) {
+  "node_modules/semver/ranges/ltr.js"(exports, module) {
     "use strict";
     var outside = require_outside();
     var ltr = (version, range, options) => outside(version, range, "<", options);
@@ -1918,9 +1914,9 @@ var require_ltr = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/intersects.js
+// node_modules/semver/ranges/intersects.js
 var require_intersects = __commonJS({
-  "../studio-library/node_modules/semver/ranges/intersects.js"(exports, module) {
+  "node_modules/semver/ranges/intersects.js"(exports, module) {
     "use strict";
     var Range = require_range();
     var intersects = (r1, r2, options) => {
@@ -1932,9 +1928,9 @@ var require_intersects = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/simplify.js
+// node_modules/semver/ranges/simplify.js
 var require_simplify = __commonJS({
-  "../studio-library/node_modules/semver/ranges/simplify.js"(exports, module) {
+  "node_modules/semver/ranges/simplify.js"(exports, module) {
     "use strict";
     var satisfies = require_satisfies();
     var compare = require_compare();
@@ -1982,9 +1978,9 @@ var require_simplify = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/ranges/subset.js
+// node_modules/semver/ranges/subset.js
 var require_subset = __commonJS({
-  "../studio-library/node_modules/semver/ranges/subset.js"(exports, module) {
+  "node_modules/semver/ranges/subset.js"(exports, module) {
     "use strict";
     var Range = require_range();
     var Comparator = require_comparator();
@@ -2144,9 +2140,9 @@ var require_subset = __commonJS({
   }
 });
 
-// ../studio-library/node_modules/semver/index.js
+// node_modules/semver/index.js
 var require_semver2 = __commonJS({
-  "../studio-library/node_modules/semver/index.js"(exports, module) {
+  "node_modules/semver/index.js"(exports, module) {
     "use strict";
     var internalRe = require_re();
     var constants = require_constants();
@@ -2241,7 +2237,7 @@ var require_semver2 = __commonJS({
   }
 });
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/registry.ts
+// packages/runtime/src/registry.ts
 import { readFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
 var types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".gif": "image/gif", ".webp": "image/webp", ".wasm": "application/wasm", ".xml": "application/xml", ".woff": "font/woff", ".woff2": "font/woff2" };
@@ -2326,14 +2322,14 @@ var StudioProjects = class {
   }
 };
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/studioUpdates.ts
+// packages/runtime/src/studioUpdates.ts
 var import_semver = __toESM(require_semver2(), 1);
 import { createHash, randomUUID } from "node:crypto";
 import { readFile as readFile2, mkdir, writeFile, rename } from "node:fs/promises";
 import { join, dirname, resolve as resolve2 } from "node:path";
 import { homedir } from "node:os";
 
-// ../studio-library/node_modules/tar/dist/esm/index.min.js
+// node_modules/tar/dist/esm/index.min.js
 import Qr from "events";
 import I from "fs";
 import { EventEmitter as Di } from "node:events";
@@ -2376,37 +2372,37 @@ var Ds = typeof process == "object" && process ? process : { stdout: null, stder
 var Wr = (s3) => !!s3 && typeof s3 == "object" && (s3 instanceof A || s3 instanceof Cs || Gr(s3) || Zr(s3));
 var Gr = (s3) => !!s3 && typeof s3 == "object" && s3 instanceof Di && typeof s3.pipe == "function" && s3.pipe !== Cs.Writable.prototype.pipe;
 var Zr = (s3) => !!s3 && typeof s3 == "object" && s3 instanceof Di && typeof s3.write == "function" && typeof s3.end == "function";
-var Q = /* @__PURE__ */ Symbol("EOF");
-var J = /* @__PURE__ */ Symbol("maybeEmitEnd");
-var nt = /* @__PURE__ */ Symbol("emittedEnd");
-var De = /* @__PURE__ */ Symbol("emittingEnd");
-var qt = /* @__PURE__ */ Symbol("emittedError");
-var Ne = /* @__PURE__ */ Symbol("closed");
-var Ns = /* @__PURE__ */ Symbol("read");
-var Ae = /* @__PURE__ */ Symbol("flush");
-var As = /* @__PURE__ */ Symbol("flushChunk");
-var z = /* @__PURE__ */ Symbol("encoding");
-var Mt = /* @__PURE__ */ Symbol("decoder");
-var g = /* @__PURE__ */ Symbol("flowing");
-var Qt = /* @__PURE__ */ Symbol("paused");
-var Bt = /* @__PURE__ */ Symbol("resume");
-var b = /* @__PURE__ */ Symbol("buffer");
-var N = /* @__PURE__ */ Symbol("pipes");
-var _ = /* @__PURE__ */ Symbol("bufferLength");
-var bi = /* @__PURE__ */ Symbol("bufferPush");
-var Ie = /* @__PURE__ */ Symbol("bufferShift");
-var L = /* @__PURE__ */ Symbol("objectMode");
-var S = /* @__PURE__ */ Symbol("destroyed");
-var _i = /* @__PURE__ */ Symbol("error");
-var Oi = /* @__PURE__ */ Symbol("emitData");
-var Is = /* @__PURE__ */ Symbol("emitEnd");
-var Ti = /* @__PURE__ */ Symbol("emitEnd2");
-var Z = /* @__PURE__ */ Symbol("async");
-var xi = /* @__PURE__ */ Symbol("abort");
-var Ce = /* @__PURE__ */ Symbol("aborted");
-var Jt = /* @__PURE__ */ Symbol("signal");
-var Rt = /* @__PURE__ */ Symbol("dataListeners");
-var C = /* @__PURE__ */ Symbol("discarded");
+var Q = Symbol("EOF");
+var J = Symbol("maybeEmitEnd");
+var nt = Symbol("emittedEnd");
+var De = Symbol("emittingEnd");
+var qt = Symbol("emittedError");
+var Ne = Symbol("closed");
+var Ns = Symbol("read");
+var Ae = Symbol("flush");
+var As = Symbol("flushChunk");
+var z = Symbol("encoding");
+var Mt = Symbol("decoder");
+var g = Symbol("flowing");
+var Qt = Symbol("paused");
+var Bt = Symbol("resume");
+var b = Symbol("buffer");
+var N = Symbol("pipes");
+var _ = Symbol("bufferLength");
+var bi = Symbol("bufferPush");
+var Ie = Symbol("bufferShift");
+var L = Symbol("objectMode");
+var S = Symbol("destroyed");
+var _i = Symbol("error");
+var Oi = Symbol("emitData");
+var Is = Symbol("emitEnd");
+var Ti = Symbol("emitEnd2");
+var Z = Symbol("async");
+var xi = Symbol("abort");
+var Ce = Symbol("aborted");
+var Jt = Symbol("signal");
+var Rt = Symbol("dataListeners");
+var C = Symbol("discarded");
 var jt = (s3) => Promise.resolve().then(s3);
 var Yr = (s3) => s3();
 var Kr = (s3) => s3 === "end" || s3 === "finish" || s3 === "prefinish";
@@ -2712,34 +2708,34 @@ var A = class extends Di {
   }
 };
 var Jr = I.writev;
-var ht = /* @__PURE__ */ Symbol("_autoClose");
-var H = /* @__PURE__ */ Symbol("_close");
-var te = /* @__PURE__ */ Symbol("_ended");
-var m = /* @__PURE__ */ Symbol("_fd");
-var Ni = /* @__PURE__ */ Symbol("_finished");
-var tt = /* @__PURE__ */ Symbol("_flags");
-var Ai = /* @__PURE__ */ Symbol("_flush");
-var ki = /* @__PURE__ */ Symbol("_handleChunk");
-var vi = /* @__PURE__ */ Symbol("_makeBuf");
-var ie = /* @__PURE__ */ Symbol("_mode");
-var ke = /* @__PURE__ */ Symbol("_needDrain");
-var Ut = /* @__PURE__ */ Symbol("_onerror");
-var Ht = /* @__PURE__ */ Symbol("_onopen");
-var Ii = /* @__PURE__ */ Symbol("_onread");
-var Pt = /* @__PURE__ */ Symbol("_onwrite");
-var at = /* @__PURE__ */ Symbol("_open");
-var U = /* @__PURE__ */ Symbol("_path");
-var ot = /* @__PURE__ */ Symbol("_pos");
-var Y = /* @__PURE__ */ Symbol("_queue");
-var zt = /* @__PURE__ */ Symbol("_read");
-var Ci = /* @__PURE__ */ Symbol("_readSize");
-var j = /* @__PURE__ */ Symbol("_reading");
-var ee = /* @__PURE__ */ Symbol("_remain");
-var Fi = /* @__PURE__ */ Symbol("_size");
-var ve = /* @__PURE__ */ Symbol("_write");
-var gt = /* @__PURE__ */ Symbol("_writing");
-var Me = /* @__PURE__ */ Symbol("_defaultFlag");
-var bt = /* @__PURE__ */ Symbol("_errored");
+var ht = Symbol("_autoClose");
+var H = Symbol("_close");
+var te = Symbol("_ended");
+var m = Symbol("_fd");
+var Ni = Symbol("_finished");
+var tt = Symbol("_flags");
+var Ai = Symbol("_flush");
+var ki = Symbol("_handleChunk");
+var vi = Symbol("_makeBuf");
+var ie = Symbol("_mode");
+var ke = Symbol("_needDrain");
+var Ut = Symbol("_onerror");
+var Ht = Symbol("_onopen");
+var Ii = Symbol("_onread");
+var Pt = Symbol("_onwrite");
+var at = Symbol("_open");
+var U = Symbol("_path");
+var ot = Symbol("_pos");
+var Y = Symbol("_queue");
+var zt = Symbol("_read");
+var Ci = Symbol("_readSize");
+var j = Symbol("_reading");
+var ee = Symbol("_remain");
+var Fi = Symbol("_size");
+var ve = Symbol("_write");
+var gt = Symbol("_writing");
+var Me = Symbol("_defaultFlag");
+var bt = Symbol("_errored");
 var _t = class extends A {
   [bt] = false;
   [m];
@@ -2990,7 +2986,7 @@ var Bi = zs?.writable === true || zs?.set !== void 0 ? (s3) => {
   Ot.concat = s3 ? nn : rn;
 } : (s3) => {
 };
-var Tt = /* @__PURE__ */ Symbol("_superWrite");
+var Tt = Symbol("_superWrite");
 var Gt = class extends Error {
   code;
   errno;
@@ -3001,7 +2997,7 @@ var Gt = class extends Error {
     return "ZlibError";
   }
 };
-var Pi = /* @__PURE__ */ Symbol("flushFlag");
+var Pi = Symbol("flushFlag");
 var re = class extends A {
   #t = false;
   #i = false;
@@ -3442,40 +3438,40 @@ var Nn = 1024 * 1024;
 var Xi = Buffer.from([31, 139]);
 var qi = Buffer.from([40, 181, 47, 253]);
 var An = Math.max(Xi.length, qi.length);
-var B = /* @__PURE__ */ Symbol("state");
-var Nt = /* @__PURE__ */ Symbol("writeEntry");
-var it = /* @__PURE__ */ Symbol("readEntry");
-var Zi = /* @__PURE__ */ Symbol("nextEntry");
-var Zs = /* @__PURE__ */ Symbol("processEntry");
-var V = /* @__PURE__ */ Symbol("extendedHeader");
-var he = /* @__PURE__ */ Symbol("globalExtendedHeader");
-var dt = /* @__PURE__ */ Symbol("meta");
-var Ys = /* @__PURE__ */ Symbol("emitMeta");
-var p = /* @__PURE__ */ Symbol("buffer");
-var st = /* @__PURE__ */ Symbol("queue");
-var ut = /* @__PURE__ */ Symbol("ended");
-var Yi = /* @__PURE__ */ Symbol("emittedEnd");
-var At = /* @__PURE__ */ Symbol("emit");
-var w = /* @__PURE__ */ Symbol("unzip");
-var Xe = /* @__PURE__ */ Symbol("consumeChunk");
-var qe = /* @__PURE__ */ Symbol("consumeChunkSub");
-var Ki = /* @__PURE__ */ Symbol("consumeBody");
-var Ks = /* @__PURE__ */ Symbol("consumeMeta");
-var Vs = /* @__PURE__ */ Symbol("consumeHeader");
-var ae = /* @__PURE__ */ Symbol("consuming");
-var Vi = /* @__PURE__ */ Symbol("bufferConcat");
-var Qe = /* @__PURE__ */ Symbol("maybeEnd");
-var Yt = /* @__PURE__ */ Symbol("writing");
-var $ = /* @__PURE__ */ Symbol("aborted");
-var Je = /* @__PURE__ */ Symbol("onDone");
-var It = /* @__PURE__ */ Symbol("sawValidEntry");
-var je = /* @__PURE__ */ Symbol("sawNullBlock");
-var ti = /* @__PURE__ */ Symbol("sawEOF");
-var $s = /* @__PURE__ */ Symbol("closeStream");
+var B = Symbol("state");
+var Nt = Symbol("writeEntry");
+var it = Symbol("readEntry");
+var Zi = Symbol("nextEntry");
+var Zs = Symbol("processEntry");
+var V = Symbol("extendedHeader");
+var he = Symbol("globalExtendedHeader");
+var dt = Symbol("meta");
+var Ys = Symbol("emitMeta");
+var p = Symbol("buffer");
+var st = Symbol("queue");
+var ut = Symbol("ended");
+var Yi = Symbol("emittedEnd");
+var At = Symbol("emit");
+var w = Symbol("unzip");
+var Xe = Symbol("consumeChunk");
+var qe = Symbol("consumeChunkSub");
+var Ki = Symbol("consumeBody");
+var Ks = Symbol("consumeMeta");
+var Vs = Symbol("consumeHeader");
+var ae = Symbol("consuming");
+var Vi = Symbol("bufferConcat");
+var Qe = Symbol("maybeEnd");
+var Yt = Symbol("writing");
+var $ = Symbol("aborted");
+var Je = Symbol("onDone");
+var It = Symbol("sawValidEntry");
+var je = Symbol("sawNullBlock");
+var ti = Symbol("sawEOF");
+var $s = Symbol("closeStream");
 var In = 1e3;
-var le = /* @__PURE__ */ Symbol("compressedBytesRead");
-var $i = /* @__PURE__ */ Symbol("decompressedBytesRead");
-var Xs = /* @__PURE__ */ Symbol("checkDecompressionRatio");
+var le = Symbol("compressedBytesRead");
+var $i = Symbol("decompressedBytesRead");
+var Xs = Symbol("checkDecompressionRatio");
 var Cn = () => true;
 var rt = class extends Dn {
   file;
@@ -3792,24 +3788,24 @@ var ts = (s3) => ei.reduce((t, e) => t.split(e).join(Un.get(e)), s3);
 var Qs = (s3) => ji.reduce((t, e) => t.split(e).join(Hn.get(e)), s3);
 var rr = (s3, t) => t ? (s3 = f(s3).replace(/^\.(\/|$)/, ""), mt(t) + "/" + s3) : f(s3);
 var Wn = 16 * 1024 * 1024;
-var tr = /* @__PURE__ */ Symbol("process");
-var er = /* @__PURE__ */ Symbol("file");
-var ir = /* @__PURE__ */ Symbol("directory");
-var is = /* @__PURE__ */ Symbol("symlink");
-var sr = /* @__PURE__ */ Symbol("hardlink");
-var fe = /* @__PURE__ */ Symbol("header");
-var ii = /* @__PURE__ */ Symbol("read");
-var ss = /* @__PURE__ */ Symbol("lstat");
-var si = /* @__PURE__ */ Symbol("onlstat");
-var rs = /* @__PURE__ */ Symbol("onread");
-var ns = /* @__PURE__ */ Symbol("onreadlink");
-var os = /* @__PURE__ */ Symbol("openfile");
-var hs = /* @__PURE__ */ Symbol("onopenfile");
-var pt = /* @__PURE__ */ Symbol("close");
-var ri = /* @__PURE__ */ Symbol("mode");
-var as = /* @__PURE__ */ Symbol("awaitDrain");
-var es = /* @__PURE__ */ Symbol("ondrain");
-var q = /* @__PURE__ */ Symbol("prefix");
+var tr = Symbol("process");
+var er = Symbol("file");
+var ir = Symbol("directory");
+var is = Symbol("symlink");
+var sr = Symbol("hardlink");
+var fe = Symbol("header");
+var ii = Symbol("read");
+var ss = Symbol("lstat");
+var si = Symbol("onlstat");
+var rs = Symbol("onread");
+var ns = Symbol("onreadlink");
+var os = Symbol("openfile");
+var hs = Symbol("onopenfile");
+var pt = Symbol("close");
+var ri = Symbol("mode");
+var as = Symbol("awaitDrain");
+var es = Symbol("ondrain");
+var q = Symbol("prefix");
 var de = class extends A {
   path;
   portable;
@@ -4250,27 +4246,27 @@ var pi = class {
   }
 };
 var nr = Buffer.alloc(1024);
-var li = /* @__PURE__ */ Symbol("onStat");
-var me = /* @__PURE__ */ Symbol("ended");
-var W = /* @__PURE__ */ Symbol("queue");
-var pe = /* @__PURE__ */ Symbol("pendingLinks");
-var Et = /* @__PURE__ */ Symbol("current");
-var Ft = /* @__PURE__ */ Symbol("process");
-var Ee = /* @__PURE__ */ Symbol("processing");
-var ai = /* @__PURE__ */ Symbol("processJob");
-var G = /* @__PURE__ */ Symbol("jobs");
-var ls = /* @__PURE__ */ Symbol("jobDone");
-var ci = /* @__PURE__ */ Symbol("addFSEntry");
-var or = /* @__PURE__ */ Symbol("addTarEntry");
-var ds = /* @__PURE__ */ Symbol("stat");
-var us = /* @__PURE__ */ Symbol("readdir");
-var fi = /* @__PURE__ */ Symbol("onreaddir");
-var di = /* @__PURE__ */ Symbol("pipe");
-var hr = /* @__PURE__ */ Symbol("entry");
-var cs = /* @__PURE__ */ Symbol("entryOpt");
-var ui = /* @__PURE__ */ Symbol("writeEntryClass");
-var lr = /* @__PURE__ */ Symbol("write");
-var fs = /* @__PURE__ */ Symbol("ondrain");
+var li = Symbol("onStat");
+var me = Symbol("ended");
+var W = Symbol("queue");
+var pe = Symbol("pendingLinks");
+var Et = Symbol("current");
+var Ft = Symbol("process");
+var Ee = Symbol("processing");
+var ai = Symbol("processJob");
+var G = Symbol("jobs");
+var ls = Symbol("jobDone");
+var ci = Symbol("addFSEntry");
+var or = Symbol("addTarEntry");
+var ds = Symbol("stat");
+var us = Symbol("readdir");
+var fi = Symbol("onreaddir");
+var di = Symbol("pipe");
+var hr = Symbol("entry");
+var cs = Symbol("entryOpt");
+var ui = Symbol("writeEntryClass");
+var lr = Symbol("write");
+var fs = Symbol("ondrain");
 var wt = class extends A {
   sync = false;
   opt;
@@ -4740,32 +4736,32 @@ var yi = class {
   }
 };
 var Lr = () => process.umask();
-var Dr = /* @__PURE__ */ Symbol("onEntry");
-var _s = /* @__PURE__ */ Symbol("checkFs");
-var Nr = /* @__PURE__ */ Symbol("checkFs2");
-var Os = /* @__PURE__ */ Symbol("isReusable");
-var P = /* @__PURE__ */ Symbol("makeFs");
-var Ts = /* @__PURE__ */ Symbol("file");
-var xs = /* @__PURE__ */ Symbol("directory");
-var gi = /* @__PURE__ */ Symbol("link");
-var Ar = /* @__PURE__ */ Symbol("symlink");
-var Ir = /* @__PURE__ */ Symbol("hardlink");
-var Re = /* @__PURE__ */ Symbol("ensureNoSymlink");
-var Cr = /* @__PURE__ */ Symbol("unsupported");
-var Fr = /* @__PURE__ */ Symbol("checkPath");
-var Rs = /* @__PURE__ */ Symbol("stripAbsolutePath");
-var yt = /* @__PURE__ */ Symbol("mkdir");
-var O = /* @__PURE__ */ Symbol("onError");
-var Ri = /* @__PURE__ */ Symbol("pending");
-var kr = /* @__PURE__ */ Symbol("pend");
-var $t = /* @__PURE__ */ Symbol("unpend");
-var gs = /* @__PURE__ */ Symbol("ended");
-var bs = /* @__PURE__ */ Symbol("maybeClose");
-var Ls = /* @__PURE__ */ Symbol("skip");
-var ge = /* @__PURE__ */ Symbol("doChown");
-var be = /* @__PURE__ */ Symbol("uid");
-var _e = /* @__PURE__ */ Symbol("gid");
-var Oe = /* @__PURE__ */ Symbol("checkedCwd");
+var Dr = Symbol("onEntry");
+var _s = Symbol("checkFs");
+var Nr = Symbol("checkFs2");
+var Os = Symbol("isReusable");
+var P = Symbol("makeFs");
+var Ts = Symbol("file");
+var xs = Symbol("directory");
+var gi = Symbol("link");
+var Ar = Symbol("symlink");
+var Ir = Symbol("hardlink");
+var Re = Symbol("ensureNoSymlink");
+var Cr = Symbol("unsupported");
+var Fr = Symbol("checkPath");
+var Rs = Symbol("stripAbsolutePath");
+var yt = Symbol("mkdir");
+var O = Symbol("onError");
+var Ri = Symbol("pending");
+var kr = Symbol("pend");
+var $t = Symbol("unpend");
+var gs = Symbol("ended");
+var bs = Symbol("maybeClose");
+var Ls = Symbol("skip");
+var ge = Symbol("doChown");
+var be = Symbol("uid");
+var _e = Symbol("gid");
+var Oe = Symbol("checkedCwd");
 var fo = process.env.TESTING_TAR_FAKE_PLATFORM || process.platform;
 var Te = fo === "win32";
 var uo = 1024;
@@ -5302,7 +5298,7 @@ var To = (s3) => {
   s3.mtimeCache || (s3.mtimeCache = /* @__PURE__ */ new Map()), s3.filter = t ? (e, i) => t(e, i) && !((s3.mtimeCache?.get(e) ?? i.mtime ?? 0) > (i.mtime ?? 0)) : (e, i) => !((s3.mtimeCache?.get(e) ?? i.mtime ?? 0) > (i.mtime ?? 0));
 };
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/studioUpdates.ts
+// packages/runtime/src/studioUpdates.ts
 var active = (phase) => ["downloading", "verifying", "installing"].includes(phase);
 var object = (value) => typeof value === "object" && value !== null && !Array.isArray(value) ? value : {};
 var UpdateFailure = class extends Error {
@@ -5310,7 +5306,6 @@ var UpdateFailure = class extends Error {
     super(code);
     this.code = code;
   }
-  code;
 };
 function resolveUpdates(config = {}) {
   const options = {
@@ -5332,11 +5327,6 @@ var StudioUpdates = class {
     this.options = options;
     this.request = request;
   }
-  registry;
-  manager;
-  hostVersion;
-  options;
-  request;
   checks = /* @__PURE__ */ new Map();
   candidates = /* @__PURE__ */ new Map();
   checking = /* @__PURE__ */ new Map();
@@ -5586,7 +5576,7 @@ var StudioUpdates = class {
   }
 };
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/updateRoutes.ts
+// packages/runtime/src/updateRoutes.ts
 function updateRoutes(updates) {
   const send = (res, status, value) => {
     res.writeHead(status, { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
@@ -5640,10 +5630,10 @@ function updateRoutes(updates) {
   };
 }
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/server.ts
+// packages/runtime/src/server.ts
 import { getDshRuntimeVersion } from "@deepseek-ai/dsh-app-boot";
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/integrations.ts
+// packages/runtime/src/integrations.ts
 import { readFile as readFile3 } from "node:fs/promises";
 import { join as join2 } from "node:path";
 import { homedir as homedir2 } from "node:os";
@@ -5681,7 +5671,7 @@ function createIntegrations(config = {}) {
   };
 }
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/toonflowSessions.ts
+// packages/runtime/src/toonflowSessions.ts
 import { readFile as readFile4, realpath, mkdir as mkdir2, writeFile as writeFile2, rename as rename2 } from "node:fs/promises";
 import { resolve as resolve3, relative, isAbsolute } from "node:path";
 import { randomUUID as randomUUID2 } from "node:crypto";
@@ -5800,10 +5790,10 @@ async function createToonflowSessions(ctx, config) {
   return { bind };
 }
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/server.ts
+// packages/runtime/src/server.ts
 import { readFile as readFile5 } from "node:fs/promises";
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/studioControl.ts
+// packages/runtime/src/studioControl.ts
 import { randomUUID as randomUUID3 } from "node:crypto";
 import { defineTool } from "@deepseek-ai/dsh-tools";
 var StudioControl = class {
@@ -5811,8 +5801,6 @@ var StudioControl = class {
     this.registry = registry;
     this.timeout = timeout;
   }
-  registry;
-  timeout;
   pending = /* @__PURE__ */ new Map();
   closed = false;
   request(command, signal) {
@@ -5946,7 +5934,7 @@ function installStudioControl(ctx, registry, pluginManager) {
   return control;
 }
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/studioTasks.ts
+// packages/runtime/src/studioTasks.ts
 var mentionPattern = /^\s*@(工作室[:：])?(\S+)\s+([\s\S]*)$/;
 var labelBoundary = /^(?:$|[\s:：,，;；。])/;
 var labelSeparators = /^[\s:：,，;；。]+/;
@@ -5993,7 +5981,7 @@ function installStudioTasks(ctx, registry) {
   }, { prepend: true }), "\u5DE5\u4F5C\u5BA4\uFF1A\u5C55\u5F00\u6D88\u606F\u5F00\u5934\u7684\u5FEB\u6377\u4EFB\u52A1");
 }
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/serviceStartup.ts
+// packages/runtime/src/serviceStartup.ts
 import { spawn } from "node:child_process";
 import { mkdir as mkdir3, open } from "node:fs/promises";
 import { dirname as dirname2, isAbsolute as isAbsolute2 } from "node:path";
@@ -6074,7 +6062,7 @@ async function startStudioServices(configs, signal) {
   return outcomes.filter((outcome) => outcome !== void 0);
 }
 
-// output/desktop-plugin-delivery/public-checkouts/dsh-studio-library/packages/runtime/src/server.ts
+// packages/runtime/src/server.ts
 var name = "dsh-studio-projects";
 var inject = ["webServer", "connection", "tools", "agents", "systemPrompt", "workspaceRegistry", "pluginManager"];
 async function apply(ctx, config = {}) {
@@ -6117,7 +6105,11 @@ async function apply(ctx, config = {}) {
         const integrations = await statuses();
         res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" });
         res.end(JSON.stringify({
-          studios: registry.list(),
+          studios: registry.list().map((studio) => ({
+            ...studio,
+            source: "local",
+            localPath: registry.entries().find((entry) => entry.id === studio.id)?.root
+          })),
           integrations: integrations.map((status) => ({ ...status, startupError: status.ready ? void 0 : failures.find((failure) => failure.studioIds.includes(status.id))?.message })),
           serviceFailures: failures
         }));

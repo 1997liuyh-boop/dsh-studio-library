@@ -6,7 +6,7 @@ import { css } from './styles'
 import studioCss from './studio.generated.css'
 import { NS, zh, en, type WorktableKey } from './locales'
 import { isAbs, joinPath, parentPathOf, basenameOf } from './pathutil'
-import { installSplitClaims, splitStore, SplitWorkspace, setSplitT, setSplitEnv, type LayoutSpec, type SplitPane, type ConsoleCardData, type ConsoleStatusSnapshot } from './split'
+import { installSplitClaims, splitStore, SplitWorkspace, setSplitT, setSplitEnv, type LayoutSpec, type SplitPane, type ConsoleCardData, type ConsoleStatusSnapshot, type ConsoleStudioStatus } from './split'
 import { appendHostInput } from './hostInput'
 import { installStudioDiscussion } from './studioDiscussion'
 import { installStudioSession } from './studioSession'
@@ -21,6 +21,7 @@ import { cleanPreviewText, previewFromEvents, readSessionPreview, presetApiOf, m
 import { photoStore, kindOf } from './photoStore'
 import { DEFAULT_BG_SVG, b64ToBlob } from './defaultBg'
 import { WAVE_BG_B64 } from './waveBg'
+import { AddStudioDialog } from './AddStudioDialog'
 
 /**
  * dsh-worktable 客户端（v2）：侧边栏底部「工作台」区块。
@@ -599,15 +600,20 @@ function listWorkspaces(): { id: string; title: string; path: string; sessionIds
 
 /** 读取控制室需要的工作室状态，并标出当前会话的实际工作目录。 */
 async function getStudioStatus(): Promise<ConsoleStatusSnapshot> {
-  const response = await fetch('/studio-projects/control/status', { cache: 'no-store' })
+  const [response, updatesResponse] = await Promise.all([
+    fetch('/studio-projects/control/status', { cache: 'no-store' }),
+    fetch('/studio-projects/updates', { cache: 'no-store' }).catch(() => null),
+  ])
   if (!response.ok) throw new Error('HTTP ' + response.status)
   const report = await response.json() as ConsoleStatusSnapshot
+  const updates = updatesResponse?.ok ? await updatesResponse.json() as { studios?: { id: string; state: string; latest?: string }[] } : null
   const current = currentSessionOf(sessionBridge?.list?.getSnapshot?.())
   const workspace = listWorkspaces().find((item) => item.id === current || item.sessionIds.includes(current))
   return {
     studios: Array.isArray(report.studios) ? report.studios : [],
     integrations: Array.isArray(report.integrations) ? report.integrations : [],
     serviceFailures: Array.isArray(report.serviceFailures) ? report.serviceFailures : [],
+    updates: Array.isArray(updates?.studios) ? updates.studios : [],
     workspace: workspace ? { title: workspace.title, path: workspace.path } : { title: '当前会话', path: sessionScopeStore.snapshot?.cwd ?? '' },
   }
 }
@@ -819,6 +825,33 @@ export async function createCustomSession(projectId: string, projectName: string
   const text = buildWindowTaskText(projectId, projectName, windowLabel, requirement, folder, 'new', widgetBindings)
   await promptIntoSession(sessionId, text)
   return sessionId
+}
+
+/** 为新增工作室创建独立 DSH 会话，并把用户填写的来源作为首条任务发送。 */
+export async function createStudioSession(prompt: string, source: string): Promise<string> {
+  const b = sessionBridge
+  if (!b || typeof b.sessions?.create !== 'function') throw new Error('sessions unavailable')
+  const isLocal = /^(?:[A-Za-z]:[\\/]|\\\\|\/)/.test(source)
+  const sessionId = await createHostSession(b.sessions, b.workspaces, isLocal ? { cwd: source } : {}, 'auto')
+  await ensureSessionPreset(sessionId)
+  await ensureSessionModel(sessionId)
+  markPluginSessionOpen(sessionId)
+  try { await openHostSession(clientCtx, b.sessions, sessionId) } catch {}
+  await promptIntoSession(sessionId, prompt)
+  return sessionId
+}
+
+/** 为本地工作室打开独立会话，后续修改由用户在 DSH 对话中继续描述。 */
+export async function createStudioEditSession(studio: ConsoleStudioStatus): Promise<void> {
+  const localPath = studio.localPath?.trim()
+  if (!localPath) throw new Error('本地工作室目录不可用，请重新连接工作室')
+  const prompt = [
+    '我们需要修改一个本地工作室',
+    '工作室名称：' + (studio.name ?? studio.title ?? studio.id),
+    '工作室功能是：请先读取当前工作室代码，再根据我接下来提出的要求进行修改',
+    '工作室本地目录是：' + localPath,
+  ].join('\n')
+  await createStudioSession(prompt, localPath)
 }
 
 /** 把自定义需求直接发到用户选定的已有会话（默认当前会话），带窗口身份 + 知识包 */
@@ -1351,6 +1384,7 @@ function WorktableSection(props: any) {
           sweepPreviews()
         },
         onAdd: () => openAddPanel(),
+        onEditStudio: (studio) => createStudioEditSession(studio),
         getStudioStatus,
         onOpen: (id) => {
           if (id === CONSOLE_ID) return
@@ -2313,6 +2347,13 @@ function WorktableSection(props: any) {
         </div>
   </>
   return (
+    <>
+    <AddStudioDialog
+      open={addOpen}
+      t={t}
+      onClose={() => setAddOpen(false)}
+      onCreate={async (prompt, source) => { await createStudioSession(prompt, source) }}
+    />
     <StudioSection wide={wide} title={t('title')} expandSidebar={props.expandSidebar} toolbar={toolbar}>
     <div ref={rootRef} className={'dsh-wt_section' + (isFloat ? ' dsh-wt_float' : '')} style={{ marginBottom: 0 }}>
       {view.searchOpen && (
@@ -2327,15 +2368,6 @@ function WorktableSection(props: any) {
           />
           <button type="button" className="dsh-wt_searchClear" aria-label={t('search.close')}
             onClick={() => persistView({ searchOpen: false, query: '' })}>✕</button>
-        </div>
-      )}
-
-      {addOpen && <div className="dsh-wt_popBackdrop" onClick={() => setAddOpen(false)} />}
-      {addOpen && (
-        <div className="dsh-wt_menu dsh-wt_add dsh-wt_pop" style={{ position: 'fixed', left: popLeft, top: popTop, width: 360, zIndex: 80 }}>
-          <span className="dsh-wt_menuLabel">{t('add.studio')}</span>
-          <p className="dsh-wt_addHint">{t('add.studioHint')}</p>
-          <button type="button" className="dsh-wt_addBtn" onClick={() => { appendHostInput(sessionBridge, '请新增一个工作室。先询问我保存到本地还是 GitHub；来源确定后，再询问我是否立刻导入并启用。'); setAddOpen(false) }}>{t('add.studio')}</button>
         </div>
       )}
 
@@ -2638,6 +2670,7 @@ function WorktableSection(props: any) {
       )}
     </div>
     </StudioSection>
+    </>
   )
 }
 

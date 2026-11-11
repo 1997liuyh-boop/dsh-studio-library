@@ -243,6 +243,14 @@ export type ConsoleStudioStatus = {
   startupError?: string
   entryUrl?: string
   source?: string
+  localPath?: string
+}
+
+/** 控制室里显示的工作室更新检查结果。 */
+export type ConsoleStudioUpdate = {
+  id: string
+  state: string
+  latest?: string
 }
 
 /** 控制室状态弹窗的数据。 */
@@ -250,6 +258,7 @@ export type ConsoleStatusSnapshot = {
   studios: ConsoleStudioStatus[]
   integrations: ConsoleStudioStatus[]
   serviceFailures: { studioIds: string[]; message: string }[]
+  updates?: ConsoleStudioUpdate[]
   workspace?: { title: string; path: string }
 }
 
@@ -278,6 +287,8 @@ type SplitEnv = {
     refreshPreviews: () => void
     /** 创建卡片：打开「添加项目」流程（同侧栏 ＋） */
     onAdd: () => void
+    /** 打开本地工作室的独立 DSH 会话，让 AI 修改其源码。 */
+    onEditStudio: (studio: ConsoleStudioStatus) => Promise<void>
     /** 读取已安装工作室、服务启动状态和当前会话工作区。 */
     getStudioStatus: () => Promise<ConsoleStatusSnapshot>
     getTheme: () => 'dark' | 'light' | 'system'
@@ -2203,9 +2214,23 @@ function ConsolePane() {
               : studioStatus?.studios.map((studio) => {
                 const integration = studioStatus.integrations.find((item) => item.id === studio.id)
                 const ready = integration?.ready ?? true
+                const update = studioStatus.updates?.find((item) => item.id === studio.id)
+                const updateText = update?.state === 'available'
+                  ? T('console.updateAvailable', { version: update.latest ?? '' })
+                  : update?.state === 'latest'
+                    ? T('console.updateNone')
+                    : T('console.updateUnknown')
                 return <div className="dsh-wt_statusItem" key={studio.id}>
-                  <span>{studio.icon ?? '◫'} {studio.name ?? studio.title ?? studio.id}</span>
-                  <span className={ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'} title={studio.startupError}>{ready ? T('console.statusReady') : T('console.statusOffline')}</span>
+                  <div className="dsh-wt_statusStudioMain">
+                    <span>{studio.icon ?? '◫'} {studio.name ?? studio.title ?? studio.id}</span>
+                    <span className={ready ? 'dsh-wt_statusReady' : 'dsh-wt_statusOffline'} title={integration?.startupError ?? studio.startupError}>{ready ? T('console.statusReady') : T('console.statusOffline')}</span>
+                    <span className={update?.state === 'available' ? 'dsh-wt_statusUpdate' : 'dsh-wt_statusMeta'}>{updateText}</span>
+                  </div>
+                  {studio.source === 'local' && studio.localPath && <button type="button" className="dsh-wt_statusAi" title={T('console.editStudio')} aria-label={T('console.editStudio')} onClick={() => {
+                    void splitEnv?.console?.onEditStudio(studio).catch((error) => setStudioStatusError(error instanceof Error ? error.message : T('console.statusFail')))
+                  }}>
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.7 2.1a1.5 1.5 0 0 1 2.1 2.1L6 11l-3.1.7.7-3.1z" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinejoin="round" /><path d="m9.7 3.1 2.1 2.1" fill="none" stroke="currentColor" strokeWidth="1.25" /></svg>
+                  </button>}
                 </div>
               })}
             {(studioStatus?.integrations ?? []).filter((item) => !(studioStatus?.studios ?? []).some((studio) => studio.id === item.id)).map((integration) => (

@@ -53,7 +53,11 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
         const integrations = await statuses()
         res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' })
         res.end(JSON.stringify({
-          studios: registry.list(),
+          studios: registry.list().map(studio => ({
+            ...studio,
+            source: 'local',
+            localPath: registry.entries().find(entry => entry.id === studio.id)?.root,
+          })),
           integrations: integrations.map(status => ({ ...status, startupError: status.ready ? undefined : failures.find(failure => failure.studioIds.includes(status.id))?.message })),
           serviceFailures: failures,
         }))
