@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "name": "dsh-studio-library",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "kind": "shared",
   "packages": [
     {
