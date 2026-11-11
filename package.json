@@ -84,7 +84,10 @@
     "packages/runtime/cordis.patch.yml",
     "packages/runtime/dsh.plugin.json",
     "packages/runtime/README.md",
-    "packages/runtime/LICENSE"
+    "packages/runtime/LICENSE",
+    "locale",
+    "packages/worktable/locale",
+    "packages/runtime/locale"
   ],
   "homepage": "https://github.com/1997liuyh-boop/dsh-studio-library#readme",
   "keywords": [
