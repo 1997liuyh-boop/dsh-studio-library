@@ -21,7 +21,7 @@
 Use the official Desktop plugin manager after fully quitting Desktop, or run the bundled carrier at `resources/runtime/cli/bin/dsh.cmd` on Windows. Install the control bundle and then only the business studios you need:
 
 ```powershell
-& "<Desktop install directory>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "github:1997liuyh-boop/dsh-studio-library#v0.1.7"
+& "<Desktop install directory>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "github:1997liuyh-boop/dsh-studio-library#v0.1.8"
 & "<Desktop install directory>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop list
 ```
 
