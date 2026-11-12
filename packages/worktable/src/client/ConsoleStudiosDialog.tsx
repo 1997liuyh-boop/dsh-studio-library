@@ -92,8 +92,25 @@ const ICON_GRIP = (
   </svg>
 )
 
+/** 交给 AI 修改源码时传出的本地工作室信息。 */
+export interface EditableStudio {
+  id: string
+  name: string
+  icon?: string
+  source: 'local'
+  localPath: string
+}
+
+/** 编辑图标：铅笔。 */
+const ICON_EDIT = (
+  <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M10.7 2.1a1.5 1.5 0 0 1 2.1 2.1L6 11l-3.1.7.7-3.1z" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinejoin="round" />
+    <path d="m9.7 3.1 2.1 2.1" fill="none" stroke="currentColor" strokeWidth="1.25" />
+  </svg>
+)
+
 /** 控制台弹窗：列出全部子工作室（名称 / 地址 / 版本 / 有更新标记），按住右侧抓手拖拽排序。 */
-export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onEnterConsole }: {
+export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onEnterConsole, onEditStudio }: {
   /** 是否显示弹窗 */
   open: boolean
   /** 文案翻译函数 */
@@ -106,6 +123,8 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
   onReorder: (ids: string[]) => void
   /** 进入控制室（弹窗关闭后执行）；不传则不显示入口 */
   onEnterConsole?: () => void
+  /** 让 AI 修改本地工作室（打开独立会话）；不传则不显示编辑按钮 */
+  onEditStudio?: (studio: EditableStudio) => Promise<void>
 }) {
   const dialog = useRef<HTMLDialogElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
@@ -118,6 +137,7 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
   /** 正在一键启动的目标：工作室标识，或 '*' 表示全部 */
   const [startBusy, setStartBusy] = useState<string | null>(null)
   const [startError, setStartError] = useState('')
+  const [editError, setEditError] = useState('')
   const [dragId, setDragId] = useState<string | null>(null)
   const dragging = useRef<{ id: string; pointerId: number } | null>(null)
   const orderRef = useRef(order)
@@ -310,6 +330,7 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
       )}
       {upgradeError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{upgradeError}</p>}
       {startError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{startError}</p>}
+      {editError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{editError}</p>}
       {loadError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:text-sm studio:text-red-500">{t('consoleList.versionFail')}</p>}
       {order.length === 0
         ? <div data-console-empty className="studio:flex studio:justify-center studio:py-4">
@@ -350,8 +371,27 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
                         {!service.ready && !service.startable && <span>{t('consoleList.notConfigured')}</span>}
                       </span>
                     )}
+                    {service && !service.ready && !serviceStarting && service.error && (
+                      <span data-service-error title={service.error} className="studio:line-clamp-2 studio:break-words studio:text-xs studio:leading-5 studio:text-red-500">{service.error}</span>
+                    )}
                   </span>
                 </span>
+                {onEditStudio && row?.source === 'local' && row.address && (
+                  <button type="button" data-edit-studio={item.studioId} aria-label={t('console.editStudio')} title={t('console.editStudio')}
+                    onClick={() => {
+                      setEditError('')
+                      // 会话创建成功再关闭弹窗；失败时留在弹窗里显示原因
+                      onEditStudio({ id: item.studioId, name: item.name, icon: item.icon, source: 'local', localPath: row.address! })
+                        .then(onClose, (error: unknown) => {
+                          // 取 message 而不判断 instanceof：错误可能来自其他窗口或模块环境
+                          const message = (error as { message?: unknown } | null)?.message
+                          setEditError(typeof message === 'string' ? message : String(error))
+                        })
+                    }}
+                    className="studio:flex studio:h-6 studio:w-6 studio:shrink-0 studio:items-center studio:justify-center studio:rounded-(--dsw-radius-sm) studio:border-0 studio:bg-transparent studio:text-(--dsw-alias-label-tertiary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:hover:text-(--dsw-alias-label-primary) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500">
+                    {ICON_EDIT}
+                  </button>
+                )}
                 <span data-version className="studio:shrink-0 studio:text-xs studio:tabular-nums studio:text-(--dsw-alias-label-secondary)">{row?.version ? 'v' + row.version : '—'}</span>
                 {upgradeControl(item.studioId, row)}
                 <span data-grip role="button" tabIndex={0} aria-label={t('consoleList.drag', { name: item.name })} title={t('consoleList.dragHint')}

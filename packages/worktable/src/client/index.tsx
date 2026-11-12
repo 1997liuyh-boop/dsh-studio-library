@@ -5,7 +5,7 @@ import { css } from './styles'
 import studioCss from './studio.generated.css'
 import { NS, zh, en, type WorktableKey } from './locales'
 import { isAbs, joinPath, parentPathOf, basenameOf } from './pathutil'
-import { installSplitClaims, splitStore, SplitWorkspace, setSplitT, setSplitEnv, type LayoutSpec, type SplitPane, type ConsoleCardData, type ConsoleStatusSnapshot, type ConsoleStudioStatus } from './split'
+import { installSplitClaims, splitStore, SplitWorkspace, setSplitT, setSplitEnv, type LayoutSpec, type SplitPane, type ConsoleCardData, type ConsoleStudioStatus } from './split'
 import { appendHostInput } from './hostInput'
 import { installStudioDiscussion } from './studioDiscussion'
 import { installStudioSession } from './studioSession'
@@ -22,6 +22,7 @@ import { DEFAULT_BG_SVG, b64ToBlob } from './defaultBg'
 import { WAVE_BG_B64 } from './waveBg'
 import { AddStudioDialog, type StudioImportOutcome } from './AddStudioDialog'
 import { ConsoleStudiosDialog } from './ConsoleStudiosDialog'
+import { refreshStudioInfo } from './studioInfo'
 import { buildStudioDraftPrompt, draftStamp, studioFeatureName, watchFirstUserMessage } from './studioDraft'
 
 /**
@@ -595,26 +596,6 @@ function listWorkspaces(): { id: string; title: string; path: string; sessionIds
   } catch { return [] }
 }
 
-/** 读取控制室需要的工作室状态，并标出当前会话的实际工作目录。 */
-async function getStudioStatus(): Promise<ConsoleStatusSnapshot> {
-  const [response, updatesResponse] = await Promise.all([
-    fetch('/studio-projects/control/status', { cache: 'no-store' }),
-    fetch('/studio-projects/updates', { cache: 'no-store' }).catch(() => null),
-  ])
-  if (!response.ok) throw new Error('HTTP ' + response.status)
-  const report = await response.json() as ConsoleStatusSnapshot
-  const updates = updatesResponse?.ok ? await updatesResponse.json() as { studios?: { id: string; state: string; latest?: string }[] } : null
-  const current = currentSessionOf(sessionBridge?.list?.getSnapshot?.())
-  const workspace = listWorkspaces().find((item) => item.id === current || item.sessionIds.includes(current))
-  return {
-    studios: Array.isArray(report.studios) ? report.studios : [],
-    integrations: Array.isArray(report.integrations) ? report.integrations : [],
-    serviceFailures: Array.isArray(report.serviceFailures) ? report.serviceFailures : [],
-    updates: Array.isArray(updates?.studios) ? updates.studios : [],
-    workspace: workspace ? { title: workspace.title, path: workspace.path } : { title: '当前会话', path: sessionScopeStore.snapshot?.cwd ?? '' },
-  }
-}
-
 /** 冷会话最近消息缓存与预热：0.2 临时持有会话、读 eventSource 后释放；旧版保留 history 通道。
  *  只读消息文本，不请求模型；拉取是带宽成本，不产生模型 Token。 */
 const previewCache = new Map<string, string>()
@@ -1164,7 +1145,6 @@ function WorktableSection(props: any) {
   /** 控制室箭头打开的「控制台」子工作室列表弹窗 */
   const [consoleListOpen, setConsoleListOpen] = useState(false)
   /** 控制室侧栏条目：「进入控制室」时作为绑定弹窗的定位锚点 */
-  const consoleEntryRef = useRef<HTMLButtonElement | null>(null)
   const [viewOptionsOpen, setViewOptionsOpen] = useState(false)
   // 更新检查：徽标 / 更新卡 / 版本行共用；节流一天一次，忽略按版本号存 localStorage
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null)
@@ -1454,8 +1434,8 @@ function WorktableSection(props: any) {
           sweepPreviews()
         },
         onAdd: () => openAddPanel(),
-        onEditStudio: (studio) => createStudioEditSession(studio),
-        getStudioStatus,
+        // 控制室底栏「工作室状态」：打开工作室列表弹窗（与侧栏共用同一个弹窗与排序）
+        openStudios: () => setConsoleListOpen(true),
         onOpen: (id) => {
           if (id === CONSOLE_ID) return
           const pr = projectsRef.current.projects
@@ -2426,9 +2406,9 @@ function WorktableSection(props: any) {
         icon: projects.iconOverrides[id] ?? metas[id]?.icon,
         studioId: id.startsWith('studio-') ? id.slice('studio-'.length) : id,
       }))}
-      onClose={() => setConsoleListOpen(false)}
+      onClose={() => { setConsoleListOpen(false); void refreshStudioInfo() }}
       onReorder={reorderStudios}
-      onEnterConsole={() => { if (consoleEntryRef.current) clickConsoleCard(consoleEntryRef.current) }}
+      onEditStudio={createStudioEditSession}
     />
     <StudioSection wide={wide} title={t('title')} expandSidebar={props.expandSidebar} toolbar={toolbar} search={{
       expanded: view.searchOpen,
@@ -2680,7 +2660,6 @@ function WorktableSection(props: any) {
           className="dsh-wt_layout dsh-wt_consoleEntry"
           data-on={activeSplitId === CONSOLE_ID ? 'true' : 'false'}
           style={{ order: 0, position: 'relative' }}
-          ref={consoleEntryRef}
           title={t('console.name')}
           onClick={(e) => clickConsoleCard(e.currentTarget as HTMLElement)}
         >
@@ -2688,19 +2667,8 @@ function WorktableSection(props: any) {
           <span className="dsh-wt_layoutText">
             <span className="dsh-wt_layoutName">{t('console.name')}</span>
           </span>
-          <span
-            className="dsh-wt_layoutArrow dsh-wt_consoleArrow"
-            role="button"
-            tabIndex={0}
-            aria-haspopup="dialog"
-            aria-label={t('consoleList.open')}
-            title={t('consoleList.open')}
-            onClick={(e) => { e.stopPropagation(); setConsoleListOpen(true) }}
-            onKeyDown={(e) => {
-              if (e.key !== 'Enter' && e.key !== ' ') return
-              e.preventDefault(); e.stopPropagation(); setConsoleListOpen(true)
-            }}
-          >›</span>
+          {/* 右侧箭头只作指示：点击与整行相同，直接进入控制室；工作室列表改由控制室内「工作室状态」打开 */}
+          <span className="dsh-wt_layoutArrow dsh-wt_consoleArrow" aria-hidden="true">›</span>
         </button>
         {renderProjectSlot
           ? renderProjectSlot('sidebar.worktable.project', ownerProps)

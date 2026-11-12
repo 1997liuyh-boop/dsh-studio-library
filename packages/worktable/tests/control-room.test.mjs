@@ -54,14 +54,28 @@ test('自动检查更新开关显示已开启/已关闭，并使用醒目样式'
   assert.match(client('styles.ts'), /\.dsh-wt_autoSwitch\.dsh-wt_switchOn\{background:#2ea043/)
 })
 
-test('工作室状态弹窗显示本地版本、Release 版本与一键更新；卡片 header 含版本标签与仓库地址', () => {
+test('「工作室状态」打开工作室列表弹窗，不再使用控制室内的小浮层；卡片 header 含版本标签与仓库地址', () => {
   const split = client('split.tsx')
   const styles = client('styles.ts')
-  assert.match(split, /T\('console\.localVersion'[\s\S]{0,200}T\('console\.releaseVersion'/)
-  assert.match(split, /kind === 'available' && <>[\s\S]{0,120}upgradeButton\(id, item\.latest!\)/)
-  assert.match(split, /\{releaseLine\(studio\.id\)\}/)
+  assert.match(split, /title=\{T\('console\.statusLabel'\)\}[\s\S]{0,200}splitEnv\?\.console\?\.openStudios\?\.\(\)/)
+  assert.doesNotMatch(split, /dsh-wt_statusDrop|releaseLine|getStudioStatus|statusOpen/)
+  assert.match(split, /kind === 'available'\) return upgradeButton\(id, item!\.latest!\)/)
   assert.match(split, /\{!c\.self && cardTag\(c\.id\)\}/)
   assert.match(split, /className="dsh-wt_consoleRepo"/)
   assert.match(styles, /\.dsh-wt_consoleName\{[^']*font-size:18px/)
   assert.match(styles, /\.dsh-wt_consoleRepo\{[^']*text-overflow:ellipsis;white-space:nowrap;font-size:14px/)
+})
+
+test('卡片版本标签为实心白字；每行两张方形卡片时正好占满控制室宽度', () => {
+  const split = client('split.tsx')
+  const styles = client('styles.ts')
+  for (const name of ['Update', 'Latest', 'Busy']) {
+    const rule = styles.match(new RegExp('\\.dsh-wt_cardTag' + name + '\\{([^}]*)\\}'))?.[1] ?? ''
+    assert.match(rule, /background:#[0-9a-f]{6}/, name + ' 应为实心背景')
+    assert.match(rule, /color:#fff/, name + ' 应为白字')
+    assert.doesNotMatch(rule, /background:transparent|border:1px/, name + ' 不应是描边样式')
+  }
+  assert.match(split, /className="dsh-wt_consoleGrid" data-cols=\{cols\}/)
+  assert.match(styles, /\.dsh-wt_console:not\(\[data-wt-shape=circle\]\) \.dsh-wt_consoleGrid\[data-cols="2"\]\{max-width:none\}/)
+  assert.match(styles, /\.dsh-wt_consoleGrid\[data-cols="2"\] \.dsh-wt_consoleCard\{aspect-ratio:auto\}/)
 })

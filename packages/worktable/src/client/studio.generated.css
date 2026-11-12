@@ -76,6 +76,12 @@
   .studio\:box-border {
     box-sizing: border-box;
   }
+  .studio\:line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
   .studio\:block {
     display: block;
   }

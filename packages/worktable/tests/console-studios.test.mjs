@@ -30,7 +30,7 @@ const flush = () => new Promise(setImmediate)
 const translate = (key, params = {}) => zh[key].replace(/\{(\w+)\}/g, (_, name) => params[name] ?? '')
 
 /** 在 jsdom 中渲染控制台弹窗。 */
-async function render(t, studios, report, catalog = { studios: [] }, calls = [], services = { before: [], after: [] }) {
+async function render(t, studios, report, catalog = { studios: [] }, calls = [], services = { before: [], after: [] }, props = {}) {
   const dom = new JSDOM('<div id="root"></div>', { url: 'http://dsh.local' })
   dom.window.HTMLDialogElement.prototype.showModal = function () { this.open = true }
   dom.window.HTMLDialogElement.prototype.close = function () { this.open = false }
@@ -48,7 +48,7 @@ async function render(t, studios, report, catalog = { studios: [] }, calls = [],
   }
   const reorders = []
   const root = createRoot(dom.window.document.getElementById('root'))
-  await act(async () => { root.render(React.createElement(ConsoleStudiosDialog, { open: true, t: translate, studios, onClose() {}, onReorder: (ids) => reorders.push(ids) })); await flush() })
+  await act(async () => { root.render(React.createElement(ConsoleStudiosDialog, { open: true, t: translate, studios, onClose() {}, onReorder: (ids) => reorders.push(ids), ...props })); await flush() })
   t.after(async () => { await act(async () => root.unmount()); dom.window.close(); for (const [key, descriptor] of saved) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else delete globalThis[key] } })
   return { dom, reorders, dialog: dom.window.document.querySelector('dialog') }
 }
@@ -141,17 +141,52 @@ test('抓手键盘排序提交新顺序', async (t) => {
   assert.deepEqual([...dialog.querySelectorAll('[data-console-studio]')].map(row => row.getAttribute('data-console-studio')), ['b', 'a'])
 })
 
-test('控制室箭头打开控制台、工作室栏移除版本与更新、搜索改为标题栏内联', () => {
+test('控制室箭头只作指示、点击直接进入控制室；工作室列表改由控制室「工作室状态」打开', () => {
   const source = readFileSync(new URL('../src/client/index.tsx', import.meta.url), 'utf8')
   const section = readFileSync(new URL('../src/client/StudioSection.tsx', import.meta.url), 'utf8')
   assert.doesNotMatch(source, /StudioUpdates/)
-  assert.match(source, /dsh-wt_consoleArrow[\s\S]{0,400}setConsoleListOpen\(true\)/)
-  // 点击「控制室」条目默认直接进入控制室；右侧箭头打开控制台总览
-  assert.match(source, /ref=\{consoleEntryRef\}[\s\S]{0,120}onClick=\{\(e\) => clickConsoleCard\(e\.currentTarget as HTMLElement\)\}/)
+  // 整行（含右侧箭头）点击都直接进入控制室；箭头不再单独打开弹窗
+  assert.match(source, /className="dsh-wt_layout dsh-wt_consoleEntry"[\s\S]{0,200}onClick=\{\(e\) => clickConsoleCard\(e\.currentTarget as HTMLElement\)\}/)
+  assert.match(source, /<span className="dsh-wt_layoutArrow dsh-wt_consoleArrow" aria-hidden="true">›<\/span>/)
+  assert.doesNotMatch(source, /dsh-wt_consoleArrow"[^>]*onClick/)
+  // 弹窗只由控制室环境的 openStudios 打开，不再提供「进入控制室」入口；本地工作室可交给 AI 修改
+  assert.match(source, /openStudios: \(\) => setConsoleListOpen\(true\)/)
+  assert.equal(source.match(/setConsoleListOpen\(true\)/g).length, 1)
   assert.match(source, /studioId: id\.startsWith\('studio-'\)/)
-  assert.match(source, /<ConsoleStudiosDialog[\s\S]{0,500}onReorder=\{reorderStudios\}/)
+  assert.match(source, /<ConsoleStudiosDialog[\s\S]{0,500}onReorder=\{reorderStudios\}[\s\S]{0,80}onEditStudio=\{createStudioEditSession\}/)
+  assert.doesNotMatch(source, /onEnterConsole=/)
   assert.doesNotMatch(source, /className="dsh-wt_search"/)
   assert.match(source, /search=\{\{[\s\S]{0,800}onClose: closeSearch/)
   assert.match(section, /data-searching=/)
   assert.match(section, /dsh-wt_searchSlot/)
+})
+
+test('本地工作室可交给 AI 修改：成功后关闭弹窗；GitHub 安装的不显示按钮；未连接时显示失败原因', async (t) => {
+  const studios = [{ id: 'studio-media', studioId: 'media', name: '影音', icon: '🎞️' }, { id: 'studio-travel', studioId: 'travel', name: '旅行' }]
+  const catalog = { studios: [
+    { id: 'media', version: '0.2.11', source: 'local', address: 'D:\\studios\\media' },
+    { id: 'travel', version: '1.2.0', source: 'github', address: 'https://github.com/owner/dsh-studio-travel' },
+  ] }
+  const services = { before: [{ id: 'media', title: '影音', ready: false, startable: true, starting: false, error: '影音工作室无法启动：端口 33105 已被其他程序占用' }], after: [] }
+  const edits = []
+  let closed = 0
+  const props = { onClose() { closed++ }, onEditStudio: async (studio) => { edits.push(studio) } }
+  const { dom, dialog } = await render(t, studios, { hostVersion: '', busy: false, studios: [] }, catalog, [], services, props)
+  const media = dialog.querySelector('[data-console-studio="studio-media"]')
+  assert.equal(media.querySelector('[data-service-error]').textContent, '影音工作室无法启动：端口 33105 已被其他程序占用')
+  assert.equal(dialog.querySelector('[data-console-studio="studio-travel"] [data-edit-studio]'), null)
+  await act(async () => { media.querySelector('[data-edit-studio="media"]').dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true })); await flush() })
+  assert.deepEqual(edits.map(item => ({ ...item })), [{ id: 'media', name: '影音', icon: '🎞️', source: 'local', localPath: 'D:\\studios\\media' }])
+  assert.equal(closed, 1)
+})
+
+test('AI 修改失败时留在弹窗里显示原因', async (t) => {
+  const studios = [{ id: 'studio-media', studioId: 'media', name: '影音' }]
+  const catalog = { studios: [{ id: 'media', version: '0.2.11', source: 'local', address: 'D:\\studios\\media' }] }
+  let closed = 0
+  const props = { onClose() { closed++ }, onEditStudio: async () => { throw new Error('本地工作室目录不可用') } }
+  const { dom, dialog } = await render(t, studios, { hostVersion: '', busy: false, studios: [] }, catalog, [], undefined, props)
+  await act(async () => { dialog.querySelector('[data-edit-studio="media"]').dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true })); await flush() })
+  assert.equal(closed, 0)
+  assert.ok([...dialog.querySelectorAll('[role="alert"]')].some(node => node.textContent === '本地工作室目录不可用'))
 })

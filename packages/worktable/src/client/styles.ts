@@ -228,9 +228,7 @@ export const css = xtermCss + '\n' + [
   '.dsh-wt_layoutName{font-size:12px;font-weight:400;line-height:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
   // 箭头与项目名同一行高 + 字面中心对齐；› 墨迹在字面框内偏下，整体上移 1px 使视觉居中
   '.dsh-wt_layoutArrow{flex:none;display:inline-flex;align-items:center;height:18px;color:var(--dsw-alias-label-tertiary,#6e7683);font-size:14px;line-height:18px;transform:translateY(-1.5px)}',
-  '.dsh-wt_consoleArrow{justify-content:center;width:22px;height:22px;margin-right:-4px;border-radius:5px;cursor:pointer;transform:none}',
-  '.dsh-wt_consoleArrow:hover{color:var(--dsw-alias-label-primary,#e6e8eb);background:var(--dsw-alias-interactive-bg-hover,rgba(255,255,255,.08))}',
-  '.dsh-wt_consoleArrow:focus-visible{outline:2px solid var(--dsw-focus-ring-color,#4f8ef7);outline-offset:-2px}',
+  '.dsh-wt_consoleArrow{justify-content:center;width:22px;height:22px;margin-right:-4px;transform:none}',
   // 入驻项目卡自带箭头（桥注入 .dsh-wt_resArrow）：与布局卡同款视觉居中
   'button[data-wt-id] > .dsh-wt_resArrow{display:inline-flex;align-items:center;height:18px;line-height:18px;transform:translateY(-1.5px)}',
   // 项目卡片统一：所有入驻项目卡片（data-wt-id 通用标记）与布局卡片同款常显框
@@ -561,13 +559,15 @@ export const css = xtermCss + '\n' + [
   '.dsh-wt_consoleIcon{flex:none;font-size:31px;line-height:1}',
   '.dsh-wt_consoleName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:18px;font-weight:700;line-height:26px;color:var(--wt-text)}',
   // 卡片 header 右侧版本标签：有更新 = 蓝色可点击一键更新；已是最新 = 描边；更新中 = 弱化
+  '.dsh-wt_console:not([data-wt-shape=circle]) .dsh-wt_consoleGrid[data-cols="2"]{max-width:none}',
+  '.dsh-wt_console:not([data-wt-shape=circle]) .dsh-wt_consoleGrid[data-cols="2"] .dsh-wt_consoleCard{aspect-ratio:auto}',
   '.dsh-wt_cardTag{flex:none;display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:600;line-height:22px;white-space:nowrap}',
   '.dsh-wt_cardTagUpdate{border:none;background:#2f81f7;color:#fff;cursor:pointer;box-shadow:0 0 10px rgba(47,129,247,.45)}',
   '.dsh-wt_cardTagUpdate:hover{background:#4c95ff}',
   '.dsh-wt_cardTagUpdate:focus-visible{outline:2px solid #fff;outline-offset:1px}',
   '.dsh-wt_cardTagUpdate:disabled{opacity:.5;cursor:default}',
-  '.dsh-wt_cardTagLatest{border:1px solid var(--wt-border);color:var(--wt-text2);background:transparent}',
-  '.dsh-wt_cardTagBusy{border:1px solid var(--wt-border);color:var(--wt-text3)}',
+  '.dsh-wt_cardTagLatest{border:none;background:#238636;color:#fff}',
+  '.dsh-wt_cardTagBusy{border:none;background:#9a6700;color:#fff}',
   // 卡片仓库地址：14px，一行显示，超出省略号
   '.dsh-wt_consoleRepo{min-width:0;margin-top:-8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;line-height:20px;color:var(--wt-text2)}',
   '.dsh-wt_console[data-wt-shape=circle] .dsh-wt_consoleRepo{max-width:82%;margin:-4px auto 0;text-align:center}',
