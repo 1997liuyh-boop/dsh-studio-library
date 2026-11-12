@@ -2103,6 +2103,8 @@ function ConsolePane() {
           </div>
         ) : (
         <div ref={gridRef} className="dsh-wt_consoleGrid" data-cols={cols} style={{ ['--wt-cols' as any]: cols }}>
+        {/* 卡片上「有更新」一键更新失败时的原因（独占一行，显示在卡片上方） */}
+        {studioInfo.error && <p role="alert" className="dsh-wt_consoleErr" data-upgrade-error>{T('console.upgradeFail', { reason: studioInfo.error })}</p>}
         {cards.map((c) => (
           <div
             key={c.id}

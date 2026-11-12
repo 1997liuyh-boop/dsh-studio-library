@@ -79,3 +79,13 @@ test('卡片版本标签为实心白字；每行两张方形卡片时正好占�
   assert.match(styles, /\.dsh-wt_console:not\(\[data-wt-shape=circle\]\) \.dsh-wt_consoleGrid\[data-cols="2"\]\{max-width:none\}/)
   assert.match(styles, /\.dsh-wt_consoleGrid\[data-cols="2"\] \.dsh-wt_consoleCard\{aspect-ratio:auto\}/)
 })
+
+test('卡片一键更新失败时在控制室显示原因；旧状态浮层的样式与文案已清理', () => {
+  const split = client('split.tsx')
+  const styles = client('styles.ts')
+  const locales = client('locales.ts')
+  assert.match(split, /\{studioInfo\.error && <p role="alert" className="dsh-wt_consoleErr" data-upgrade-error>\{T\('console\.upgradeFail', \{ reason: studioInfo\.error \}\)\}<\/p>\}/)
+  assert.match(styles, /\.dsh-wt_consoleGrid>\.dsh-wt_consoleErr\{flex-basis:100%/)
+  assert.doesNotMatch(styles, /dsh-wt_status|dsh-wt_consoleDockWrapOpen/)
+  assert.doesNotMatch(locales, /'console\.(statusTitle|statusRefresh|releaseVersion|localVersion|workspacePath|installedStudios)'/)
+})
