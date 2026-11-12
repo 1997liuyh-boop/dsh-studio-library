@@ -162,8 +162,10 @@ test('旧脚本留在安装目录内运行的进程被替换；用户自行启�
   assert.equal(await services.ensure('cineflow'), undefined)
   assert.deepEqual(state.killed, [])
   assert.equal(state.launches.length, 0)
-  // 旧启动脚本在安装目录内拉起的进程：会占用目录，替换为独立副本
-  state.commands.set(77, '"C:\\electron\\electron.exe" "' + join(source, 'app').toUpperCase() + '"')
+  // 旧启动脚本在安装目录内拉起的进程：会占用目录，替换为独立副本。
+  // Windows 的路径不区分大小写，命令行里的大小写可能与登记的不同；其他平台区分大小写，按原样比较
+  const application = join(source, 'app')
+  state.commands.set(77, '"C:\\electron\\electron.exe" "' + (process.platform === 'win32' ? application.toUpperCase() : application) + '"')
   assert.equal(await services.ensure('cineflow'), undefined)
   assert.deepEqual(state.killed, [77])
   assert.equal(state.launches.length, 1)
