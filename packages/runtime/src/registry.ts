@@ -38,6 +38,7 @@ function validateTasks(studio: string, tasks: readonly StudioTask[] | undefined)
 /** 插件拥有页面与资源；宿主统一执行所有者认证。 */
 export class StudioProjects {
   private readonly pages = new Map<string, StudioPage>()
+  private readonly watchers = new Set<(event: 'register' | 'unregister', page: StudioPage) => void>()
 
   /** 登记页面，撤销后不再接收新请求；用户数据由插件独立保存。 */
   register(page: StudioPage): () => void {
@@ -45,7 +46,23 @@ export class StudioProjects {
     if (this.pages.has(page.id)) throw new Error('工作室已注册：' + page.id)
     validateTasks(page.id, page.tasks)
     this.pages.set(page.id, page)
-    return () => { this.pages.delete(page.id) }
+    this.notify('register', page)
+    return () => { if (this.pages.get(page.id) === page && this.pages.delete(page.id)) this.notify('unregister', page) }
+  }
+
+  /**
+   * 监听工作室的登记与撤销（安装、启用、更新后重新加载都会触发），返回取消监听的函数。
+   * 监听器抛出的错误不影响登记本身。
+   */
+  watch(listener: (event: 'register' | 'unregister', page: StudioPage) => void): () => void {
+    this.watchers.add(listener)
+    return () => { this.watchers.delete(listener) }
+  }
+
+  private notify(event: 'register' | 'unregister', page: StudioPage): void {
+    for (const listener of this.watchers) {
+      try { listener(event, page) } catch (error) { console.error('工作室登记监听失败', error instanceof Error ? error.message : 'Error') }
+    }
   }
 
   /** 供共享宿主服务读取已登记插件，路径不会发送给客户端。 */

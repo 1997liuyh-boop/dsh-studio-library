@@ -5,13 +5,15 @@ import { StudioUpdates, resolveUpdates } from './studioUpdates'
 import { updateRoutes } from './updateRoutes'
 import { getDshRuntimeVersion } from '@deepseek-ai/dsh-app-boot'
 import type {} from '@deepseek-ai/dsh-plugin-manager'
-import { createIntegrations, type IntegrationConfig } from './integrations'
+import { cineflowDataDirectory, createIntegrations, type IntegrationConfig } from './integrations'
 import { createToonflowSessions } from './toonflowSessions'
 import { readFile } from 'node:fs/promises'
+import { dirname, isAbsolute, resolve } from 'node:path'
 import { installStudioControl, handleStudioImport } from './studioControl'
 import { studioCatalog } from './studioCatalog'
 import { installStudioTasks } from './studioTasks'
 import { resolveServiceStartup, ServiceNotConfigured, StudioServiceLauncher, type ServiceStartupFailure } from './serviceStartup'
+import { cineflowService, ManagedStudioServices, nodePlatform } from './managedServices'
 
 interface HostContext {
   provide(name: string, value: StudioProjects): void
@@ -29,10 +31,15 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
   const startupConfig = resolveServiceStartup(config.autoStartServices)
   // 宿主启动时、「一键启动」与更新时的停/启共用同一启动器，同一启动组不会并行重复拉起
   const launcher = new StudioServiceLauncher(startupConfig)
-  // 更新前停止在安装目录内运行的服务（Windows 上运行中的目录无法被替换），装完再重启
+  // 随包服务（影音）：无需配置，由运行时从独立副本直接拉起；显式写了启动组的工作室仍按配置执行
+  if (config.electronPath !== undefined && (typeof config.electronPath !== 'string' || !isAbsolute(config.electronPath))) throw new Error('工作室 electronPath 必须是绝对路径')
+  const managed = new ManagedStudioServices([cineflowService(cineflowDataDirectory(config))], nodePlatform(config.electronPath))
+  const autoStart = process.env.DSH_STUDIO_SKIP_APPS !== '1'
+  // 更新前停止在安装目录内运行的服务（Windows 上运行中的目录无法被替换），装完再重启；随包服务不占用安装目录，装完只需切换到新版本
   const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates), fetch, {
     stopForUpdate: (studioId, directory) => launcher.stopForUpdate(studioId, directory),
     restart: groups => launcher.restart(groups),
+    refresh: async studioId => { if (autoStart) await managed.ensure(studioId, { force: true }) },
   })
   await updates.initialize()
   const handleUpdates = updateRoutes(updates)
@@ -40,9 +47,34 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
   const statuses = createIntegrations(config)
   let startup = Promise.resolve<ServiceStartupFailure[]>([])
   ctx.effect(() => {
-    if (process.env.DSH_STUDIO_SKIP_APPS !== '1') startup = launcher.start()
+    if (autoStart) startup = launcher.start()
     return async () => { await launcher.dispose(); await startup.catch(() => []) }
   }, '工作室：本机服务自动启动')
+  ctx.effect(() => {
+    // 工作室一登记（安装、启用、更新后重新加载）就启动或切换它的随包服务，不必重启桌面
+    const attach = (id: string, root: string) => {
+      if (launcher.startable(id) || !managed.attach(id, dirname(resolve(root))) || !autoStart) return
+      void managed.ensure(id)
+    }
+    for (const page of registry.entries()) attach(page.id, page.root)
+    const unwatch = registry.watch((event, page) => { if (event === 'register') attach(page.id, page.root); else managed.detach(page.id) })
+    return async () => { unwatch(); await managed.dispose() }
+  }, '工作室：随包服务自动启动')
+  /** 配置的启动组与随包服务的最近失败记录。 */
+  const serviceFailures = () => [...launcher.report(), ...managed.report()]
+  /** 连接状态；未就绪的随包服务先尝试拉起（「重新连接」即自动重试），再读取真实健康状态。 */
+  const connectedStatuses = async () => {
+    await startup
+    const current = await statuses()
+    const pending = autoStart ? current.filter(status => !status.ready && managed.has(status.id)) : []
+    if (!pending.length) return current
+    await Promise.all(pending.map(status => managed.ensure(status.id)))
+    return statuses()
+  }
+  /** 控制台服务面板：是否可一键启动、是否正在启动及失败原因。 */
+  const serviceStates = async (failures: readonly ServiceStartupFailure[]) => (await statuses()).map(status => ({ id: status.id, title: status.title, ready: status.ready,
+    startable: launcher.startable(status.id) || managed.has(status.id), starting: launcher.starting(status.id) || managed.starting(status.id),
+    error: status.ready ? undefined : failures.find(failure => failure.studioIds.includes(status.id))?.message }))
   const toonflow = await createToonflowSessions(ctx, config)
   const control = installStudioControl(ctx, registry, ctx.pluginManager)
   installStudioTasks(ctx, registry)
@@ -56,11 +88,7 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
       }
       // 依赖本机服务的工作室：连接状态、是否可一键启动、是否正在启动（不等待开机启动完成）
       if (req.method === 'GET' && url.pathname === '/studio-projects/control/services') {
-        const failures = launcher.report()
-        const services = (await statuses()).map(status => ({ id: status.id, title: status.title, ready: status.ready,
-          startable: launcher.startable(status.id), starting: launcher.starting(status.id),
-          error: status.ready ? undefined : failures.find(failure => failure.studioIds.includes(status.id))?.message }))
-        res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify({ services })); return
+        res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify({ services: await serviceStates(serviceFailures()) })); return
       }
       // 一键启动：body { studio?: string }，不传则启动全部已配置的启动组
       if (url.pathname === '/studio-projects/control/start') {
@@ -76,10 +104,12 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
           studio = input?.studio
         } catch { send(400, { error: '参数无效' }); return }
         try {
-          const failures = await launcher.start(studio)
-          const services = (await statuses()).map(status => ({ id: status.id, title: status.title, ready: status.ready, startable: launcher.startable(status.id), starting: launcher.starting(status.id),
-            error: status.ready ? undefined : failures.find(failure => failure.studioIds.includes(status.id))?.message }))
-          send(200, { failures, services })
+          // 显式配置的启动组优先；其余工作室使用随包服务，用户主动点击时不受失败冷却限制
+          let failures: ServiceStartupFailure[]
+          if (studio === undefined) failures = [...await launcher.start(), ...await managed.ensureAll({ force: true })]
+          else if (!launcher.startable(studio) && managed.has(studio)) { const failure = await managed.ensure(studio, { force: true }); failures = failure ? [failure] : [] }
+          else failures = await launcher.start(studio)
+          send(200, { failures, services: await serviceStates(failures) })
         } catch (error) {
           if (error instanceof ServiceNotConfigured) { send(404, { error: error.message }); return }
           throw error
@@ -90,9 +120,8 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
         res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify({ studios: await studioCatalog(registry.entries()) })); return
       }
       if (req.method === 'GET' && url.pathname === '/studio-projects/control/status') {
-        await startup
-        const failures = launcher.report()
-        const integrations = await statuses()
+        const integrations = await connectedStatuses()
+        const failures = serviceFailures()
         res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' })
         res.end(JSON.stringify({
           studios: registry.list().map(studio => ({
@@ -122,9 +151,9 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
         res.end(req.method === 'HEAD' ? undefined : body);return
       }
       if (url.pathname === '/studio-projects/integrations' && req.method === 'GET') {
-        await startup
-        const failures = launcher.report()
-        const report = (await statuses()).map(status => ({ ...status,
+        const current = await connectedStatuses()
+        const failures = serviceFailures()
+        const report = current.map(status => ({ ...status,
           startupError: status.ready ? undefined : failures.find(failure => failure.studioIds.includes(status.id))?.message }))
         res.writeHead(200,{'content-type':'application/json','cache-control':'no-store'}); res.end(JSON.stringify(report)); return
       }

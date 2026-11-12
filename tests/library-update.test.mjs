@@ -211,3 +211,26 @@ test('服务停不下来时不交给宿主安装，记录失败并把服务重�
   assert.equal(operation.phase, 'failed')
   assert.equal(operation.error, 'service-stop')
 })
+
+test('交给宿主安装后通知随包服务核对版本；未进入安装阶段则不通知', async (t) => {
+  const steps = []
+  const manager = {
+    listBundles: async () => [{ name: 'dsh-studio-library', version: '0.1.8', installed: true, enabled: true }],
+    installBundle: async () => { steps.push('install'); return { application: 'failed', bundle: 'dsh-studio-library', version: '0.1.8', error: { code: 'pnpm' } } },
+  }
+  const hooks = stopFailures => ({
+    stopForUpdate: async () => { steps.push('stop'); return { stopped: [], failures: stopFailures } },
+    restart: async () => { steps.push('restart'); return [] },
+    refresh: async (id) => { steps.push('refresh:' + id); throw new Error('切换失败不影响更新结果') },
+  })
+  // 安装失败也要核对：安装目录可能已被改动，随包服务据此决定保持旧版本还是切换
+  const first = await libraryUpdate(t, manager, hooks([]))
+  await first.service.install('library', '0.1.9')
+  assert.deepEqual(steps, ['stop', 'install', 'refresh:library'])
+  assert.equal((await first.service.list()).studios[0].operation.phase, 'failed')
+  // 停止失败时没有交给宿主安装，安装目录未动，无需核对
+  steps.length = 0
+  const second = await libraryUpdate(t, manager, hooks([{ kind: 'exit', studioIds: ['library'], message: '停止失败' }]))
+  await second.service.install('library', '0.1.9')
+  assert.deepEqual(steps, ['stop'])
+})

@@ -3,8 +3,14 @@ import { join } from 'node:path'
 import { homedir } from 'node:os'
 import type { ServiceStartupConfig } from './serviceStartup'
 import type { UpdateConfig } from './studioUpdates'
-export interface IntegrationConfig { updates?: UpdateConfig; toonflowUrl?: string; printfilmUrl?: string; toonflowDataDirectory?: string; cineflowDataDirectory?: string; autoStartServices?: ServiceStartupConfig[] }
+/** electronPath：随包服务（影音）使用的 Electron 程序；省略时自动查找 DSH_STUDIO_ELECTRON 与 DSH_HOME/electron。 */
+export interface IntegrationConfig { updates?: UpdateConfig; toonflowUrl?: string; printfilmUrl?: string; toonflowDataDirectory?: string; cineflowDataDirectory?: string; autoStartServices?: ServiceStartupConfig[]; electronPath?: string }
 interface Integration { id: 'media' | 'film'; title: string; url: string; source: string; marker: RegExp }
+
+/** 影音工作室数据目录：连接信息、日志与运行副本都在其中；状态检查与服务启动共用同一位置。 */
+export function cineflowDataDirectory(config: IntegrationConfig = {}): string {
+  return config.cineflowDataDirectory ?? process.env.DSH_STUDIO_CINEFLOW_DATA ?? join(process.env.DSH_HOME ?? join(homedir(), '.dsh'), 'studio/cineflow')
+}
 
 /** 应用地址由宿主配置或环境变量指定，不接受浏览器传入任意代理地址。 */
 export function createIntegrations(config: IntegrationConfig = {}) {
@@ -26,7 +32,7 @@ export function createIntegrations(config: IntegrationConfig = {}) {
       } catch (error) { return { ...definition, ready: false, entryUrl: definition.url + (definition.id === 'film' ? '/drama?embed=studio' : '/?embed=studio#/home') } }
     }))
     try {
-      const data = config.cineflowDataDirectory ?? process.env.DSH_STUDIO_CINEFLOW_DATA ?? join(process.env.DSH_HOME ?? join(homedir(), '.dsh'), 'studio/cineflow')
+      const data = cineflowDataDirectory(config)
       const descriptor = JSON.parse(await readFile(join(data,'bridge.json'),'utf8'))
       const url = new URL(descriptor.origin)
       if (url.protocol !== 'http:' || url.hostname !== '127.0.0.1' || url.pathname !== '/' || !/^[a-f0-9]{64}$/.test(descriptor.token)) throw new Error('影音连接配置无效')

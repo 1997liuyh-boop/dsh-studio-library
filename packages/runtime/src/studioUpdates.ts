@@ -28,10 +28,12 @@ const object = (value: unknown): Record<string, unknown> => typeof value === 'ob
 
 /**
  * 更新时的本机服务协调：先停止在安装目录内运行的服务（否则 Windows 上 pnpm 无法替换目录），装完再重启。
+ * refresh：安装结束后通知随包服务核对安装目录，有变化就切换到新版本；随包服务从独立副本运行，更新前不必停止。
  */
 export interface UpdateServiceHooks {
   stopForUpdate(studioId: string, directory: string): Promise<{ stopped: ServiceStartupConfig[]; failures: ServiceStartupFailure[] }>
   restart(groups: readonly ServiceStartupConfig[]): Promise<ServiceStartupFailure[]>
+  refresh?(studioId: string): Promise<void>
 }
 
 class UpdateFailure extends Error {
@@ -309,6 +311,8 @@ export class StudioUpdates {
   private async performInstall(pkg: PackageInfo, candidate: Candidate): Promise<void> {
     /** 为更新而停止的服务，结束后（成功或失败）都要重新启动 */
     let stopped: ServiceStartupConfig[] = []
+    /** 是否已交给宿主安装：安装目录可能已被替换，结束后让随包服务核对版本 */
+    let handedOver = false
     try {
       const bundle = (await this.manager.listBundles()).find(bundle => bundle.name === pkg.packageName)
       if (!bundle || bundle.version !== pkg.version || !bundle.installed) throw new UpdateFailure('recheck')
@@ -344,6 +348,7 @@ export class StudioUpdates {
         if (outcome.failures.length) throw new UpdateFailure('service-stop')
       }
       this.hostInstalling = true
+      handedOver = true
       let result = await this.manager.installBundle(file, { enabled: bundle.enabled })
       // pnpm 拦下本包的构建脚本时，宿主会把待决定的键记入 allowBuilds：只批准本包自己的键并重试一次
       const approvals = installFailed(result.application) ? ownBuildApprovals(result.pendingBuilds, pkg.packageName) : []
@@ -362,6 +367,8 @@ export class StudioUpdates {
     } finally {
       // 无论更新成功与否，都把为更新停下的服务重新启动（启动脚本可安全重复执行）
       if (stopped.length && this.services) await this.services.restart(stopped).catch(() => [])
+      // 随包服务：安装目录换了新版本就切换过去；安装失败、目录残缺时保持正在运行的版本
+      if (handedOver && this.services?.refresh) await this.services.refresh(pkg.id).catch(() => { /* 切换失败由服务状态接口报告 */ })
     }
   }
 

@@ -2254,15 +2254,36 @@ function validateTasks(studio, tasks) {
 }
 var StudioProjects = class {
   pages = /* @__PURE__ */ new Map();
+  watchers = /* @__PURE__ */ new Set();
   /** 登记页面，撤销后不再接收新请求；用户数据由插件独立保存。 */
   register(page) {
     if (!idPattern.test(page.id)) throw new Error("\u5DE5\u4F5C\u5BA4\u6807\u8BC6\u65E0\u6548");
     if (this.pages.has(page.id)) throw new Error("\u5DE5\u4F5C\u5BA4\u5DF2\u6CE8\u518C\uFF1A" + page.id);
     validateTasks(page.id, page.tasks);
     this.pages.set(page.id, page);
+    this.notify("register", page);
     return () => {
-      this.pages.delete(page.id);
+      if (this.pages.get(page.id) === page && this.pages.delete(page.id)) this.notify("unregister", page);
     };
+  }
+  /**
+   * 监听工作室的登记与撤销（安装、启用、更新后重新加载都会触发），返回取消监听的函数。
+   * 监听器抛出的错误不影响登记本身。
+   */
+  watch(listener) {
+    this.watchers.add(listener);
+    return () => {
+      this.watchers.delete(listener);
+    };
+  }
+  notify(event, page) {
+    for (const listener of this.watchers) {
+      try {
+        listener(event, page);
+      } catch (error) {
+        console.error("\u5DE5\u4F5C\u5BA4\u767B\u8BB0\u76D1\u542C\u5931\u8D25", error instanceof Error ? error.message : "Error");
+      }
+    }
   }
   /** 供共享宿主服务读取已登记插件，路径不会发送给客户端。 */
   entries() {
@@ -5586,6 +5607,7 @@ var StudioUpdates = class {
   }
   async performInstall(pkg, candidate) {
     let stopped = [];
+    let handedOver = false;
     try {
       const bundle = (await this.manager.listBundles()).find((bundle2) => bundle2.name === pkg.packageName);
       if (!bundle || bundle.version !== pkg.version || !bundle.installed) throw new UpdateFailure("recheck");
@@ -5622,6 +5644,7 @@ var StudioUpdates = class {
         if (outcome.failures.length) throw new UpdateFailure("service-stop");
       }
       this.hostInstalling = true;
+      handedOver = true;
       let result = await this.manager.installBundle(file, { enabled: bundle.enabled });
       const approvals = installFailed(result.application) ? ownBuildApprovals(result.pendingBuilds, pkg.packageName) : [];
       if (approvals.length) {
@@ -5645,6 +5668,8 @@ var StudioUpdates = class {
       }
     } finally {
       if (stopped.length && this.services) await this.services.restart(stopped).catch(() => []);
+      if (handedOver && this.services?.refresh) await this.services.refresh(pkg.id).catch(() => {
+      });
     }
   }
   /** 只取消本服务的下载和检查；安装由宿主管理器完成，避免卸载与安装互等。 */
@@ -5718,6 +5743,9 @@ import { getDshRuntimeVersion } from "@deepseek-ai/dsh-app-boot";
 import { readFile as readFile3 } from "node:fs/promises";
 import { join as join2 } from "node:path";
 import { homedir as homedir2 } from "node:os";
+function cineflowDataDirectory(config = {}) {
+  return config.cineflowDataDirectory ?? process.env.DSH_STUDIO_CINEFLOW_DATA ?? join2(process.env.DSH_HOME ?? join2(homedir2(), ".dsh"), "studio/cineflow");
+}
 function createIntegrations(config = {}) {
   const definitions = [
     { id: "media", title: "AI\u77ED\u5267\u5DE5\u4F5C\u53F0", url: config.toonflowUrl ?? process.env.DSH_STUDIO_TOONFLOW_URL ?? "http://127.0.0.1:33101", source: "https://github.com/HBAI-Ltd/Toonflow-app", marker: /toonflow/i },
@@ -5739,7 +5767,7 @@ function createIntegrations(config = {}) {
       }
     }));
     try {
-      const data = config.cineflowDataDirectory ?? process.env.DSH_STUDIO_CINEFLOW_DATA ?? join2(process.env.DSH_HOME ?? join2(homedir2(), ".dsh"), "studio/cineflow");
+      const data = cineflowDataDirectory(config);
       const descriptor = JSON.parse(await readFile3(join2(data, "bridge.json"), "utf8"));
       const url = new URL(descriptor.origin);
       if (url.protocol !== "http:" || url.hostname !== "127.0.0.1" || url.pathname !== "/" || !/^[a-f0-9]{64}$/.test(descriptor.token)) throw new Error("\u5F71\u97F3\u8FDE\u63A5\u914D\u7F6E\u65E0\u6548");
@@ -5872,7 +5900,8 @@ async function createToonflowSessions(ctx, config) {
 }
 
 // packages/runtime/src/server.ts
-import { readFile as readFile6 } from "node:fs/promises";
+import { readFile as readFile7 } from "node:fs/promises";
+import { dirname as dirname5, isAbsolute as isAbsolute3, resolve as resolve7 } from "node:path";
 
 // packages/runtime/src/studioControl.ts
 import { randomUUID as randomUUID3 } from "node:crypto";
@@ -5889,7 +5918,7 @@ var StudioControl = class {
     if (this.closed) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u63A7\u5236\u5DF2\u505C\u7528"));
     if (!command.studio || !this.registry.has(command.studio)) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u672A\u5B89\u88C5\u6216\u5DF2\u505C\u7528\uFF0C\u8BF7\u5148\u8C03\u7528 list"));
     if (this.pending.size >= 16) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u7E41\u5FD9\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5"));
-    return new Promise((resolve6, reject) => {
+    return new Promise((resolve8, reject) => {
       const id = randomUUID3();
       const abort = () => finish(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u5DF2\u53D6\u6D88\uFF1B\u5DF2\u89E6\u53D1\u7684\u9875\u9762\u64CD\u4F5C\u65E0\u6CD5\u64A4\u9500"));
       const timer = setTimeout(() => finish(new Error("\u5DE5\u4F5C\u5BA4\u54CD\u5E94\u8D85\u65F6\uFF0C\u8BF7\u786E\u8BA4\u4E3B\u7A97\u53E3\u5DF2\u6253\u5F00\uFF1B\u8BF7\u8BFB\u53D6\u9875\u9762\u786E\u8BA4\u64CD\u4F5C\u7ED3\u679C\uFF0C\u4E0D\u8981\u91CD\u590D\u63D0\u4EA4")), this.timeout);
@@ -5897,7 +5926,7 @@ var StudioControl = class {
         if (!this.pending.delete(id)) return;
         clearTimeout(timer);
         signal.removeEventListener("abort", abort);
-        error ? reject(error) : resolve6(result);
+        error ? reject(error) : resolve8(result);
       };
       this.pending.set(id, { command, expiresAt: Date.now() + this.timeout, finish });
       signal.addEventListener("abort", abort, { once: true });
@@ -6323,6 +6352,457 @@ var StudioServiceLauncher = class {
   }
 };
 
+// packages/runtime/src/managedServices.ts
+import { execFile, spawn as spawn2 } from "node:child_process";
+import { createHash as createHash2, randomUUID as randomUUID4 } from "node:crypto";
+import { existsSync } from "node:fs";
+import { cp, mkdir as mkdir4, open as open2, readdir, readFile as readFile6, realpath as realpath3, rename as rename3, rm, stat, writeFile as writeFile3 } from "node:fs/promises";
+import { connect } from "node:net";
+import { homedir as homedir3 } from "node:os";
+import { dirname as dirname4, join as join4, resolve as resolve6 } from "node:path";
+var STAGED = ".staged.json";
+var COOLDOWN_MS = 15e3;
+var PACKAGE_NAME = /^(?:@[a-z0-9][a-z0-9._~-]*\/)?[a-z0-9][a-z0-9._~-]*$/;
+var delay = (ms2) => new Promise((done) => {
+  setTimeout(done, ms2);
+});
+var fold = (path) => {
+  const full = resolve6(path);
+  return process.platform === "win32" ? full.toLowerCase() : full;
+};
+var isFile = async (path) => {
+  try {
+    return (await stat(path)).isFile();
+  } catch {
+    return false;
+  }
+};
+function electronBinary() {
+  return process.platform === "win32" ? "electron.exe" : process.platform === "darwin" ? join4("Electron.app", "Contents", "MacOS", "Electron") : "electron";
+}
+function locateElectron(source, configured, env = process.env, exists = existsSync, execPath = process.execPath, hostIsElectron = !!process.versions.electron) {
+  const binary = electronBinary();
+  const candidates = [];
+  if (configured) candidates.push(configured);
+  if (env.DSH_STUDIO_ELECTRON) candidates.push(env.DSH_STUDIO_ELECTRON);
+  candidates.push(join4(env.DSH_HOME ?? join4(homedir3(), ".dsh"), "electron", binary));
+  for (let dir = resolve6(source); ; dir = dirname4(dir)) {
+    candidates.push(join4(dir, "node_modules", "electron", "dist", binary));
+    if (dirname4(dir) === dir) break;
+  }
+  if (hostIsElectron && !exists(join4(dirname4(execPath), "resources", "app.asar"))) candidates.push(execPath);
+  const tried = [...new Set(candidates)];
+  const path = tried.find((candidate) => exists(candidate));
+  return { ...path ? { path } : {}, tried };
+}
+function nodePlatform(configuredElectron) {
+  return {
+    electron: (source) => locateElectron(source, configuredElectron),
+    async launch(executable, args, options) {
+      const stdout = await open2(options.stdout, "w");
+      const stderr = await open2(options.stderr, "w");
+      try {
+        const child = spawn2(executable, [...args], { cwd: options.cwd, env: options.env, detached: true, windowsHide: true, stdio: ["ignore", stdout.fd, stderr.fd] });
+        let exited;
+        child.once("exit", (code) => {
+          exited = { code };
+        });
+        await new Promise((done, fail) => {
+          child.once("spawn", done);
+          child.once("error", fail);
+        });
+        child.on("error", () => {
+        });
+        child.unref();
+        if (child.pid === void 0) throw new Error("\u672A\u53D6\u5F97\u8FDB\u7A0B\u6807\u8BC6");
+        return { pid: child.pid, exit: () => exited };
+      } finally {
+        await stdout.close();
+        await stderr.close();
+      }
+    },
+    alive(pid) {
+      try {
+        process.kill(pid, 0);
+        return true;
+      } catch (error) {
+        return error instanceof Error && "code" in error && error.code === "EPERM";
+      }
+    },
+    kill(pid) {
+      process.kill(pid);
+    },
+    async healthy(origin) {
+      try {
+        const response = await fetch(origin + "/health", { signal: AbortSignal.timeout(2500), redirect: "error" });
+        return response.ok && (await response.json()).studio === true;
+      } catch {
+        return false;
+      }
+    },
+    listening(port) {
+      return new Promise((done) => {
+        const socket = connect({ host: "127.0.0.1", port });
+        const finish = (value) => {
+          socket.destroy();
+          done(value);
+        };
+        socket.setTimeout(1e3, () => finish(false));
+        socket.once("connect", () => finish(true));
+        socket.once("error", () => finish(false));
+      });
+    },
+    commandLine(pid) {
+      const [command, args] = process.platform === "win32" ? [
+        join4(process.env.SystemRoot ?? "C:\\Windows", "System32", "WindowsPowerShell", "v1.0", "powershell.exe"),
+        ["-NoProfile", "-NonInteractive", "-Command", `(Get-CimInstance Win32_Process -Filter 'ProcessId = ${String(Math.trunc(pid))}').CommandLine`]
+      ] : ["ps", ["-o", "command=", "-p", String(Math.trunc(pid))]];
+      return new Promise((done) => {
+        execFile(command, [...args], { windowsHide: true, timeout: 1e4, encoding: "utf8" }, (error, stdout) => {
+          done(error || !stdout.trim() ? void 0 : stdout.trim());
+        });
+      });
+    }
+  };
+}
+async function readBridge(dataDirectory) {
+  try {
+    const descriptor = JSON.parse(await readFile6(join4(dataDirectory, "bridge.json"), "utf8"));
+    const url = new URL(descriptor.origin);
+    if (url.protocol !== "http:" || url.hostname !== "127.0.0.1" || !Number.isSafeInteger(descriptor.pid) || descriptor.pid <= 0) return void 0;
+    return { origin: url.origin, pid: descriptor.pid };
+  } catch {
+    return void 0;
+  }
+}
+async function readRecord(dataDirectory) {
+  try {
+    const saved = JSON.parse(await readFile6(join4(dataDirectory, "runtime", "current.json"), "utf8"));
+    if (saved?.schemaVersion !== 1 || !Number.isSafeInteger(saved.pid) || typeof saved.stage !== "string" || !/^[0-9A-Za-z.+-]{1,96}$/.test(saved.stage) || typeof saved.fingerprint !== "string" || typeof saved.version !== "string" || typeof saved.source !== "string") return void 0;
+    return saved;
+  } catch {
+    return void 0;
+  }
+}
+async function writeRecord(dataDirectory, record) {
+  const directory = join4(dataDirectory, "runtime");
+  await mkdir4(directory, { recursive: true });
+  const temporary = join4(directory, ".current-" + randomUUID4() + ".json");
+  await writeFile3(temporary, JSON.stringify(record, null, 2) + "\n", { mode: 384 });
+  await rename3(temporary, join4(directory, "current.json"));
+}
+async function inspectInstall(source, definition) {
+  let version = "0.0.0";
+  try {
+    const pkg = JSON.parse(await readFile6(join4(source, "package.json"), "utf8"));
+    if (typeof pkg?.version === "string" && /^[0-9A-Za-z.+-]{1,64}$/.test(pkg.version)) version = pkg.version;
+  } catch {
+  }
+  const hash = createHash2("sha256").update(version + "\n");
+  const root = join4(source, definition.app);
+  const walk = async (directory, prefix) => {
+    let names;
+    try {
+      names = (await readdir(directory)).sort();
+    } catch {
+      return;
+    }
+    for (const name2 of names) {
+      if (name2 === "node_modules") continue;
+      try {
+        const info = await stat(join4(directory, name2));
+        if (info.isDirectory()) await walk(join4(directory, name2), prefix + name2 + "/");
+        else hash.update(prefix + name2 + "\0" + String(info.size) + "\0" + String(Math.trunc(info.mtimeMs)) + "\n");
+      } catch {
+      }
+    }
+  };
+  await walk(root, "");
+  let missing;
+  for (const file of definition.requires) if (!missing && !await isFile(join4(root, file))) missing = definition.app + "/" + file;
+  return { version, fingerprint: hash.digest("hex"), ...missing ? { missing } : {} };
+}
+async function stageComplete(stage, definition) {
+  if (!await isFile(join4(stage, STAGED))) return false;
+  for (const file of definition.requires) if (!await isFile(join4(stage, definition.app, file))) return false;
+  return true;
+}
+async function copyDependencies(source, target) {
+  const found = /* @__PURE__ */ new Map();
+  const queue = [];
+  const enqueue = async (directory) => {
+    try {
+      const pkg = JSON.parse(await readFile6(join4(directory, "package.json"), "utf8"));
+      for (const name2 of Object.keys({ ...pkg?.dependencies, ...pkg?.optionalDependencies })) if (PACKAGE_NAME.test(name2)) queue.push({ name: name2, from: directory });
+    } catch {
+    }
+  };
+  const locate = async (name2, from) => {
+    const starts = [from];
+    try {
+      const real = await realpath3(from);
+      if (real !== from) starts.unshift(real);
+    } catch {
+    }
+    for (const start of starts) {
+      for (let directory = start; ; directory = dirname4(directory)) {
+        const candidate = join4(directory, "node_modules", name2);
+        if (await isFile(join4(candidate, "package.json"))) return realpath3(candidate);
+        if (dirname4(directory) === directory) break;
+      }
+    }
+    return void 0;
+  };
+  await enqueue(source);
+  for (let next = queue.shift(); next; next = queue.shift()) {
+    if (found.has(next.name)) continue;
+    const directory = await locate(next.name, next.from);
+    if (!directory) continue;
+    found.set(next.name, directory);
+    await enqueue(directory);
+  }
+  for (const [name2, directory] of found) {
+    const destination = join4(target, name2);
+    await mkdir4(dirname4(destination), { recursive: true });
+    await cp(directory, destination, { recursive: true, dereference: true });
+  }
+}
+async function lastLine(file) {
+  try {
+    const lines = (await readFile6(file, "utf8")).split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+    return (lines.at(-1) ?? "").slice(0, 300);
+  } catch {
+    return "";
+  }
+}
+function cineflowService(dataDirectory, env = process.env) {
+  const requested = Number(env.DSH_STUDIO_CINEFLOW_PORT);
+  const port = Number.isSafeInteger(requested) && requested >= 1024 && requested <= 65535 ? requested : 33105;
+  return {
+    studioId: "cineflow",
+    title: "\u5F71\u97F3\u5DE5\u4F5C\u5BA4",
+    app: "app",
+    requires: ["package.json", "electron/main.cjs", "dist/index.html"],
+    dataDirectory,
+    port,
+    env: { DSH_STUDIO_CINEFLOW_DATA: dataDirectory, DSH_STUDIO_CINEFLOW_PORT: String(port) },
+    timeoutMs: 3e4
+  };
+}
+var ManagedStudioServices = class {
+  /**
+   * @param definitions - 本运行时认识的随包服务。
+   * @param platform - 操作系统交互，测试时可替换。
+   * @param now - 当前时间，测试时可替换。
+   */
+  constructor(definitions, platform = nodePlatform(), now = Date.now) {
+    this.platform = platform;
+    this.now = now;
+    for (const definition of definitions) this.definitions.set(definition.studioId, definition);
+  }
+  definitions = /* @__PURE__ */ new Map();
+  sources = /* @__PURE__ */ new Map();
+  tasks = /* @__PURE__ */ new Map();
+  failures = /* @__PURE__ */ new Map();
+  closed = false;
+  /**
+   * 登记工作室的安装目录；没有对应服务约定的工作室返回 false。
+   * 重新登记（更新后重新加载）会清除上一次的失败冷却，立即可以重试。
+   */
+  attach(studioId, source) {
+    if (!this.definitions.has(studioId)) return false;
+    this.sources.set(studioId, resolve6(source));
+    this.failures.delete(studioId);
+    return true;
+  }
+  /** 工作室停用或卸载：不再协调，已运行的服务保持原样。 */
+  detach(studioId) {
+    this.sources.delete(studioId);
+  }
+  /** 该工作室是否有可由运行时启动的随包服务。 */
+  has(studioId) {
+    return this.definitions.has(studioId) && this.sources.has(studioId);
+  }
+  /** 该工作室的服务是否正在启动或切换版本。 */
+  starting(studioId) {
+    return this.tasks.has(studioId);
+  }
+  /** 最近一次失败记录。 */
+  report() {
+    return [...this.failures.values()].map((entry) => entry.failure);
+  }
+  /**
+   * 协调指定工作室的服务。
+   * @param studioId - 工作室标识；未登记时直接返回。
+   * @param options - force 为 true 时忽略失败冷却（用户主动点击启动）。
+   * @returns 失败记录；服务可用时返回 undefined。
+   */
+  ensure(studioId, options = {}) {
+    const definition = this.definitions.get(studioId);
+    const source = this.sources.get(studioId);
+    if (!definition || !source || this.closed) return Promise.resolve(void 0);
+    const running = this.tasks.get(studioId);
+    if (running) return running;
+    const last = this.failures.get(studioId);
+    if (!options.force && last && this.now() - last.at < COOLDOWN_MS) return Promise.resolve(last.failure);
+    const task = this.reconcile(definition, source).catch((error) => this.failure(definition, "launch", "\u65E0\u6CD5\u81EA\u52A8\u542F\u52A8\uFF08" + (error instanceof Error ? error.message : String(error)) + "\uFF09")).then((failure) => {
+      if (failure) this.failures.set(studioId, { failure, at: this.now() });
+      else this.failures.delete(studioId);
+      return failure;
+    }).finally(() => {
+      this.tasks.delete(studioId);
+    });
+    this.tasks.set(studioId, task);
+    return task;
+  }
+  /** 协调全部已登记的服务。 */
+  async ensureAll(options = {}) {
+    const outcomes = await Promise.all([...this.sources.keys()].map((id) => this.ensure(id, options)));
+    return outcomes.filter((outcome) => outcome !== void 0);
+  }
+  /** 停用插件：不再发起新的协调，等待进行中的收尾；已运行的服务不停止。 */
+  async dispose() {
+    this.closed = true;
+    await Promise.allSettled(this.tasks.values());
+  }
+  failure(definition, kind, reason) {
+    return { kind, studioIds: [definition.studioId], message: definition.title + reason };
+  }
+  async reconcile(definition, source) {
+    const data = definition.dataDirectory;
+    const [record, bridge, installed] = await Promise.all([readRecord(data), readBridge(data), inspectInstall(source, definition)]);
+    const incomplete = installed.missing ? "\u5B89\u88C5\u4E0D\u5B8C\u6574\uFF08\u7F3A\u5C11 " + installed.missing + "\uFF09\uFF0C\u8BF7\u5728\u5DE5\u4F5C\u5BA4\u63A7\u5236\u53F0\u91CD\u65B0\u5B89\u88C5\u6216\u66F4\u65B0" : void 0;
+    if (bridge && await this.platform.healthy(bridge.origin)) {
+      const ours = record?.pid === bridge.pid ? record : void 0;
+      if (ours && fold(ours.source) !== fold(source)) return void 0;
+      if (ours && ours.fingerprint === installed.fingerprint) return void 0;
+      if (!ours) {
+        const command = await this.platform.commandLine(bridge.pid);
+        if (!command || !this.runsInside(command, source)) return void 0;
+      }
+      if (incomplete) return this.failure(definition, "launch", incomplete + "\uFF1B\u5F53\u524D\u7EE7\u7EED\u4F7F\u7528\u6B63\u5728\u8FD0\u884C\u7684\u7248\u672C");
+      const stage2 = await this.stage(definition, source, installed);
+      if (typeof stage2 !== "string") return stage2;
+      if (!await this.stop(definition, bridge.pid)) return this.failure(definition, "timeout", "\u65E7\u7248\u672C\u672A\u80FD\u505C\u6B62\uFF0C\u8BF7\u7A0D\u540E\u91CD\u65B0\u8FDE\u63A5");
+      return this.start(definition, source, stage2, installed);
+    }
+    if (await this.platform.listening(definition.port)) return this.failure(definition, "launch", "\u65E0\u6CD5\u542F\u52A8\uFF1A\u7AEF\u53E3 " + String(definition.port) + " \u5DF2\u88AB\u5176\u4ED6\u7A0B\u5E8F\u5360\u7528");
+    if (incomplete) {
+      const previous = record ? join4(data, "runtime", record.stage) : void 0;
+      if (record && previous && await stageComplete(previous, definition)) return this.start(definition, record.source, previous, record);
+      return this.failure(definition, "launch", incomplete);
+    }
+    const stage = await this.stage(definition, source, installed);
+    if (typeof stage !== "string") return stage;
+    return this.start(definition, source, stage, installed);
+  }
+  /** 命令行是否指向安装目录内（Windows 下不区分大小写与斜杠方向）。 */
+  runsInside(command, source) {
+    const normalize = (value) => process.platform === "win32" ? value.toLowerCase().replaceAll("/", "\\") : value;
+    return normalize(command).includes(normalize(resolve6(source)));
+  }
+  /**
+   * 准备运行副本：同一版本与内容指纹的副本直接复用。
+   * 复制期间安装目录又发生变化（更新正在进行）则放弃本次，稍后重试。
+   */
+  async stage(definition, source, installed) {
+    const runtime = join4(definition.dataDirectory, "runtime");
+    const target = join4(runtime, installed.version + "-" + installed.fingerprint.slice(0, 12));
+    if (await stageComplete(target, definition)) return target;
+    const temporary = join4(runtime, ".staging-" + randomUUID4());
+    try {
+      await rm(target, { recursive: true, force: true });
+      await mkdir4(temporary, { recursive: true });
+      await cp(join4(source, definition.app), join4(temporary, definition.app), {
+        recursive: true,
+        dereference: true,
+        filter: (path) => !/[\\/]node_modules$/.test(path)
+      });
+      await copyDependencies(source, join4(temporary, "node_modules"));
+      const after = await inspectInstall(source, definition);
+      if (after.fingerprint !== installed.fingerprint) return this.failure(definition, "launch", "\u7684\u5B89\u88C5\u76EE\u5F55\u6B63\u5728\u53D8\u5316\uFF08\u53EF\u80FD\u6B63\u5728\u66F4\u65B0\uFF09\uFF0C\u8BF7\u7A0D\u540E\u91CD\u65B0\u8FDE\u63A5");
+      await writeFile3(join4(temporary, STAGED), JSON.stringify({ version: installed.version, fingerprint: installed.fingerprint }) + "\n");
+      if (!await stageComplete(temporary, definition)) return this.failure(definition, "launch", "\u7684\u8FD0\u884C\u526F\u672C\u4E0D\u5B8C\u6574\uFF0C\u8BF7\u91CD\u65B0\u5B89\u88C5\u6216\u66F4\u65B0\u540E\u518D\u8BD5");
+      await rename3(temporary, target);
+      return target;
+    } catch (error) {
+      return this.failure(definition, "launch", "\u65E0\u6CD5\u51C6\u5907\u8FD0\u884C\u526F\u672C\uFF08" + (error instanceof Error ? error.message : String(error)) + "\uFF09");
+    } finally {
+      await rm(temporary, { recursive: true, force: true }).catch(() => {
+      });
+    }
+  }
+  /** 结束旧进程并等待其退出、端口释放。 */
+  async stop(definition, pid) {
+    try {
+      this.platform.kill(pid);
+    } catch {
+    }
+    const deadline = this.now() + 1e4;
+    while (this.now() < deadline) {
+      if (!this.platform.alive(pid) && !await this.platform.listening(definition.port)) return true;
+      await delay(200);
+    }
+    return false;
+  }
+  /** 从运行副本拉起服务，等待它写下连接信息并通过健康检查。 */
+  async start(definition, source, stage, installed) {
+    const data = definition.dataDirectory;
+    const located = this.platform.electron(source);
+    if (!located.path) {
+      return this.failure(definition, "launch", "\u672A\u627E\u5230\u53EF\u7528\u7684 Electron\uFF1A\u8BF7\u8BBE\u7F6E\u73AF\u5883\u53D8\u91CF DSH_STUDIO_ELECTRON\uFF0C\u6216\u5728 dsh-studio-projects \u63D2\u4EF6\u914D\u7F6E\u7684 electronPath \u4E2D\u586B\u5199 Electron \u7A0B\u5E8F\u8DEF\u5F84\uFF08\u5DF2\u5C1D\u8BD5\uFF1A" + located.tried.join("\u3001") + "\uFF09");
+    }
+    const application = join4(stage, definition.app);
+    const errorLog = join4(data, "service.error.log");
+    const env = { ...process.env, ...definition.env };
+    delete env.ELECTRON_RUN_AS_NODE;
+    let child;
+    try {
+      await mkdir4(data, { recursive: true });
+      child = await this.platform.launch(located.path, [application], { cwd: application, env, stdout: join4(data, "service.log"), stderr: errorLog });
+    } catch (error) {
+      return this.failure(definition, "launch", "\u65E0\u6CD5\u542F\u52A8\uFF08" + (error instanceof Error ? error.message : String(error)) + "\uFF09");
+    }
+    await writeRecord(data, { schemaVersion: 1, pid: child.pid, stage: stage.slice(join4(data, "runtime").length + 1), fingerprint: installed.fingerprint, version: installed.version, source, startedAt: (/* @__PURE__ */ new Date()).toISOString() });
+    const deadline = this.now() + definition.timeoutMs;
+    while (this.now() < deadline) {
+      const exit = child.exit();
+      if (exit) {
+        const detail = await lastLine(errorLog);
+        return this.failure(definition, "exit", "\u542F\u52A8\u540E\u9000\u51FA\uFF08\u9000\u51FA\u7801 " + String(exit.code) + "\uFF09" + (detail ? "\uFF1A" + detail : "") + "\uFF1B\u65E5\u5FD7\uFF1A" + errorLog);
+      }
+      const bridge = await readBridge(data);
+      if (bridge?.pid === child.pid && await this.platform.healthy(bridge.origin)) {
+        await this.prune(definition, stage);
+        return void 0;
+      }
+      if (this.closed) return this.failure(definition, "cancelled", "\u81EA\u52A8\u542F\u52A8\u5DF2\u53D6\u6D88\uFF0C\u670D\u52A1\u53EF\u80FD\u4ECD\u5728\u542F\u52A8");
+      await delay(250);
+    }
+    try {
+      this.platform.kill(child.pid);
+    } catch {
+    }
+    return this.failure(definition, "timeout", "\u542F\u52A8\u8D85\u65F6\uFF0C\u8BF7\u68C0\u67E5\u7AEF\u53E3 " + String(definition.port) + " \u4E0E\u65E5\u5FD7\uFF1A" + errorLog);
+  }
+  /** 清理不再使用的运行副本与中断留下的临时目录；被占用的目录留到下次。 */
+  async prune(definition, keep) {
+    const runtime = join4(definition.dataDirectory, "runtime");
+    let names;
+    try {
+      names = await readdir(runtime);
+    } catch {
+      return;
+    }
+    for (const name2 of names) {
+      const path = join4(runtime, name2);
+      if (fold(path) === fold(keep) || name2 === "current.json") continue;
+      await rm(path, { recursive: true, force: true }).catch(() => {
+      });
+    }
+  }
+};
+
 // packages/runtime/src/server.ts
 var name = "dsh-studio-projects";
 var inject = ["webServer", "connection", "tools", "agents", "systemPrompt", "workspaceRegistry", "pluginManager"];
@@ -6331,9 +6811,15 @@ async function apply(ctx, config = {}) {
   ctx.provide("studioProjects", registry);
   const startupConfig = resolveServiceStartup(config.autoStartServices);
   const launcher = new StudioServiceLauncher(startupConfig);
+  if (config.electronPath !== void 0 && (typeof config.electronPath !== "string" || !isAbsolute3(config.electronPath))) throw new Error("\u5DE5\u4F5C\u5BA4 electronPath \u5FC5\u987B\u662F\u7EDD\u5BF9\u8DEF\u5F84");
+  const managed = new ManagedStudioServices([cineflowService(cineflowDataDirectory(config))], nodePlatform(config.electronPath));
+  const autoStart = process.env.DSH_STUDIO_SKIP_APPS !== "1";
   const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates), fetch, {
     stopForUpdate: (studioId, directory) => launcher.stopForUpdate(studioId, directory),
-    restart: (groups) => launcher.restart(groups)
+    restart: (groups) => launcher.restart(groups),
+    refresh: async (studioId) => {
+      if (autoStart) await managed.ensure(studioId, { force: true });
+    }
   });
   await updates.initialize();
   const handleUpdates = updateRoutes(updates);
@@ -6341,12 +6827,44 @@ async function apply(ctx, config = {}) {
   const statuses = createIntegrations(config);
   let startup = Promise.resolve([]);
   ctx.effect(() => {
-    if (process.env.DSH_STUDIO_SKIP_APPS !== "1") startup = launcher.start();
+    if (autoStart) startup = launcher.start();
     return async () => {
       await launcher.dispose();
       await startup.catch(() => []);
     };
   }, "\u5DE5\u4F5C\u5BA4\uFF1A\u672C\u673A\u670D\u52A1\u81EA\u52A8\u542F\u52A8");
+  ctx.effect(() => {
+    const attach = (id, root) => {
+      if (launcher.startable(id) || !managed.attach(id, dirname5(resolve7(root))) || !autoStart) return;
+      void managed.ensure(id);
+    };
+    for (const page of registry.entries()) attach(page.id, page.root);
+    const unwatch = registry.watch((event, page) => {
+      if (event === "register") attach(page.id, page.root);
+      else managed.detach(page.id);
+    });
+    return async () => {
+      unwatch();
+      await managed.dispose();
+    };
+  }, "\u5DE5\u4F5C\u5BA4\uFF1A\u968F\u5305\u670D\u52A1\u81EA\u52A8\u542F\u52A8");
+  const serviceFailures = () => [...launcher.report(), ...managed.report()];
+  const connectedStatuses = async () => {
+    await startup;
+    const current = await statuses();
+    const pending = autoStart ? current.filter((status) => !status.ready && managed.has(status.id)) : [];
+    if (!pending.length) return current;
+    await Promise.all(pending.map((status) => managed.ensure(status.id)));
+    return statuses();
+  };
+  const serviceStates = async (failures) => (await statuses()).map((status) => ({
+    id: status.id,
+    title: status.title,
+    ready: status.ready,
+    startable: launcher.startable(status.id) || managed.has(status.id),
+    starting: launcher.starting(status.id) || managed.starting(status.id),
+    error: status.ready ? void 0 : failures.find((failure) => failure.studioIds.includes(status.id))?.message
+  }));
   const toonflow = await createToonflowSessions(ctx, config);
   const control = installStudioControl(ctx, registry, ctx.pluginManager);
   installStudioTasks(ctx, registry);
@@ -6365,17 +6883,8 @@ async function apply(ctx, config = {}) {
         return;
       }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/services") {
-        const failures = launcher.report();
-        const services = (await statuses()).map((status) => ({
-          id: status.id,
-          title: status.title,
-          ready: status.ready,
-          startable: launcher.startable(status.id),
-          starting: launcher.starting(status.id),
-          error: status.ready ? void 0 : failures.find((failure) => failure.studioIds.includes(status.id))?.message
-        }));
         res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" });
-        res.end(JSON.stringify({ services }));
+        res.end(JSON.stringify({ services: await serviceStates(serviceFailures()) }));
         return;
       }
       if (url.pathname === "/studio-projects/control/start") {
@@ -6411,16 +6920,13 @@ async function apply(ctx, config = {}) {
           return;
         }
         try {
-          const failures = await launcher.start(studio);
-          const services = (await statuses()).map((status) => ({
-            id: status.id,
-            title: status.title,
-            ready: status.ready,
-            startable: launcher.startable(status.id),
-            starting: launcher.starting(status.id),
-            error: status.ready ? void 0 : failures.find((failure) => failure.studioIds.includes(status.id))?.message
-          }));
-          send(200, { failures, services });
+          let failures;
+          if (studio === void 0) failures = [...await launcher.start(), ...await managed.ensureAll({ force: true })];
+          else if (!launcher.startable(studio) && managed.has(studio)) {
+            const failure = await managed.ensure(studio, { force: true });
+            failures = failure ? [failure] : [];
+          } else failures = await launcher.start(studio);
+          send(200, { failures, services: await serviceStates(failures) });
         } catch (error) {
           if (error instanceof ServiceNotConfigured) {
             send(404, { error: error.message });
@@ -6436,9 +6942,8 @@ async function apply(ctx, config = {}) {
         return;
       }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/status") {
-        await startup;
-        const failures = launcher.report();
-        const integrations = await statuses();
+        const integrations = await connectedStatuses();
+        const failures = serviceFailures();
         res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" });
         res.end(JSON.stringify({
           studios: registry.list().map((studio) => ({
@@ -6453,7 +6958,7 @@ async function apply(ctx, config = {}) {
       }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/bridge.js") {
         res.writeHead(200, { "content-type": "text/javascript; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
-        res.end(await readFile6(new URL("../static/controlBridge.js", import.meta.url)));
+        res.end(await readFile7(new URL("../static/controlBridge.js", import.meta.url)));
         return;
       }
       if (await handleUpdates(req, res, url.pathname)) return;
@@ -6472,15 +6977,15 @@ async function apply(ctx, config = {}) {
           return;
         }
         const file = legacyAsset ?? "index.html";
-        const body = await readFile6(new URL("../static/legacy/" + file, import.meta.url));
+        const body = await readFile7(new URL("../static/legacy/" + file, import.meta.url));
         res.writeHead(200, { "content-type": file.endsWith(".js") ? "text/javascript; charset=utf-8" : file.endsWith(".css") ? "text/css; charset=utf-8" : "text/html; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
         res.end(req.method === "HEAD" ? void 0 : body);
         return;
       }
       if (url.pathname === "/studio-projects/integrations" && req.method === "GET") {
-        await startup;
-        const failures = launcher.report();
-        const report = (await statuses()).map((status) => ({
+        const current = await connectedStatuses();
+        const failures = serviceFailures();
+        const report = current.map((status) => ({
           ...status,
           startupError: status.ready ? void 0 : failures.find((failure) => failure.studioIds.includes(status.id))?.message
         }));
