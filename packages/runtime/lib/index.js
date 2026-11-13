@@ -5537,7 +5537,9 @@ var StudioUpdates = class {
       const releases = await this.json(`https://api.github.com/repos/${pkg.repository}/releases?per_page=20`, signal);
       if (!Array.isArray(releases)) throw new UpdateFailure("metadata");
       const candidates = [];
+      let reachedInstalled = false;
       for (const value of releases) {
+        if (reachedInstalled) break;
         const release = this.release(value, pkg.repository);
         const manifest = release?.assets.find((asset) => asset.name === "manifest.json");
         if (!release || !manifest) continue;
@@ -5552,6 +5554,7 @@ var StudioUpdates = class {
           const dshVersions = Array.isArray(item.dshVersions) ? item.dshVersions.filter((version) => typeof version === "string") : [];
           const dsh = typeof item.dsh === "string" ? item.dsh : "";
           candidates.push({ version: item.version, url: asset.url, file: item.file, sha256: item.sha256, dsh, dshVersions });
+          if (!import_semver.default.gt(item.version, pkg.version)) reachedInstalled = true;
         }
       }
       candidates.sort((a, b2) => import_semver.default.rcompare(a.version, b2.version));
@@ -5740,16 +5743,34 @@ function updateRoutes(updates) {
 import { getDshRuntimeVersion } from "@deepseek-ai/dsh-app-boot";
 
 // packages/runtime/src/integrations.ts
+import { existsSync } from "node:fs";
 import { readFile as readFile3 } from "node:fs/promises";
-import { join as join2 } from "node:path";
+import { join as join2, resolve as resolve3 } from "node:path";
 import { homedir as homedir2 } from "node:os";
 function cineflowDataDirectory(config = {}) {
   return config.cineflowDataDirectory ?? process.env.DSH_STUDIO_CINEFLOW_DATA ?? join2(process.env.DSH_HOME ?? join2(homedir2(), ".dsh"), "studio/cineflow");
 }
+var dshHome = () => process.env.DSH_HOME ?? join2(homedir2(), ".dsh");
+function toonflowDataDirectory(config = {}, exists = existsSync) {
+  const configured = config.toonflowDataDirectory ?? process.env.DSH_STUDIO_TOONFLOW_DATA;
+  if (configured) return resolve3(configured);
+  const legacy = resolve3("../studio-data/toonflow");
+  return exists(legacy) ? legacy : join2(dshHome(), "studio", "toonflow");
+}
+function toonflowStateDirectory() {
+  return join2(dshHome(), "studio", "media");
+}
+function integrationUrls(config = {}) {
+  return {
+    media: config.toonflowUrl ?? process.env.DSH_STUDIO_TOONFLOW_URL ?? "http://127.0.0.1:33101",
+    film: config.printfilmUrl ?? process.env.DSH_STUDIO_PRINTFILM_URL ?? "http://127.0.0.1:33102"
+  };
+}
 function createIntegrations(config = {}) {
+  const urls = integrationUrls(config);
   const definitions = [
-    { id: "media", title: "AI\u77ED\u5267\u5DE5\u4F5C\u53F0", url: config.toonflowUrl ?? process.env.DSH_STUDIO_TOONFLOW_URL ?? "http://127.0.0.1:33101", source: "https://github.com/HBAI-Ltd/Toonflow-app", marker: /toonflow/i },
-    { id: "film", title: "AI\u5267\u5DE5\u4F5C\u53F0", url: config.printfilmUrl ?? process.env.DSH_STUDIO_PRINTFILM_URL ?? "http://127.0.0.1:33102", source: "https://github.com/yi1108/printfilm", marker: /printfilm/i }
+    { id: "media", title: "AI\u77ED\u5267\u5DE5\u4F5C\u53F0", url: urls.media, source: "https://github.com/HBAI-Ltd/Toonflow-app", marker: /toonflow/i },
+    { id: "film", title: "AI\u5267\u5DE5\u4F5C\u53F0", url: urls.film, source: "https://github.com/yi1108/printfilm", marker: /printfilm/i }
   ];
   for (const definition of definitions) {
     const url = new URL(definition.url);
@@ -5782,15 +5803,15 @@ function createIntegrations(config = {}) {
 
 // packages/runtime/src/toonflowSessions.ts
 import { readFile as readFile4, realpath, mkdir as mkdir2, writeFile as writeFile2, rename as rename2 } from "node:fs/promises";
-import { resolve as resolve3, relative, isAbsolute } from "node:path";
+import { resolve as resolve4, relative, isAbsolute } from "node:path";
 import { randomUUID as randomUUID2 } from "node:crypto";
 import * as McpClient from "@deepseek-ai/dsh-mcp-client";
 import { createScope } from "@deepseek-ai/dsh-scope";
 var deniedTools = ["openProject", "updateSettings", "appOperation", "listAppOperations", "runAgent"];
 var toolPrefix = "mcp__Toonflow__";
 async function createToonflowSessions(ctx, config) {
-  const dataDirectory = resolve3(config.toonflowDataDirectory ?? process.env.DSH_STUDIO_TOONFLOW_DATA ?? "../studio-data/toonflow");
-  const file = resolve3(dataDirectory, "dshSessions.json");
+  const dataDirectory = toonflowDataDirectory(config);
+  const file = resolve4(dataDirectory, "dshSessions.json");
   const normalize = (path) => process.platform === "win32" ? path.toLowerCase() : path;
   const bindings = /* @__PURE__ */ new Map();
   try {
@@ -5808,7 +5829,7 @@ async function createToonflowSessions(ctx, config) {
     if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("\u7ED1\u5B9A\u53C2\u6570\u5FC5\u987B\u662F\u5BF9\u8C61");
     const input = value;
     if (typeof input.directory !== "string" || !isAbsolute(input.directory) || input.directory.length > 4096) throw new Error("\u9879\u76EE\u5DE5\u4F5C\u76EE\u5F55\u65E0\u6548");
-    const root = await realpath(resolve3(dataDirectory, "workspaces"));
+    const root = await realpath(resolve4(dataDirectory, "workspaces"));
     const directory = await realpath(input.directory);
     const path = relative(root, directory);
     if (path === ".." || path.startsWith(".." + (process.platform === "win32" ? "\\" : "/")) || isAbsolute(path)) throw new Error("\u53EA\u80FD\u7ED1\u5B9A\u77ED\u5267\u5DE5\u4F5C\u533A\u5185\u7684\u9879\u76EE");
@@ -5849,7 +5870,7 @@ async function createToonflowSessions(ctx, config) {
   ctx.on("agent/created", async ({ agent }) => {
     const binding = [...bindings.values()].find((row) => row.sessionId === agent.id);
     if (!binding) return;
-    const settings = JSON.parse(await readFile4(resolve3(dataDirectory, "settings.json"), "utf8"));
+    const settings = JSON.parse(await readFile4(resolve4(dataDirectory, "settings.json"), "utf8"));
     const token = settings?.settings?.mcp?.token;
     if (settings?.settings?.mcp?.enabled !== true || typeof token !== "string" || token.length < 32) throw new Error("\u77ED\u5267\u753B\u5E03\u8FDE\u63A5\u672A\u542F\u7528\uFF0C\u8BF7\u542F\u52A8\u5DE5\u4F5C\u5BA4\u5E94\u7528\u670D\u52A1\u540E\u91CD\u8BD5");
     const url = new URL(config.toonflowUrl ?? process.env.DSH_STUDIO_TOONFLOW_URL ?? "http://127.0.0.1:33101");
@@ -5900,8 +5921,8 @@ async function createToonflowSessions(ctx, config) {
 }
 
 // packages/runtime/src/server.ts
-import { readFile as readFile7 } from "node:fs/promises";
-import { dirname as dirname5, isAbsolute as isAbsolute3, resolve as resolve7 } from "node:path";
+import { readFile as readFile8 } from "node:fs/promises";
+import { dirname as dirname5, isAbsolute as isAbsolute4, resolve as resolve9 } from "node:path";
 
 // packages/runtime/src/studioControl.ts
 import { randomUUID as randomUUID3 } from "node:crypto";
@@ -5918,7 +5939,7 @@ var StudioControl = class {
     if (this.closed) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u63A7\u5236\u5DF2\u505C\u7528"));
     if (!command.studio || !this.registry.has(command.studio)) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u672A\u5B89\u88C5\u6216\u5DF2\u505C\u7528\uFF0C\u8BF7\u5148\u8C03\u7528 list"));
     if (this.pending.size >= 16) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u7E41\u5FD9\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5"));
-    return new Promise((resolve8, reject) => {
+    return new Promise((resolve10, reject) => {
       const id = randomUUID3();
       const abort = () => finish(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u5DF2\u53D6\u6D88\uFF1B\u5DF2\u89E6\u53D1\u7684\u9875\u9762\u64CD\u4F5C\u65E0\u6CD5\u64A4\u9500"));
       const timer = setTimeout(() => finish(new Error("\u5DE5\u4F5C\u5BA4\u54CD\u5E94\u8D85\u65F6\uFF0C\u8BF7\u786E\u8BA4\u4E3B\u7A97\u53E3\u5DF2\u6253\u5F00\uFF1B\u8BF7\u8BFB\u53D6\u9875\u9762\u786E\u8BA4\u64CD\u4F5C\u7ED3\u679C\uFF0C\u4E0D\u8981\u91CD\u590D\u63D0\u4EA4")), this.timeout);
@@ -5926,7 +5947,7 @@ var StudioControl = class {
         if (!this.pending.delete(id)) return;
         clearTimeout(timer);
         signal.removeEventListener("abort", abort);
-        error ? reject(error) : resolve8(result);
+        error ? reject(error) : resolve10(result);
       };
       this.pending.set(id, { command, expiresAt: Date.now() + this.timeout, finish });
       signal.addEventListener("abort", abort, { once: true });
@@ -6080,14 +6101,14 @@ function installStudioControl(ctx, registry, pluginManager) {
 
 // packages/runtime/src/studioCatalog.ts
 import { readFile as readFile5, realpath as realpath2 } from "node:fs/promises";
-import { dirname as dirname2, join as join3, resolve as resolve4, sep as sep2 } from "node:path";
+import { dirname as dirname2, join as join3, resolve as resolve5, sep as sep2 } from "node:path";
 function githubUrlOf(repository) {
   const raw = typeof repository === "string" ? repository : repository && typeof repository === "object" && typeof repository.url === "string" ? repository.url : "";
   const match = /^(?:git\+)?(?:https:\/\/|git:\/\/|ssh:\/\/git@)?github\.com[/:]([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)(?:\.git)?\/?$/.exec(raw) ?? /^github:([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)(?:#.*)?$/.exec(raw);
   return match ? "https://github.com/" + match[1] : void 0;
 }
 async function catalogRow(page) {
-  const base = dirname2(resolve4(page.root));
+  const base = dirname2(resolve5(page.root));
   let version;
   let github;
   try {
@@ -6160,7 +6181,7 @@ function installStudioTasks(ctx, registry) {
 // packages/runtime/src/serviceStartup.ts
 import { spawn } from "node:child_process";
 import { mkdir as mkdir3, open } from "node:fs/promises";
-import { basename, dirname as dirname3, isAbsolute as isAbsolute2, resolve as resolve5, sep as sep3 } from "node:path";
+import { basename, dirname as dirname3, isAbsolute as isAbsolute2, resolve as resolve6, sep as sep3 } from "node:path";
 function strings(value) {
   return Array.isArray(value) && value.every((item) => typeof item === "string");
 }
@@ -6194,7 +6215,7 @@ function stopArgsOf(config) {
 }
 function isInside(path, directory) {
   const norm = (value) => {
-    const full = resolve5(value);
+    const full = resolve6(value);
     return process.platform === "win32" ? full.toLowerCase() : full;
   };
   const target = norm(path);
@@ -6355,11 +6376,12 @@ var StudioServiceLauncher = class {
 // packages/runtime/src/managedServices.ts
 import { execFile, spawn as spawn2 } from "node:child_process";
 import { createHash as createHash2, randomUUID as randomUUID4 } from "node:crypto";
-import { existsSync } from "node:fs";
+import { existsSync as existsSync2 } from "node:fs";
 import { cp, mkdir as mkdir4, open as open2, readdir, readFile as readFile6, realpath as realpath3, rename as rename3, rm, stat, writeFile as writeFile3 } from "node:fs/promises";
 import { connect } from "node:net";
 import { homedir as homedir3 } from "node:os";
-import { dirname as dirname4, join as join4, resolve as resolve6 } from "node:path";
+import { dirname as dirname4, join as join4, resolve as resolve7 } from "node:path";
+var stateOf = (definition) => definition.stateDirectory ?? definition.dataDirectory;
 var STAGED = ".staged.json";
 var COOLDOWN_MS = 15e3;
 var PACKAGE_NAME = /^(?:@[a-z0-9][a-z0-9._~-]*\/)?[a-z0-9][a-z0-9._~-]*$/;
@@ -6367,7 +6389,7 @@ var delay = (ms2) => new Promise((done) => {
   setTimeout(done, ms2);
 });
 var fold = (path) => {
-  const full = resolve6(path);
+  const full = resolve7(path);
   return process.platform === "win32" ? full.toLowerCase() : full;
 };
 var isFile = async (path) => {
@@ -6380,13 +6402,13 @@ var isFile = async (path) => {
 function electronBinary() {
   return process.platform === "win32" ? "electron.exe" : process.platform === "darwin" ? join4("Electron.app", "Contents", "MacOS", "Electron") : "electron";
 }
-function locateElectron(source, configured, env = process.env, exists = existsSync, execPath = process.execPath, hostIsElectron = !!process.versions.electron) {
+function locateElectron(source, configured, env = process.env, exists = existsSync2, execPath = process.execPath, hostIsElectron = !!process.versions.electron) {
   const binary = electronBinary();
   const candidates = [];
   if (configured) candidates.push(configured);
   if (env.DSH_STUDIO_ELECTRON) candidates.push(env.DSH_STUDIO_ELECTRON);
   candidates.push(join4(env.DSH_HOME ?? join4(homedir3(), ".dsh"), "electron", binary));
-  for (let dir = resolve6(source); ; dir = dirname4(dir)) {
+  for (let dir = resolve7(source); ; dir = dirname4(dir)) {
     candidates.push(join4(dir, "node_modules", "electron", "dist", binary));
     if (dirname4(dir) === dir) break;
   }
@@ -6395,9 +6417,40 @@ function locateElectron(source, configured, env = process.env, exists = existsSy
   const path = tried.find((candidate) => exists(candidate));
   return { ...path ? { path } : {}, tried };
 }
-function nodePlatform(configuredElectron) {
+function bunPackages(platform = process.platform, arch = process.arch) {
+  const cpu = arch === "arm64" ? "aarch64" : "x64";
+  const system = platform === "win32" ? "windows" : platform === "darwin" ? "darwin" : "linux";
+  const base = "@oven/bun-" + system + "-" + cpu;
+  return cpu === "x64" ? [base, base + "-baseline"] : [base];
+}
+function locateBun(stage, source, configured, env = process.env, exists = existsSync2, platform = process.platform, arch = process.arch) {
+  const binary = platform === "win32" ? "bun.exe" : "bun";
+  const packages = bunPackages(platform, arch);
+  const candidates = [];
+  if (configured) candidates.push(configured);
+  if (env.DSH_STUDIO_BUN) candidates.push(env.DSH_STUDIO_BUN);
+  for (const name2 of packages) candidates.push(join4(stage, "node_modules", name2, "bin", binary));
+  for (let dir = resolve7(source); ; dir = dirname4(dir)) {
+    for (const name2 of packages) candidates.push(join4(dir, "node_modules", name2, "bin", binary));
+    if (dirname4(dir) === dir) break;
+  }
+  candidates.push(join4(env.DSH_HOME ?? join4(homedir3(), ".dsh"), "bun", binary));
+  const tried = [...new Set(candidates)];
+  const path = tried.find((candidate) => exists(candidate));
+  return { ...path ? { path } : {}, tried };
+}
+function nodePlatform(configuredElectron, configuredBun) {
   return {
     electron: (source) => locateElectron(source, configuredElectron),
+    bun: (stage, source) => locateBun(stage, source, configuredBun),
+    async responds(origin, marker) {
+      try {
+        const response = await fetch(origin, { signal: AbortSignal.timeout(2500), redirect: "error" });
+        return response.ok && marker.test((await response.text()).slice(0, 1e5));
+      } catch {
+        return false;
+      }
+    },
     async launch(executable, args, options) {
       const stdout = await open2(options.stdout, "w");
       const stderr = await open2(options.stderr, "w");
@@ -6589,6 +6642,30 @@ function cineflowService(dataDirectory, env = process.env) {
     timeoutMs: 3e4
   };
 }
+function toonflowService(dataDirectory, stateDirectory, origin) {
+  let url;
+  try {
+    url = new URL(origin);
+  } catch {
+    return void 0;
+  }
+  const port = Number(url.port || "80");
+  if (url.protocol !== "http:" || !["127.0.0.1", "localhost"].includes(url.hostname) || !Number.isSafeInteger(port) || port < 1024 || port > 65535) return void 0;
+  return {
+    studioId: "media",
+    title: "AI\u77ED\u5267\u5DE5\u4F5C\u53F0",
+    app: "app",
+    optional: true,
+    requires: ["build/server/index.js", "build/web/index.html"],
+    runner: { kind: "bun", entry: "build/server/index.js" },
+    ready: { kind: "http", marker: /toonflow/i },
+    dataDirectory,
+    stateDirectory,
+    port,
+    timeoutMs: 6e4,
+    env: { TOONFLOW_STUDIO_DSH: "1", TOONFLOW_SERVER_HOST: "127.0.0.1", TOONFLOW_SERVER_PORT: String(port), TOONFLOW_DATA_DIR: dataDirectory }
+  };
+}
 var ManagedStudioServices = class {
   /**
    * @param definitions - 本运行时认识的随包服务。
@@ -6610,8 +6687,13 @@ var ManagedStudioServices = class {
    * 重新登记（更新后重新加载）会清除上一次的失败冷却，立即可以重试。
    */
   attach(studioId, source) {
-    if (!this.definitions.has(studioId)) return false;
-    this.sources.set(studioId, resolve6(source));
+    const definition = this.definitions.get(studioId);
+    if (!definition) return false;
+    if (definition.optional && !existsSync2(join4(resolve7(source), definition.app))) {
+      this.sources.delete(studioId);
+      return false;
+    }
+    this.sources.set(studioId, resolve7(source));
     this.failures.delete(studioId);
     return true;
   }
@@ -6668,27 +6750,47 @@ var ManagedStudioServices = class {
   failure(definition, kind, reason) {
     return { kind, studioIds: [definition.studioId], message: definition.title + reason };
   }
+  /**
+   * 当前正在提供服务的进程；没有健康的服务时返回 undefined。
+   * ours 为本运行时的启动记录（进程确实是它拉起的）；pid 缺省表示服务在运行但查不到是谁启动的。
+   */
+  async current(definition, record) {
+    if (definition.ready) {
+      if (!await this.platform.responds?.(this.origin(definition), definition.ready.marker)) return void 0;
+      const ours = record && this.platform.alive(record.pid) ? record : void 0;
+      return ours ? { pid: ours.pid, ours } : {};
+    }
+    const bridge = await readBridge(definition.dataDirectory);
+    if (!bridge || !await this.platform.healthy(bridge.origin)) return void 0;
+    return { pid: bridge.pid, ...record?.pid === bridge.pid ? { ours: record } : {} };
+  }
+  /** 以 HTTP 首页判定就绪的服务所在地址。 */
+  origin(definition) {
+    return "http://127.0.0.1:" + String(definition.port);
+  }
   async reconcile(definition, source) {
-    const data = definition.dataDirectory;
-    const [record, bridge, installed] = await Promise.all([readRecord(data), readBridge(data), inspectInstall(source, definition)]);
+    const state = stateOf(definition);
+    const [record, installed] = await Promise.all([readRecord(state), inspectInstall(source, definition)]);
+    const running = await this.current(definition, record);
     const incomplete = installed.missing ? "\u5B89\u88C5\u4E0D\u5B8C\u6574\uFF08\u7F3A\u5C11 " + installed.missing + "\uFF09\uFF0C\u8BF7\u5728\u5DE5\u4F5C\u5BA4\u63A7\u5236\u53F0\u91CD\u65B0\u5B89\u88C5\u6216\u66F4\u65B0" : void 0;
-    if (bridge && await this.platform.healthy(bridge.origin)) {
-      const ours = record?.pid === bridge.pid ? record : void 0;
+    if (running) {
+      const ours = running.ours;
       if (ours && fold(ours.source) !== fold(source)) return void 0;
       if (ours && ours.fingerprint === installed.fingerprint) return void 0;
       if (!ours) {
-        const command = await this.platform.commandLine(bridge.pid);
+        if (running.pid === void 0) return void 0;
+        const command = await this.platform.commandLine(running.pid);
         if (!command || !this.runsInside(command, source)) return void 0;
       }
       if (incomplete) return this.failure(definition, "launch", incomplete + "\uFF1B\u5F53\u524D\u7EE7\u7EED\u4F7F\u7528\u6B63\u5728\u8FD0\u884C\u7684\u7248\u672C");
       const stage2 = await this.stage(definition, source, installed);
       if (typeof stage2 !== "string") return stage2;
-      if (!await this.stop(definition, bridge.pid)) return this.failure(definition, "timeout", "\u65E7\u7248\u672C\u672A\u80FD\u505C\u6B62\uFF0C\u8BF7\u7A0D\u540E\u91CD\u65B0\u8FDE\u63A5");
+      if (running.pid !== void 0 && !await this.stop(definition, running.pid)) return this.failure(definition, "timeout", "\u65E7\u7248\u672C\u672A\u80FD\u505C\u6B62\uFF0C\u8BF7\u7A0D\u540E\u91CD\u65B0\u8FDE\u63A5");
       return this.start(definition, source, stage2, installed);
     }
     if (await this.platform.listening(definition.port)) return this.failure(definition, "launch", "\u65E0\u6CD5\u542F\u52A8\uFF1A\u7AEF\u53E3 " + String(definition.port) + " \u5DF2\u88AB\u5176\u4ED6\u7A0B\u5E8F\u5360\u7528");
     if (incomplete) {
-      const previous = record ? join4(data, "runtime", record.stage) : void 0;
+      const previous = record ? join4(state, "runtime", record.stage) : void 0;
       if (record && previous && await stageComplete(previous, definition)) return this.start(definition, record.source, previous, record);
       return this.failure(definition, "launch", incomplete);
     }
@@ -6699,25 +6801,23 @@ var ManagedStudioServices = class {
   /** 命令行是否指向安装目录内（Windows 下不区分大小写与斜杠方向）。 */
   runsInside(command, source) {
     const normalize = (value) => process.platform === "win32" ? value.toLowerCase().replaceAll("/", "\\") : value;
-    return normalize(command).includes(normalize(resolve6(source)));
+    return normalize(command).includes(normalize(resolve7(source)));
   }
   /**
    * 准备运行副本：同一版本与内容指纹的副本直接复用。
    * 复制期间安装目录又发生变化（更新正在进行）则放弃本次，稍后重试。
    */
   async stage(definition, source, installed) {
-    const runtime = join4(definition.dataDirectory, "runtime");
+    const runtime = join4(stateOf(definition), "runtime");
     const target = join4(runtime, installed.version + "-" + installed.fingerprint.slice(0, 12));
     if (await stageComplete(target, definition)) return target;
     const temporary = join4(runtime, ".staging-" + randomUUID4());
     try {
       await rm(target, { recursive: true, force: true });
       await mkdir4(temporary, { recursive: true });
-      await cp(join4(source, definition.app), join4(temporary, definition.app), {
-        recursive: true,
-        dereference: true,
-        filter: (path) => !/[\\/]node_modules$/.test(path)
-      });
+      const application = join4(source, definition.app);
+      const skipped = fold(join4(application, "node_modules"));
+      await cp(application, join4(temporary, definition.app), { recursive: true, dereference: true, filter: (path) => fold(path) !== skipped });
       await copyDependencies(source, join4(temporary, "node_modules"));
       const after = await inspectInstall(source, definition);
       if (after.fingerprint !== installed.fingerprint) return this.failure(definition, "launch", "\u7684\u5B89\u88C5\u76EE\u5F55\u6B63\u5728\u53D8\u5316\uFF08\u53EF\u80FD\u6B63\u5728\u66F4\u65B0\uFF09\uFF0C\u8BF7\u7A0D\u540E\u91CD\u65B0\u8FDE\u63A5");
@@ -6748,22 +6848,36 @@ var ManagedStudioServices = class {
   /** 从运行副本拉起服务，等待它写下连接信息并通过健康检查。 */
   async start(definition, source, stage, installed) {
     const data = definition.dataDirectory;
-    const located = this.platform.electron(source);
-    if (!located.path) {
-      return this.failure(definition, "launch", "\u672A\u627E\u5230\u53EF\u7528\u7684 Electron\uFF1A\u8BF7\u8BBE\u7F6E\u73AF\u5883\u53D8\u91CF DSH_STUDIO_ELECTRON\uFF0C\u6216\u5728 dsh-studio-projects \u63D2\u4EF6\u914D\u7F6E\u7684 electronPath \u4E2D\u586B\u5199 Electron \u7A0B\u5E8F\u8DEF\u5F84\uFF08\u5DF2\u5C1D\u8BD5\uFF1A" + located.tried.join("\u3001") + "\uFF09");
-    }
+    const state = stateOf(definition);
     const application = join4(stage, definition.app);
-    const errorLog = join4(data, "service.error.log");
+    let executable, args;
+    if (definition.runner?.kind === "bun") {
+      const located = this.platform.bun?.(stage, source) ?? { tried: [] };
+      if (!located.path) {
+        return this.failure(definition, "launch", "\u672A\u627E\u5230\u53EF\u7528\u7684 Bun\uFF1A\u8BF7\u91CD\u65B0\u5B89\u88C5\u8BE5\u5DE5\u4F5C\u5BA4\uFF08Bun \u968F\u5DE5\u4F5C\u5BA4\u7684\u53EF\u9009\u4F9D\u8D56\u5B89\u88C5\uFF09\uFF0C\u6216\u8BBE\u7F6E\u73AF\u5883\u53D8\u91CF DSH_STUDIO_BUN\uFF0C\u6216\u5728 dsh-studio-projects \u63D2\u4EF6\u914D\u7F6E\u7684 bunPath \u4E2D\u586B\u5199 Bun \u7A0B\u5E8F\u8DEF\u5F84\uFF08\u5DF2\u5C1D\u8BD5\uFF1A" + located.tried.join("\u3001") + "\uFF09");
+      }
+      executable = located.path;
+      args = ["run", join4(application, definition.runner.entry)];
+    } else {
+      const located = this.platform.electron(source);
+      if (!located.path) {
+        return this.failure(definition, "launch", "\u672A\u627E\u5230\u53EF\u7528\u7684 Electron\uFF1A\u8BF7\u8BBE\u7F6E\u73AF\u5883\u53D8\u91CF DSH_STUDIO_ELECTRON\uFF0C\u6216\u5728 dsh-studio-projects \u63D2\u4EF6\u914D\u7F6E\u7684 electronPath \u4E2D\u586B\u5199 Electron \u7A0B\u5E8F\u8DEF\u5F84\uFF08\u5DF2\u5C1D\u8BD5\uFF1A" + located.tried.join("\u3001") + "\uFF09");
+      }
+      executable = located.path;
+      args = [application];
+    }
+    const errorLog = join4(state, "service.error.log");
     const env = { ...process.env, ...definition.env };
     delete env.ELECTRON_RUN_AS_NODE;
     let child;
     try {
       await mkdir4(data, { recursive: true });
-      child = await this.platform.launch(located.path, [application], { cwd: application, env, stdout: join4(data, "service.log"), stderr: errorLog });
+      await mkdir4(state, { recursive: true });
+      child = await this.platform.launch(executable, args, { cwd: application, env, stdout: join4(state, "service.log"), stderr: errorLog });
     } catch (error) {
       return this.failure(definition, "launch", "\u65E0\u6CD5\u542F\u52A8\uFF08" + (error instanceof Error ? error.message : String(error)) + "\uFF09");
     }
-    await writeRecord(data, { schemaVersion: 1, pid: child.pid, stage: stage.slice(join4(data, "runtime").length + 1), fingerprint: installed.fingerprint, version: installed.version, source, startedAt: (/* @__PURE__ */ new Date()).toISOString() });
+    await writeRecord(state, { schemaVersion: 1, pid: child.pid, stage: stage.slice(join4(state, "runtime").length + 1), fingerprint: installed.fingerprint, version: installed.version, source, startedAt: (/* @__PURE__ */ new Date()).toISOString() });
     const deadline = this.now() + definition.timeoutMs;
     while (this.now() < deadline) {
       const exit = child.exit();
@@ -6771,8 +6885,13 @@ var ManagedStudioServices = class {
         const detail = await lastLine(errorLog);
         return this.failure(definition, "exit", "\u542F\u52A8\u540E\u9000\u51FA\uFF08\u9000\u51FA\u7801 " + String(exit.code) + "\uFF09" + (detail ? "\uFF1A" + detail : "") + "\uFF1B\u65E5\u5FD7\uFF1A" + errorLog);
       }
-      const bridge = await readBridge(data);
-      if (bridge?.pid === child.pid && await this.platform.healthy(bridge.origin)) {
+      let ready;
+      if (definition.ready) ready = await this.platform.responds?.(this.origin(definition), definition.ready.marker) ?? false;
+      else {
+        const bridge = await readBridge(data);
+        ready = bridge?.pid === child.pid && await this.platform.healthy(bridge.origin);
+      }
+      if (ready) {
         await this.prune(definition, stage);
         return void 0;
       }
@@ -6787,7 +6906,7 @@ var ManagedStudioServices = class {
   }
   /** 清理不再使用的运行副本与中断留下的临时目录；被占用的目录留到下次。 */
   async prune(definition, keep) {
-    const runtime = join4(definition.dataDirectory, "runtime");
+    const runtime = join4(stateOf(definition), "runtime");
     let names;
     try {
       names = await readdir(runtime);
@@ -6803,6 +6922,284 @@ var ManagedStudioServices = class {
   }
 };
 
+// packages/runtime/src/localStacks.ts
+import { spawn as spawn3 } from "node:child_process";
+import { existsSync as existsSync3 } from "node:fs";
+import { mkdir as mkdir5, readFile as readFile7 } from "node:fs/promises";
+import { delimiter, isAbsolute as isAbsolute3, join as join5, resolve as resolve8 } from "node:path";
+var COOLDOWN_MS2 = 15e3;
+var delay2 = (ms2) => new Promise((done) => {
+  setTimeout(done, ms2);
+});
+function stackPlatform() {
+  const base = nodePlatform();
+  return {
+    exists: existsSync3,
+    listening: (port) => base.listening(port),
+    launch: (executable, args, options) => base.launch(executable, args, options),
+    run(executable, args, options) {
+      return new Promise((done) => {
+        const child = spawn3(executable, [...args], { env: options.env, windowsHide: true, stdio: "ignore" });
+        const timer = setTimeout(() => {
+          child.kill();
+          done(null);
+        }, options.timeoutMs);
+        child.once("error", () => {
+          clearTimeout(timer);
+          done(null);
+        });
+        child.once("exit", (code) => {
+          clearTimeout(timer);
+          done(code);
+        });
+      });
+    },
+    async ok(url) {
+      try {
+        return (await fetch(url, { signal: AbortSignal.timeout(2500), redirect: "error" })).ok;
+      } catch {
+        return false;
+      }
+    }
+  };
+}
+async function lastLine2(file) {
+  try {
+    const lines = (await readFile7(file, "utf8")).split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+    return (lines.at(-1) ?? "").slice(0, 300);
+  } catch {
+    return "";
+  }
+}
+var LocalStackServices = class {
+  /**
+   * @param definitions - 本机已配置的服务栈。
+   * @param platform - 操作系统交互，测试时可替换。
+   * @param now - 当前时间，测试时可替换。
+   */
+  constructor(definitions, platform = stackPlatform(), now = Date.now) {
+    this.platform = platform;
+    this.now = now;
+    for (const definition of definitions) this.definitions.set(definition.studioId, definition);
+  }
+  definitions = /* @__PURE__ */ new Map();
+  attached = /* @__PURE__ */ new Set();
+  tasks = /* @__PURE__ */ new Map();
+  failures = /* @__PURE__ */ new Map();
+  closed = false;
+  /** 工作室登记时调用；没有为它配置服务栈返回 false。重新登记会清除上一次的失败冷却。 */
+  attach(studioId) {
+    if (!this.definitions.has(studioId)) return false;
+    this.attached.add(studioId);
+    this.failures.delete(studioId);
+    return true;
+  }
+  /** 工作室停用或卸载：不再协调，已运行的服务保持原样。 */
+  detach(studioId) {
+    this.attached.delete(studioId);
+  }
+  /** 该工作室是否有可由运行时启动的本机服务栈。 */
+  has(studioId) {
+    return this.attached.has(studioId);
+  }
+  /** 该工作室的服务是否正在启动。 */
+  starting(studioId) {
+    return this.tasks.has(studioId);
+  }
+  /** 最近一次失败记录。 */
+  report() {
+    return [...this.failures.values()].map((entry) => entry.failure);
+  }
+  /**
+   * 协调指定工作室的服务栈：都在运行则什么也不做，否则按顺序补齐。
+   * @param options - force 为 true 时忽略失败冷却（用户主动点击启动）。
+   * @returns 失败记录；服务可用时返回 undefined。
+   */
+  ensure(studioId, options = {}) {
+    const definition = this.definitions.get(studioId);
+    if (!definition || !this.attached.has(studioId) || this.closed) return Promise.resolve(void 0);
+    const running = this.tasks.get(studioId);
+    if (running) return running;
+    const last = this.failures.get(studioId);
+    if (!options.force && last && this.now() - last.at < COOLDOWN_MS2) return Promise.resolve(last.failure);
+    const task = this.reconcile(definition).catch((error) => this.failure(definition, "launch", "\u65E0\u6CD5\u81EA\u52A8\u542F\u52A8\uFF08" + (error instanceof Error ? error.message : String(error)) + "\uFF09")).then((failure) => {
+      if (failure) this.failures.set(studioId, { failure, at: this.now() });
+      else this.failures.delete(studioId);
+      return failure;
+    }).finally(() => {
+      this.tasks.delete(studioId);
+    });
+    this.tasks.set(studioId, task);
+    return task;
+  }
+  /** 协调全部已登记的服务栈。 */
+  async ensureAll(options = {}) {
+    const outcomes = await Promise.all([...this.attached].map((id) => this.ensure(id, options)));
+    return outcomes.filter((outcome) => outcome !== void 0);
+  }
+  /** 停用插件：不再发起新的协调，等待进行中的收尾；已运行的服务不停止。 */
+  async dispose() {
+    this.closed = true;
+    await Promise.allSettled(this.tasks.values());
+  }
+  failure(definition, kind, reason) {
+    return { kind, studioIds: [definition.studioId], message: definition.title + reason };
+  }
+  async healthy(definition) {
+    return (await Promise.all(definition.health.map((url) => this.platform.ok(url)))).every(Boolean);
+  }
+  async reconcile(definition) {
+    if (await this.healthy(definition)) return void 0;
+    for (const item of definition.requires) if (!this.platform.exists(item.path)) return this.failure(definition, "launch", "\u65E0\u6CD5\u542F\u52A8\uFF1A\u7F3A\u5C11 " + item.path + "\u3002" + item.hint);
+    const env = { ...process.env, ...await definition.environment() };
+    await mkdir5(definition.logDirectory, { recursive: true });
+    for (const item of definition.prerequisites) {
+      if (!this.platform.exists(item.executable)) return this.failure(definition, "launch", "\u65E0\u6CD5\u542F\u52A8\uFF1A\u7F3A\u5C11 " + item.name + " \u7684\u8FD0\u884C\u6587\u4EF6 " + item.executable);
+      if (await this.platform.run(item.executable, item.statusArgs, { env, timeoutMs: 15e3 }) === 0) continue;
+      if (await this.platform.listening(item.port)) return this.failure(definition, "launch", "\u65E0\u6CD5\u542F\u52A8 " + item.name + "\uFF1A\u7AEF\u53E3 " + String(item.port) + " \u5DF2\u88AB\u5176\u4ED6\u7A0B\u5E8F\u5360\u7528");
+      const code = await this.platform.run(item.executable, item.startArgs, { env, timeoutMs: item.timeoutMs });
+      if (code !== 0) return this.failure(definition, code === null ? "timeout" : "exit", "\u7684 " + item.name + " \u542F\u52A8\u5931\u8D25" + (code === null ? "\uFF08\u8D85\u65F6\u6216\u65E0\u6CD5\u6267\u884C\uFF09" : "\uFF08\u9000\u51FA\u7801 " + String(code) + "\uFF09") + "\uFF1B\u65E5\u5FD7\u76EE\u5F55\uFF1A" + definition.logDirectory);
+    }
+    for (const item of definition.processes) {
+      if (await this.platform.listening(item.port)) continue;
+      if (!this.platform.exists(item.executable)) return this.failure(definition, "launch", "\u65E0\u6CD5\u542F\u52A8\uFF1A\u7F3A\u5C11 " + item.name + " \u7684\u8FD0\u884C\u6587\u4EF6 " + item.executable);
+      const errorLog = join5(definition.logDirectory, item.name + ".error.log");
+      let child;
+      try {
+        child = await this.platform.launch(item.executable, item.args, { cwd: item.cwd, env, stdout: join5(definition.logDirectory, item.name + ".log"), stderr: errorLog });
+      } catch (error) {
+        return this.failure(definition, "launch", "\u7684 " + item.name + " \u65E0\u6CD5\u542F\u52A8\uFF08" + (error instanceof Error ? error.message : String(error)) + "\uFF09");
+      }
+      const deadline2 = this.now() + item.timeoutMs;
+      let listening = false;
+      while (!listening && this.now() < deadline2) {
+        const exit = child.exit();
+        if (exit) {
+          const detail = await lastLine2(errorLog);
+          return this.failure(definition, "exit", "\u7684 " + item.name + " \u542F\u52A8\u540E\u9000\u51FA\uFF08\u9000\u51FA\u7801 " + String(exit.code) + "\uFF09" + (detail ? "\uFF1A" + detail : "") + "\uFF1B\u65E5\u5FD7\uFF1A" + errorLog);
+        }
+        if (this.closed) return this.failure(definition, "cancelled", "\u81EA\u52A8\u542F\u52A8\u5DF2\u53D6\u6D88\uFF0C\u670D\u52A1\u53EF\u80FD\u4ECD\u5728\u542F\u52A8");
+        listening = await this.platform.listening(item.port);
+        if (!listening) await delay2(250);
+      }
+      if (!listening) return this.failure(definition, "timeout", "\u7684 " + item.name + " \u542F\u52A8\u8D85\u65F6\uFF0C\u8BF7\u68C0\u67E5\u7AEF\u53E3 " + String(item.port) + " \u4E0E\u65E5\u5FD7\uFF1A" + errorLog);
+    }
+    const deadline = this.now() + definition.timeoutMs;
+    while (this.now() < deadline) {
+      if (await this.healthy(definition)) return void 0;
+      if (this.closed) return this.failure(definition, "cancelled", "\u81EA\u52A8\u542F\u52A8\u5DF2\u53D6\u6D88\uFF0C\u670D\u52A1\u53EF\u80FD\u4ECD\u5728\u542F\u52A8");
+      await delay2(300);
+    }
+    return this.failure(definition, "timeout", "\u542F\u52A8\u540E\u672A\u5C31\u7EEA\uFF0C\u8BF7\u67E5\u770B\u65E5\u5FD7\u76EE\u5F55\uFF1A" + definition.logDirectory);
+  }
+};
+function resolvePrintfilmService(input, env = process.env) {
+  const fromEnv = { appDirectory: env.DSH_STUDIO_PRINTFILM_APP, runtimeDirectory: env.DSH_STUDIO_PRINTFILM_RUNTIME, dataDirectory: env.DSH_STUDIO_PRINTFILM_DATA };
+  if (input === void 0 && Object.values(fromEnv).every((value) => !value)) return void 0;
+  if (input !== void 0 && (typeof input !== "object" || input === null || Array.isArray(input))) throw new Error("\u5DE5\u4F5C\u5BA4 printfilmService \u914D\u7F6E\u5FC5\u987B\u662F\u5BF9\u8C61");
+  const source = { ...fromEnv, ...input };
+  const result = {};
+  for (const key of ["appDirectory", "runtimeDirectory", "dataDirectory"]) {
+    const value = source[key];
+    if (typeof value !== "string" || !isAbsolute3(value)) throw new Error("\u5DE5\u4F5C\u5BA4 printfilmService \u914D\u7F6E\u65E0\u6548\uFF1AappDirectory\u3001runtimeDirectory\u3001dataDirectory \u90FD\u5FC5\u987B\u662F\u7EDD\u5BF9\u8DEF\u5F84");
+    result[key] = resolve8(value);
+  }
+  return result;
+}
+function printfilmStack(config, origin, env = process.env, platform = process.platform) {
+  let url;
+  try {
+    url = new URL(origin);
+  } catch {
+    return void 0;
+  }
+  const webPort = Number(url.port || "80");
+  if (url.protocol !== "http:" || !["127.0.0.1", "localhost"].includes(url.hostname) || !Number.isSafeInteger(webPort) || webPort < 1024 || webPort > 65535) return void 0;
+  const adminPort = 33103, apiPort = 33104, databasePort = 35432, cachePort = 36379;
+  const exe = (name2) => platform === "win32" ? name2 + ".exe" : name2;
+  const { appDirectory: app, runtimeDirectory: runtime, dataDirectory: data } = config;
+  const web = "http://127.0.0.1:" + String(webPort), admin = "http://127.0.0.1:" + String(adminPort), api = "http://127.0.0.1:" + String(apiPort);
+  const secrets = join5(data, "runtime.json");
+  const databaseDirectory = join5(data, "postgres");
+  const cacheDirectory = join5(data, "garnet");
+  const pgControl = join5(runtime, "pgsql", "bin", exe("pg_ctl"));
+  const node = env.DSH_STUDIO_NODE || join5(runtime, "node", "bin", exe("node"));
+  const python = platform === "win32" ? join5(app, ".venv", "Scripts", "python.exe") : join5(app, ".venv", "bin", "python");
+  const preview = (directory, port) => [join5(app, directory, "node_modules", "vite", "bin", "vite.js"), "preview", "--host", "127.0.0.1", "--port", String(port), "--strictPort"];
+  const prepared = "\u8BF7\u5148\u6309\u5267\u5DE5\u4F5C\u5BA4\u8BF4\u660E\u51C6\u5907\u5E94\u7528\u4E0E\u6570\u636E\u5E93\uFF08README\u300C\u670D\u52A1\u914D\u7F6E\u300D\uFF09\u3002";
+  return {
+    studioId: "film",
+    title: "AI\u5267\u5DE5\u4F5C\u53F0",
+    logDirectory: join5(data, "logs"),
+    timeoutMs: 4e4,
+    requires: [
+      { path: secrets, hint: prepared },
+      { path: join5(databaseDirectory, "PG_VERSION"), hint: prepared },
+      { path: join5(app, "backend"), hint: prepared },
+      { path: join5(app, "frontend", "dist"), hint: "\u8BF7\u5148\u6784\u5EFA\u524D\u53F0\u9875\u9762\u3002" },
+      { path: join5(app, "admin", "dist"), hint: "\u8BF7\u5148\u6784\u5EFA\u7BA1\u7406\u540E\u53F0\u9875\u9762\u3002" }
+    ],
+    async environment() {
+      let saved;
+      try {
+        saved = JSON.parse(await readFile7(secrets, "utf8"));
+      } catch {
+        throw new Error("\u65E0\u6CD5\u8BFB\u53D6 " + secrets);
+      }
+      if (typeof saved?.databasePassword !== "string" || !saved.databasePassword || typeof saved.secretKey !== "string" || !saved.secretKey) throw new Error(secrets + " \u7F3A\u5C11 databasePassword \u6216 secretKey");
+      const password = encodeURIComponent(saved.databasePassword);
+      const pathKey = Object.keys(env).find((key) => key.toLowerCase() === "path") ?? "PATH";
+      const origins = web + "," + admin;
+      return {
+        DOTNET_ROOT: join5(runtime, "dotnet"),
+        PYTHONUTF8: "1",
+        [pathKey]: join5(runtime, "ffmpeg") + delimiter + (env[pathKey] ?? ""),
+        DATABASE_URL: "postgresql+asyncpg://printfilm:" + password + "@127.0.0.1:" + String(databasePort) + "/printfilm",
+        DATABASE_URL_SYNC: "postgresql+psycopg2://printfilm:" + password + "@127.0.0.1:" + String(databasePort) + "/printfilm",
+        SECRET_KEY: saved.secretKey,
+        REDIS_URL: "redis://127.0.0.1:" + String(cachePort) + "/0",
+        CORS_ORIGINS: origins,
+        PUBLIC_BASE_URL: web,
+        CDN_BASE: api + "/static",
+        PRINTFILM_API_ORIGIN: api,
+        // 默认单用户模式；设为 0 可恢复原邮箱登录
+        STUDIO_LOCAL_ORIGINS: origins,
+        STUDIO_SINGLE_USER: env.DSH_STUDIO_PRINTFILM_SINGLE_USER === "0" ? "false" : "true",
+        ARK_MOCK: "false"
+      };
+    },
+    prerequisites: [{
+      name: "\u6570\u636E\u5E93",
+      port: databasePort,
+      executable: pgControl,
+      timeoutMs: 6e4,
+      statusArgs: ["-D", databaseDirectory, "status"],
+      startArgs: ["-D", databaseDirectory, "-l", join5(data, "postgres.log"), "-o", "-p " + String(databasePort) + " -h 127.0.0.1", "-w", "start"]
+    }],
+    processes: [
+      {
+        name: "garnet",
+        executable: join5(runtime, "garnet", "net10.0", exe("GarnetServer")),
+        cwd: runtime,
+        port: cachePort,
+        timeoutMs: 25e3,
+        args: ["--port", String(cachePort), "--bind", "127.0.0.1", "--memory", "128m", "--storage-tier", "--logdir", cacheDirectory, "--checkpointdir", cacheDirectory, "--aof", "--recover"]
+      },
+      {
+        name: "printfilm-api",
+        executable: python,
+        cwd: join5(app, "backend"),
+        port: apiPort,
+        timeoutMs: 6e4,
+        args: ["-m", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", String(apiPort)]
+      },
+      { name: "printfilm-web", executable: node, cwd: join5(app, "frontend"), port: webPort, timeoutMs: 25e3, args: preview("frontend", webPort) },
+      { name: "printfilm-admin", executable: node, cwd: join5(app, "admin"), port: adminPort, timeoutMs: 25e3, args: preview("admin", adminPort) }
+    ],
+    health: [web, admin, api + "/api/health"]
+  };
+}
+
 // packages/runtime/src/server.ts
 var name = "dsh-studio-projects";
 var inject = ["webServer", "connection", "tools", "agents", "systemPrompt", "workspaceRegistry", "pluginManager"];
@@ -6811,8 +7208,30 @@ async function apply(ctx, config = {}) {
   ctx.provide("studioProjects", registry);
   const startupConfig = resolveServiceStartup(config.autoStartServices);
   const launcher = new StudioServiceLauncher(startupConfig);
-  if (config.electronPath !== void 0 && (typeof config.electronPath !== "string" || !isAbsolute3(config.electronPath))) throw new Error("\u5DE5\u4F5C\u5BA4 electronPath \u5FC5\u987B\u662F\u7EDD\u5BF9\u8DEF\u5F84");
-  const managed = new ManagedStudioServices([cineflowService(cineflowDataDirectory(config))], nodePlatform(config.electronPath));
+  if (config.electronPath !== void 0 && (typeof config.electronPath !== "string" || !isAbsolute4(config.electronPath))) throw new Error("\u5DE5\u4F5C\u5BA4 electronPath \u5FC5\u987B\u662F\u7EDD\u5BF9\u8DEF\u5F84");
+  if (config.bunPath !== void 0 && (typeof config.bunPath !== "string" || !isAbsolute4(config.bunPath))) throw new Error("\u5DE5\u4F5C\u5BA4 bunPath \u5FC5\u987B\u662F\u7EDD\u5BF9\u8DEF\u5F84");
+  const urls = integrationUrls(config);
+  const toonflowDefinition = toonflowService(toonflowDataDirectory(config), toonflowStateDirectory(), urls.media);
+  const bundled = new ManagedStudioServices([cineflowService(cineflowDataDirectory(config)), ...toonflowDefinition ? [toonflowDefinition] : []], nodePlatform(config.electronPath, config.bunPath));
+  const printfilm = resolvePrintfilmService(config.printfilmService);
+  const filmStack = printfilm ? printfilmStack(printfilm, urls.film) : void 0;
+  const stacks = new LocalStackServices(filmStack ? [filmStack] : []);
+  const managed = {
+    attach: (id, source) => bundled.attach(id, source) || stacks.attach(id),
+    detach: (id) => {
+      bundled.detach(id);
+      stacks.detach(id);
+    },
+    has: (id) => bundled.has(id) || stacks.has(id),
+    starting: (id) => bundled.starting(id) || stacks.starting(id),
+    report: () => [...bundled.report(), ...stacks.report()],
+    ensure: (id, options) => bundled.has(id) ? bundled.ensure(id, options) : stacks.ensure(id, options),
+    ensureAll: async (options) => [...await bundled.ensureAll(options), ...await stacks.ensureAll(options)],
+    dispose: async () => {
+      await bundled.dispose();
+      await stacks.dispose();
+    }
+  };
   const autoStart = process.env.DSH_STUDIO_SKIP_APPS !== "1";
   const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates), fetch, {
     stopForUpdate: (studioId, directory) => launcher.stopForUpdate(studioId, directory),
@@ -6835,7 +7254,7 @@ async function apply(ctx, config = {}) {
   }, "\u5DE5\u4F5C\u5BA4\uFF1A\u672C\u673A\u670D\u52A1\u81EA\u52A8\u542F\u52A8");
   ctx.effect(() => {
     const attach = (id, root) => {
-      if (launcher.startable(id) || !managed.attach(id, dirname5(resolve7(root))) || !autoStart) return;
+      if (launcher.startable(id) || !managed.attach(id, dirname5(resolve9(root))) || !autoStart) return;
       void managed.ensure(id);
     };
     for (const page of registry.entries()) attach(page.id, page.root);
@@ -6958,7 +7377,7 @@ async function apply(ctx, config = {}) {
       }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/bridge.js") {
         res.writeHead(200, { "content-type": "text/javascript; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
-        res.end(await readFile7(new URL("../static/controlBridge.js", import.meta.url)));
+        res.end(await readFile8(new URL("../static/controlBridge.js", import.meta.url)));
         return;
       }
       if (await handleUpdates(req, res, url.pathname)) return;
@@ -6977,7 +7396,7 @@ async function apply(ctx, config = {}) {
           return;
         }
         const file = legacyAsset ?? "index.html";
-        const body = await readFile7(new URL("../static/legacy/" + file, import.meta.url));
+        const body = await readFile8(new URL("../static/legacy/" + file, import.meta.url));
         res.writeHead(200, { "content-type": file.endsWith(".js") ? "text/javascript; charset=utf-8" : file.endsWith(".css") ? "text/css; charset=utf-8" : "text/html; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
         res.end(req.method === "HEAD" ? void 0 : body);
         return;

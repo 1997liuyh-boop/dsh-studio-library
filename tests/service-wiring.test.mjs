@@ -195,3 +195,54 @@ test('DSH_STUDIO_SKIP_APPS=1 时不自动启动，仍可手动一键启动', asy
   assert.deepEqual(started.body.failures, [])
   assert.equal(started.body.services.find(item => item.id === 'cineflow').ready, true)
 })
+
+test('控制台服务面板：短剧带应用目录时可启动，旧版短剧包不可；剧配置了本机目录后可启动', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'service-wiring-studios-'))
+  const saved = { ...process.env }
+  const keys = ['DSH_STUDIO_SKIP_APPS', 'DSH_STUDIO_PRINTFILM_APP', 'DSH_STUDIO_PRINTFILM_RUNTIME', 'DSH_STUDIO_PRINTFILM_DATA', 'DSH_STUDIO_TOONFLOW_URL', 'DSH_STUDIO_PRINTFILM_URL']
+  t.after(async () => {
+    for (const key of keys) { if (saved[key] === undefined) delete process.env[key]; else process.env[key] = saved[key] }
+    await rm(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 })
+  })
+  for (const key of keys) delete process.env[key]
+  // 只看接线，不真的拉起进程
+  process.env.DSH_STUDIO_SKIP_APPS = '1'
+  const runtime = await loadRuntime(dir)
+  const studio = async (name, withApp) => {
+    const source = join(dir, 'profile', 'node_modules', name)
+    await mkdir(join(source, 'static'), { recursive: true })
+    await writeFile(join(source, 'package.json'), JSON.stringify({ name, version: '1.0.0' }))
+    if (withApp) { await mkdir(join(source, 'app', 'build', 'server'), { recursive: true }); await writeFile(join(source, 'app', 'build', 'server', 'index.js'), '') }
+    return join(source, 'static')
+  }
+  const base = { cineflowDataDirectory: join(dir, 'cineflow'), toonflowDataDirectory: join(dir, 'toonflow'), updates: { directory: join(dir, 'updates') },
+    toonflowUrl: 'http://127.0.0.1:' + String(await freePort()), printfilmUrl: 'http://127.0.0.1:' + String(await freePort()) }
+  const states = async host => Object.fromEntries((await host.request('GET', '/studio-projects/control/services')).body.services.map(item => [item.id, item.startable]))
+
+  // 没有配置剧的本机目录、短剧是不带应用的旧包：两者都不可由运行时启动
+  const plain = fakeHost()
+  await runtime.apply(plain.ctx, base)
+  t.after(() => plain.host.dispose())
+  plain.host.provided.studioProjects.register({ id: 'media', name: 'AI短剧工作台', root: await studio('dsh-studio-media', false) })
+  plain.host.provided.studioProjects.register({ id: 'film', name: 'AI剧工作台', root: await studio('dsh-studio-film', false) })
+  assert.deepEqual(await states(plain.host), { media: false, film: false, cineflow: false })
+
+  // 短剧带 app 目录、剧配置了本机目录：两者都显示可启动；停用后恢复
+  const managed = fakeHost()
+  await runtime.apply(managed.ctx, { ...base, printfilmService: { appDirectory: join(dir, 'apps', 'printfilm'), runtimeDirectory: join(dir, 'runtime'), dataDirectory: join(dir, 'data', 'printfilm') } })
+  t.after(() => managed.host.dispose())
+  const unregisterMedia = managed.host.provided.studioProjects.register({ id: 'media', name: 'AI短剧工作台', root: await studio('dsh-studio-media', true) })
+  managed.host.provided.studioProjects.register({ id: 'film', name: 'AI剧工作台', root: await studio('dsh-studio-film', false) })
+  assert.deepEqual(await states(managed.host), { media: true, film: true, cineflow: false })
+  // 一键启动剧：本机目录还没准备好，给出缺少的文件而不是「未配置」
+  const started = await managed.host.request('POST', '/studio-projects/control/start', { studio: 'film' })
+  assert.equal(started.status, 200)
+  assert.match(started.body.failures[0].message, /AI剧工作台无法启动：缺少 .*runtime\.json/)
+  assert.match(started.body.services.find(item => item.id === 'film').error, /runtime\.json/)
+  unregisterMedia()
+  assert.equal((await states(managed.host)).media, false)
+
+  // 配置写错时在加载阶段就报错，不带着错误配置运行
+  await assert.rejects(runtime.apply(fakeHost().ctx, { ...base, printfilmService: { appDirectory: 'relative/path' } }), /printfilmService 配置无效/)
+  await assert.rejects(runtime.apply(fakeHost().ctx, { ...base, bunPath: 'bun.exe' }), /bunPath 必须是绝对路径/)
+})

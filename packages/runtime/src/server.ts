@@ -5,7 +5,7 @@ import { StudioUpdates, resolveUpdates } from './studioUpdates'
 import { updateRoutes } from './updateRoutes'
 import { getDshRuntimeVersion } from '@deepseek-ai/dsh-app-boot'
 import type {} from '@deepseek-ai/dsh-plugin-manager'
-import { cineflowDataDirectory, createIntegrations, type IntegrationConfig } from './integrations'
+import { cineflowDataDirectory, createIntegrations, integrationUrls, toonflowDataDirectory, toonflowStateDirectory, type IntegrationConfig } from './integrations'
 import { createToonflowSessions } from './toonflowSessions'
 import { readFile } from 'node:fs/promises'
 import { dirname, isAbsolute, resolve } from 'node:path'
@@ -13,7 +13,8 @@ import { installStudioControl, handleStudioImport } from './studioControl'
 import { studioCatalog } from './studioCatalog'
 import { installStudioTasks } from './studioTasks'
 import { resolveServiceStartup, ServiceNotConfigured, StudioServiceLauncher, type ServiceStartupFailure } from './serviceStartup'
-import { cineflowService, ManagedStudioServices, nodePlatform } from './managedServices'
+import { cineflowService, ManagedStudioServices, nodePlatform, toonflowService } from './managedServices'
+import { LocalStackServices, printfilmStack, resolvePrintfilmService } from './localStacks'
 
 interface HostContext {
   provide(name: string, value: StudioProjects): void
@@ -31,9 +32,28 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
   const startupConfig = resolveServiceStartup(config.autoStartServices)
   // 宿主启动时、「一键启动」与更新时的停/启共用同一启动器，同一启动组不会并行重复拉起
   const launcher = new StudioServiceLauncher(startupConfig)
-  // 随包服务（影音）：无需配置，由运行时从独立副本直接拉起；显式写了启动组的工作室仍按配置执行
+  // 随包服务（影音、短剧）：无需配置，由运行时从独立副本直接拉起；显式写了启动组的工作室仍按配置执行
   if (config.electronPath !== undefined && (typeof config.electronPath !== 'string' || !isAbsolute(config.electronPath))) throw new Error('工作室 electronPath 必须是绝对路径')
-  const managed = new ManagedStudioServices([cineflowService(cineflowDataDirectory(config))], nodePlatform(config.electronPath))
+  if (config.bunPath !== undefined && (typeof config.bunPath !== 'string' || !isAbsolute(config.bunPath))) throw new Error('工作室 bunPath 必须是绝对路径')
+  const urls = integrationUrls(config)
+  // 短剧：应用构建产物随工作室包分发，用 Bun 运行；服务地址指向别处（不是本机）时不由运行时管理
+  const toonflowDefinition = toonflowService(toonflowDataDirectory(config), toonflowStateDirectory(), urls.media)
+  const bundled = new ManagedStudioServices([cineflowService(cineflowDataDirectory(config)), ...(toonflowDefinition ? [toonflowDefinition] : [])], nodePlatform(config.electronPath, config.bunPath))
+  // 剧：依赖数据库与 Python 环境，无法随包分发；配置了本机目录后由运行时按顺序拉起整套服务
+  const printfilm = resolvePrintfilmService(config.printfilmService)
+  const filmStack = printfilm ? printfilmStack(printfilm, urls.film) : undefined
+  const stacks = new LocalStackServices(filmStack ? [filmStack] : [])
+  /** 运行时可直接拉起的服务：随包服务（影音、短剧）与本机服务栈（剧），对外是同一套操作。 */
+  const managed = {
+    attach: (id: string, source: string) => bundled.attach(id, source) || stacks.attach(id),
+    detach: (id: string) => { bundled.detach(id); stacks.detach(id) },
+    has: (id: string) => bundled.has(id) || stacks.has(id),
+    starting: (id: string) => bundled.starting(id) || stacks.starting(id),
+    report: () => [...bundled.report(), ...stacks.report()],
+    ensure: (id: string, options?: { force?: boolean }) => bundled.has(id) ? bundled.ensure(id, options) : stacks.ensure(id, options),
+    ensureAll: async (options?: { force?: boolean }) => [...await bundled.ensureAll(options), ...await stacks.ensureAll(options)],
+    dispose: async () => { await bundled.dispose(); await stacks.dispose() },
+  }
   const autoStart = process.env.DSH_STUDIO_SKIP_APPS !== '1'
   // 更新前停止在安装目录内运行的服务（Windows 上运行中的目录无法被替换），装完再重启；随包服务不占用安装目录，装完只需切换到新版本
   const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates), fetch, {

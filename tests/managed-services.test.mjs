@@ -4,7 +4,7 @@ import { build } from 'esbuild'
 import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 /** 编译随包服务模块与注册表。 */
@@ -258,4 +258,145 @@ test('注册表在登记与撤销时通知监听者；旧的撤销函数不会�
   again()
   assert.deepEqual(events.length, 3)
   assert.equal(projects.has('cineflow'), false)
+})
+
+/** 在临时目录中生成一个带 Bun 应用的短剧工作室安装包：构建产物内部自带运行时依赖，Bun 由可选依赖安装在同级 node_modules。 */
+async function installMedia(dir, version, { app = true, bunPackage = '@oven/bun-windows-x64' } = {}) {
+  const profile = join(dir, 'profile', 'node_modules')
+  const source = join(profile, 'dsh-studio-media')
+  await rm(source, { recursive: true, force: true })
+  await mkdir(source, { recursive: true })
+  await writeFile(join(source, 'package.json'), JSON.stringify({ name: 'dsh-studio-media', version, optionalDependencies: { [bunPackage]: '1.4.3' } }))
+  if (app) {
+    await mkdir(join(source, 'app', 'build', 'server', 'node_modules', 'sql.js'), { recursive: true })
+    await mkdir(join(source, 'app', 'build', 'web'), { recursive: true })
+    await mkdir(join(source, 'app', 'node_modules', 'dev-only'), { recursive: true })
+    await writeFile(join(source, 'app', 'build', 'server', 'index.js'), '// ' + version)
+    await writeFile(join(source, 'app', 'build', 'server', 'node_modules', 'sql.js', 'package.json'), '{"name":"sql.js"}')
+    await writeFile(join(source, 'app', 'build', 'web', 'index.html'), '<title>Toonflow</title>')
+    await writeFile(join(source, 'app', 'node_modules', 'dev-only', 'package.json'), '{"name":"dev-only"}')
+  }
+  await mkdir(join(profile, bunPackage, 'bin'), { recursive: true })
+  await writeFile(join(profile, bunPackage, 'package.json'), JSON.stringify({ name: bunPackage, version: '1.4.3' }))
+  await writeFile(join(profile, bunPackage, 'bin', 'bun.exe'), 'bun')
+  return source
+}
+
+/** 短剧服务的环境：服务不写 bridge.json，首页能访问即就绪；external 表示有一个不是运行时拉起的服务在监听。 */
+async function setupMedia(t) {
+  const loaded = await load(t)
+  const data = join(loaded.dir, 'toonflow-data'), stateDirectory = join(loaded.dir, 'media-state')
+  const state = { launches: [], killed: [], alive: new Set(), nextPid: 2000, external: false, bun: true }
+  const platform = {
+    electron: () => ({ tried: [] }),
+    bun: stage => state.bun ? { path: join(stage, 'node_modules', '@oven', 'bun-windows-x64', 'bin', 'bun.exe'), tried: [] } : { tried: ['X:/missing/bun.exe'] },
+    async launch(executable, args, options) {
+      const pid = state.nextPid++
+      state.launches.push({ executable, args: [...args], cwd: options.cwd, env: options.env, stdout: options.stdout })
+      state.alive.add(pid)
+      return { pid, exit: () => undefined }
+    },
+    alive: pid => state.alive.has(pid),
+    kill(pid) { state.killed.push(pid); state.alive.delete(pid) },
+    healthy: async () => false,
+    responds: async (origin, marker) => { state.origin = origin; state.marker = marker; return state.external || state.alive.size > 0 },
+    listening: async () => state.external || state.alive.size > 0,
+    commandLine: async () => undefined,
+  }
+  const definition = { ...loaded.managedServices.toonflowService(data, stateDirectory, 'http://127.0.0.1:33101'), timeoutMs: 1500 }
+  const services = new loaded.managedServices.ManagedStudioServices([definition], platform)
+  return { ...loaded, data, stateDirectory, state, definition, services }
+}
+
+test('短剧随包服务：用 Bun 运行副本里的入口，构建产物自带的依赖一起复制，数据与运行副本分开', async (t) => {
+  const { dir, data, stateDirectory, state, services } = await setupMedia(t)
+  const source = await installMedia(dir, '0.3.0')
+  assert.equal(services.attach('media', source), true)
+  assert.equal(await services.ensure('media'), undefined)
+  assert.equal(state.launches.length, 1)
+  const launch = state.launches[0]
+  const stage = join(launch.cwd, '..')
+  assert.ok(stage.startsWith(join(stateDirectory, 'runtime')), '运行副本在状态目录内，不在数据目录内')
+  assert.ok(!existsSync(join(data, 'runtime')), '数据目录里没有运行副本')
+  assert.equal(launch.executable, join(stage, 'node_modules', '@oven', 'bun-windows-x64', 'bin', 'bun.exe'))
+  assert.deepEqual(launch.args, ['run', join(launch.cwd, 'build', 'server', 'index.js')])
+  assert.equal(launch.env.TOONFLOW_DATA_DIR, data)
+  assert.equal(launch.env.TOONFLOW_SERVER_PORT, '33101')
+  assert.equal(launch.env.TOONFLOW_SERVER_HOST, '127.0.0.1')
+  assert.equal(launch.env.TOONFLOW_STUDIO_DSH, '1')
+  assert.equal(launch.stdout, join(stateDirectory, 'service.log'))
+  // 构建产物内部的 node_modules 是运行时依赖，必须跟着走；应用根目录下开发时装的依赖不复制
+  assert.ok(existsSync(join(launch.cwd, 'build', 'server', 'node_modules', 'sql.js', 'package.json')))
+  assert.ok(!existsSync(join(launch.cwd, 'node_modules')))
+  // Bun 作为可选依赖随副本复制，运行期间不占用安装目录
+  assert.ok(existsSync(join(stage, 'node_modules', '@oven', 'bun-windows-x64', 'bin', 'bun.exe')))
+  assert.equal(state.origin, 'http://127.0.0.1:33101')
+  assert.ok(state.marker.test('<title>Toonflow</title>'))
+  // 已在运行且安装目录未变：不重复拉起
+  assert.equal(await services.ensure('media'), undefined)
+  assert.equal(state.launches.length, 1)
+  // 更新到新版本：停掉旧进程，从新副本启动
+  await installMedia(dir, '0.3.1')
+  assert.equal(await services.ensure('media'), undefined)
+  assert.equal(state.launches.length, 2)
+  assert.deepEqual(state.killed, [2000])
+  assert.ok(state.launches[1].cwd.includes('0.3.1-'))
+})
+
+test('短剧：旧版工作室包不带应用时不纳入管理；用户自行启动的服务直接沿用；找不到 Bun 给出处理办法', async (t) => {
+  const { dir, state, services } = await setupMedia(t)
+  const legacy = await installMedia(dir, '0.2.5', { app: false })
+  assert.equal(services.attach('media', legacy), false)
+  assert.equal(services.has('media'), false)
+  assert.equal(await services.ensure('media'), undefined)
+  assert.equal(state.launches.length, 0)
+
+  const source = await installMedia(dir, '0.3.0')
+  assert.equal(services.attach('media', source), true)
+  state.external = true
+  assert.equal(await services.ensure('media'), undefined)
+  assert.equal(state.launches.length, 0, '已有服务在提供首页时不再拉起，也不去停它')
+  assert.deepEqual(state.killed, [])
+  state.external = false
+
+  state.bun = false
+  const failure = await services.ensure('media', { force: true })
+  assert.equal(failure.kind, 'launch')
+  assert.match(failure.message, /AI短剧工作台未找到可用的 Bun：请重新安装该工作室.*DSH_STUDIO_BUN.*bunPath.*X:\/missing\/bun\.exe/)
+  assert.equal(state.launches.length, 0)
+})
+
+test('短剧服务约定：访问地址不在本机或端口无效时不由运行时管理', async (t) => {
+  const { managedServices } = await load(t)
+  const make = origin => managedServices.toonflowService('/data', '/state', origin)
+  assert.equal(make('https://toonflow.example.com'), undefined)
+  assert.equal(make('http://192.168.1.8:33101'), undefined)
+  assert.equal(make('http://127.0.0.1:80'), undefined)
+  assert.equal(make('not a url'), undefined)
+  assert.equal(make('http://localhost:34001').port, 34001)
+  assert.equal(make('http://localhost:34001').env.TOONFLOW_SERVER_PORT, '34001')
+})
+
+test('Bun 查找顺序：显式配置、环境变量、运行副本、安装目录各级 node_modules、DSH_HOME 共用目录', async (t) => {
+  const { managedServices } = await load(t)
+  const stage = join('C:', 'state', 'runtime', '0.3.0-abc'), source = join('C:', 'profile', 'node_modules', 'dsh-studio-media')
+  const home = join('C:', 'home', '.dsh')
+  const staged = join(stage, 'node_modules', '@oven', 'bun-windows-x64', 'bin', 'bun.exe')
+  // 安装目录向上查找用的是解析后的绝对路径（非 Windows 系统上 C: 开头的路径会落在当前目录下），期望值按同样方式得出
+  const hoisted = join(resolve(source, '..'), '@oven', 'bun-windows-x64', 'bin', 'bun.exe')
+  const baseline = join(resolve(source, '..'), '@oven', 'bun-windows-x64-baseline', 'bin', 'bun.exe')
+  const shared = join(home, 'bun', 'bun.exe')
+  const find = (configured, env, files) => managedServices.locateBun(stage, source, configured, { DSH_HOME: home, ...env }, path => files.includes(path), 'win32', 'x64')
+  assert.equal(find('X:/custom/bun.exe', {}, ['X:/custom/bun.exe', staged]).path, 'X:/custom/bun.exe')
+  assert.equal(find(undefined, { DSH_STUDIO_BUN: 'Y:/env/bun.exe' }, ['Y:/env/bun.exe', staged]).path, 'Y:/env/bun.exe')
+  assert.equal(find(undefined, {}, [staged, hoisted, shared]).path, staged)
+  assert.equal(find(undefined, {}, [hoisted, shared]).path, hoisted)
+  assert.equal(find(undefined, {}, [baseline, shared]).path, baseline)
+  assert.equal(find(undefined, {}, [shared]).path, shared)
+  const none = find(undefined, {}, [])
+  assert.equal(none.path, undefined)
+  assert.ok(none.tried.includes(staged) && none.tried.includes(shared))
+  assert.deepEqual(managedServices.bunPackages('darwin', 'arm64'), ['@oven/bun-darwin-aarch64'])
+  assert.deepEqual(managedServices.bunPackages('linux', 'x64'), ['@oven/bun-linux-x64', '@oven/bun-linux-x64-baseline'])
+  assert.equal(managedServices.locateBun('/s', '/p/node_modules/x', undefined, { DSH_HOME: '/h' }, path => path === join('/h', 'bun', 'bun'), 'linux', 'arm64').path, join('/h', 'bun', 'bun'))
 })

@@ -27,7 +27,21 @@ export interface ManagedServiceDefinition {
   env: Record<string, string>
   /** 等待服务就绪的毫秒数 */
   timeoutMs: number
+  /** 启动方式：缺省为 Electron 应用（以应用目录为参数启动）；bun 表示用 Bun 运行应用目录内的入口脚本 */
+  runner?: { kind: 'bun'; entry: string }
+  /**
+   * 就绪判定：缺省读取服务写在数据目录的 bridge.json 并检查其 /health；
+   * http 表示服务固定监听 port，首页返回 200 且内容匹配 marker 即就绪（服务自己不写连接信息）。
+   */
+  ready?: { kind: 'http'; marker: RegExp }
+  /** 运行副本、进程记录与日志所在目录；缺省与 dataDirectory 相同。数据目录属于应用自己时单独指定，避免混在一起。 */
+  stateDirectory?: string
+  /** 应用目录是否可缺：为真时，安装包里没有应用目录的旧版工作室不纳入管理（仍由用户自行启动服务） */
+  optional?: boolean
 }
+
+/** 运行副本、进程记录与日志所在目录。 */
+const stateOf = (definition: ManagedServiceDefinition) => definition.stateDirectory ?? definition.dataDirectory
 
 /** 已拉起的服务进程；exit 返回退出信息，仍在运行时返回 undefined。 */
 export interface LaunchedService { pid: number; exit(): { code: number | null } | undefined }
@@ -43,6 +57,10 @@ export interface ServicePlatform {
   listening(port: number): Promise<boolean>
   /** 进程命令行；查询不到返回 undefined。 */
   commandLine(pid: number): Promise<string | undefined>
+  /** 查找可用的 Bun 程序：stage 为运行副本，source 为安装目录；tried 为已尝试的位置。只有 runner 为 bun 的服务用到。 */
+  bun?(stage: string, source: string): { path?: string; tried: string[] }
+  /** 地址首页是否返回 200 且内容匹配 marker。只有 ready 为 http 的服务用到。 */
+  responds?(origin: string, marker: RegExp): Promise<boolean>
 }
 
 interface ServiceRecord { schemaVersion: 1; pid: number; stage: string; fingerprint: string; version: string; source: string; startedAt: string }
@@ -85,10 +103,48 @@ export function locateElectron(source: string, configured: string | undefined, e
   return { ...(path ? { path } : {}), tried }
 }
 
+/** 当前平台对应的 Bun 分发包（npm 上的 @oven/bun-*，包内 bin 目录就是可执行文件）。 */
+export function bunPackages(platform: NodeJS.Platform = process.platform, arch: string = process.arch): string[] {
+  const cpu = arch === 'arm64' ? 'aarch64' : 'x64'
+  const system = platform === 'win32' ? 'windows' : platform === 'darwin' ? 'darwin' : 'linux'
+  const base = '@oven/bun-' + system + '-' + cpu
+  // 不支持 AVX2 的老 x64 处理器安装的是 baseline 版本
+  return cpu === 'x64' ? [base, base + '-baseline'] : [base]
+}
+
+/**
+ * 依次尝试：显式配置、DSH_STUDIO_BUN、运行副本里随依赖复制过来的 Bun、安装目录各级 node_modules 中的 Bun 分发包、
+ * DSH_HOME/bun（手动放置的共用 Bun）。工作室包把各平台的 Bun 声明为可选依赖，宿主安装时只会装上当前平台那一个。
+ */
+export function locateBun(stage: string, source: string, configured: string | undefined, env: NodeJS.ProcessEnv = process.env,
+  exists: (path: string) => boolean = existsSync, platform: NodeJS.Platform = process.platform, arch: string = process.arch): { path?: string; tried: string[] } {
+  const binary = platform === 'win32' ? 'bun.exe' : 'bun'
+  const packages = bunPackages(platform, arch)
+  const candidates: string[] = []
+  if (configured) candidates.push(configured)
+  if (env.DSH_STUDIO_BUN) candidates.push(env.DSH_STUDIO_BUN)
+  for (const name of packages) candidates.push(join(stage, 'node_modules', name, 'bin', binary))
+  for (let dir = resolve(source); ; dir = dirname(dir)) {
+    for (const name of packages) candidates.push(join(dir, 'node_modules', name, 'bin', binary))
+    if (dirname(dir) === dir) break
+  }
+  candidates.push(join(env.DSH_HOME ?? join(homedir(), '.dsh'), 'bun', binary))
+  const tried = [...new Set(candidates)]
+  const path = tried.find(candidate => exists(candidate))
+  return { ...(path ? { path } : {}), tried }
+}
+
 /** 真实平台实现。 */
-export function nodePlatform(configuredElectron?: string): ServicePlatform {
+export function nodePlatform(configuredElectron?: string, configuredBun?: string): ServicePlatform {
   return {
     electron: source => locateElectron(source, configuredElectron),
+    bun: (stage, source) => locateBun(stage, source, configuredBun),
+    async responds(origin, marker) {
+      try {
+        const response = await fetch(origin, { signal: AbortSignal.timeout(2500), redirect: 'error' })
+        return response.ok && marker.test((await response.text()).slice(0, 100000))
+      } catch { return false }
+    },
     async launch(executable, args, options) {
       const stdout = await open(options.stdout, 'w')
       const stderr = await open(options.stderr, 'w')
@@ -258,6 +314,23 @@ export function cineflowService(dataDirectory: string, env: NodeJS.ProcessEnv = 
 }
 
 /**
+ * 短剧工作室（Toonflow）：Bun 运行的本机服务，应用构建产物随工作室包分发（app/build）。
+ * 服务按自身位置找 build/web 等目录，不依赖启动位置；数据（数据库、素材、工作区）在 dataDirectory，
+ * 运行副本与日志在 stateDirectory，两者分开，清理运行副本不会碰到用户数据。
+ * @param origin - 工作室页面访问服务的地址；不是本机回环地址（服务部署在别处）时返回 undefined，不由运行时管理。
+ */
+export function toonflowService(dataDirectory: string, stateDirectory: string, origin: string): ManagedServiceDefinition | undefined {
+  let url: URL
+  try { url = new URL(origin) } catch { return undefined }
+  const port = Number(url.port || '80')
+  if (url.protocol !== 'http:' || !['127.0.0.1', 'localhost'].includes(url.hostname) || !Number.isSafeInteger(port) || port < 1024 || port > 65535) return undefined
+  return { studioId: 'media', title: 'AI短剧工作台', app: 'app', optional: true, requires: ['build/server/index.js', 'build/web/index.html'],
+    runner: { kind: 'bun', entry: 'build/server/index.js' }, ready: { kind: 'http', marker: /toonflow/i },
+    dataDirectory, stateDirectory, port, timeoutMs: 60000,
+    env: { TOONFLOW_STUDIO_DSH: '1', TOONFLOW_SERVER_HOST: '127.0.0.1', TOONFLOW_SERVER_PORT: String(port), TOONFLOW_DATA_DIR: dataDirectory } }
+}
+
+/**
  * 随包服务管理器：工作室注册时登记安装目录，随后按需协调——未运行则启动，
  * 安装目录有变化则切换版本，旧脚本遗留在安装目录内运行的进程替换为独立副本。
  * 同一工作室的协调串行执行；失败记录按工作室覆盖。
@@ -284,7 +357,10 @@ export class ManagedStudioServices {
    * 重新登记（更新后重新加载）会清除上一次的失败冷却，立即可以重试。
    */
   attach(studioId: string, source: string): boolean {
-    if (!this.definitions.has(studioId)) return false
+    const definition = this.definitions.get(studioId)
+    if (!definition) return false
+    // 旧版工作室包不带应用目录：服务仍由用户自行启动，不显示「一键启动」也不报安装不完整
+    if (definition.optional && !existsSync(join(resolve(source), definition.app))) { this.sources.delete(studioId); return false }
     this.sources.set(studioId, resolve(source))
     this.failures.delete(studioId)
     return true
@@ -352,30 +428,53 @@ export class ManagedStudioServices {
     return { kind, studioIds: [definition.studioId], message: definition.title + reason }
   }
 
+  /**
+   * 当前正在提供服务的进程；没有健康的服务时返回 undefined。
+   * ours 为本运行时的启动记录（进程确实是它拉起的）；pid 缺省表示服务在运行但查不到是谁启动的。
+   */
+  private async current(definition: ManagedServiceDefinition, record: ServiceRecord | undefined): Promise<{ pid?: number; ours?: ServiceRecord } | undefined> {
+    if (definition.ready) {
+      if (!(await this.platform.responds?.(this.origin(definition), definition.ready.marker))) return undefined
+      // 服务不写连接信息：记录里的进程还活着，就认为正在监听的是它
+      const ours = record && this.platform.alive(record.pid) ? record : undefined
+      return ours ? { pid: ours.pid, ours } : {}
+    }
+    const bridge = await readBridge(definition.dataDirectory)
+    if (!bridge || !(await this.platform.healthy(bridge.origin))) return undefined
+    return { pid: bridge.pid, ...(record?.pid === bridge.pid ? { ours: record } : {}) }
+  }
+
+  /** 以 HTTP 首页判定就绪的服务所在地址。 */
+  private origin(definition: ManagedServiceDefinition): string {
+    return 'http://127.0.0.1:' + String(definition.port)
+  }
+
   private async reconcile(definition: ManagedServiceDefinition, source: string): Promise<ServiceStartupFailure | undefined> {
-    const data = definition.dataDirectory
-    const [record, bridge, installed] = await Promise.all([readRecord(data), readBridge(data), inspectInstall(source, definition)])
+    const state = stateOf(definition)
+    const [record, installed] = await Promise.all([readRecord(state), inspectInstall(source, definition)])
+    const running = await this.current(definition, record)
     const incomplete = installed.missing ? '安装不完整（缺少 ' + installed.missing + '），请在工作室控制台重新安装或更新' : undefined
-    if (bridge && await this.platform.healthy(bridge.origin)) {
-      const ours = record?.pid === bridge.pid ? record : undefined
+    if (running) {
+      const ours = running.ours
       // 另一个 profile 中的同名工作室启动的服务：直接复用，不互相抢占
       if (ours && fold(ours.source) !== fold(source)) return undefined
       if (ours && ours.fingerprint === installed.fingerprint) return undefined
       if (!ours) {
         // 不是本运行时拉起的进程：只有旧启动脚本留下的「在安装目录内运行」的进程才替换，其余（用户自行启动）不动
-        const command = await this.platform.commandLine(bridge.pid)
+        if (running.pid === undefined) return undefined
+        const command = await this.platform.commandLine(running.pid)
         if (!command || !this.runsInside(command, source)) return undefined
       }
       if (incomplete) return this.failure(definition, 'launch', incomplete + '；当前继续使用正在运行的版本')
       const stage = await this.stage(definition, source, installed)
       if (typeof stage !== 'string') return stage
-      if (!(await this.stop(definition, bridge.pid))) return this.failure(definition, 'timeout', '旧版本未能停止，请稍后重新连接')
+      if (running.pid !== undefined && !(await this.stop(definition, running.pid))) return this.failure(definition, 'timeout', '旧版本未能停止，请稍后重新连接')
       return this.start(definition, source, stage, installed)
     }
     if (await this.platform.listening(definition.port)) return this.failure(definition, 'launch', '无法启动：端口 ' + String(definition.port) + ' 已被其他程序占用')
     if (incomplete) {
       // 安装目录残缺（例如更新中断）：上一次的运行副本还在就继续用它，服务不因此中断
-      const previous = record ? join(data, 'runtime', record.stage) : undefined
+      const previous = record ? join(state, 'runtime', record.stage) : undefined
       if (record && previous && await stageComplete(previous, definition)) return this.start(definition, record.source, previous, record)
       return this.failure(definition, 'launch', incomplete)
     }
@@ -395,15 +494,16 @@ export class ManagedStudioServices {
    * 复制期间安装目录又发生变化（更新正在进行）则放弃本次，稍后重试。
    */
   private async stage(definition: ManagedServiceDefinition, source: string, installed: Installed): Promise<string | ServiceStartupFailure> {
-    const runtime = join(definition.dataDirectory, 'runtime')
+    const runtime = join(stateOf(definition), 'runtime')
     const target = join(runtime, installed.version + '-' + installed.fingerprint.slice(0, 12))
     if (await stageComplete(target, definition)) return target
     const temporary = join(runtime, '.staging-' + randomUUID())
     try {
       await rm(target, { recursive: true, force: true })
       await mkdir(temporary, { recursive: true })
-      await cp(join(source, definition.app), join(temporary, definition.app), { recursive: true, dereference: true,
-        filter: path => !/[\\/]node_modules$/.test(path) })
+      const application = join(source, definition.app)
+      const skipped = fold(join(application, 'node_modules'))
+      await cp(application, join(temporary, definition.app), { recursive: true, dereference: true, filter: path => fold(path) !== skipped })
       await copyDependencies(source, join(temporary, 'node_modules'))
       const after = await inspectInstall(source, definition)
       if (after.fingerprint !== installed.fingerprint) return this.failure(definition, 'launch', '的安装目录正在变化（可能正在更新），请稍后重新连接')
@@ -430,23 +530,37 @@ export class ManagedStudioServices {
   /** 从运行副本拉起服务，等待它写下连接信息并通过健康检查。 */
   private async start(definition: ManagedServiceDefinition, source: string, stage: string, installed: { version: string; fingerprint: string }): Promise<ServiceStartupFailure | undefined> {
     const data = definition.dataDirectory
-    const located = this.platform.electron(source)
-    if (!located.path) {
-      return this.failure(definition, 'launch', '未找到可用的 Electron：请设置环境变量 DSH_STUDIO_ELECTRON，或在 dsh-studio-projects 插件配置的 electronPath 中填写 Electron 程序路径（已尝试：' + located.tried.join('、') + '）')
-    }
+    const state = stateOf(definition)
     const application = join(stage, definition.app)
-    const errorLog = join(data, 'service.error.log')
+    let executable: string, args: string[]
+    if (definition.runner?.kind === 'bun') {
+      const located = this.platform.bun?.(stage, source) ?? { tried: [] }
+      if (!located.path) {
+        return this.failure(definition, 'launch', '未找到可用的 Bun：请重新安装该工作室（Bun 随工作室的可选依赖安装），或设置环境变量 DSH_STUDIO_BUN，或在 dsh-studio-projects 插件配置的 bunPath 中填写 Bun 程序路径（已尝试：' + located.tried.join('、') + '）')
+      }
+      executable = located.path
+      args = ['run', join(application, definition.runner.entry)]
+    } else {
+      const located = this.platform.electron(source)
+      if (!located.path) {
+        return this.failure(definition, 'launch', '未找到可用的 Electron：请设置环境变量 DSH_STUDIO_ELECTRON，或在 dsh-studio-projects 插件配置的 electronPath 中填写 Electron 程序路径（已尝试：' + located.tried.join('、') + '）')
+      }
+      executable = located.path
+      args = [application]
+    }
+    const errorLog = join(state, 'service.error.log')
     // 宿主以 Node 模式运行 Electron 时会带上 ELECTRON_RUN_AS_NODE，服务必须以完整 Electron 启动
     const env: NodeJS.ProcessEnv = { ...process.env, ...definition.env }
     delete env.ELECTRON_RUN_AS_NODE
     let child: LaunchedService
     try {
       await mkdir(data, { recursive: true })
-      child = await this.platform.launch(located.path, [application], { cwd: application, env, stdout: join(data, 'service.log'), stderr: errorLog })
+      await mkdir(state, { recursive: true })
+      child = await this.platform.launch(executable, args, { cwd: application, env, stdout: join(state, 'service.log'), stderr: errorLog })
     } catch (error) {
       return this.failure(definition, 'launch', '无法启动（' + (error instanceof Error ? error.message : String(error)) + '）')
     }
-    await writeRecord(data, { schemaVersion: 1, pid: child.pid, stage: stage.slice(join(data, 'runtime').length + 1), fingerprint: installed.fingerprint, version: installed.version, source, startedAt: new Date().toISOString() })
+    await writeRecord(state, { schemaVersion: 1, pid: child.pid, stage: stage.slice(join(state, 'runtime').length + 1), fingerprint: installed.fingerprint, version: installed.version, source, startedAt: new Date().toISOString() })
     const deadline = this.now() + definition.timeoutMs
     while (this.now() < deadline) {
       const exit = child.exit()
@@ -454,8 +568,10 @@ export class ManagedStudioServices {
         const detail = await lastLine(errorLog)
         return this.failure(definition, 'exit', '启动后退出（退出码 ' + String(exit.code) + '）' + (detail ? '：' + detail : '') + '；日志：' + errorLog)
       }
-      const bridge = await readBridge(data)
-      if (bridge?.pid === child.pid && await this.platform.healthy(bridge.origin)) {
+      let ready: boolean
+      if (definition.ready) ready = await this.platform.responds?.(this.origin(definition), definition.ready.marker) ?? false
+      else { const bridge = await readBridge(data); ready = bridge?.pid === child.pid && await this.platform.healthy(bridge.origin) }
+      if (ready) {
         await this.prune(definition, stage)
         return undefined
       }
@@ -468,7 +584,7 @@ export class ManagedStudioServices {
 
   /** 清理不再使用的运行副本与中断留下的临时目录；被占用的目录留到下次。 */
   private async prune(definition: ManagedServiceDefinition, keep: string): Promise<void> {
-    const runtime = join(definition.dataDirectory, 'runtime')
+    const runtime = join(stateOf(definition), 'runtime')
     let names: string[]
     try { names = await readdir(runtime) } catch { return }
     for (const name of names) {

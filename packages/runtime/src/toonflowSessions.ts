@@ -9,6 +9,7 @@ import type {} from '@deepseek-ai/dsh-tools'
 import type {} from '@deepseek-ai/dsh-system-prompt'
 import type {} from '@deepseek-ai/dsh-workspace'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
+import { toonflowDataDirectory } from './integrations'
 
 interface ProjectBinding { directory: string; sessionId: string; canvasId?: string }
 export interface ToonflowSessionConfig { toonflowDataDirectory?: string; toonflowUrl?: string }
@@ -17,7 +18,7 @@ const toolPrefix = 'mcp__Toonflow__'
 
 /** 绑定和连接凭据留在宿主，模型工具始终使用项目自己的真实目录。 */
 export async function createToonflowSessions(ctx: Context, config: ToonflowSessionConfig) {
-  const dataDirectory = resolve(config.toonflowDataDirectory ?? process.env.DSH_STUDIO_TOONFLOW_DATA ?? '../studio-data/toonflow')
+  const dataDirectory = toonflowDataDirectory(config)
   const file = resolve(dataDirectory, 'dshSessions.json')
   const normalize = (path: string) => process.platform === 'win32' ? path.toLowerCase() : path
   const bindings = new Map<string, ProjectBinding>()
