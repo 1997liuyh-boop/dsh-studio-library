@@ -1,6 +1,6 @@
 {
   "name": "dsh-studio-library",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "type": "module",
   "license": "MIT",
   "description": "工作室控制台与共享运行时组合安装包，业务工作室按需安装",

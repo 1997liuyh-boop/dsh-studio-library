@@ -79,7 +79,10 @@ export class StudioControl {
 
   /** 路由外层已验证所有者；写接口额外拒绝跨站和过大请求。 */
   async handle(req: IncomingMessage, res: ServerResponse, pathname: string): Promise<boolean> {
-    if (!pathname.startsWith('/studio-projects/control/')) return false
+    // 只认页面桥接用的三个接口；其余 /control/ 路径（卸载、目录、服务等）由各自的路由处理，
+    // 不能在这里统一回「客户端标识无效」——版本不一致时那会掩盖真正的原因（接口不存在）。
+    const action = pathname.startsWith('/studio-projects/control/') ? pathname.slice('/studio-projects/control/'.length) : ''
+    if (action !== 'poll' && action !== 'active' && action !== 'result') return false
     const send = (code: number, value: unknown) => { res.writeHead(code, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify(value)) }
     if (req.method !== 'POST') { send(405, { error: '仅支持 POST' }); return true }
     if (req.headers['sec-fetch-site'] === 'cross-site' || req.headers['content-type']?.split(';')[0] !== 'application/json') { send(403, { error: '请求来源无效' }); return true }
@@ -89,10 +92,9 @@ export class StudioControl {
     let input
     try { input = JSON.parse(Buffer.concat(chunks).toString('utf8')) } catch { send(400, { error: '参数无效' }); return true }
     if (!input || typeof input.client !== 'string' || !/^[a-f0-9-]{36}$/.test(input.client)) { send(400, { error: '客户端标识无效' }); return true }
-    if (pathname.endsWith('/poll')) send(200, { command: this.claim(input.client) })
-    else if (pathname.endsWith('/active')) send(200, { active: this.active(input.id, input.client) })
-    else if (pathname.endsWith('/result')) send(200, { accepted: this.complete(input.id, input.client, input.result, typeof input.error === 'string' ? input.error : undefined) })
-    else send(404, { error: '接口不存在' })
+    if (action === 'poll') send(200, { command: this.claim(input.client) })
+    else if (action === 'active') send(200, { active: this.active(input.id, input.client) })
+    else send(200, { accepted: this.complete(input.id, input.client, input.result, typeof input.error === 'string' ? input.error : undefined) })
     return true
   }
 }

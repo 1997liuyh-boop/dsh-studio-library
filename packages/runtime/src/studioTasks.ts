@@ -6,15 +6,30 @@ import type { StudioProjects } from './registry'
 /** 参与展开的目录项：工作室标识、显示名与它声明的快捷任务。 */
 export interface StudioTaskCatalogEntry { id: string; name: string; tasks: readonly { id: string; label: string; text: string }[] }
 
-/** 消息开头的工作室提及：@工作室:<id>（冒号可全角）或 @<工作室名>，后面至少一个空白再接任务标题。 */
-const mentionPattern = /^\s*@(工作室[:：])?(\S+)\s+([\s\S]*)$/
+/** 消息开头的工作室提及：@工作室:<id>（冒号可全角）或 @<工作室名 / id>。 */
+const mentionPattern = /^\s*@(工作室[:：])?([\s\S]*)$/
 /** 任务标题之后允许直接结束，或接空白与常见标点，再写链接或补充说明。 */
 const labelBoundary = /^(?:$|[\s:：,，;；。])/
 const labelSeparators = /^[\s:：,，;；。]+/
+/** 工作室名或 id 之后必须是结束、空白或冒号，避免「@设计工作室实现设计稿」这类粘连的写法被误认。 */
+const nameBoundary = /^(?:$|[\s:：])/
+
+type StudioTaskEntry = StudioTaskCatalogEntry['tasks'][number]
+
+/** 在文本开头找任务：先按标题（从长到短，避免短标题抢走以它开头的长标题），再按任务 id。 */
+function leadingTask(project: StudioTaskCatalogEntry, rest: string): { task: StudioTaskEntry; length: number } | undefined {
+  const byLabel = [...project.tasks].sort((a, b) => b.label.length - a.label.length).find(item => rest.startsWith(item.label) && labelBoundary.test(rest.slice(item.label.length)))
+  if (byLabel) return { task: byLabel, length: byLabel.label.length }
+  const byId = project.tasks.find(item => rest.startsWith(item.id) && labelBoundary.test(rest.slice(item.id.length)))
+  return byId ? { task: byId, length: byId.id.length } : undefined
+}
 
 /**
- * 把「@工作室:<id> <任务标题> [补充]」展开成「@工作室:<id> <任务文本>\n[补充]」。
- * 提及既可以写 @工作室:<id>，也可以写 @<工作室名>；展开后统一写成 @工作室:<id>。标题不匹配或工作室未启用时原样返回。
+ * 把消息开头的「工作室 + 任务」展开成「@工作室:<id> <任务文本>\n[补充]」。支持的写法：
+ * - @工作室:<id> <任务标题> [补充]、@<工作室名> <任务标题> [补充]（任务前用空白分隔）
+ * - @<工作室名>:<任务标题> [补充]、@工作室:<id>:<任务 id 或标题> [补充]（任务前用冒号，冒号可全角）
+ * - 输入框 @ 候选插入的工作室芯片后再接「:任务标题」，即 @工作室:<id> :<任务标题> [补充]
+ * 任务可以按标题或 id 匹配；没有补充时只展开任务文本。标题不匹配或工作室未启用时原样返回。
  * @param text 用户消息的文本块。
  * @param projects 当前已启用工作室的目录项。
  * @returns 展开后的文本；无需展开时返回原字符串。
@@ -22,14 +37,18 @@ const labelSeparators = /^[\s:：,，;；。]+/
 export function expandStudioTask(text: string, projects: readonly StudioTaskCatalogEntry[]): string {
   const match = mentionPattern.exec(text)
   if (!match) return text
-  const [, prefix, target, rest] = match
-  const project = projects.find(item => prefix ? item.id === target : item.name === target || item.id === target)
-  if (!project) return text
-  // 标题按长度从长到短匹配，避免短标题抢走以它开头的长标题。
-  const task = [...project.tasks].sort((a, b) => b.label.length - a.label.length).find(item => rest.startsWith(item.label) && labelBoundary.test(rest.slice(item.label.length)))
-  if (!task) return text
-  const remainder = rest.slice(task.label.length).replace(labelSeparators, '').trim()
-  return '@工作室:' + project.id + ' ' + task.text + (remainder ? '\n' + remainder : '')
+  const [, prefix, body] = match
+  // 写了「工作室:」前缀时只认 id；否则认工作室名或 id，取最长的匹配，名字之后必须是边界。
+  const candidates = projects.flatMap(project => (prefix ? [project.id] : [project.name, project.id]).map(key => ({ project, key })))
+  const hit = candidates.filter(({ key }) => body.startsWith(key) && nameBoundary.test(body.slice(key.length))).sort((a, b) => b.key.length - a.key.length)[0]
+  if (!hit) return text
+  const after = body.slice(hit.key.length)
+  // 冒号紧跟工作室名，或空白后再接冒号（芯片后输入「:任务」），都表示后面是任务；纯空白分隔的老写法同样支持。
+  const rest = after.replace(/^\s*[:：]/, '').replace(/^\s+/, '')
+  const found = leadingTask(hit.project, rest)
+  if (!found) return text
+  const remainder = rest.slice(found.length).replace(labelSeparators, '').trim()
+  return '@工作室:' + hit.project.id + ' ' + found.task.text + (remainder ? '\n' + remainder : '')
 }
 
 /** 与宿主 freezeMessage 一致：复制后逐层冻结，避免下游改动共享对象。 */

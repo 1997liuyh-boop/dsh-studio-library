@@ -59,3 +59,18 @@ test('pre-step 只改用户直接输入的文本块，展开后的消息被冻�
   installStudioTasks(ctx, { list: () => [{ id: 'travel', name: '旅行', tasks: [] }] })
   assert.equal(await listener({ messages: [user] }, async () => untouched), untouched)
 })
+
+test('冒号写法：@工作室名:任务、@工作室:id:任务 id、芯片后接「:任务」都展开，任务后面的文字作为需求', async t => {
+  const { expandStudioTask } = await load(t)
+  const generate = '@工作室:design 通过 MCP 读取指定节点或当前选区并实现页面。'
+  assert.equal(expandStudioTask('@设计工作室:实现设计稿 用项目已有的头部组件', projects), generate + '\n用项目已有的头部组件')
+  assert.equal(expandStudioTask('@设计工作室：实现设计稿', projects), generate, '全角冒号，没有补充时只展开任务文本')
+  assert.equal(expandStudioTask('@工作室:design:generate https://mastergo.com/file/1?layer_id=2', projects), generate + '\nhttps://mastergo.com/file/1?layer_id=2', '输入框芯片序列化的写法，按任务 id 匹配')
+  assert.equal(expandStudioTask('@工作室:design :实现设计稿 只改首页', projects), generate + '\n只改首页', '芯片之后再输入「:任务」')
+  assert.equal(expandStudioTask('@design:rules', projects), '@工作室:design 根据当前项目生成或更新设计规则。', '按工作室 id 与任务 id')
+  assert.equal(expandStudioTask('@设计工作室 generate 补充', projects), generate + '\n补充', '空格写法也接受任务 id')
+  // 任务不存在、任务名不完整、工作室名后粘连文字时都不展开。
+  for (const text of ['@设计工作室:不存在的任务 x', '@设计工作室:实现设计', '@设计工作室实现设计稿 x', '@工作室:design:', '@工作室:设计工作室:实现设计稿']) {
+    assert.equal(expandStudioTask(text, projects), text, text)
+  }
+})

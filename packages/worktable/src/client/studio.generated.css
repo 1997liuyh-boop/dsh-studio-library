@@ -6,6 +6,7 @@
     --studio-color-red-500: oklch(63.7% 0.237 25.331);
     --studio-color-red-600: oklch(57.7% 0.245 27.325);
     --studio-color-amber-400: oklch(82.8% 0.189 84.429);
+    --studio-color-amber-600: oklch(66.6% 0.179 58.318);
     --studio-color-green-500: oklch(72.3% 0.219 149.579);
     --studio-color-green-600: oklch(62.7% 0.194 149.214);
     --studio-color-blue-500: oklch(62.3% 0.214 259.815);
@@ -366,6 +367,9 @@
   }
   .studio\:text-\(--dsw-alias-label-tertiary\) {
     color: var(--dsw-alias-label-tertiary);
+  }
+  .studio\:text-amber-600 {
+    color: var(--studio-color-amber-600);
   }
   .studio\:text-blue-500 {
     color: var(--studio-color-blue-500);

@@ -5982,7 +5982,8 @@ var StudioControl = class {
   }
   /** 路由外层已验证所有者；写接口额外拒绝跨站和过大请求。 */
   async handle(req, res, pathname) {
-    if (!pathname.startsWith("/studio-projects/control/")) return false;
+    const action = pathname.startsWith("/studio-projects/control/") ? pathname.slice("/studio-projects/control/".length) : "";
+    if (action !== "poll" && action !== "active" && action !== "result") return false;
     const send = (code, value) => {
       res.writeHead(code, { "content-type": "application/json", "cache-control": "no-store" });
       res.end(JSON.stringify(value));
@@ -6016,10 +6017,9 @@ var StudioControl = class {
       send(400, { error: "\u5BA2\u6237\u7AEF\u6807\u8BC6\u65E0\u6548" });
       return true;
     }
-    if (pathname.endsWith("/poll")) send(200, { command: this.claim(input.client) });
-    else if (pathname.endsWith("/active")) send(200, { active: this.active(input.id, input.client) });
-    else if (pathname.endsWith("/result")) send(200, { accepted: this.complete(input.id, input.client, input.result, typeof input.error === "string" ? input.error : void 0) });
-    else send(404, { error: "\u63A5\u53E3\u4E0D\u5B58\u5728" });
+    if (action === "poll") send(200, { command: this.claim(input.client) });
+    else if (action === "active") send(200, { active: this.active(input.id, input.client) });
+    else send(200, { accepted: this.complete(input.id, input.client, input.result, typeof input.error === "string" ? input.error : void 0) });
     return true;
   }
 };
@@ -6132,19 +6132,29 @@ function studioCatalog(pages) {
 }
 
 // packages/runtime/src/studioTasks.ts
-var mentionPattern = /^\s*@(工作室[:：])?(\S+)\s+([\s\S]*)$/;
+var mentionPattern = /^\s*@(工作室[:：])?([\s\S]*)$/;
 var labelBoundary = /^(?:$|[\s:：,，;；。])/;
 var labelSeparators = /^[\s:：,，;；。]+/;
+var nameBoundary = /^(?:$|[\s:：])/;
+function leadingTask(project, rest) {
+  const byLabel = [...project.tasks].sort((a, b2) => b2.label.length - a.label.length).find((item) => rest.startsWith(item.label) && labelBoundary.test(rest.slice(item.label.length)));
+  if (byLabel) return { task: byLabel, length: byLabel.label.length };
+  const byId = project.tasks.find((item) => rest.startsWith(item.id) && labelBoundary.test(rest.slice(item.id.length)));
+  return byId ? { task: byId, length: byId.id.length } : void 0;
+}
 function expandStudioTask(text, projects) {
   const match = mentionPattern.exec(text);
   if (!match) return text;
-  const [, prefix, target, rest] = match;
-  const project = projects.find((item) => prefix ? item.id === target : item.name === target || item.id === target);
-  if (!project) return text;
-  const task = [...project.tasks].sort((a, b2) => b2.label.length - a.label.length).find((item) => rest.startsWith(item.label) && labelBoundary.test(rest.slice(item.label.length)));
-  if (!task) return text;
-  const remainder = rest.slice(task.label.length).replace(labelSeparators, "").trim();
-  return "@\u5DE5\u4F5C\u5BA4:" + project.id + " " + task.text + (remainder ? "\n" + remainder : "");
+  const [, prefix, body] = match;
+  const candidates = projects.flatMap((project) => (prefix ? [project.id] : [project.name, project.id]).map((key) => ({ project, key })));
+  const hit = candidates.filter(({ key }) => body.startsWith(key) && nameBoundary.test(body.slice(key.length))).sort((a, b2) => b2.key.length - a.key.length)[0];
+  if (!hit) return text;
+  const after = body.slice(hit.key.length);
+  const rest = after.replace(/^\s*[:：]/, "").replace(/^\s+/, "");
+  const found = leadingTask(hit.project, rest);
+  if (!found) return text;
+  const remainder = rest.slice(found.length).replace(labelSeparators, "").trim();
+  return "@\u5DE5\u4F5C\u5BA4:" + hit.project.id + " " + found.task.text + (remainder ? "\n" + remainder : "");
 }
 function freeze(value) {
   const copy = structuredClone(value);

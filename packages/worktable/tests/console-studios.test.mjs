@@ -316,3 +316,34 @@ test('卸载失败时留在弹窗里显示原因，该行恢复可操作；工�
   assert.equal(row.querySelector('[data-removal]'), null)
   assert.ok(row.querySelector('[data-uninstall="travel"]'), '失败后可以再试')
 })
+
+test('上次升级未完成：行内给出原因与「检查更新」，查到新版本后换成「升级」', async (t) => {
+  const studios = [{ id: 'studio-travel', studioId: 'travel', name: '旅行' }]
+  const report = { hostVersion: '', busy: false, studios: [
+    { id: 'travel', name: '旅行', version: '1.2.0', state: 'latest', checkedAt: new Date().toISOString(), operation: { id: 'op', studio: 'travel', from: '1.2.0', to: '1.3.0', phase: 'failed', error: 'operation' } },
+  ] }
+  const calls = []
+  const { dom, dialog } = await render(t, studios, report, { studios: [{ id: 'travel', version: '1.2.0', source: 'github', address: 'https://github.com/owner/dsh-studio-travel' }] }, calls)
+  const row = dialog.querySelector('[data-console-studio="studio-travel"]')
+  assert.equal(row.querySelector('[data-upgrade-phase="failed"]').textContent, '上次升级未完成')
+  assert.match(row.querySelector('[data-recheck="travel"]').getAttribute('title'), /重启了 DSH/)
+  // 检查接口这次返回有新版本
+  report.studios[0] = { ...report.studios[0], state: 'available', latest: '1.3.0' }
+  await click(dom, row.querySelector('[data-recheck="travel"]'))
+  assert.ok(calls.some(([url, body]) => url === '/studio-projects/updates/check' && body === JSON.stringify({ id: 'travel' })), '只检查这一个工作室')
+  assert.ok(row.querySelector('[data-upgrade="travel"]'), '查到新版本后显示升级按钮')
+  assert.equal(row.querySelector('[data-recheck]'), null)
+})
+
+test('卸载时服务端还是旧版本（没有卸载接口）：提示完整重启 DSH，而不是显示「客户端标识无效」', async (t) => {
+  const studios = [{ id: 'studio-travel', studioId: 'travel', name: '旅行' }]
+  const calls = []
+  const { dom, dialog } = await render(t, studios, { hostVersion: '', busy: false, studios: [] }, { studios: [{ id: 'travel', version: '1.2.0', source: 'github', address: 'https://github.com/owner/dsh-studio-travel' }] })
+  answerUninstall(calls, async () => ({ ok: false, status: 400, json: async () => ({ error: '客户端标识无效' }) }))
+  const row = dialog.querySelector('[data-console-studio="studio-travel"]')
+  await click(dom, row.querySelector('[data-uninstall="travel"]'))
+  await click(dom, row.querySelector('[data-uninstall-yes]'))
+  const alert = [...dialog.querySelectorAll('[role="alert"]')].map(node => node.textContent).find(text => text.startsWith('卸载失败'))
+  assert.match(alert, /工作室库后台还是旧版本/)
+  assert.doesNotMatch(alert, /客户端标识无效/)
+})

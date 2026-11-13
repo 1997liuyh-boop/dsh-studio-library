@@ -61,3 +61,23 @@ test('工作室控制校验领取者、取消、停用和超时，不重复派�
   registered.dispose()
   for (const dispose of cleanup) dispose()
 })
+
+test('远程控制只处理 poll / active / result，其余 /control/ 请求交给各自路由', async t => {
+  const temp = await mkdtemp(join(tmpdir(), 'dsh-studio-control-routes-'))
+  t.after(() => rm(temp, { recursive: true, force: true }))
+  await build({ entryPoints: ['packages/runtime/src/studioControl.ts'], outfile: join(temp, 'control.mjs'), bundle: true, platform: 'node', format: 'esm', plugins: [{ name: '工具声明桩', setup(builder) { builder.onResolve({ filter: /^@deepseek-ai\/dsh-tools$/ }, () => ({ path: 'tools', namespace: 'stub' })); builder.onLoad({ filter: /.*/, namespace: 'stub' }, () => ({ contents: 'export const defineTool = value => value' })) } }] })
+  const { StudioControl } = await import(pathToFileURL(join(temp, 'control.mjs')))
+  const broker = new StudioControl({ has: () => true, list: () => [] }, 40)
+  t.after(() => broker.dispose())
+  const response = () => { const out = { status: 0, body: '' }; return { out, writeHead(code) { out.status = code }, end(text) { out.body = String(text ?? '') } } }
+  const request = (body) => Object.assign((async function* () { yield Buffer.from(JSON.stringify(body)) })(), { method: 'POST', headers: { 'content-type': 'application/json' } })
+  for (const path of ['/studio-projects/control/uninstall', '/studio-projects/control/start', '/studio-projects/other']) {
+    const res = response()
+    assert.equal(await broker.handle(request({ id: 'travel' }), res, path), false, path + ' 不应被远程控制接管')
+    assert.equal(res.out.status, 0)
+  }
+  const res = response()
+  assert.equal(await broker.handle(request({ id: 'x' }), res, '/studio-projects/control/poll'), true)
+  assert.equal(res.out.status, 400)
+  assert.match(res.out.body, /客户端标识无效/)
+})

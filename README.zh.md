@@ -21,7 +21,7 @@
 请完整退出 Desktop 后使用官方插件管理器；Windows 也可以使用安装目录中的 `resources/runtime/cli/bin/dsh.cmd`。先安装控制组合包，再按需安装业务工作室：
 
 ```powershell
-& "<Desktop安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "github:1997liuyh-boop/dsh-studio-library#v0.1.22"
+& "<Desktop安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "github:1997liuyh-boop/dsh-studio-library#v0.1.23"
 & "<Desktop安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop list
 ```
 

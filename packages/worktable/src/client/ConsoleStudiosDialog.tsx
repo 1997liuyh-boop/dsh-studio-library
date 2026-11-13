@@ -37,6 +37,8 @@ interface StudioInfo {
   removal?: 'removed' | 'restart-required' | 'pending-restart'
   /** 最近一次升级的阶段（downloading / restart-required / failed …） */
   phase?: string
+  /** 最近一次升级失败的原因代码（operation / service-stop / metadata / recheck …） */
+  phaseError?: string
 }
 
 /** 工作室库主插件在更新列表中的标识（与运行时一致）。 */
@@ -79,7 +81,8 @@ function readUpdates(report: any, force = false): { table: InfoTable; idle: stri
     if (typeof row?.id !== 'string') continue
     table[row.id] = { hasUpdate: row.state === 'available', ...(typeof row.version === 'string' ? { version: row.version } : {}),
       ...(typeof row.state === 'string' ? { state: row.state } : {}), error: row.state === 'failed' && typeof row.error === 'string' ? row.error : undefined,
-      ...(typeof row.latest === 'string' ? { latest: row.latest } : {}), ...(typeof row.operation?.phase === 'string' ? { phase: row.operation.phase } : {}) }
+      ...(typeof row.latest === 'string' ? { latest: row.latest } : {}), ...(typeof row.operation?.phase === 'string' ? { phase: row.operation.phase } : {}),
+      ...(typeof row.operation?.error === 'string' ? { phaseError: row.operation.error } : {}) }
     if (dueForCheck(row, now, force)) idle.push(row.id)
   }
   return { table, idle }
@@ -274,6 +277,8 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
       const response = await fetch('/studio-projects/control/uninstall', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id }) })
       let data: any = null
       try { data = await response.json() } catch {}
+      // 服务端还是没有卸载接口的旧版本：页面已经换成新版，但 DSH 没有完整重启（或工作室库升级没有完成）
+      if (response.status === 404 || (response.status === 400 && data?.error === '客户端标识无效')) throw new Error(t('consoleList.uninstallStale'))
       if (!response.ok) throw new Error(typeof data?.error === 'string' ? data.error : 'HTTP ' + response.status)
       const removal = data?.state === 'pending-restart' || data?.state === 'restart-required' ? data.state : 'removed'
       setInfo(current => merge(current, { [id]: { removal, hasUpdate: false } }))
@@ -281,6 +286,18 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
       setRemoveError(t('consoleList.uninstallFail', { reason: error instanceof Error ? error.message : String(error) }))
     } finally { setRemoving(null) }
   }
+  /** 只检查这一个工作室（上次升级没完成的行用），结果出来后有新版本就显示「升级」。 */
+  const recheck = (id: string) => {
+    const signal = checkSignal.current
+    if (!signal || signal.aborted || checking.includes(id)) return
+    setChecking(current => [...current, id])
+    void checkStudios([id], (row, done) => {
+      setInfo(current => merge(current, readUpdates(row).table))
+      setChecking(current => current.filter(item => item !== done))
+    }, signal).catch(() => { setChecking(current => current.filter(item => item !== id)) })
+  }
+  /** 升级失败的原因代码 → 说明文字。 */
+  const upgradeReason = (code?: string) => t(code === 'service-stop' ? 'consoleList.upgradeReasonService' : code === 'metadata' || code === 'version-mismatch' ? 'consoleList.upgradeReasonPackage' : code === 'recheck' ? 'consoleList.upgradeReasonRecheck' : 'consoleList.upgradeReasonInterrupted')
   /** 卸载状态 → 说明文字。 */
   const removalText = (state?: string) => state === 'pending-restart' ? t('consoleList.uninstallPending')
     : state === 'restart-required' ? t('consoleList.uninstallRestart')
@@ -300,6 +317,16 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
     )
     // 检查失败要让人看得见：否则「没有更新」与「没查成」在界面上一模一样
     if (entry?.state === 'failed') return <span data-check-failed={id} title={checkReason(entry.error)} className="studio:shrink-0 studio:text-xs studio:text-red-500">{t('consoleList.checkFailed')}</span>
+    // 上次升级没完成：说明原因，并允许只检查这一个工作室；查到新版本后上面会换成「升级」按钮
+    if (entry?.phase === 'failed' || entry?.phase === 'unknown') return (
+      <span className="studio:flex studio:shrink-0 studio:items-center studio:gap-1">
+        <span data-upgrade-phase={entry.phase} title={upgradeReason(entry.phaseError)} className="studio:text-xs studio:text-amber-600">{done}</span>
+        <button type="button" data-recheck={id} onClick={() => recheck(id)} title={upgradeReason(entry.phaseError)}
+          className="studio:rounded-(--dsw-radius-sm) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-transparent studio:px-2 studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500">
+          {t('consoleList.checkNow')}
+        </button>
+      </span>
+    )
     return done ? <span data-upgrade-phase={entry?.phase} className="studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)">{done}</span> : null
   }
   const library = info[LIBRARY_ID]
