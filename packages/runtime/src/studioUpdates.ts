@@ -243,7 +243,11 @@ export class StudioUpdates {
       const releases = await this.json(`https://api.github.com/repos/${pkg.repository}/releases?per_page=20`, signal)
       if (!Array.isArray(releases)) throw new UpdateFailure('metadata')
       const candidates: Candidate[] = []
+      // 发布列表按时间倒序：读到不比已装版本新的那一份清单就停，更早的发布不可能是更新。
+      // 清单逐个下载且与发布列表共用一个超时，全部读完的耗时随发布次数增长，发布多了会稳定超时。
+      let reachedInstalled = false
       for (const value of releases) {
+        if (reachedInstalled) break
         const release = this.release(value, pkg.repository)
         const manifest = release?.assets.find(asset => asset.name === 'manifest.json')
         if (!release || !manifest) continue
@@ -258,6 +262,7 @@ export class StudioUpdates {
           const dshVersions = Array.isArray(item.dshVersions) ? item.dshVersions.filter((version): version is string => typeof version === 'string') : []
           const dsh = typeof item.dsh === 'string' ? item.dsh : ''
           candidates.push({ version: item.version, url: asset.url, file: item.file, sha256: item.sha256, dsh, dshVersions })
+          if (!semver.gt(item.version, pkg.version)) reachedInstalled = true
         }
       }
       candidates.sort((a, b) => semver.rcompare(a.version, b.version))

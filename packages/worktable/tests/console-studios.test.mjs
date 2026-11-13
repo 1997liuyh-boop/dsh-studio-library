@@ -190,3 +190,69 @@ test('AI 修改失败时留在弹窗里显示原因', async (t) => {
   assert.equal(closed, 0)
   assert.ok([...dialog.querySelectorAll('[role="alert"]')].some(node => node.textContent === '本地工作室目录不可用'))
 })
+
+
+/** 距现在 minutes 分钟前的 ISO 时间。 */
+const ago = (minutes) => new Date(Date.now() - minutes * 60 * 1000).toISOString()
+const checkedIds = (calls) => calls.filter(([url]) => url === '/studio-projects/updates/check').map(([, body]) => JSON.parse(body).id)
+
+test('重新打开弹窗时：失败过一分钟的与结果过期的重新检查，刚查过的不重复请求', async (t) => {
+  const studios = ['film', 'media', 'live', 'travel', 'design'].map(id => ({ id: 'studio-' + id, studioId: id, name: id }))
+  const calls = []
+  const report = { hostVersion: '', busy: false, studios: [
+    { id: 'film', version: '0.2.3', state: 'failed', error: 'network', checkedAt: ago(2) },
+    { id: 'media', version: '0.4.1', state: 'latest', checkedAt: ago(20) },
+    { id: 'live', version: '0.3.5', state: 'latest', checkedAt: ago(1) },
+    { id: 'travel', version: '1.2.0', state: 'failed', error: 'network', checkedAt: ago(0.2) },
+    { id: 'design', version: '0.4.7', state: 'unconfigured' },
+  ] }
+  await render(t, studios, report, { studios: [] }, calls)
+  assert.deepEqual(checkedIds(calls).sort(), ['film', 'media'])
+})
+
+test('检查失败的行显示「检查失败」与原因，不再与「没有更新」看起来一样', async (t) => {
+  const studios = [{ id: 'studio-film', studioId: 'film', name: '剧' }, { id: 'studio-media', studioId: 'media', name: '影音' }]
+  const report = { hostVersion: '', busy: false, studios: [
+    { id: 'film', version: '0.2.3', state: 'failed', error: 'rate-limit', checkedAt: ago(0.2) },
+    { id: 'media', version: '0.4.1', state: 'latest', checkedAt: ago(0.2) },
+  ] }
+  const { dialog } = await render(t, studios, report)
+  const failed = dialog.querySelector('[data-console-studio="studio-film"] [data-check-failed="film"]')
+  assert.equal(failed.textContent, '检查失败')
+  assert.match(failed.getAttribute('title'), /限流/)
+  assert.equal(dialog.querySelector('[data-console-studio="studio-media"] [data-check-failed]'), null)
+})
+
+test('点「检查更新」强制重查全部工作室与工作室库，未配置仓库的除外', async (t) => {
+  const studios = [{ id: 'studio-film', studioId: 'film', name: '剧' }, { id: 'studio-media', studioId: 'media', name: '影音' }]
+  const calls = []
+  const report = { hostVersion: '', busy: false, studios: [
+    { id: 'library', version: '0.1.19', state: 'latest', checkedAt: ago(0.2) },
+    { id: 'film', version: '0.2.3', state: 'latest', checkedAt: ago(0.2) },
+    { id: 'media', version: '0.4.1', state: 'unconfigured' },
+  ] }
+  const { dom, dialog } = await render(t, studios, report, { studios: [] }, calls)
+  assert.deepEqual(checkedIds(calls), [])
+  const button = dialog.querySelector('[data-check-updates]')
+  assert.equal(button.textContent, '检查更新')
+  await act(async () => { button.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true })); await flush(); await flush() })
+  assert.deepEqual(checkedIds(calls).sort(), ['film', 'library'])
+  assert.equal(dialog.querySelector('[data-check-updates]').disabled, false)
+})
+
+test('检查响应只采用被检查的那一行，不把别的工作室盖回旧状态', async (t) => {
+  const { checkStudios } = load('studioInfo.ts', {
+    fetch: async (url, options) => {
+      const id = JSON.parse(options.body).id
+      // 每个响应都带整张报告，其中别的工作室还是旧的 idle
+      return { ok: true, json: async () => ({ studios: [
+        { id: 'film', state: id === 'film' ? 'available' : 'idle', latest: id === 'film' ? '0.2.4' : undefined },
+        { id: 'media', state: id === 'media' ? 'latest' : 'idle' },
+      ] }) }
+    },
+  })
+  const applied = []
+  // 模块在独立上下文里执行，数组跨上下文不能直接深比较，先拼成字符串
+  await checkStudios(['film', 'media'], (report, id) => applied.push(id + ' → ' + report.studios.map(row => row.id + ':' + row.state).join(',')))
+  assert.deepEqual(applied.sort(), ['film → film:available', 'media → media:latest'])
+})

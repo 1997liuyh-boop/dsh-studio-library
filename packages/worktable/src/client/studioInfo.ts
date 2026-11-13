@@ -11,6 +11,8 @@ export interface StudioReleaseInfo {
   address?: string
   /** 检查状态：idle / available / latest / unpublished / incompatible / unconfigured / failed */
   state?: string
+  /** 检查失败的原因代码（rate-limit / network / metadata / size），仅 state 为 failed 时有 */
+  error?: string
   /** GitHub Release 上更新的版本（有新版本时才有） */
   latest?: string
   /** 是否可一键更新 */
@@ -48,8 +50,44 @@ export function studioIdOf(cardId: string): string {
   return cardId.startsWith('studio-') ? cardId.slice('studio-'.length) : cardId
 }
 
-/** 更新报告 → 信息补丁，并列出从未检查过的工作室。 */
-export function readUpdateReport(report: any): { patch: Record<string, Partial<StudioReleaseInfo>>; idle: string[] } {
+/** 失败的检查过这么久才重试：避开刚触发的限流或超时。 */
+export const CHECK_RETRY_MS = 60 * 1000
+/** 成功的检查结果保留这么久：GitHub 未登录接口每小时 60 次，每个工作室一次检查占一次。 */
+export const CHECK_STALE_MS = 15 * 60 * 1000
+
+/**
+ * 这一行现在是否该向 GitHub 重新检查。
+ * 运行时把检查结果留在内存里直到 DSH 退出：只查「从未检查过」的话，一次超时会让这个工作室整个会话都不再提示更新，
+ * 之后发布的新版本也看不到。所以失败的过一分钟重试，其余结果过期后重查；force 为真时（用户点「检查更新」）全部重查。
+ * @param row 更新报告里的一行。
+ * @param now 当前时间戳（毫秒）。
+ */
+export function dueForCheck(row: any, now: number, force = false): boolean {
+  if (typeof row?.id !== 'string' || row.state === 'unconfigured') return false
+  if (force || row.state === 'idle') return true
+  const checkedAt = typeof row.checkedAt === 'string' ? Date.parse(row.checkedAt) : Number.NaN
+  // 没有检查时间就无从判断是否过期：失败的重试，其余保持原样
+  if (Number.isNaN(checkedAt)) return row.state === 'failed'
+  return now - checkedAt >= (row.state === 'failed' ? CHECK_RETRY_MS : CHECK_STALE_MS)
+}
+
+/**
+ * 逐个工作室发起检查，各自完成后把自己那一行交给 apply。并行发出：每个检查最长 15 秒，排队的话后面的工作室要等很久。
+ * 每个响应都带整张报告，但只取被检查的那一行，先发后到的响应不会把别的行盖回旧状态。
+ * @returns 实际发起检查的工作室标识。
+ */
+export async function checkStudios(ids: readonly string[], apply: (report: any, id: string) => void, signal?: AbortSignal): Promise<void> {
+  await Promise.all(ids.map(async id => {
+    const checked = await fetch('/studio-projects/updates/check', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id }), signal }).catch(() => null)
+    if (!checked?.ok || signal?.aborted) return
+    const report = await checked.json().catch(() => null)
+    const row = (Array.isArray(report?.studios) ? report.studios : []).find((item: any) => item?.id === id)
+    if (row) apply({ studios: [row] }, id)
+  }))
+}
+
+/** 更新报告 → 信息补丁，并列出现在该检查的工作室（从未检查、上次失败或结果过期；force 为真时全部）。 */
+export function readUpdateReport(report: any, now = Date.now(), force = false): { patch: Record<string, Partial<StudioReleaseInfo>>; idle: string[] } {
   const patch: Record<string, Partial<StudioReleaseInfo>> = {}
   const idle: string[] = []
   for (const row of Array.isArray(report?.studios) ? report.studios : []) {
@@ -59,9 +97,10 @@ export function readUpdateReport(report: any): { patch: Record<string, Partial<S
       ...(typeof row.state === 'string' ? { state: row.state } : {}),
       ...(typeof row.version === 'string' ? { version: row.version } : {}),
       latest: typeof row.latest === 'string' ? row.latest : undefined,
+      error: row.state === 'failed' && typeof row.error === 'string' ? row.error : undefined,
       phase: typeof row.operation?.phase === 'string' ? row.operation.phase : undefined,
     }
-    if (row.state === 'idle') idle.push(row.id)
+    if (dueForCheck(row, now, force)) idle.push(row.id)
   }
   return { patch, idle }
 }
@@ -81,7 +120,7 @@ function readCatalog(data: any): Record<string, Partial<StudioReleaseInfo>> {
 }
 
 /**
- * 读取版本与地址，再读取更新状态；从未检查过的工作室逐个向 GitHub Release 检查。
+ * 读取版本与地址，再读取更新状态；从未检查、上次失败或结果过期的工作室向 GitHub Release 重新检查。
  * 并发调用复用同一次加载。
  */
 export function refreshStudioInfo(): Promise<void> {
@@ -94,11 +133,7 @@ export function refreshStudioInfo(): Promise<void> {
       if (!report) return
       const first = readUpdateReport(report)
       mergeInfo(first.patch)
-      for (const id of first.idle) {
-        const checked = await fetch('/studio-projects/updates/check', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id }) }).catch(() => null)
-        if (!checked?.ok) continue
-        mergeInfo(readUpdateReport(await checked.json()).patch)
-      }
+      await checkStudios(first.idle, row => mergeInfo(readUpdateReport(row).patch))
     } finally { loading = null }
   })()
   return loading

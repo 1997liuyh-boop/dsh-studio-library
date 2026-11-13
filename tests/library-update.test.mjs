@@ -234,3 +234,34 @@ test('交给宿主安装后通知随包服务核对版本；未进入安装阶�
   await second.service.install('library', '0.1.9')
   assert.deepEqual(steps, ['stop'])
 })
+
+test('读到已装版本的清单就停：更早的发布不再下载，新版本照常查出', async (t) => {
+  const { dir, updates } = await load(t)
+  const libraryRoot = join(dir, 'library')
+  await mkdir(libraryRoot, { recursive: true })
+  await writeFile(join(libraryRoot, 'package.json'), JSON.stringify({ name: 'dsh-studio-library', version: '0.1.8', repository: { type: 'git', url: 'https://github.com/owner/dsh-studio-library.git' } }))
+  const base = 'https://github.com/owner/dsh-studio-library/releases/download/'
+  // 发布列表按时间倒序：0.1.10、0.1.9 比已装的新，0.1.8 是已装版本，0.1.7、0.1.6 更早
+  const versions = ['0.1.10', '0.1.9', '0.1.8', '0.1.7', '0.1.6']
+  const fetched = []
+  const request = async (url) => {
+    if (url.startsWith('https://api.github.com/')) return new Response(JSON.stringify(versions.map(version => ({ draft: false, prerelease: false, assets: [
+      { name: 'manifest.json', browser_download_url: base + 'v' + version + '/manifest.json' },
+      { name: 'dsh-studio-library-' + version + '.tgz', browser_download_url: base + 'v' + version + '/dsh-studio-library-' + version + '.tgz' },
+    ] }))))
+    const version = /\/v([0-9.]+)\/manifest\.json$/.exec(url)?.[1]
+    if (!version) return new Response('', { status: 404 })
+    fetched.push(version)
+    return new Response(JSON.stringify({ schemaVersion: 1, artifacts: [{ id: 'library', name: 'dsh-studio-library', version, file: 'dsh-studio-library-' + version + '.tgz', dsh: '0.2.2-rc.1', dshVersions: ['0.2.2-rc.1'], sha256: 'a'.repeat(64) }] }))
+  }
+  const manager = { listBundles: async () => [], installBundle: async () => ({}) }
+  const options = { ...updates.resolveUpdates({ directory: join(dir, 'updates') }), libraryRoot }
+  const service = new updates.StudioUpdates({ entries: () => [] }, manager, '0.2.2-rc.1', options, request)
+  t.after(() => service.dispose())
+  await service.initialize()
+  await service.check('library')
+  const row = (await service.list()).studios[0]
+  assert.equal(row.state, 'available')
+  assert.equal(row.latest, '0.1.10')
+  assert.deepEqual(fetched, ['0.1.10', '0.1.9', '0.1.8'])
+})

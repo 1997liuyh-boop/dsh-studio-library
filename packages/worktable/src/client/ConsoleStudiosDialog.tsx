@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState, type KeyboardEvent, type PointerEve
 import { createPortal } from 'react-dom'
 import type { WorktableKey } from './locales'
 import { fetchStudioServices, startStudioServices, type StudioServiceState } from './studioServices'
+import { checkStudios, dueForCheck } from './studioInfo'
 
 type Translate = (key: WorktableKey, params?: Record<string, string>) => string
 
@@ -28,6 +29,10 @@ interface StudioInfo {
   hasUpdate?: boolean
   /** 可升级到的版本 */
   latest?: string
+  /** 更新检查状态（available / latest / failed …） */
+  state?: string
+  /** 检查失败的原因代码（rate-limit / network / metadata / size） */
+  error?: string
   /** 最近一次升级的阶段（downloading / restart-required / failed …） */
   phase?: string
 }
@@ -61,15 +66,17 @@ async function loadCatalog(signal: AbortSignal): Promise<InfoTable> {
   return table
 }
 
-/** 更新报告 → 有更新标记表；同时返回尚未检查过的工作室。 */
-function readUpdates(report: any): { table: InfoTable; idle: string[] } {
+/** 更新报告 → 有更新标记表；同时返回现在该检查的工作室（从未检查、上次失败或结果过期；force 为真时全部）。 */
+function readUpdates(report: any, force = false): { table: InfoTable; idle: string[] } {
   const table: InfoTable = {}
   const idle: string[] = []
+  const now = Date.now()
   for (const row of Array.isArray(report?.studios) ? report.studios : []) {
     if (typeof row?.id !== 'string') continue
     table[row.id] = { hasUpdate: row.state === 'available', ...(typeof row.version === 'string' ? { version: row.version } : {}),
+      ...(typeof row.state === 'string' ? { state: row.state } : {}), error: row.state === 'failed' && typeof row.error === 'string' ? row.error : undefined,
       ...(typeof row.latest === 'string' ? { latest: row.latest } : {}), ...(typeof row.operation?.phase === 'string' ? { phase: row.operation.phase } : {}) }
-    if (row.state === 'idle') idle.push(row.id)
+    if (dueForCheck(row, now, force)) idle.push(row.id)
   }
   return { table, idle }
 }
@@ -132,6 +139,10 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
   const [order, setOrder] = useState<ConsoleStudioItem[]>(studios)
   const [info, setInfo] = useState<InfoTable>({})
   const [loadError, setLoadError] = useState(false)
+  /** 正在向 GitHub 检查更新的工作室标识 */
+  const [checking, setChecking] = useState<string[]>([])
+  /** 本次打开弹窗的取消信号，「检查更新」按钮复用它，关闭弹窗即中止 */
+  const checkSignal = useRef<AbortSignal | null>(null)
   /** 依赖本机服务的工作室状态（按工作室标识） */
   const [services, setServices] = useState<Record<string, StudioServiceState>>({})
   /** 正在一键启动的目标：工作室标识，或 '*' 表示全部 */
@@ -153,29 +164,36 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
     if (!open && node.open) node.close()
   }, [open])
 
-  // 打开时读取版本与地址；随后读取更新状态，并逐个检查从未检查过的工作室
+  /**
+   * 读取更新状态，并向 GitHub 检查该查的工作室：从未检查、上次失败或结果过期的；force 为真时（点「检查更新」）全部重查。
+   * 检查期间逐行显示「检查中…」，失败的行显示「检查失败」与原因。
+   */
+  const checkUpdates = async (signal: AbortSignal, force = false) => {
+    try {
+      const response = await fetch('/studio-projects/updates', { cache: 'no-store', signal })
+      if (!response.ok) return
+      const first = readUpdates(await response.json(), force)
+      setInfo(current => merge(current, first.table))
+      if (!first.idle.length) return
+      setChecking(first.idle)
+      await checkStudios(first.idle, (row, id) => {
+        setInfo(current => merge(current, readUpdates(row).table))
+        setChecking(current => current.filter(item => item !== id))
+      }, signal)
+    } catch { /* 更新检查失败不影响版本与排序 */ }
+    finally { if (!signal.aborted) setChecking([]) }
+  }
+
+  // 打开时读取版本与地址；随后读取更新状态并检查更新
   useEffect(() => {
     if (!open) return
     const controller = new AbortController()
     const { signal } = controller
+    checkSignal.current = signal
     setLoadError(false)
     loadCatalog(signal).then(table => setInfo(current => merge(current, table))).catch(() => { if (!signal.aborted) setLoadError(true) })
-    void (async () => {
-      try {
-        const response = await fetch('/studio-projects/updates', { cache: 'no-store', signal })
-        if (!response.ok) return
-        const first = readUpdates(await response.json())
-        setInfo(current => merge(current, first.table))
-        for (const id of first.idle) {
-          if (signal.aborted) return
-          const checked = await fetch('/studio-projects/updates/check', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id }), signal }).catch(() => null)
-          if (!checked?.ok) continue
-          const next = readUpdates(await checked.json())
-          setInfo(current => merge(current, next.table))
-        }
-      } catch { /* 更新检查失败不影响版本与排序 */ }
-    })()
-    return () => controller.abort()
+    void checkUpdates(signal)
+    return () => { controller.abort(); setChecking([]) }
   }, [open])
 
   const applyServices = (list: StudioServiceState[]) => setServices(Object.fromEntries(list.map(item => [item.id, item])))
@@ -227,16 +245,21 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
     : phase === 'complete' ? t('consoleList.upgradeDone')
     : phase === 'failed' || phase === 'unknown' ? t('consoleList.upgradeFailed')
     : t('consoleList.upgrading')
-  /** 「升级」按钮或升级进度 */
+  /** 检查失败的原因代码 → 说明文字。 */
+  const checkReason = (code?: string) => t(code === 'rate-limit' ? 'consoleList.checkReasonRateLimit' : code === 'network' || code === 'closed' ? 'consoleList.checkReasonNetwork' : 'consoleList.checkReasonMetadata')
+  /** 「升级」按钮、检查进度或升级进度 */
   const upgradeControl = (id: string, entry?: StudioInfo) => {
     if (upgrading === id) return <span data-upgrading className="studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)">{t('consoleList.upgrading')}</span>
     const done = phaseText(entry?.phase)
+    if (checking.includes(id)) return <span data-checking={id} className="studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)">{t('consoleList.checking')}</span>
     if (entry?.hasUpdate && entry.latest) return (
       <button type="button" data-upgrade={id} disabled={!!upgrading} onClick={() => void upgrade(id, entry.latest!)} title={t('consoleList.upgradeTo', { version: entry.latest })}
         className="studio:shrink-0 studio:rounded-(--dsw-radius-sm) studio:border-0 studio:bg-blue-600 studio:px-2 studio:text-xs studio:leading-5 studio:text-white studio:cursor-pointer studio:hover:bg-blue-500 studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50">
         {t('consoleList.upgrade')}
       </button>
     )
+    // 检查失败要让人看得见：否则「没有更新」与「没查成」在界面上一模一样
+    if (entry?.state === 'failed') return <span data-check-failed={id} title={checkReason(entry.error)} className="studio:shrink-0 studio:text-xs studio:text-red-500">{t('consoleList.checkFailed')}</span>
     return done ? <span data-upgrade-phase={entry?.phase} className="studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)">{done}</span> : null
   }
   const library = info[LIBRARY_ID]
@@ -311,6 +334,11 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
               {startBusy === '*' ? t('consoleList.starting') : t('consoleList.startAll')}
             </button>
           )}
+          <button type="button" data-check-updates disabled={checking.length > 0} aria-busy={checking.length > 0}
+            onClick={() => { if (checkSignal.current && !checkSignal.current.aborted) void checkUpdates(checkSignal.current, true) }}
+            className="studio:flex studio:h-8 studio:items-center studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-transparent studio:px-3 studio:text-sm studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50">
+            {checking.length > 0 ? t('consoleList.checking') : t('consoleList.checkNow')}
+          </button>
           {onEnterConsole && (
             <button type="button" onClick={() => { onClose(); onEnterConsole() }}
               className="studio:flex studio:h-8 studio:items-center studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-transparent studio:px-3 studio:text-sm studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500">

@@ -7833,6 +7833,12 @@ var zh = {
   "consoleList.upgradeDone": "\u5DF2\u5347\u7EA7",
   "consoleList.upgradeFailed": "\u4E0A\u6B21\u5347\u7EA7\u672A\u5B8C\u6210",
   "consoleList.upgradeFail": "\u5347\u7EA7\u5931\u8D25\uFF1A{reason}",
+  "consoleList.checkNow": "\u68C0\u67E5\u66F4\u65B0",
+  "consoleList.checking": "\u68C0\u67E5\u4E2D\u2026",
+  "consoleList.checkFailed": "\u68C0\u67E5\u5931\u8D25",
+  "consoleList.checkReasonRateLimit": "GitHub \u63A5\u53E3\u9650\u6D41\uFF0C\u8FD9\u4E00\u5C0F\u65F6\u7684\u68C0\u67E5\u6B21\u6570\u5DF2\u7528\u5B8C\uFF0C\u7A0D\u540E\u518D\u8BD5",
+  "consoleList.checkReasonNetwork": "\u8FDE\u4E0D\u4E0A GitHub \u6216\u8BF7\u6C42\u8D85\u65F6\uFF0C\u4E00\u5206\u949F\u540E\u91CD\u65B0\u6253\u5F00\u4F1A\u91CD\u8BD5",
+  "consoleList.checkReasonMetadata": "\u53D1\u5E03\u4FE1\u606F\u8BFB\u53D6\u5931\u8D25\uFF0C\u8BF7\u786E\u8BA4\u8BE5\u7248\u672C\u7684 Release \u5E26\u6709 manifest.json",
   "manage.deleteLayout": "\u5220\u9664\u5E03\u5C40",
   "manage.deleteProject": "\u5220\u9664\u9879\u76EE",
   "confirm.title": "\u5220\u9664\u9879\u76EE",
@@ -8083,6 +8089,12 @@ var en = {
   "consoleList.upgradeDone": "Upgraded",
   "consoleList.upgradeFailed": "Last upgrade did not finish",
   "consoleList.upgradeFail": "Upgrade failed: {reason}",
+  "consoleList.checkNow": "Check for updates",
+  "consoleList.checking": "Checking\u2026",
+  "consoleList.checkFailed": "Check failed",
+  "consoleList.checkReasonRateLimit": "GitHub rate limit reached for this hour. Try again later.",
+  "consoleList.checkReasonNetwork": "Could not reach GitHub or the request timed out. Reopening after a minute retries.",
+  "consoleList.checkReasonMetadata": "Could not read the release info. Make sure the release includes manifest.json.",
   "manage.deleteLayout": "Delete layout",
   "manage.deleteProject": "Delete project",
   "confirm.title": "Delete project",
@@ -8287,7 +8299,25 @@ function mergeInfo(patch) {
 function studioIdOf(cardId) {
   return cardId.startsWith("studio-") ? cardId.slice("studio-".length) : cardId;
 }
-function readUpdateReport(report) {
+var CHECK_RETRY_MS = 60 * 1e3;
+var CHECK_STALE_MS = 15 * 60 * 1e3;
+function dueForCheck(row, now, force = false) {
+  if (typeof row?.id !== "string" || row.state === "unconfigured") return false;
+  if (force || row.state === "idle") return true;
+  const checkedAt = typeof row.checkedAt === "string" ? Date.parse(row.checkedAt) : Number.NaN;
+  if (Number.isNaN(checkedAt)) return row.state === "failed";
+  return now - checkedAt >= (row.state === "failed" ? CHECK_RETRY_MS : CHECK_STALE_MS);
+}
+async function checkStudios(ids, apply2, signal) {
+  await Promise.all(ids.map(async (id) => {
+    const checked = await fetch("/studio-projects/updates/check", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }), signal }).catch(() => null);
+    if (!checked?.ok || signal?.aborted) return;
+    const report = await checked.json().catch(() => null);
+    const row = (Array.isArray(report?.studios) ? report.studios : []).find((item) => item?.id === id);
+    if (row) apply2({ studios: [row] }, id);
+  }));
+}
+function readUpdateReport(report, now = Date.now(), force = false) {
   const patch = {};
   const idle = [];
   for (const row of Array.isArray(report?.studios) ? report.studios : []) {
@@ -8297,9 +8327,10 @@ function readUpdateReport(report) {
       ...typeof row.state === "string" ? { state: row.state } : {},
       ...typeof row.version === "string" ? { version: row.version } : {},
       latest: typeof row.latest === "string" ? row.latest : void 0,
+      error: row.state === "failed" && typeof row.error === "string" ? row.error : void 0,
       phase: typeof row.operation?.phase === "string" ? row.operation.phase : void 0
     };
-    if (row.state === "idle") idle.push(row.id);
+    if (dueForCheck(row, now, force)) idle.push(row.id);
   }
   return { patch, idle };
 }
@@ -8325,11 +8356,7 @@ function refreshStudioInfo() {
       if (!report) return;
       const first = readUpdateReport(report);
       mergeInfo(first.patch);
-      for (const id of first.idle) {
-        const checked = await fetch("/studio-projects/updates/check", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }).catch(() => null);
-        if (!checked?.ok) continue;
-        mergeInfo(readUpdateReport(await checked.json()).patch);
-      }
+      await checkStudios(first.idle, (row) => mergeInfo(readUpdateReport(row).patch));
     } finally {
       loading = null;
     }
@@ -21709,18 +21736,21 @@ async function loadCatalog(signal) {
   }
   return table2;
 }
-function readUpdates(report) {
+function readUpdates(report, force = false) {
   const table2 = {};
   const idle = [];
+  const now = Date.now();
   for (const row of Array.isArray(report?.studios) ? report.studios : []) {
     if (typeof row?.id !== "string") continue;
     table2[row.id] = {
       hasUpdate: row.state === "available",
       ...typeof row.version === "string" ? { version: row.version } : {},
+      ...typeof row.state === "string" ? { state: row.state } : {},
+      error: row.state === "failed" && typeof row.error === "string" ? row.error : void 0,
       ...typeof row.latest === "string" ? { latest: row.latest } : {},
       ...typeof row.operation?.phase === "string" ? { phase: row.operation.phase } : {}
     };
-    if (row.state === "idle") idle.push(row.id);
+    if (dueForCheck(row, now, force)) idle.push(row.id);
   }
   return { table: table2, idle };
 }
@@ -21750,6 +21780,8 @@ function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onEnterCon
   const [order, setOrder] = (0, import_react5.useState)(studios);
   const [info, setInfo] = (0, import_react5.useState)({});
   const [loadError, setLoadError] = (0, import_react5.useState)(false);
+  const [checking, setChecking] = (0, import_react5.useState)([]);
+  const checkSignal = (0, import_react5.useRef)(null);
   const [services, setServices] = (0, import_react5.useState)({});
   const [startBusy, setStartBusy] = (0, import_react5.useState)(null);
   const [startError, setStartError] = (0, import_react5.useState)("");
@@ -21767,31 +21799,37 @@ function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onEnterCon
     if (open && !node.open) node.showModal();
     if (!open && node.open) node.close();
   }, [open]);
+  const checkUpdates = async (signal, force = false) => {
+    try {
+      const response = await fetch("/studio-projects/updates", { cache: "no-store", signal });
+      if (!response.ok) return;
+      const first = readUpdates(await response.json(), force);
+      setInfo((current) => merge(current, first.table));
+      if (!first.idle.length) return;
+      setChecking(first.idle);
+      await checkStudios(first.idle, (row, id) => {
+        setInfo((current) => merge(current, readUpdates(row).table));
+        setChecking((current) => current.filter((item) => item !== id));
+      }, signal);
+    } catch {
+    } finally {
+      if (!signal.aborted) setChecking([]);
+    }
+  };
   (0, import_react5.useEffect)(() => {
     if (!open) return;
     const controller = new AbortController();
     const { signal } = controller;
+    checkSignal.current = signal;
     setLoadError(false);
     loadCatalog(signal).then((table2) => setInfo((current) => merge(current, table2))).catch(() => {
       if (!signal.aborted) setLoadError(true);
     });
-    void (async () => {
-      try {
-        const response = await fetch("/studio-projects/updates", { cache: "no-store", signal });
-        if (!response.ok) return;
-        const first = readUpdates(await response.json());
-        setInfo((current) => merge(current, first.table));
-        for (const id of first.idle) {
-          if (signal.aborted) return;
-          const checked = await fetch("/studio-projects/updates/check", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }), signal }).catch(() => null);
-          if (!checked?.ok) continue;
-          const next = readUpdates(await checked.json());
-          setInfo((current) => merge(current, next.table));
-        }
-      } catch {
-      }
-    })();
-    return () => controller.abort();
+    void checkUpdates(signal);
+    return () => {
+      controller.abort();
+      setChecking([]);
+    };
   }, [open]);
   const applyServices = (list2) => setServices(Object.fromEntries(list2.map((item) => [item.id, item])));
   (0, import_react5.useEffect)(() => {
@@ -21839,9 +21877,11 @@ function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onEnterCon
     }
   };
   const phaseText = (phase) => !phase ? "" : phase === "restart-required" ? t("consoleList.upgradeRestart") : phase === "complete" ? t("consoleList.upgradeDone") : phase === "failed" || phase === "unknown" ? t("consoleList.upgradeFailed") : t("consoleList.upgrading");
+  const checkReason = (code2) => t(code2 === "rate-limit" ? "consoleList.checkReasonRateLimit" : code2 === "network" || code2 === "closed" ? "consoleList.checkReasonNetwork" : "consoleList.checkReasonMetadata");
   const upgradeControl = (id, entry) => {
     if (upgrading === id) return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { "data-upgrading": true, className: "studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)", children: t("consoleList.upgrading") });
     const done = phaseText(entry?.phase);
+    if (checking.includes(id)) return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { "data-checking": id, className: "studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)", children: t("consoleList.checking") });
     if (entry?.hasUpdate && entry.latest) return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
       "button",
       {
@@ -21854,6 +21894,7 @@ function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onEnterCon
         children: t("consoleList.upgrade")
       }
     );
+    if (entry?.state === "failed") return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { "data-check-failed": id, title: checkReason(entry.error), className: "studio:shrink-0 studio:text-xs studio:text-red-500", children: t("consoleList.checkFailed") });
     return done ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { "data-upgrade-phase": entry?.phase, className: "studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)", children: done }) : null;
   };
   const library = info[LIBRARY_ID];
@@ -21939,6 +21980,20 @@ function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onEnterCon
                   onClick: () => void startService(),
                   className: "studio:flex studio:h-8 studio:items-center studio:rounded-(--dsw-radius-md) studio:border-0 studio:bg-blue-600 studio:px-3 studio:text-sm studio:font-medium studio:text-white studio:cursor-pointer studio:hover:bg-blue-500 studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50",
                   children: startBusy === "*" ? t("consoleList.starting") : t("consoleList.startAll")
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                "button",
+                {
+                  type: "button",
+                  "data-check-updates": true,
+                  disabled: checking.length > 0,
+                  "aria-busy": checking.length > 0,
+                  onClick: () => {
+                    if (checkSignal.current && !checkSignal.current.aborted) void checkUpdates(checkSignal.current, true);
+                  },
+                  className: "studio:flex studio:h-8 studio:items-center studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-transparent studio:px-3 studio:text-sm studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50",
+                  children: checking.length > 0 ? t("consoleList.checking") : t("consoleList.checkNow")
                 }
               ),
               onEnterConsole && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
