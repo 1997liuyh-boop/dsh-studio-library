@@ -400,3 +400,30 @@ test('Bun 查找顺序：显式配置、环境变量、运行副本、安装目�
   assert.deepEqual(managedServices.bunPackages('linux', 'x64'), ['@oven/bun-linux-x64', '@oven/bun-linux-x64-baseline'])
   assert.equal(managedServices.locateBun('/s', '/p/node_modules/x', undefined, { DSH_HOME: '/h' }, path => path === join('/h', 'bun', 'bun'), 'linux', 'arm64').path, join('/h', 'bun', 'bun'))
 })
+
+test('卸载前停止随包服务：只停确认是自己拉起的进程，之后不再协调', async (t) => {
+  const { dir, data, state, services } = await setup(t)
+  const source = await install(dir, '0.2.7')
+  services.attach('cineflow', source)
+  await services.ensure('cineflow')
+  const pid = state.launches.length ? 1000 : undefined
+  assert.ok(state.alive.has(pid))
+  // 查不到命令行：无法确认是自己拉起的，不动它
+  await services.shutdown('cineflow')
+  assert.deepEqual(state.killed, [])
+  assert.equal(services.has('cineflow'), false, '撤销登记，状态轮询不会再把它拉起来')
+  // 命令行指向别处（用户自行启动的同类进程碰巧占了这个进程号）：不动
+  services.attach('cineflow', source)
+  state.commands.set(pid, 'C:/somewhere/else/electron.exe C:/apps/cineflow')
+  await services.shutdown('cineflow')
+  assert.deepEqual(state.killed, [])
+  // 命令行指向运行副本：停止
+  services.attach('cineflow', source)
+  state.commands.set(pid, 'C:/electron/electron.exe ' + join(data, 'runtime', '0.2.7-abc', 'app'))
+  await services.shutdown('cineflow')
+  assert.deepEqual(state.killed, [pid])
+  assert.equal(await services.ensure('cineflow'), undefined)
+  assert.equal(state.launches.length, 1, '撤销登记后不再拉起')
+  // 没有约定的工作室直接返回
+  await services.shutdown('travel')
+})

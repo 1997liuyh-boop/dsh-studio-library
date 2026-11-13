@@ -246,3 +246,42 @@ test('控制台服务面板：短剧带应用目录时可启动，旧版短剧�
   await assert.rejects(runtime.apply(fakeHost().ctx, { ...base, printfilmService: { appDirectory: 'relative/path' } }), /printfilmService 配置无效/)
   await assert.rejects(runtime.apply(fakeHost().ctx, { ...base, bunPath: 'bun.exe' }), /bunPath 必须是绝对路径/)
 })
+
+test('卸载路由：校验来源与参数，把结果与失败原因原样交给页面；待卸载的工作室在列表里带标记', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'service-wiring-uninstall-'))
+  const saved = process.env.DSH_STUDIO_SKIP_APPS
+  t.after(async () => {
+    if (saved === undefined) delete process.env.DSH_STUDIO_SKIP_APPS; else process.env.DSH_STUDIO_SKIP_APPS = saved
+    await rm(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 })
+  })
+  process.env.DSH_STUDIO_SKIP_APPS = '1'
+  const runtime = await loadRuntime(dir)
+  const source = join(dir, 'profile', 'node_modules', 'dsh-studio-travel')
+  await mkdir(join(source, 'static'), { recursive: true })
+  await writeFile(join(source, 'package.json'), JSON.stringify({ name: 'dsh-studio-travel', version: '1.2.0' }))
+  const { host, ctx } = fakeHost()
+  const calls = []
+  ctx.pluginManager = {
+    listBundles: async () => [],
+    installBundle: async () => ({ application: 'failed' }),
+    removeBundle: async name => { calls.push('remove:' + name); return { application: 'failed', error: { code: 'stop-profile' } } },
+    setBundleEnabled: async (name, enabled) => { calls.push((enabled ? 'enable:' : 'disable:') + name); return { application: 'restart-required' } },
+  }
+  await runtime.apply(ctx, { cineflowDataDirectory: join(dir, 'cineflow'), toonflowDataDirectory: join(dir, 'toonflow'), updates: { directory: join(dir, 'updates') },
+    toonflowUrl: 'http://127.0.0.1:9', printfilmUrl: 'http://127.0.0.1:9' })
+  t.after(() => host.dispose())
+  host.provided.studioProjects.register({ id: 'travel', name: '旅行', root: join(source, 'static') })
+  assert.equal((await host.request('GET', '/studio-projects/control/uninstall')).status, 405)
+  assert.equal((await host.request('POST', '/studio-projects/control/uninstall', { id: '../x' })).status, 400)
+  const missing = await host.request('POST', '/studio-projects/control/uninstall', { id: 'nothing' })
+  assert.equal(missing.status, 404)
+  assert.match(missing.body.error, /没有找到这个工作室/)
+  const before = (await host.request('GET', '/studio-projects/control/studios')).body.studios.find(row => row.id === 'travel')
+  assert.equal(before.pendingRemoval, undefined)
+  const removed = await host.request('POST', '/studio-projects/control/uninstall', { id: 'travel' })
+  assert.equal(removed.status, 200)
+  assert.deepEqual(removed.body, { id: 'travel', packageName: 'dsh-studio-travel', state: 'pending-restart' })
+  assert.deepEqual(calls, ['remove:dsh-studio-travel', 'disable:dsh-studio-travel'])
+  const after = (await host.request('GET', '/studio-projects/control/studios')).body.studios.find(row => row.id === 'travel')
+  assert.equal(after.pendingRemoval, true)
+})

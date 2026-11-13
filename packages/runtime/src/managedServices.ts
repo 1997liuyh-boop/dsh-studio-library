@@ -516,6 +516,24 @@ export class ManagedStudioServices {
     } finally { await rm(temporary, { recursive: true, force: true }).catch(() => { /* 残留的临时目录下次清理 */ }) }
   }
 
+  /**
+   * 卸载工作室前调用：停止由本运行时拉起的服务，并不再协调它。
+   * 只停确认是自己拉起的进程——启动记录里的进程还活着，且命令行指向运行副本；
+   * 用户自行启动的服务、查不到命令行的进程都不动。
+   */
+  async shutdown(studioId: string): Promise<void> {
+    const definition = this.definitions.get(studioId)
+    if (!definition) return
+    this.sources.delete(studioId)
+    await this.tasks.get(studioId)?.catch(() => undefined)
+    const state = stateOf(definition)
+    const record = await readRecord(state)
+    if (!record || !this.platform.alive(record.pid)) return
+    const command = await this.platform.commandLine(record.pid)
+    if (!command || !this.runsInside(command, join(state, 'runtime'))) return
+    await this.stop(definition, record.pid)
+  }
+
   /** 结束旧进程并等待其退出、端口释放。 */
   private async stop(definition: ManagedServiceDefinition, pid: number): Promise<boolean> {
     try { this.platform.kill(pid) } catch { /* 进程已自行退出 */ }

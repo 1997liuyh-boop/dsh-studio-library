@@ -256,3 +256,63 @@ test('检查响应只采用被检查的那一行，不把别的工作室盖回�
   await checkStudios(['film', 'media'], (report, id) => applied.push(id + ' → ' + report.studios.map(row => row.id + ':' + row.state).join(',')))
   assert.deepEqual(applied.sort(), ['film → film:available', 'media → media:latest'])
 })
+
+/** 在渲染后的弹窗上接管卸载接口的响应，其余请求照旧。 */
+function answerUninstall(calls, respond) {
+  const original = globalThis.fetch
+  globalThis.fetch = async (url, options) => {
+    if (url !== '/studio-projects/control/uninstall') return original(url, options)
+    calls.push([url, options?.body ?? null])
+    return respond(JSON.parse(options.body).id)
+  }
+}
+const click = async (dom, node) => { await act(async () => { node.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true })); await flush(); await flush() }) }
+
+test('卸载子工作室：先在行内确认，可取消；确认后按服务端状态说明处于哪一步', async (t) => {
+  const studios = [{ id: 'studio-media', studioId: 'media', name: '短剧' }, { id: 'studio-travel', studioId: 'travel', name: '旅行' }, { id: 'studio-film', studioId: 'film', name: '剧' }]
+  const catalog = { studios: [
+    { id: 'media', version: '0.3.0', source: 'github', address: 'https://github.com/owner/dsh-studio-media' },
+    { id: 'travel', version: '1.2.0', source: 'github', address: 'https://github.com/owner/dsh-studio-travel' },
+    { id: 'film', version: '0.2.5', source: 'github', address: 'https://github.com/owner/dsh-studio-film', pendingRemoval: true },
+  ] }
+  const calls = []
+  const { dom, dialog } = await render(t, studios, { hostVersion: '', busy: false, studios: [] }, catalog)
+  answerUninstall(calls, async id => ({ ok: true, json: async () => ({ id, packageName: 'dsh-studio-' + id, state: id === 'media' ? 'pending-restart' : 'removed' }) }))
+  const row = id => dialog.querySelector('[data-console-studio="studio-' + id + '"]')
+  // 上次点了卸载、还在等重启的工作室：重新打开时继续显示状态，不再给卸载按钮
+  assert.equal(row('film').querySelector('[data-removal]').textContent, '已停用，完整重启 DSH 后完成卸载')
+  assert.equal(row('film').querySelector('[data-uninstall]'), null)
+  // 点卸载只进入确认，不发请求；取消后恢复原样
+  await click(dom, row('media').querySelector('[data-uninstall="media"]'))
+  assert.equal(calls.length, 0)
+  assert.equal(row('media').querySelector('[data-uninstall-confirm]').textContent, '确认卸载？卸载取消')
+  assert.equal(row('travel').querySelector('[data-uninstall-confirm]'), null, '只有被点的那一行进入确认')
+  await click(dom, row('media').querySelector('[data-uninstall-no]'))
+  assert.equal(row('media').querySelector('[data-uninstall-confirm]'), null)
+  assert.ok(row('media').querySelector('[data-uninstall="media"]'))
+  // 确认后发请求；正在运行的工作室显示「已停用，重启后完成卸载」
+  await click(dom, row('media').querySelector('[data-uninstall="media"]'))
+  await click(dom, row('media').querySelector('[data-uninstall-yes]'))
+  assert.deepEqual(calls, [['/studio-projects/control/uninstall', JSON.stringify({ id: 'media' })]])
+  assert.equal(row('media').querySelector('[data-removal="pending-restart"]').textContent, '已停用，完整重启 DSH 后完成卸载')
+  assert.equal(row('media').querySelector('[data-uninstall]'), null)
+  // 没在运行的工作室直接卸载
+  await click(dom, row('travel').querySelector('[data-uninstall="travel"]'))
+  await click(dom, row('travel').querySelector('[data-uninstall-yes]'))
+  assert.equal(row('travel').querySelector('[data-removal="removed"]').textContent, '已卸载')
+})
+
+test('卸载失败时留在弹窗里显示原因，该行恢复可操作；工作室库自身没有卸载入口', async (t) => {
+  const studios = [{ id: 'studio-travel', studioId: 'travel', name: '旅行' }]
+  const report = { hostVersion: '', busy: false, studios: [{ id: 'library', name: '工作室库', version: '0.1.21', state: 'latest', checkedAt: new Date().toISOString() }] }
+  const calls = []
+  const { dom, dialog } = await render(t, studios, report, { studios: [{ id: 'travel', version: '1.2.0', source: 'github', address: 'https://github.com/owner/dsh-studio-travel' }] })
+  answerUninstall(calls, async () => ({ ok: false, status: 422, json: async () => ({ error: '这个工作室由 DSH 安装包或其他插件提供，不能在这里卸载', code: 'not-removable' }) }))
+  assert.equal(dialog.querySelector('[data-library] [data-uninstall]'), null)
+  const row = dialog.querySelector('[data-console-studio="studio-travel"]')
+  await click(dom, row.querySelector('[data-uninstall="travel"]'))
+  await click(dom, row.querySelector('[data-uninstall-yes]'))
+  assert.ok([...dialog.querySelectorAll('[role="alert"]')].some(node => node.textContent === '卸载失败：这个工作室由 DSH 安装包或其他插件提供，不能在这里卸载'))
+  assert.equal(row.querySelector('[data-removal]'), null)
+  assert.ok(row.querySelector('[data-uninstall="travel"]'), '失败后可以再试')
+})

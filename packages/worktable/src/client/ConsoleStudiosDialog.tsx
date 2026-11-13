@@ -33,6 +33,8 @@ interface StudioInfo {
   state?: string
   /** 检查失败的原因代码（rate-limit / network / metadata / size） */
   error?: string
+  /** 卸载结果：removed 已卸载；restart-required 已卸载、重启后生效；pending-restart 已停用、下次启动时完成卸载 */
+  removal?: 'removed' | 'restart-required' | 'pending-restart'
   /** 最近一次升级的阶段（downloading / restart-required / failed …） */
   phase?: string
 }
@@ -61,6 +63,8 @@ async function loadCatalog(signal: AbortSignal): Promise<InfoTable> {
       version: typeof row.version === 'string' ? row.version : undefined,
       source: row.source === 'github' ? 'github' : 'local',
       address: typeof row.address === 'string' ? row.address : undefined,
+      // 上次点了卸载、还在等重启的工作室：重新打开弹窗时继续显示这个状态
+      ...(row.pendingRemoval === true ? { removal: 'pending-restart' as const } : {}),
     }
   }
   return table
@@ -108,6 +112,13 @@ export interface EditableStudio {
   localPath: string
 }
 
+/** 卸载图标：垃圾桶。 */
+const ICON_REMOVE = (
+  <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5M6.8 7v3.8M9.2 7v3.8" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
 /** 编辑图标：铅笔。 */
 const ICON_EDIT = (
   <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
@@ -149,6 +160,11 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
   const [startBusy, setStartBusy] = useState<string | null>(null)
   const [startError, setStartError] = useState('')
   const [editError, setEditError] = useState('')
+  /** 等待在行内确认卸载的工作室标识 */
+  const [confirmRemove, setConfirmRemove] = useState<string | null>(null)
+  /** 正在卸载的工作室标识 */
+  const [removing, setRemoving] = useState<string | null>(null)
+  const [removeError, setRemoveError] = useState('')
   const [dragId, setDragId] = useState<string | null>(null)
   const dragging = useRef<{ id: string; pointerId: number } | null>(null)
   const orderRef = useRef(order)
@@ -245,6 +261,30 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
     : phase === 'complete' ? t('consoleList.upgradeDone')
     : phase === 'failed' || phase === 'unknown' ? t('consoleList.upgradeFailed')
     : t('consoleList.upgrading')
+  /**
+   * 卸载子工作室：正在运行的工作室不能当场移除，服务端会先停用它并在下次启动 DSH 时完成移除，
+   * 这里按返回的状态在该行说明现在处于哪一步。
+   */
+  const uninstall = async (id: string) => {
+    if (removing) return
+    setRemoving(id)
+    setRemoveError('')
+    setConfirmRemove(null)
+    try {
+      const response = await fetch('/studio-projects/control/uninstall', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id }) })
+      let data: any = null
+      try { data = await response.json() } catch {}
+      if (!response.ok) throw new Error(typeof data?.error === 'string' ? data.error : 'HTTP ' + response.status)
+      const removal = data?.state === 'pending-restart' || data?.state === 'restart-required' ? data.state : 'removed'
+      setInfo(current => merge(current, { [id]: { removal, hasUpdate: false } }))
+    } catch (error) {
+      setRemoveError(t('consoleList.uninstallFail', { reason: error instanceof Error ? error.message : String(error) }))
+    } finally { setRemoving(null) }
+  }
+  /** 卸载状态 → 说明文字。 */
+  const removalText = (state?: string) => state === 'pending-restart' ? t('consoleList.uninstallPending')
+    : state === 'restart-required' ? t('consoleList.uninstallRestart')
+    : state === 'removed' ? t('consoleList.uninstallRemoved') : ''
   /** 检查失败的原因代码 → 说明文字。 */
   const checkReason = (code?: string) => t(code === 'rate-limit' ? 'consoleList.checkReasonRateLimit' : code === 'network' || code === 'closed' ? 'consoleList.checkReasonNetwork' : 'consoleList.checkReasonMetadata')
   /** 「升级」按钮、检查进度或升级进度 */
@@ -359,6 +399,7 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
       {upgradeError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{upgradeError}</p>}
       {startError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{startError}</p>}
       {editError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{editError}</p>}
+      {removeError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{removeError}</p>}
       {loadError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:text-sm studio:text-red-500">{t('consoleList.versionFail')}</p>}
       {order.length === 0
         ? <div data-console-empty className="studio:flex studio:justify-center studio:py-4">
@@ -404,7 +445,7 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
                     )}
                   </span>
                 </span>
-                {onEditStudio && row?.source === 'local' && row.address && (
+                {onEditStudio && !row?.removal && row?.source === 'local' && row.address && (
                   <button type="button" data-edit-studio={item.studioId} aria-label={t('console.editStudio')} title={t('console.editStudio')}
                     onClick={() => {
                       setEditError('')
@@ -421,7 +462,30 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
                   </button>
                 )}
                 <span data-version className="studio:shrink-0 studio:text-xs studio:tabular-nums studio:text-(--dsw-alias-label-secondary)">{row?.version ? 'v' + row.version : '—'}</span>
-                {upgradeControl(item.studioId, row)}
+                {row?.removal
+                  ? <span data-removal={row.removal} className="studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)">{removalText(row.removal)}</span>
+                  : removing === item.studioId
+                    ? <span data-uninstalling={item.studioId} className="studio:shrink-0 studio:text-xs studio:text-(--dsw-alias-label-secondary)">{t('consoleList.uninstalling')}</span>
+                    : confirmRemove === item.studioId
+                      ? (
+                        <span data-uninstall-confirm={item.studioId} className="studio:flex studio:shrink-0 studio:items-center studio:gap-1.5 studio:text-xs">
+                          <span title={t('consoleList.uninstallHint')} className="studio:text-(--dsw-alias-label-primary)">{t('consoleList.uninstallConfirm')}</span>
+                          <button type="button" data-uninstall-yes={item.studioId} onClick={() => void uninstall(item.studioId)}
+                            className="studio:border-0 studio:bg-red-600 studio:text-white studio:hover:bg-red-500 studio:rounded-(--dsw-radius-sm) studio:px-2 studio:text-xs studio:leading-5 studio:cursor-pointer studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50">{t('consoleList.uninstall')}</button>
+                          <button type="button" data-uninstall-no={item.studioId} onClick={() => setConfirmRemove(null)}
+                            className="studio:border studio:border-(--dsw-alias-border-l1) studio:bg-transparent studio:text-(--dsw-alias-label-primary) studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:rounded-(--dsw-radius-sm) studio:px-2 studio:text-xs studio:leading-5 studio:cursor-pointer studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50">{t('consoleList.uninstallCancel')}</button>
+                        </span>
+                      )
+                      : (
+                        <>
+                          {upgradeControl(item.studioId, row)}
+                          <button type="button" data-uninstall={item.studioId} disabled={!!removing || upgrading === item.studioId} aria-label={t('consoleList.uninstallOf', { name: item.name })} title={t('consoleList.uninstallHint')}
+                            onClick={() => { setRemoveError(''); setConfirmRemove(item.studioId) }}
+                            className="studio:flex studio:h-6 studio:w-6 studio:shrink-0 studio:items-center studio:justify-center studio:rounded-(--dsw-radius-sm) studio:border-0 studio:bg-transparent studio:text-(--dsw-alias-label-tertiary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:hover:text-red-500 studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50">
+                            {ICON_REMOVE}
+                          </button>
+                        </>
+                      )}
                 <span data-grip role="button" tabIndex={0} aria-label={t('consoleList.drag', { name: item.name })} title={t('consoleList.dragHint')}
                   onPointerDown={event => onGripDown(event, item.id)} onPointerMove={onGripMove} onPointerUp={onGripUp} onPointerCancel={onGripUp}
                   onKeyDown={event => onGripKey(event, item.id)}

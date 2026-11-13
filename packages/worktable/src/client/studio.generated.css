@@ -4,6 +4,7 @@
 @layer theme {
   :root, :host {
     --studio-color-red-500: oklch(63.7% 0.237 25.331);
+    --studio-color-red-600: oklch(57.7% 0.245 27.325);
     --studio-color-amber-400: oklch(82.8% 0.189 84.429);
     --studio-color-green-500: oklch(72.3% 0.219 149.579);
     --studio-color-green-600: oklch(62.7% 0.194 149.214);
@@ -278,6 +279,9 @@
   .studio\:bg-red-500 {
     background-color: var(--studio-color-red-500);
   }
+  .studio\:bg-red-600 {
+    background-color: var(--studio-color-red-600);
+  }
   .studio\:bg-transparent {
     background-color: transparent;
   }
@@ -484,8 +488,14 @@
     .studio\:hover\:bg-blue-500:hover {
       background-color: var(--studio-color-blue-500);
     }
+    .studio\:hover\:bg-red-500:hover {
+      background-color: var(--studio-color-red-500);
+    }
     .studio\:hover\:text-\(--dsw-alias-label-primary\):hover {
       color: var(--dsw-alias-label-primary);
+    }
+    .studio\:hover\:text-red-500:hover {
+      color: var(--studio-color-red-500);
     }
     .studio\:hover\:underline:hover {
       text-decoration-line: underline;

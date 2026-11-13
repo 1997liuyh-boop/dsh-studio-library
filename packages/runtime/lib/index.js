@@ -5921,8 +5921,8 @@ async function createToonflowSessions(ctx, config) {
 }
 
 // packages/runtime/src/server.ts
-import { readFile as readFile8 } from "node:fs/promises";
-import { dirname as dirname5, isAbsolute as isAbsolute4, resolve as resolve9 } from "node:path";
+import { readFile as readFile9 } from "node:fs/promises";
+import { dirname as dirname6, isAbsolute as isAbsolute4, resolve as resolve10 } from "node:path";
 
 // packages/runtime/src/studioControl.ts
 import { randomUUID as randomUUID3 } from "node:crypto";
@@ -5939,7 +5939,7 @@ var StudioControl = class {
     if (this.closed) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u63A7\u5236\u5DF2\u505C\u7528"));
     if (!command.studio || !this.registry.has(command.studio)) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u672A\u5B89\u88C5\u6216\u5DF2\u505C\u7528\uFF0C\u8BF7\u5148\u8C03\u7528 list"));
     if (this.pending.size >= 16) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u7E41\u5FD9\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5"));
-    return new Promise((resolve10, reject) => {
+    return new Promise((resolve11, reject) => {
       const id = randomUUID3();
       const abort = () => finish(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u5DF2\u53D6\u6D88\uFF1B\u5DF2\u89E6\u53D1\u7684\u9875\u9762\u64CD\u4F5C\u65E0\u6CD5\u64A4\u9500"));
       const timer = setTimeout(() => finish(new Error("\u5DE5\u4F5C\u5BA4\u54CD\u5E94\u8D85\u65F6\uFF0C\u8BF7\u786E\u8BA4\u4E3B\u7A97\u53E3\u5DF2\u6253\u5F00\uFF1B\u8BF7\u8BFB\u53D6\u9875\u9762\u786E\u8BA4\u64CD\u4F5C\u7ED3\u679C\uFF0C\u4E0D\u8981\u91CD\u590D\u63D0\u4EA4")), this.timeout);
@@ -5947,7 +5947,7 @@ var StudioControl = class {
         if (!this.pending.delete(id)) return;
         clearTimeout(timer);
         signal.removeEventListener("abort", abort);
-        error ? reject(error) : resolve10(result);
+        error ? reject(error) : resolve11(result);
       };
       this.pending.set(id, { command, expiresAt: Date.now() + this.timeout, finish });
       signal.addEventListener("abort", abort, { once: true });
@@ -6832,6 +6832,23 @@ var ManagedStudioServices = class {
       });
     }
   }
+  /**
+   * 卸载工作室前调用：停止由本运行时拉起的服务，并不再协调它。
+   * 只停确认是自己拉起的进程——启动记录里的进程还活着，且命令行指向运行副本；
+   * 用户自行启动的服务、查不到命令行的进程都不动。
+   */
+  async shutdown(studioId) {
+    const definition = this.definitions.get(studioId);
+    if (!definition) return;
+    this.sources.delete(studioId);
+    await this.tasks.get(studioId)?.catch(() => void 0);
+    const state = stateOf(definition);
+    const record = await readRecord(state);
+    if (!record || !this.platform.alive(record.pid)) return;
+    const command = await this.platform.commandLine(record.pid);
+    if (!command || !this.runsInside(command, join4(state, "runtime"))) return;
+    await this.stop(definition, record.pid);
+  }
   /** 结束旧进程并等待其退出、端口释放。 */
   async stop(definition, pid) {
     try {
@@ -7200,6 +7217,147 @@ function printfilmStack(config, origin, env = process.env, platform = process.pl
   };
 }
 
+// packages/runtime/src/studioRemoval.ts
+import { randomUUID as randomUUID5 } from "node:crypto";
+import { mkdir as mkdir6, readFile as readFile8, rename as rename4, writeFile as writeFile4 } from "node:fs/promises";
+import { dirname as dirname5, join as join6, resolve as resolve9 } from "node:path";
+var StudioRemovalFailure = class extends Error {
+  constructor(code, message) {
+    super(message);
+    this.code = code;
+  }
+};
+var STUDIO_PACKAGE = /^dsh-studio-[a-z0-9-]+$/;
+var PROTECTED = /* @__PURE__ */ new Set(["dsh-studio-library", "dsh-studio-projects"]);
+var RUNNING = /* @__PURE__ */ new Set(["stop-profile", "bundle-in-use"]);
+var reasons = {
+  "not-removable": "\u8FD9\u4E2A\u5DE5\u4F5C\u5BA4\u7531 DSH \u5B89\u88C5\u5305\u6216\u5176\u4ED6\u63D2\u4EF6\u63D0\u4F9B\uFF0C\u4E0D\u80FD\u5728\u8FD9\u91CC\u5378\u8F7D",
+  "unknown-plugin": "\u63D2\u4EF6\u7BA1\u7406\u5668\u91CC\u627E\u4E0D\u5230\u8FD9\u4E2A\u5DE5\u4F5C\u5BA4",
+  "operation-error": "\u63D2\u4EF6\u7BA1\u7406\u5668\u6267\u884C\u5378\u8F7D\u65F6\u51FA\u9519"
+};
+function describe(error, fallback) {
+  const base = error?.code && reasons[error.code] || fallback;
+  const detail = error?.diagnostic?.trim().split(/\r?\n/).filter(Boolean).at(-1);
+  return detail ? base + "\uFF1A" + detail.slice(0, 300) : base;
+}
+var StudioRemovals = class {
+  /**
+   * @param registry - 已登记的工作室页面，用来找到安装目录与包名。
+   * @param manager - 宿主插件管理器。
+   * @param directory - 保存待卸载记录的目录（与更新记录同一目录）。
+   * @param stopService - 移除前停止该工作室由运行时拉起的本机服务。
+   */
+  constructor(registry, manager, directory, stopService2 = async () => {
+  }) {
+    this.registry = registry;
+    this.manager = manager;
+    this.directory = directory;
+    this.stopService = stopService2;
+  }
+  pending = [];
+  loaded = false;
+  writes = Promise.resolve();
+  busy = /* @__PURE__ */ new Set();
+  get file() {
+    return join6(this.directory, "removals.json");
+  }
+  async load() {
+    if (this.loaded) return;
+    this.loaded = true;
+    try {
+      const saved = JSON.parse(await readFile8(this.file, "utf8"));
+      if (Array.isArray(saved)) this.pending = saved.filter((item) => typeof item?.id === "string" && typeof item?.packageName === "string" && STUDIO_PACKAGE.test(item.packageName) && !PROTECTED.has(item.packageName)).map((item) => ({ id: item.id, packageName: item.packageName, requestedAt: typeof item.requestedAt === "string" ? item.requestedAt : "" }));
+    } catch {
+    }
+  }
+  save() {
+    const content = JSON.stringify(this.pending, null, 2) + "\n";
+    const next = this.writes.then(async () => {
+      await mkdir6(this.directory, { recursive: true });
+      const temporary = join6(this.directory, ".removals-" + randomUUID5() + ".json");
+      await writeFile4(temporary, content, { mode: 384 });
+      await rename4(temporary, this.file);
+    });
+    this.writes = next.catch(() => {
+    });
+    return next;
+  }
+  /** 已停用、等待下次启动完成移除的工作室标识。 */
+  async pendingIds() {
+    await this.load();
+    return this.pending.map((item) => item.id);
+  }
+  /**
+   * 启动时调用：上次停用的工作室现在已不在运行，完成移除。
+   * 用户在此期间重新启用了它（或它已被别的途径移除）就放弃这条记录；仍然移除不了的留到下次。
+   */
+  async resume() {
+    await this.load();
+    if (!this.manager || !this.pending.length) return;
+    let bundles;
+    try {
+      bundles = await this.manager.listBundles();
+    } catch {
+      return;
+    }
+    const remaining = [];
+    for (const item of this.pending) {
+      const bundle = bundles.find((candidate) => candidate.name === item.packageName);
+      if (!bundle || bundle.enabled) continue;
+      try {
+        const result = await this.manager.removeBundle(item.packageName);
+        if (result.application === "failed" || result.application === "cancelled") remaining.push(item);
+      } catch {
+        remaining.push(item);
+      }
+    }
+    if (remaining.length !== this.pending.length) {
+      this.pending = remaining;
+      await this.save().catch(() => {
+      });
+    }
+  }
+  /**
+   * 卸载一个已登记的工作室。
+   * @param id - 工作室标识（如 media）。
+   * @throws StudioRemovalFailure 找不到、不允许卸载或插件管理器拒绝时，message 可直接显示给用户。
+   */
+  async remove(id) {
+    await this.load();
+    if (!this.manager) throw new StudioRemovalFailure("unavailable", "\u5F53\u524D dsh \u6CA1\u6709\u53EF\u7528\u7684\u63D2\u4EF6\u7BA1\u7406\u5668");
+    const page = this.registry.entries().find((entry) => entry.id === id);
+    if (!page) throw new StudioRemovalFailure("unknown", "\u6CA1\u6709\u627E\u5230\u8FD9\u4E2A\u5DE5\u4F5C\u5BA4\uFF0C\u53EF\u80FD\u5DF2\u7ECF\u5378\u8F7D");
+    let packageName;
+    try {
+      packageName = JSON.parse(await readFile8(join6(dirname5(resolve9(page.root)), "package.json"), "utf8"))?.name;
+    } catch {
+      packageName = void 0;
+    }
+    if (typeof packageName !== "string" || !STUDIO_PACKAGE.test(packageName) || PROTECTED.has(packageName)) throw new StudioRemovalFailure("protected", "\u8FD9\u4E2A\u5DE5\u4F5C\u5BA4\u4E0D\u80FD\u5728\u63A7\u5236\u53F0\u5378\u8F7D");
+    if (this.busy.has(id)) throw new StudioRemovalFailure("busy", "\u8FD9\u4E2A\u5DE5\u4F5C\u5BA4\u6B63\u5728\u5378\u8F7D\uFF0C\u8BF7\u7A0D\u5019");
+    this.busy.add(id);
+    try {
+      await this.stopService(id).catch(() => {
+      });
+      const removed = await this.manager.removeBundle(packageName);
+      if (removed.application !== "failed" && removed.application !== "cancelled") {
+        this.pending = this.pending.filter((item) => item.packageName !== packageName);
+        await this.save().catch(() => {
+        });
+        return { id, packageName, state: removed.application === "restart-required" ? "restart-required" : "removed" };
+      }
+      if (!removed.error?.code || !RUNNING.has(removed.error.code)) throw new StudioRemovalFailure(removed.error?.code ?? "failed", describe(removed.error, "\u5378\u8F7D\u5931\u8D25"));
+      const disabled = await this.manager.setBundleEnabled(packageName, false);
+      if (disabled.application === "failed" || disabled.application === "cancelled") throw new StudioRemovalFailure(disabled.error?.code ?? "failed", describe(disabled.error, "\u505C\u7528\u5DE5\u4F5C\u5BA4\u5931\u8D25"));
+      this.pending = [...this.pending.filter((item) => item.packageName !== packageName), { id, packageName, requestedAt: (/* @__PURE__ */ new Date()).toISOString() }];
+      await this.save();
+      return { id, packageName, state: "pending-restart" };
+    } finally {
+      this.busy.delete(id);
+    }
+  }
+};
+
 // packages/runtime/src/server.ts
 var name = "dsh-studio-projects";
 var inject = ["webServer", "connection", "tools", "agents", "systemPrompt", "workspaceRegistry", "pluginManager"];
@@ -7232,6 +7390,9 @@ async function apply(ctx, config = {}) {
       await stacks.dispose();
     }
   };
+  const removals = new StudioRemovals(registry, ctx.pluginManager, resolveUpdates(config.updates).directory, (studioId) => bundled.shutdown(studioId));
+  void removals.resume().catch(() => {
+  });
   const autoStart = process.env.DSH_STUDIO_SKIP_APPS !== "1";
   const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates), fetch, {
     stopForUpdate: (studioId, directory) => launcher.stopForUpdate(studioId, directory),
@@ -7254,7 +7415,7 @@ async function apply(ctx, config = {}) {
   }, "\u5DE5\u4F5C\u5BA4\uFF1A\u672C\u673A\u670D\u52A1\u81EA\u52A8\u542F\u52A8");
   ctx.effect(() => {
     const attach = (id, root) => {
-      if (launcher.startable(id) || !managed.attach(id, dirname5(resolve9(root))) || !autoStart) return;
+      if (launcher.startable(id) || !managed.attach(id, dirname6(resolve10(root))) || !autoStart) return;
       void managed.ensure(id);
     };
     for (const page of registry.entries()) attach(page.id, page.root);
@@ -7356,8 +7517,53 @@ async function apply(ctx, config = {}) {
         return;
       }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/studios") {
+        const pendingRemoval = new Set(await removals.pendingIds());
         res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" });
-        res.end(JSON.stringify({ studios: await studioCatalog(registry.entries()) }));
+        res.end(JSON.stringify({ studios: (await studioCatalog(registry.entries())).map((row) => pendingRemoval.has(row.id) ? { ...row, pendingRemoval: true } : row) }));
+        return;
+      }
+      if (url.pathname === "/studio-projects/control/uninstall") {
+        const send = (code, value) => {
+          res.writeHead(code, { "content-type": "application/json", "cache-control": "no-store" });
+          res.end(JSON.stringify(value));
+        };
+        if (req.method !== "POST") {
+          send(405, { error: "\u4EC5\u652F\u6301 POST" });
+          return;
+        }
+        if (req.headers["sec-fetch-site"] === "cross-site" || req.headers["content-type"]?.split(";")[0] !== "application/json") {
+          send(403, { error: "\u8BF7\u6C42\u6765\u6E90\u65E0\u6548" });
+          return;
+        }
+        const chunks = [];
+        let size = 0;
+        for await (const chunk of req) {
+          size += chunk.length;
+          if (size > 1024) {
+            send(413, { error: "\u8BF7\u6C42\u8FC7\u5927" });
+            return;
+          }
+          chunks.push(chunk);
+        }
+        let id;
+        try {
+          id = JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}")?.id;
+        } catch {
+          id = void 0;
+        }
+        if (typeof id !== "string" || !/^[a-z][a-z0-9-]{0,63}$/.test(id)) {
+          send(400, { error: "\u53C2\u6570\u65E0\u6548" });
+          return;
+        }
+        try {
+          send(200, await removals.remove(id));
+        } catch (error) {
+          if (error instanceof StudioRemovalFailure) {
+            send(error.code === "unknown" ? 404 : error.code === "busy" ? 409 : 422, { error: error.message, code: error.code });
+            return;
+          }
+          throw error;
+        }
         return;
       }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/status") {
@@ -7377,7 +7583,7 @@ async function apply(ctx, config = {}) {
       }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/bridge.js") {
         res.writeHead(200, { "content-type": "text/javascript; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
-        res.end(await readFile8(new URL("../static/controlBridge.js", import.meta.url)));
+        res.end(await readFile9(new URL("../static/controlBridge.js", import.meta.url)));
         return;
       }
       if (await handleUpdates(req, res, url.pathname)) return;
@@ -7396,7 +7602,7 @@ async function apply(ctx, config = {}) {
           return;
         }
         const file = legacyAsset ?? "index.html";
-        const body = await readFile8(new URL("../static/legacy/" + file, import.meta.url));
+        const body = await readFile9(new URL("../static/legacy/" + file, import.meta.url));
         res.writeHead(200, { "content-type": file.endsWith(".js") ? "text/javascript; charset=utf-8" : file.endsWith(".css") ? "text/css; charset=utf-8" : "text/html; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
         res.end(req.method === "HEAD" ? void 0 : body);
         return;
