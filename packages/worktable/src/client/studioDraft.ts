@@ -9,6 +9,21 @@ export function buildStudioDraftPrompt(labels: { intro: string; feature: string;
 }
 
 /**
+ * 预填到新会话输入框的「修改本地工作室」说明：交代是哪个工作室、目录在哪，并约定先出方案再动手。
+ * 最后一行留给用户写修改要求；写完由用户自己发送，不替用户把一句没有要求的话发出去。
+ * @param studio - 工作室名称与本地目录。
+ */
+export function buildStudioEditPrompt(studio: { name: string; localPath: string }): string {
+  return [
+    '我们需要修改一个本地工作室',
+    '工作室名称：' + studio.name,
+    '工作室本地目录是：' + studio.localPath,
+    '请先读取当前工作室代码，列出改造方案，等我确认后再开始修改',
+    '修改要求：',
+  ].join('\n')
+}
+
+/**
  * 从用户发出的首条消息中提取工作室功能名称。
  * @param text - 用户消息全文。
  * @param featureLabel - 模板中「工作室功能是：」这一行的前缀。

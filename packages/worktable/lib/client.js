@@ -7540,7 +7540,6 @@ __export(index_exports, {
   createCustomSession: () => createCustomSession,
   createStudioDraftSession: () => createStudioDraftSession,
   createStudioEditSession: () => createStudioEditSession,
-  createStudioSession: () => createStudioSession,
   importStudio: () => importStudio,
   inject: () => inject,
   sendCustomToSession: () => sendCustomToSession
@@ -22147,6 +22146,15 @@ var TITLE_LIMIT = 40;
 function buildStudioDraftPrompt(labels) {
   return [labels.intro, labels.feature, labels.path].join("\n");
 }
+function buildStudioEditPrompt(studio) {
+  return [
+    "\u6211\u4EEC\u9700\u8981\u4FEE\u6539\u4E00\u4E2A\u672C\u5730\u5DE5\u4F5C\u5BA4",
+    "\u5DE5\u4F5C\u5BA4\u540D\u79F0\uFF1A" + studio.name,
+    "\u5DE5\u4F5C\u5BA4\u672C\u5730\u76EE\u5F55\u662F\uFF1A" + studio.localPath,
+    "\u8BF7\u5148\u8BFB\u53D6\u5F53\u524D\u5DE5\u4F5C\u5BA4\u4EE3\u7801\uFF0C\u5217\u51FA\u6539\u9020\u65B9\u6848\uFF0C\u7B49\u6211\u786E\u8BA4\u540E\u518D\u5F00\u59CB\u4FEE\u6539",
+    "\u4FEE\u6539\u8981\u6C42\uFF1A"
+  ].join("\n");
+}
 function studioFeatureName(text2, featureLabel) {
   const label = featureLabel.replace(/[：:]\s*$/, "");
   const lines = String(text2 ?? "").split(/\r?\n/);
@@ -22732,21 +22740,6 @@ async function createCustomSession(projectId, projectName, requirement, group, w
   await promptIntoSession(sessionId, text2);
   return sessionId;
 }
-async function createStudioSession(prompt, source) {
-  const b = sessionBridge;
-  if (!b || typeof b.sessions?.create !== "function") throw new Error("sessions unavailable");
-  const isLocal = /^(?:[A-Za-z]:[\\/]|\\\\|\/)/.test(source);
-  const sessionId = await createHostSession(b.sessions, b.workspaces, isLocal ? { cwd: source } : {}, "auto");
-  await ensureSessionPreset(sessionId);
-  await ensureSessionModel(sessionId);
-  markPluginSessionOpen(sessionId);
-  try {
-    await openHostSession(clientCtx, b.sessions, sessionId);
-  } catch {
-  }
-  await promptIntoSession(sessionId, prompt);
-  return sessionId;
-}
 async function fillSessionInput(sessionId, text2) {
   for (let attempt = 0; attempt < 30; attempt++) {
     const b = sessionBridge;
@@ -22826,13 +22819,18 @@ async function importStudio(source) {
 async function createStudioEditSession(studio) {
   const localPath = studio.localPath?.trim();
   if (!localPath) throw new Error("\u672C\u5730\u5DE5\u4F5C\u5BA4\u76EE\u5F55\u4E0D\u53EF\u7528\uFF0C\u8BF7\u91CD\u65B0\u8FDE\u63A5\u5DE5\u4F5C\u5BA4");
-  const prompt = [
-    "\u6211\u4EEC\u9700\u8981\u4FEE\u6539\u4E00\u4E2A\u672C\u5730\u5DE5\u4F5C\u5BA4",
-    "\u5DE5\u4F5C\u5BA4\u540D\u79F0\uFF1A" + (studio.name ?? studio.title ?? studio.id),
-    "\u5DE5\u4F5C\u5BA4\u529F\u80FD\u662F\uFF1A\u8BF7\u5148\u8BFB\u53D6\u5F53\u524D\u5DE5\u4F5C\u5BA4\u4EE3\u7801\uFF0C\u518D\u6839\u636E\u6211\u63A5\u4E0B\u6765\u63D0\u51FA\u7684\u8981\u6C42\u8FDB\u884C\u4FEE\u6539",
-    "\u5DE5\u4F5C\u5BA4\u672C\u5730\u76EE\u5F55\u662F\uFF1A" + localPath
-  ].join("\n");
-  await createStudioSession(prompt, localPath);
+  const b = sessionBridge;
+  if (!b || typeof b.sessions?.create !== "function") throw new Error("sessions unavailable");
+  const sessionId = await createHostSession(b.sessions, b.workspaces, { cwd: localPath }, "auto");
+  await ensureSessionPreset(sessionId);
+  await ensureSessionModel(sessionId);
+  markPluginSessionOpen(sessionId);
+  try {
+    await openHostSession(clientCtx, b.sessions, sessionId);
+  } catch {
+  }
+  const filled = await fillSessionInput(sessionId, buildStudioEditPrompt({ name: studio.name ?? studio.title ?? studio.id, localPath }));
+  if (!filled) throw new Error("\u4F1A\u8BDD\u5DF2\u521B\u5EFA\uFF0C\u4F46\u672A\u80FD\u628A\u4FEE\u6539\u8BF4\u660E\u586B\u5165\u8F93\u5165\u6846\uFF0C\u8BF7\u5728\u65B0\u4F1A\u8BDD\u91CC\u76F4\u63A5\u63CF\u8FF0\u8981\u4FEE\u6539\u7684\u5185\u5BB9");
 }
 async function sendCustomToSession(sessionId, projectId, projectName, requirement, windowLabel = "", folder = null) {
   const b = sessionBridge;

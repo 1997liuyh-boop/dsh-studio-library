@@ -125,3 +125,24 @@ test('新建工作室模板与功能名称解析', async () => {
   assert.equal(mod.studioFeatureName(prompt, '工作室功能是：'), '')
   assert.match(mod.draftStamp(new Date(2026, 10, 11, 9, 5, 3)), /^20261111-090503$/)
 })
+
+test('修改本地工作室：说明预填进输入框而不是直接发送，并要求先列出改造方案', async () => {
+  const { build } = await import('esbuild')
+  const out = await build({ entryPoints: [fileURLToPath(new URL('../src/client/studioDraft.ts', import.meta.url))], bundle: true, write: false, format: 'esm', platform: 'node' })
+  const mod = await import('data:text/javascript;base64,' + Buffer.from(out.outputFiles[0].text).toString('base64'))
+  const prompt = mod.buildStudioEditPrompt({ name: '设计工作室', localPath: 'C:\\Users\\me\\.dsh\\profiles\\desktop\\node_modules\\dsh-studio-design' })
+  assert.deepEqual(prompt.split('\n'), [
+    '我们需要修改一个本地工作室',
+    '工作室名称：设计工作室',
+    '工作室本地目录是：C:\\Users\\me\\.dsh\\profiles\\desktop\\node_modules\\dsh-studio-design',
+    '请先读取当前工作室代码，列出改造方案，等我确认后再开始修改',
+    '修改要求：',
+  ])
+  // 接线：新会话以工作室目录为工作目录，说明走「填入输入框」，这条路径上不再有直接发送
+  const source = readFileSync(new URL('../src/client/index.tsx', import.meta.url), 'utf8')
+  const body = source.slice(source.indexOf('export async function createStudioEditSession'), source.indexOf('/** 把自定义需求直接发到用户选定的已有会话'))
+  assert.match(body, /createHostSession\(b\.sessions, b\.workspaces, \{ cwd: localPath \}, 'auto'\)/)
+  assert.match(body, /fillSessionInput\(sessionId, buildStudioEditPrompt\(/)
+  assert.doesNotMatch(body, /promptIntoSession|sendHostSession/)
+  assert.match(body, /未能把修改说明填入输入框/)
+})

@@ -23,7 +23,7 @@ import { WAVE_BG_B64 } from './waveBg'
 import { AddStudioDialog, type StudioImportOutcome } from './AddStudioDialog'
 import { ConsoleStudiosDialog } from './ConsoleStudiosDialog'
 import { refreshStudioInfo } from './studioInfo'
-import { buildStudioDraftPrompt, draftStamp, studioFeatureName, watchFirstUserMessage } from './studioDraft'
+import { buildStudioDraftPrompt, buildStudioEditPrompt, draftStamp, studioFeatureName, watchFirstUserMessage } from './studioDraft'
 
 /**
  * dsh-worktable 客户端（v2）：侧边栏底部「工作台」区块。
@@ -805,20 +805,6 @@ export async function createCustomSession(projectId: string, projectName: string
   return sessionId
 }
 
-/** 为新增工作室创建独立 DSH 会话，并把用户填写的来源作为首条任务发送。 */
-export async function createStudioSession(prompt: string, source: string): Promise<string> {
-  const b = sessionBridge
-  if (!b || typeof b.sessions?.create !== 'function') throw new Error('sessions unavailable')
-  const isLocal = /^(?:[A-Za-z]:[\\/]|\\\\|\/)/.test(source)
-  const sessionId = await createHostSession(b.sessions, b.workspaces, isLocal ? { cwd: source } : {}, 'auto')
-  await ensureSessionPreset(sessionId)
-  await ensureSessionModel(sessionId)
-  markPluginSessionOpen(sessionId)
-  try { await openHostSession(clientCtx, b.sessions, sessionId) } catch {}
-  await promptIntoSession(sessionId, prompt)
-  return sessionId
-}
-
 /** 等待新会话成为当前会话后，把文本预填进其输入框（不发送）。 */
 async function fillSessionInput(sessionId: string, text: string): Promise<boolean> {
   for (let attempt = 0; attempt < 30; attempt++) {
@@ -888,17 +874,23 @@ export async function importStudio(source: string): Promise<StudioImportOutcome>
   throw new Error(typeof d?.error === 'string' ? d.error : '插件管理器未完成安装')
 }
 
-/** 为本地工作室打开独立会话，后续修改由用户在 DSH 对话中继续描述。 */
+/**
+ * 为本地工作室打开独立会话（工作目录为工作室目录），把修改说明预填进输入框，不直接发送：
+ * 用户在最后一行写上修改要求后自己发送，模型按说明先列改造方案、确认后再动手。
+ */
 export async function createStudioEditSession(studio: ConsoleStudioStatus): Promise<void> {
   const localPath = studio.localPath?.trim()
   if (!localPath) throw new Error('本地工作室目录不可用，请重新连接工作室')
-  const prompt = [
-    '我们需要修改一个本地工作室',
-    '工作室名称：' + (studio.name ?? studio.title ?? studio.id),
-    '工作室功能是：请先读取当前工作室代码，再根据我接下来提出的要求进行修改',
-    '工作室本地目录是：' + localPath,
-  ].join('\n')
-  await createStudioSession(prompt, localPath)
+  const b = sessionBridge
+  if (!b || typeof b.sessions?.create !== 'function') throw new Error('sessions unavailable')
+  const sessionId = await createHostSession(b.sessions, b.workspaces, { cwd: localPath }, 'auto')
+  await ensureSessionPreset(sessionId)
+  await ensureSessionModel(sessionId)
+  markPluginSessionOpen(sessionId)
+  try { await openHostSession(clientCtx, b.sessions, sessionId) } catch {}
+  const filled = await fillSessionInput(sessionId, buildStudioEditPrompt({ name: studio.name ?? studio.title ?? studio.id, localPath }))
+  // 会话已经建好并打开，只是没能写进输入框：告诉用户原因，而不是悄悄留下一个空会话
+  if (!filled) throw new Error('会话已创建，但未能把修改说明填入输入框，请在新会话里直接描述要修改的内容')
 }
 
 /** 把自定义需求直接发到用户选定的已有会话（默认当前会话），带窗口身份 + 知识包 */
