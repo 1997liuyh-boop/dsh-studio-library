@@ -21,13 +21,19 @@
 请完整退出 Desktop 后使用官方插件管理器；Windows 也可以使用安装目录中的 `resources/runtime/cli/bin/dsh.cmd`。先安装控制组合包，再按需安装业务工作室：
 
 ```powershell
-& "<Desktop安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "github:1997liuyh-boop/dsh-studio-library#v0.1.23"
+& "<Desktop安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "github:1997liuyh-boop/dsh-studio-library#v0.1.24"
 & "<Desktop安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop list
 ```
 
 第一条命令会安装 `dsh-worktable` 和 `dsh-studio-projects`；没有业务工作室也是有效状态。再按各工作室 README 添加需要的插件。使用 `plugin --profile desktop list` 验证安装条目；清单必须包含 `dsh.bundle.patch`，并且包内存在声明的 `main` 入口和补丁文件。包操作后重新启动 Desktop。
 
 Git 提交不会更新已安装的锁文件，升级时请重新安装精确 tag。移除旧组合包前保留 `DSH_HOME/studio/`，并先安装需要保留的业务工作室。
+
+## 发布
+
+1. 运行 `npm run bump -- <新版本>`（例如 `npm run bump -- 0.1.24`）。它会改齐总包的 package.json、package-lock.json、catalog.json 与 README 安装命令，并把自上一个发布标签以来有改动的子插件（`dsh-worktable`、`dsh-studio-projects`）补丁版本加一；加 `--all` 时两个子插件都升级。
+2. 运行 `npm run build`、`npm test` 与 `npm run check:versions`，提交后推送到 main，再推送标签 `v<新版本>`。
+3. 标签推送后 GitHub Actions 先校验版本号，再运行测试并生成 Release。子插件代码有改动但版本号没升时会直接失败：安装器按「包名 + 版本」判断是否已装好，版本号不变时旧副本可能不会被替换。
 
 ## 要求与限制
 

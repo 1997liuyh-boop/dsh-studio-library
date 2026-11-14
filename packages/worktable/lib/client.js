@@ -8436,7 +8436,7 @@ function releaseLabelKind(item) {
 }
 
 // src/client/updateCheck.ts
-var LOCAL_VERSION = false ? "dev" : "0.6.3";
+var LOCAL_VERSION = false ? "dev" : "0.6.4";
 var UPDATE_REPO = "Aisland-SJL/dsh-worktable";
 var K_UPDATE_CHECK = "dsh.worktable.updateCheck.v1";
 var K_LAST_CHECK = "dsh.worktable.lastUpdateCheck.v1";
@@ -22361,7 +22361,7 @@ async function watchFirstUserMessage(sessions, conversation, sessionId, onText, 
 
 // src/client/index.tsx
 var import_jsx_runtime5 = require("react/jsx-runtime");
-var LOCAL_VERSION2 = false ? "dev" : "0.6.3";
+var LOCAL_VERSION2 = false ? "dev" : "0.6.4";
 var UPDATE_REPO2 = "1997liuyh-boop/deepseek-harness";
 var { command: UPGRADE_CMD, prompt: UPGRADE_AI2, desktop: DESKTOP_HOST } = worktableUpgrade();
 var ICON_SYNC = /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)("svg", { viewBox: "0 0 16 16", "aria-hidden": true, children: [

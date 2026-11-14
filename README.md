@@ -21,13 +21,19 @@
 Use the official Desktop plugin manager after fully quitting Desktop, or run the bundled carrier at `resources/runtime/cli/bin/dsh.cmd` on Windows. Install the control bundle and then only the business studios you need:
 
 ```powershell
-& "<Desktop install directory>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "github:1997liuyh-boop/dsh-studio-library#v0.1.23"
+& "<Desktop install directory>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add "github:1997liuyh-boop/dsh-studio-library#v0.1.24"
 & "<Desktop install directory>\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop list
 ```
 
 The first command installs `dsh-worktable` and `dsh-studio-projects`; an empty business-studio list is valid. Add a studio from its own README. Verify the installed package with `plugin --profile desktop list`; the manifest must contain `dsh.bundle.patch`, and the package must expose its declared `main` entry and patch file. Restart Desktop after package operations.
 
 Git commits do not update an installed lockfile. Reinstall the exact tag when upgrading. Keep `DSH_HOME/studio/` before removing an older combined package, and install any business studios you want to keep before removing that package.
+
+## Releasing
+
+1. Run `npm run bump -- <new version>` (for example `npm run bump -- 0.1.24`). It updates the root package.json, package-lock.json, catalog.json and the README install command, and bumps the patch version of every bundled sub-plugin (`dsh-worktable`, `dsh-studio-projects`) that changed since the previous release tag; `--all` bumps both.
+2. Run `npm run build`, `npm test` and `npm run check:versions`, commit, push to main, then push the tag `v<new version>`.
+3. After the tag is pushed, GitHub Actions checks the versions first, then runs the tests and creates the Release. It fails when a sub-plugin changed but kept its version: installers decide whether a package is already installed by name and version, so an old copy might not be replaced.
 
 ## Requirements and limits
 

@@ -1,6 +1,6 @@
 {
   "name": "dsh-studio-library",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "type": "module",
   "license": "MIT",
   "description": "工作室控制台与共享运行时组合安装包，业务工作室按需安装",
@@ -15,6 +15,8 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/check-install.mjs",
+    "bump": "node scripts/bump.mjs",
+    "check:versions": "node scripts/check-versions.mjs",
     "prepare": "node scripts/prepare.mjs",
     "postinstall": "node scripts/install.mjs",
     "pack": "node scripts/pack.mjs",
