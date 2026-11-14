@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto'
 import { join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { x } from 'tar'
+import { cleanDuplicates, findProfileDir } from './plugin-duplicates.mjs'
 
 /** 从随包归档恢复子插件；源码检出的首次安装由 prepare 生成归档。 */
 export async function installBundle(root) {
@@ -37,6 +38,24 @@ export async function installBundle(root) {
     if (restored.dsh?.client) await access(join(destination, 'lib/client.js'))
   }
   console.log(`已还原并检查 ${names.length} 个工作室子插件`)
+  await linkDuplicates(root)
+}
+
+/**
+ * profile 里与子插件同名的另一份（插件市场的子包条目、上游同名包）会盖住刚还原的版本：把顶层同名目录换成指向它的联接。
+ * 这时 pnpm 还在执行，结束时会整份写回 profile 的 package.json，所以不改依赖与 bundles 登记，由下次启动的运行时去掉；
+ * 任何失败都不影响安装本身。
+ */
+export async function linkDuplicates(root) {
+  try {
+    const profileDir = await findProfileDir(join(root, '..'))
+    if (!profileDir) return
+    const { replaced, failures } = await cleanDuplicates(profileDir, { manifest: false })
+    for (const item of replaced) console.log(`已把 ${item.name} 换成工作室库自带的版本` + (item.backup ? `，原来那份备份在：${item.backup}` : ''))
+    for (const item of failures) console.warn(`处理重复安装的 ${item.name} 失败：${item.message}`)
+  } catch (error) {
+    console.warn('检查子插件重复安装时出错：' + (error instanceof Error ? error.message : String(error)))
+  }
 }
 
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {

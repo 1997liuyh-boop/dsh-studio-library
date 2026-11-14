@@ -51,6 +51,9 @@
   .studio\:mt-0 {
     margin-top: 0px;
   }
+  .studio\:mt-1 {
+    margin-top: var(--studio-spacing);
+  }
   .studio\:mt-2 {
     margin-top: calc(var(--studio-spacing) * 2);
   }
@@ -259,6 +262,12 @@
   .studio\:border-\(--dsw-alias-border-l1\) {
     border-color: var(--dsw-alias-border-l1);
   }
+  .studio\:border-amber-400\/50 {
+    border-color: var(--studio-color-amber-400);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--studio-color-amber-400) 50%, transparent);
+    }
+  }
   .studio\:border-blue-500 {
     border-color: var(--studio-color-blue-500);
   }
@@ -270,6 +279,12 @@
   }
   .studio\:bg-amber-400 {
     background-color: var(--studio-color-amber-400);
+  }
+  .studio\:bg-amber-400\/10 {
+    background-color: var(--studio-color-amber-400);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--studio-color-amber-400) 10%, transparent);
+    }
   }
   .studio\:bg-blue-600 {
     background-color: var(--studio-color-blue-600);
@@ -309,6 +324,9 @@
   }
   .studio\:py-0\.5 {
     padding-block: calc(var(--studio-spacing) * 0.5);
+  }
+  .studio\:py-2 {
+    padding-block: calc(var(--studio-spacing) * 2);
   }
   .studio\:py-2\.5 {
     padding-block: calc(var(--studio-spacing) * 2.5);

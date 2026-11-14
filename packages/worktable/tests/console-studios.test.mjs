@@ -29,6 +29,9 @@ const { zh } = load('locales.ts')
 const flush = () => new Promise(setImmediate)
 const translate = (key, params = {}) => zh[key].replace(/\{(\w+)\}/g, (_, name) => params[name] ?? '')
 
+/** 子插件重复安装接口的应答；为 null 时按旧版运行时处理（接口不存在）。 */
+let duplicatesAnswer = null
+
 /** 在 jsdom 中渲染控制台弹窗。 */
 async function render(t, studios, report, catalog = { studios: [] }, calls = [], services = { before: [], after: [] }, props = {}) {
   const dom = new JSDOM('<div id="root"></div>', { url: 'http://dsh.local' })
@@ -39,6 +42,7 @@ async function render(t, studios, report, catalog = { studios: [] }, calls = [],
   const fetch = async (url, options) => {
     calls.push([url, options?.body ?? null])
     if (url === '/studio-projects/control/studios') return { ok: true, json: async () => catalog }
+    if (url === '/studio-projects/control/duplicates') return duplicatesAnswer ? { ok: true, json: async () => duplicatesAnswer(options) } : { ok: false, status: 404, json: async () => ({}) }
     if (url === '/studio-projects/control/services') return { ok: true, json: async () => ({ services: started ? services.after : services.before }) }
     if (url === '/studio-projects/control/start') { started = true; return { ok: true, json: async () => ({ failures: [], services: services.after }) } }
     return { ok: true, json: async () => report }
@@ -346,4 +350,31 @@ test('卸载时服务端还是旧版本（没有卸载接口）：提示完整�
   const alert = [...dialog.querySelectorAll('[role="alert"]')].map(node => node.textContent).find(text => text.startsWith('卸载失败'))
   assert.match(alert, /工作室库后台还是旧版本/)
   assert.doesNotMatch(alert, /客户端标识无效/)
+})
+
+test('子插件重复安装：显示清理了什么、是否需要重启；有失败时可「重新清理」', async (t) => {
+  const studios = [{ id: 'studio-travel', studioId: 'travel', name: '旅行' }]
+  const worktable = { name: 'dsh-worktable', bundledVersion: '0.6.5', version: '0.6.3', source: 'library', repository: 'github:1997liuyh-boop/dsh-studio-library#path:/packages/worktable', present: true, declared: true, selected: true }
+  const posts = []
+  duplicatesAnswer = (options) => {
+    if (options?.method === 'POST') { posts.push(options.body); return { cleaned: [worktable], failures: [], restartRequired: true, available: true } }
+    return { cleaned: [worktable], failures: [{ name: 'dsh-studio-projects', message: 'EBUSY: resource busy or locked' }], restartRequired: true, available: true }
+  }
+  t.after(() => { duplicatesAnswer = null })
+  const { dom, dialog } = await render(t, studios, { hostVersion: '', busy: false, studios: [] })
+  const banner = dialog.querySelector('[data-duplicates]')
+  assert.ok(banner, '显示重复安装提示')
+  assert.match(banner.textContent, /没能全部清理/)
+  assert.equal(banner.querySelector('[data-duplicate="dsh-worktable"]').textContent, 'dsh-worktable v0.6.3（插件市场的子插件条目）→ 改用工作室库自带的 v0.6.5')
+  assert.match(banner.querySelector('[data-duplicate-failure="dsh-studio-projects"]').textContent, /EBUSY/)
+  await click(dom, banner.querySelector('[data-dedupe-retry]'))
+  assert.deepEqual(posts, ['{}'])
+  const after = dialog.querySelector('[data-duplicates]')
+  assert.match(after.textContent, /完整重启 DSH 后生效/)
+  assert.equal(after.querySelector('[data-dedupe-retry]'), null, '没有失败项时不显示重试')
+})
+
+test('子插件重复安装：旧版运行时没有清理接口时不显示提示', async (t) => {
+  const { dialog } = await render(t, [{ id: 'studio-travel', studioId: 'travel', name: '旅行' }], { hostVersion: '', busy: false, studios: [] })
+  assert.equal(dialog.querySelector('[data-duplicates]'), null)
 })

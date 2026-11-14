@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import type { WorktableKey } from './locales'
 import { fetchStudioServices, startStudioServices, type StudioServiceState } from './studioServices'
 import { checkStudios, dueForCheck } from './studioInfo'
+import { fetchDuplicateReport, type DuplicateReport } from './pluginDuplicates'
 
 type Translate = (key: WorktableKey, params?: Record<string, string>) => string
 
@@ -169,6 +170,10 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
   const [removing, setRemoving] = useState<string | null>(null)
   const [removeError, setRemoveError] = useState('')
   const [dragId, setDragId] = useState<string | null>(null)
+  /** 子插件重复安装的清理报告（运行时启动时已自动清理） */
+  const [duplicates, setDuplicates] = useState<DuplicateReport | null>(null)
+  /** 正在重试清理 */
+  const [dedupeBusy, setDedupeBusy] = useState(false)
   const dragging = useRef<{ id: string; pointerId: number } | null>(null)
   const orderRef = useRef(order)
   orderRef.current = order
@@ -214,6 +219,21 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
     void checkUpdates(signal)
     return () => { controller.abort(); setChecking([]) }
   }, [open])
+
+  // 打开时读取子插件重复安装的清理结果；旧版运行时没有这个接口，静默忽略
+  useEffect(() => {
+    if (!open) return
+    const controller = new AbortController()
+    fetchDuplicateReport(controller.signal).then(setDuplicates).catch(() => {})
+    return () => controller.abort()
+  }, [open])
+
+  /** 重试清理：上次有目录被占用没挪走时由用户手动触发。 */
+  const retryDedupe = async () => {
+    if (dedupeBusy) return
+    setDedupeBusy(true)
+    try { setDuplicates(await fetchDuplicateReport(undefined, true)) } catch { /* 保留原报告，用户可再试 */ } finally { setDedupeBusy(false) }
+  }
 
   const applyServices = (list: StudioServiceState[]) => setServices(Object.fromEntries(list.map(item => [item.id, item])))
 
@@ -421,6 +441,32 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
           <span>{t('consoleList.library')} v{library.version}</span>
           {library.hasUpdate && library.latest && <span className="studio:rounded-full studio:bg-blue-600 studio:px-1.5 studio:py-px studio:text-[10px] studio:font-medium studio:leading-4 studio:text-white">{t('consoleList.hasUpdate')} v{library.latest}</span>}
           {upgradeControl(LIBRARY_ID, library)}
+        </div>
+      )}
+      {duplicates && (duplicates.cleaned.length > 0 || duplicates.failures.length > 0) && (
+        <div data-duplicates role="status" className="studio:mb-3 studio:rounded-(--dsw-radius-md) studio:border studio:border-amber-400/50 studio:bg-amber-400/10 studio:px-3 studio:py-2 studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-primary)">
+          <p className="studio:m-0 studio:font-medium">
+            {duplicates.failures.length > 0 ? t('consoleList.dupFailed') : duplicates.restartRequired ? t('consoleList.dupRestart') : t('consoleList.dupCleaned')}
+          </p>
+          {duplicates.cleaned.map(item => (
+            <p key={item.name} data-duplicate={item.name} title={item.repository} className="studio:m-0 studio:break-words studio:text-(--dsw-alias-label-secondary)">
+              {t('consoleList.dupItem', {
+                name: item.name,
+                version: item.version ? ' v' + item.version : '',
+                source: t(item.source === 'library' ? 'consoleList.dupSourceMarket' : 'consoleList.dupSourceOther'),
+                bundled: 'v' + item.bundledVersion,
+              })}
+            </p>
+          ))}
+          {duplicates.failures.map(item => (
+            <p key={item.name} data-duplicate-failure={item.name} className="studio:m-0 studio:break-words studio:text-red-500">{item.name}：{item.message}</p>
+          ))}
+          {duplicates.failures.length > 0 && (
+            <button type="button" data-dedupe-retry disabled={dedupeBusy} onClick={() => void retryDedupe()}
+              className="studio:mt-1 studio:rounded-(--dsw-radius-sm) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-transparent studio:px-2 studio:text-xs studio:leading-5 studio:text-(--dsw-alias-label-primary) studio:cursor-pointer studio:hover:bg-(--dsw-alias-interactive-bg-hover) studio:focus-visible:outline-2 studio:focus-visible:outline-blue-500 studio:disabled:cursor-default studio:disabled:opacity-50">
+              {dedupeBusy ? t('consoleList.dupRetrying') : t('consoleList.dupRetry')}
+            </button>
+          )}
         </div>
       )}
       {upgradeError && <p role="alert" className="studio:mb-3 studio:mt-0 studio:break-words studio:text-sm studio:text-red-500">{upgradeError}</p>}

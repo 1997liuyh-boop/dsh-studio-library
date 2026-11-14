@@ -16,6 +16,7 @@ import { resolveServiceStartup, ServiceNotConfigured, StudioServiceLauncher, typ
 import { cineflowService, ManagedStudioServices, nodePlatform, toonflowService } from './managedServices'
 import { LocalStackServices, printfilmStack, resolvePrintfilmService } from './localStacks'
 import { StudioRemovalFailure, StudioRemovals } from './studioRemoval'
+import { DuplicateInstalls } from './pluginDuplicates'
 
 interface HostContext {
   provide(name: string, value: StudioProjects): void
@@ -58,6 +59,9 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
   // 卸载子工作室：先停它的随包服务，再交给插件管理器移除；正在运行、无法当场移除的记为待卸载，下次启动时完成
   const removals = new StudioRemovals(registry, ctx.pluginManager, resolveUpdates(config.updates).directory, studioId => bundled.shutdown(studioId))
   void removals.resume().catch(() => { /* 待卸载记录留到下次启动再处理 */ })
+  // 子插件重复安装（插件市场的子包条目、上游同名包）会盖住工作室库自带的版本：启动即自动清理，下次启动生效
+  const duplicates = new DuplicateInstalls()
+  void duplicates.run()
   const autoStart = process.env.DSH_STUDIO_SKIP_APPS !== '1'
   // 更新前停止在安装目录内运行的服务（Windows 上运行中的目录无法被替换），装完再重启；随包服务不占用安装目录，装完只需切换到新版本
   const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates), fetch, {
@@ -160,6 +164,14 @@ export async function apply(ctx: HostContext & Context, config: IntegrationConfi
           if (error instanceof StudioRemovalFailure) { send(error.code === 'unknown' ? 404 : error.code === 'busy' ? 409 : 422, { error: error.message, code: error.code }); return }
           throw error
         }
+        return
+      }
+      // 子插件重复安装：GET 读取（顺带清理新出现的）；POST 重试清理（例如上次目录被占用没挪走）
+      if (url.pathname === '/studio-projects/control/duplicates') {
+        const send = (code: number, value: unknown) => { res.writeHead(code, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify(value)) }
+        if (req.method === 'POST' && (req.headers['sec-fetch-site'] === 'cross-site' || req.headers['content-type']?.split(';')[0] !== 'application/json')) { send(403, { error: '请求来源无效' }); return }
+        if (req.method !== 'GET' && req.method !== 'POST') { send(405, { error: '仅支持 GET 与 POST' }); return }
+        send(200, await duplicates.run())
         return
       }
       if (req.method === 'GET' && url.pathname === '/studio-projects/control/status') {

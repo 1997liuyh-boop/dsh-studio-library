@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { WorktableKey } from './locales'
+import { solidSurface, useHostScheme } from './hostScheme'
 
 type Translate = (key: WorktableKey, params?: Record<string, string>) => string
 
@@ -46,6 +47,8 @@ export function AddStudioDialog({ open, t, onClose, onAiCreate, onImport }: {
   const [busy, setBusy] = useState<'' | 'ai' | 'import'>('')
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  /** 弹窗面跟随宿主 / 系统深浅色：纯白或纯黑，避免半透明主题下看不清 */
+  const scheme = useHostScheme(open)
 
   useEffect(() => {
     const node = dialog.current
@@ -88,7 +91,7 @@ export function AddStudioDialog({ open, t, onClose, onAiCreate, onImport }: {
   }
 
   return createPortal(
-    <dialog ref={dialog} aria-labelledby={titleId} aria-describedby={descId} onCancel={event => { event.preventDefault(); onClose() }}
+    <dialog ref={dialog} aria-labelledby={titleId} aria-describedby={descId} data-scheme={scheme} style={solidSurface(scheme)} onCancel={event => { event.preventDefault(); onClose() }}
       onClose={onClose} onClick={event => {
         if (event.target !== event.currentTarget) return
         const rect = event.currentTarget.getBoundingClientRect()

@@ -5921,8 +5921,8 @@ async function createToonflowSessions(ctx, config) {
 }
 
 // packages/runtime/src/server.ts
-import { readFile as readFile9 } from "node:fs/promises";
-import { dirname as dirname6, isAbsolute as isAbsolute4, resolve as resolve10 } from "node:path";
+import { readFile as readFile10 } from "node:fs/promises";
+import { dirname as dirname8, isAbsolute as isAbsolute4, resolve as resolve11 } from "node:path";
 
 // packages/runtime/src/studioControl.ts
 import { randomUUID as randomUUID3 } from "node:crypto";
@@ -5939,7 +5939,7 @@ var StudioControl = class {
     if (this.closed) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u63A7\u5236\u5DF2\u505C\u7528"));
     if (!command.studio || !this.registry.has(command.studio)) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u672A\u5B89\u88C5\u6216\u5DF2\u505C\u7528\uFF0C\u8BF7\u5148\u8C03\u7528 list"));
     if (this.pending.size >= 16) return Promise.reject(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u7E41\u5FD9\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5"));
-    return new Promise((resolve11, reject) => {
+    return new Promise((resolve12, reject) => {
       const id = randomUUID3();
       const abort = () => finish(new Error("\u5DE5\u4F5C\u5BA4\u64CD\u4F5C\u5DF2\u53D6\u6D88\uFF1B\u5DF2\u89E6\u53D1\u7684\u9875\u9762\u64CD\u4F5C\u65E0\u6CD5\u64A4\u9500"));
       const timer = setTimeout(() => finish(new Error("\u5DE5\u4F5C\u5BA4\u54CD\u5E94\u8D85\u65F6\uFF0C\u8BF7\u786E\u8BA4\u4E3B\u7A97\u53E3\u5DF2\u6253\u5F00\uFF1B\u8BF7\u8BFB\u53D6\u9875\u9762\u786E\u8BA4\u64CD\u4F5C\u7ED3\u679C\uFF0C\u4E0D\u8981\u91CD\u590D\u63D0\u4EA4")), this.timeout);
@@ -5947,7 +5947,7 @@ var StudioControl = class {
         if (!this.pending.delete(id)) return;
         clearTimeout(timer);
         signal.removeEventListener("abort", abort);
-        error ? reject(error) : resolve11(result);
+        error ? reject(error) : resolve12(result);
       };
       this.pending.set(id, { command, expiresAt: Date.now() + this.timeout, finish });
       signal.addEventListener("abort", abort, { once: true });
@@ -7368,6 +7368,222 @@ var StudioRemovals = class {
   }
 };
 
+// packages/runtime/src/pluginDuplicates.ts
+import { dirname as dirname7 } from "node:path";
+import { fileURLToPath as fileURLToPath2 } from "node:url";
+
+// scripts/plugin-duplicates.mjs
+import { cp as cp2, lstat, mkdir as mkdir7, readFile as readFile9, readdir as readdir2, realpath as realpath4, rename as rename5, rm as rm2, symlink, writeFile as writeFile5 } from "node:fs/promises";
+import { randomUUID as randomUUID6 } from "node:crypto";
+import { dirname as dirname6, join as join7, resolve as resolve10 } from "node:path";
+var LIBRARY = "dsh-studio-library";
+var BACKUP_DIR = ".dsh-studio-library-duplicates";
+var KEEP_BACKUPS = 2;
+var OWN_REPOSITORY = /1997liuyh-boop\/dsh-studio-library/i;
+async function readJson(path) {
+  try {
+    return JSON.parse(await readFile9(path, "utf8"));
+  } catch {
+    return void 0;
+  }
+}
+async function occupied(path) {
+  try {
+    await lstat(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+async function samePath(a, b2) {
+  try {
+    return await realpath4(a) === await realpath4(b2);
+  } catch {
+    return false;
+  }
+}
+async function findProfileDir(start) {
+  let dir = resolve10(start);
+  for (let depth = 0; depth < 16; depth += 1) {
+    const manifest = await readJson(join7(dir, "package.json"));
+    if (manifest?.dsh?.profile && typeof manifest.dsh.profile === "object") return dir;
+    const parent = dirname6(dir);
+    if (parent === dir) return void 0;
+    dir = parent;
+  }
+  return void 0;
+}
+async function findDuplicates(profileDir) {
+  const libraryDir = join7(profileDir, "node_modules", LIBRARY);
+  const library = await readJson(join7(libraryDir, "package.json"));
+  if (library?.name !== LIBRARY || !Array.isArray(library.bundleDependencies)) return [];
+  const manifest = await readJson(join7(profileDir, "package.json")) ?? {};
+  const dependencies = manifest.dependencies && typeof manifest.dependencies === "object" ? manifest.dependencies : {};
+  const bundles = Array.isArray(manifest.dsh?.profile?.bundles) ? manifest.dsh.profile.bundles : [];
+  const result = [];
+  for (const name2 of library.bundleDependencies) {
+    if (typeof name2 !== "string" || !/^dsh-[a-z0-9-]+$/.test(name2)) continue;
+    const bundledDir = join7(libraryDir, "node_modules", name2);
+    const bundled = await readJson(join7(bundledDir, "package.json"));
+    if (bundled?.name !== name2) continue;
+    const topDir = join7(profileDir, "node_modules", name2);
+    const linked = await samePath(topDir, bundledDir);
+    const present = !linked && await occupied(topDir);
+    const top = present ? await readJson(join7(topDir, "package.json")) : void 0;
+    const spec = typeof dependencies[name2] === "string" ? dependencies[name2] : void 0;
+    const declared = spec !== void 0;
+    const selected = bundles.includes(name2);
+    if (!present && !declared && !selected) continue;
+    const repositoryField = top?.repository;
+    const repository = (typeof repositoryField === "string" ? repositoryField : typeof repositoryField?.url === "string" ? repositoryField.url : void 0) ?? spec;
+    result.push({
+      name: name2,
+      bundledVersion: String(bundled.version ?? ""),
+      ...typeof top?.version === "string" ? { version: top.version } : {},
+      source: OWN_REPOSITORY.test(String(repository ?? "")) ? "library" : "other",
+      ...repository ? { repository } : {},
+      present,
+      declared,
+      selected,
+      linked
+    });
+  }
+  return result;
+}
+async function writeManifest(path, value, newline) {
+  const temporary = join7(dirname6(path), ".package-" + randomUUID6() + ".json");
+  await writeFile5(temporary, (JSON.stringify(value, null, 2) + "\n").replace(/\n/g, newline));
+  await rename5(temporary, path);
+}
+async function pruneBackups(backupRoot, name2) {
+  let entries;
+  try {
+    entries = await readdir2(backupRoot);
+  } catch {
+    return;
+  }
+  const mine = entries.filter((entry) => entry.startsWith(name2 + "-")).sort().reverse();
+  for (const stale of mine.slice(KEEP_BACKUPS)) await rm2(join7(backupRoot, stale), { recursive: true, force: true }).catch(() => {
+  });
+}
+async function link(target, path) {
+  await symlink(target, path, process.platform === "win32" ? "junction" : "dir");
+}
+async function replaceWithLink(profileDir, name2, bundledDir, stamp) {
+  const topDir = join7(profileDir, "node_modules", name2);
+  let backup;
+  if (await occupied(topDir)) {
+    const backupRoot = join7(profileDir, "node_modules", BACKUP_DIR);
+    await mkdir7(backupRoot, { recursive: true });
+    backup = join7(backupRoot, `${name2}-${stamp}`);
+    if (await occupied(backup)) backup += "-" + randomUUID6().slice(0, 8);
+    const stats = await lstat(topDir);
+    if (stats.isSymbolicLink()) {
+      await writeFile5(backup + ".link.txt", await realpath4(topDir).catch(() => "\uFF08\u5931\u6548\u7684\u94FE\u63A5\uFF09") + "\n");
+      await rm2(topDir, { force: true });
+      backup += ".link.txt";
+    } else await rename5(topDir, backup);
+  }
+  try {
+    await link(bundledDir, topDir);
+  } catch (error) {
+    try {
+      await cp2(bundledDir, topDir, { recursive: true });
+    } catch {
+      if (backup && !backup.endsWith(".link.txt")) await rename5(backup, topDir).catch(() => {
+      });
+      throw error;
+    }
+  }
+  if (backup) await pruneBackups(dirname6(backup), name2);
+  return backup;
+}
+async function cleanDuplicates(profileDir, options = {}) {
+  const { manifest: editManifest = true, now = /* @__PURE__ */ new Date() } = options;
+  const duplicates = await findDuplicates(profileDir);
+  const replaced = [];
+  const failures = [];
+  let manifestChanged = false;
+  if (!duplicates.length) return { duplicates, replaced, manifestChanged, failures };
+  const stamp = now.toISOString().replace(/[:.]/g, "-");
+  const libraryModules = join7(profileDir, "node_modules", LIBRARY, "node_modules");
+  for (const item of duplicates) {
+    const needsLink = item.present || !item.linked && (item.declared || item.selected);
+    if (!needsLink) continue;
+    try {
+      replaced.push({ name: item.name, backup: await replaceWithLink(profileDir, item.name, join7(libraryModules, item.name), stamp) });
+    } catch (error) {
+      failures.push({ name: item.name, message: error instanceof Error ? error.message : String(error) });
+    }
+  }
+  if (editManifest && duplicates.some((item) => item.declared || item.selected)) {
+    const path = join7(profileDir, "package.json");
+    try {
+      const text = await readFile9(path, "utf8");
+      const value = JSON.parse(text);
+      const names = new Set(duplicates.map((item) => item.name));
+      if (value.dependencies && typeof value.dependencies === "object") for (const name2 of names) delete value.dependencies[name2];
+      if (Array.isArray(value.dsh?.profile?.bundles)) value.dsh.profile.bundles = value.dsh.profile.bundles.filter((item) => !names.has(item));
+      await writeManifest(path, value, text.includes("\r\n") ? "\r\n" : "\n");
+      manifestChanged = true;
+    } catch (error) {
+      failures.push({ name: "package.json", message: error instanceof Error ? error.message : String(error) });
+    }
+  }
+  return { duplicates, replaced, manifestChanged, failures };
+}
+
+// packages/runtime/src/pluginDuplicates.ts
+function ownDirectory() {
+  try {
+    return dirname7(fileURLToPath2(import.meta.url));
+  } catch {
+    return void 0;
+  }
+}
+var DuplicateInstalls = class {
+  /**
+   * @param start - 查找 profile 的起点，默认为运行时安装目录。
+   * @param clean - 清理实现，测试时替换。
+   */
+  constructor(start = ownDirectory(), clean = cleanDuplicates) {
+    this.start = start;
+    this.clean = clean;
+  }
+  profileDir;
+  cleaned = /* @__PURE__ */ new Map();
+  failures = [];
+  restartRequired = false;
+  running;
+  locate() {
+    this.profileDir ??= this.start ? findProfileDir(this.start).catch(() => void 0) : Promise.resolve(void 0);
+    return this.profileDir;
+  }
+  /** 检测并清理；并发调用共用同一次执行。 */
+  run() {
+    this.running ??= this.execute().finally(() => {
+      this.running = void 0;
+    });
+    return this.running;
+  }
+  async execute() {
+    const profileDir = await this.locate();
+    if (!profileDir) return this.report(false);
+    try {
+      const result = await this.clean(profileDir);
+      for (const item of result.duplicates) this.cleaned.set(item.name, item);
+      if (result.replaced.length) this.restartRequired = true;
+      this.failures = result.failures;
+    } catch (error) {
+      this.failures = [{ name: "profile", message: error instanceof Error ? error.message : String(error) }];
+    }
+    return this.report(true);
+  }
+  report(available) {
+    return { cleaned: [...this.cleaned.values()], failures: this.failures, restartRequired: this.restartRequired, available };
+  }
+};
+
 // packages/runtime/src/server.ts
 var name = "dsh-studio-projects";
 var inject = ["webServer", "connection", "tools", "agents", "systemPrompt", "workspaceRegistry", "pluginManager"];
@@ -7403,6 +7619,8 @@ async function apply(ctx, config = {}) {
   const removals = new StudioRemovals(registry, ctx.pluginManager, resolveUpdates(config.updates).directory, (studioId) => bundled.shutdown(studioId));
   void removals.resume().catch(() => {
   });
+  const duplicates = new DuplicateInstalls();
+  void duplicates.run();
   const autoStart = process.env.DSH_STUDIO_SKIP_APPS !== "1";
   const updates = new StudioUpdates(registry, ctx.pluginManager, getDshRuntimeVersion(), resolveUpdates(config.updates), fetch, {
     stopForUpdate: (studioId, directory) => launcher.stopForUpdate(studioId, directory),
@@ -7425,7 +7643,7 @@ async function apply(ctx, config = {}) {
   }, "\u5DE5\u4F5C\u5BA4\uFF1A\u672C\u673A\u670D\u52A1\u81EA\u52A8\u542F\u52A8");
   ctx.effect(() => {
     const attach = (id, root) => {
-      if (launcher.startable(id) || !managed.attach(id, dirname6(resolve10(root))) || !autoStart) return;
+      if (launcher.startable(id) || !managed.attach(id, dirname8(resolve11(root))) || !autoStart) return;
       void managed.ensure(id);
     };
     for (const page of registry.entries()) attach(page.id, page.root);
@@ -7576,6 +7794,22 @@ async function apply(ctx, config = {}) {
         }
         return;
       }
+      if (url.pathname === "/studio-projects/control/duplicates") {
+        const send = (code, value) => {
+          res.writeHead(code, { "content-type": "application/json", "cache-control": "no-store" });
+          res.end(JSON.stringify(value));
+        };
+        if (req.method === "POST" && (req.headers["sec-fetch-site"] === "cross-site" || req.headers["content-type"]?.split(";")[0] !== "application/json")) {
+          send(403, { error: "\u8BF7\u6C42\u6765\u6E90\u65E0\u6548" });
+          return;
+        }
+        if (req.method !== "GET" && req.method !== "POST") {
+          send(405, { error: "\u4EC5\u652F\u6301 GET \u4E0E POST" });
+          return;
+        }
+        send(200, await duplicates.run());
+        return;
+      }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/status") {
         const integrations = await connectedStatuses();
         const failures = serviceFailures();
@@ -7593,7 +7827,7 @@ async function apply(ctx, config = {}) {
       }
       if (req.method === "GET" && url.pathname === "/studio-projects/control/bridge.js") {
         res.writeHead(200, { "content-type": "text/javascript; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
-        res.end(await readFile9(new URL("../static/controlBridge.js", import.meta.url)));
+        res.end(await readFile10(new URL("../static/controlBridge.js", import.meta.url)));
         return;
       }
       if (await handleUpdates(req, res, url.pathname)) return;
@@ -7612,7 +7846,7 @@ async function apply(ctx, config = {}) {
           return;
         }
         const file = legacyAsset ?? "index.html";
-        const body = await readFile9(new URL("../static/legacy/" + file, import.meta.url));
+        const body = await readFile10(new URL("../static/legacy/" + file, import.meta.url));
         res.writeHead(200, { "content-type": file.endsWith(".js") ? "text/javascript; charset=utf-8" : file.endsWith(".css") ? "text/css; charset=utf-8" : "text/html; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" });
         res.end(req.method === "HEAD" ? void 0 : body);
         return;
