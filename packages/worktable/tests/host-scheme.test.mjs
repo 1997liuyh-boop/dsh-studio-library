@@ -43,3 +43,38 @@ test('新增工作室弹窗使用纯色弹窗面并随打开状态跟随深浅�
   assert.match(dialog, /useHostScheme\(open\)/)
   assert.match(dialog, /style=\{solidSurface\(scheme\)\}/)
 })
+
+test('弹窗配色：纯色与玻璃两种面都带深浅两套文字 / 提示词变量；玻璃面与更新公告同一套背景', () => {
+  const { solidSurface, glassSurface } = load('', false)
+  assert.equal(solidSurface('light')['--wt-placeholder'], 'rgba(0,0,0,0.4)')
+  assert.equal(solidSurface('dark')['--wt-placeholder'], 'rgba(255,255,255,0.42)')
+  const styles = readFileSync(new URL('../src/client/styles.ts', import.meta.url), 'utf8')
+  for (const scheme of ['dark', 'light']) {
+    const glass = glassSurface(scheme)
+    assert.ok(styles.includes('background:' + glass.background), scheme + ' 背景与更新公告一致')
+    assert.equal(glass.borderRadius, '16px')
+    assert.equal(glass.backdropFilter, 'blur(8px) saturate(1.15)')
+  }
+})
+
+test('工作室状态弹窗用玻璃面并跟随控制室主题；新增工作室弹窗的提示词用弹窗自己的颜色', () => {
+  const status = readFileSync(new URL('../src/client/ConsoleStudiosDialog.tsx', import.meta.url), 'utf8')
+  assert.match(status, /useHostScheme\(open, readConsoleScheme\)/)
+  assert.match(status, /style=\{glassSurface\(scheme\)\}/)
+  assert.match(status, /studio:backdrop:bg-transparent/)
+  const add = readFileSync(new URL('../src/client/AddStudioDialog.tsx', import.meta.url), 'utf8')
+  assert.match(add, /studio:placeholder:text-\(--wt-placeholder\)/)
+})
+
+test('控制室主题：读控制室面板的 data-wt-theme，读不到时跟随宿主', () => {
+  const code = buildSync({ entryPoints: [fileURLToPath(new URL('../src/client/hostScheme.ts', import.meta.url))], bundle: true, write: false, format: 'cjs', platform: 'node', external: ['react'] }).outputFiles[0].text
+  const run = (panelTheme) => {
+    const module = { exports: {} }
+    runInNewContext(code, { module, exports: module.exports, require,
+      document: { documentElement: {}, querySelector: () => panelTheme ? { getAttribute: () => panelTheme } : null },
+      getComputedStyle: () => ({ colorScheme: 'dark' }), window: { matchMedia: () => ({ matches: true }) } })
+    return module.exports.readConsoleScheme()
+  }
+  assert.equal(run('light'), 'light')
+  assert.equal(run(null), 'dark')
+})

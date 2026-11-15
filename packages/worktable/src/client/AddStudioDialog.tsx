@@ -107,7 +107,7 @@ export function AddStudioDialog({ open, t, onClose, onAiCreate, onImport }: {
       <input type="text" autoFocus value={source} disabled={!!busy} placeholder={t('add.studioPlaceholder')}
         aria-label={t('add.studioInputLabel')} onChange={event => { setSource(event.currentTarget.value); setError('') }}
         onKeyDown={event => { if (event.key === 'Enter' && !event.nativeEvent.isComposing) void importStudio() }}
-        className="studio:box-border studio:w-full studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-(--dsw-alias-fill-l1) studio:px-3 studio:py-2.5 studio:text-sm studio:text-(--dsw-alias-label-primary) studio:outline-none studio:placeholder:text-(--dsw-alias-label-tertiary) studio:focus:border-blue-500" />
+        className="studio:box-border studio:w-full studio:rounded-(--dsw-radius-md) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-(--dsw-alias-fill-l1) studio:px-3 studio:py-2.5 studio:text-sm studio:text-(--dsw-alias-label-primary) studio:outline-none studio:placeholder:text-(--wt-placeholder) studio:focus:border-blue-500" />
       {error && <p role="alert" className="studio:mb-0 studio:mt-3 studio:text-sm studio:text-red-500">{error}</p>}
       {notice && <p role="status" className="studio:mb-0 studio:mt-3 studio:text-sm studio:text-green-600">{notice}</p>}
       <div className="studio:mt-4 studio:flex studio:items-center studio:gap-3">

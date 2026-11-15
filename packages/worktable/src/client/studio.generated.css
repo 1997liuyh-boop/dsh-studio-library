@@ -486,14 +486,17 @@
   :is(:where(.studio\:group):focus-visible .studio\:group-focus-visible\:inline-flex) {
     display: inline-flex;
   }
-  .studio\:placeholder\:text-\(--dsw-alias-label-tertiary\)::placeholder {
-    color: var(--dsw-alias-label-tertiary);
+  .studio\:placeholder\:text-\(--wt-placeholder\)::placeholder {
+    color: var(--wt-placeholder);
   }
   .studio\:backdrop\:bg-black\/30::backdrop {
     background-color: var(--studio-color-black);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--studio-color-black) 30%, transparent);
     }
+  }
+  .studio\:backdrop\:bg-transparent::backdrop {
+    background-color: transparent;
   }
   @media (hover: hover) {
     .studio\:hover\:bg-\(--dsw-alias-interactive-bg-hover\):hover {

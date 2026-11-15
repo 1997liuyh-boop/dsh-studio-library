@@ -4,6 +4,7 @@ import type { WorktableKey } from './locales'
 import { fetchStudioServices, startStudioServices, type StudioServiceState } from './studioServices'
 import { checkStudios, dueForCheck } from './studioInfo'
 import { fetchDuplicateReport, type DuplicateReport } from './pluginDuplicates'
+import { glassSurface, readConsoleScheme, useHostScheme } from './hostScheme'
 
 type Translate = (key: WorktableKey, params?: Record<string, string>) => string
 
@@ -174,6 +175,8 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
   const [duplicates, setDuplicates] = useState<DuplicateReport | null>(null)
   /** 正在重试清理 */
   const [dedupeBusy, setDedupeBusy] = useState(false)
+  /** 弹窗背景与控制室「更新公告」一致，深浅色跟随控制室主题 */
+  const scheme = useHostScheme(open, readConsoleScheme)
   const dragging = useRef<{ id: string; pointerId: number } | null>(null)
   const orderRef = useRef(order)
   orderRef.current = order
@@ -405,13 +408,13 @@ export function ConsoleStudiosDialog({ open, t, studios, onClose, onReorder, onE
   }
 
   return createPortal(
-    <dialog ref={dialog} aria-labelledby={titleId} onCancel={event => { event.preventDefault(); onClose() }}
+    <dialog ref={dialog} aria-labelledby={titleId} data-scheme={scheme} style={glassSurface(scheme)} onCancel={event => { event.preventDefault(); onClose() }}
       onClose={onClose} onClick={event => {
         if (event.target !== event.currentTarget) return
         const rect = event.currentTarget.getBoundingClientRect()
         if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) onClose()
       }}
-      className="studio:box-border studio:m-auto studio:max-h-[calc(100dvh-2rem)] studio:w-[min(32rem,calc(100vw-2rem))] studio:max-w-none studio:overflow-y-auto studio:overscroll-contain studio:rounded-(--dsw-radius-lg) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-(--dsw-alias-bg-base) studio:p-5 studio:text-(--dsw-alias-label-primary) studio:shadow-xl studio:backdrop:bg-black/30">
+      className="studio:box-border studio:m-auto studio:max-h-[calc(100dvh-2rem)] studio:w-[min(32rem,calc(100vw-2rem))] studio:max-w-none studio:overflow-y-auto studio:overscroll-contain studio:rounded-(--dsw-radius-lg) studio:border studio:border-(--dsw-alias-border-l1) studio:bg-(--dsw-alias-bg-base) studio:p-5 studio:text-(--dsw-alias-label-primary) studio:shadow-xl studio:backdrop:bg-transparent">
       <div className="studio:mb-4 studio:flex studio:items-center studio:justify-between studio:gap-3">
         <h2 id={titleId} className="studio:m-0 studio:text-base studio:font-medium">{t('consoleList.title')}</h2>
         <div className="studio:flex studio:items-center studio:gap-1">
